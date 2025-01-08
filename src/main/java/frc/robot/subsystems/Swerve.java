@@ -4,7 +4,7 @@ import frc.robot.util.GeoFenceObject;
 import frc.robot.util.Conversions;
 import frc.robot.util.SwerveModule;
 import frc.robot.constants.Constants;
-
+import frc.robot.constants.FieldConstants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -26,7 +26,7 @@ public class Swerve extends SubsystemBase {
     public static SwerveModule[] mSwerveMods;
     public static Pigeon2 gyro;
 
-    private static GeoFenceObject[] fieldGeoFence = Constants.GeoFencing.fieldGeoFence;
+    private static GeoFenceObject[] fieldGeoFence = FieldConstants.GeoFencing.fieldGeoFence;
 
     private double maxDriveSpeed = Constants.Swerve.maxSpeed;
     private static double maxThrottle = Constants.ControlConstants.maxThrottle;
@@ -36,7 +36,7 @@ public class Swerve extends SubsystemBase {
     private static double manualRotationScalar = Constants.ControlConstants.manualRotationScalar;
     private static double maxRotationSpeed = Constants.ControlConstants.maxRotationSpeed;
     private static double targetAngle = 0;
-    private static double robotRadius = Constants.GeoFencing.robotRadius;
+    private static double robotRadius = FieldConstants.GeoFencing.robotRadius;
     private boolean manualAngleFlag = false;
 
     public Swerve() {

@@ -11,9 +11,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.util.COTSTalonFXSwerveConstants;
 import frc.robot.util.SwerveModuleConstants;
 
-import frc.robot.util.GeoFenceObject;
-import frc.robot.util.GeoFenceObject.ObjectTypes;
-
 public final class Constants 
 {
     
@@ -34,48 +31,6 @@ public final class Constants
         public static final double maxRotationSpeed = 3;
         /** Steering overswing compensation factor */
         public static final double overswingReduction = 2;
-    }
-    
-    public final class GeoFencing // TODO: Move this to FieldConstants file.
-    {   
-        // Relative to the centre of the robot, in direction the robot is facing
-        // These values are the distance in metres to the virtual wall the robot will stop at
-        // 0 means the wall is running through the middle of the robot
-        // negative distances will have the robot start outside the area, and can only move into it
-        /** Metres the robot can travel left */
-        public static final double fieldLeft = 3;
-
-        /** Metres the robot can travel right */
-        public static final double fieldRight = 6;
-
-        /** Metres the robot can travel forwards */
-        public static final double fieldFront = 3;
-
-        /** Metres the robot can travel back */
-        public static final double fieldBack = 3;    
-
-        public static final GeoFenceObject field = new GeoFenceObject
-        (
-            -fieldBack, 
-            -fieldRight, 
-            fieldFront, 
-            fieldLeft, 
-            0.5,
-            0.0,
-            ObjectTypes.walls
-        );
-        
-        public static final GeoFenceObject test1 = new GeoFenceObject(1.25, 1.25, 0.2);
-        public static final GeoFenceObject test2 = new GeoFenceObject(-0.5,-2.5,0.5,-4,0.5,0,ObjectTypes.box);
-        public static final GeoFenceObject test3 = new GeoFenceObject(0, 0.75, -1.5, 1.8, 0.5, 0.2);
-
-        public static final GeoFenceObject[] fieldGeoFence = {field,test1,test2,test3};
-        
-        /** Radius from robot centre in metres where geofence is triggered */
-        public static final double robotRadius = 0.55;
-        
-        //public static OdometryReadout fieldReadout = new OdometryReadout(0.5);
-        //fieldReadout.addRectangle(fieldGeoFence[0].getObject);
     }
 
     public static final class Swerve
