@@ -14,8 +14,8 @@ import frc.robot.util.GeoFenceObject.ObjectTypes;
 
 public class FieldConstants 
 {
-    public static final double fieldLength = 17.55;
-    public static final double fieldWidth = 8.05;
+    public static final double fieldLength = 17.548;
+    public static final double fieldWidth = 8.051;
 
     public static boolean isRedAlliance() 
     {
@@ -87,7 +87,19 @@ public class FieldConstants
         public static final double fieldFront = fieldLength;
 
         /** Metres the robot can travel back */
-        public static final double fieldBack = 0;    
+        public static final double fieldBack = 0;
+
+        /** Buffer zone for the field walls in metres */
+        public static final double wallBuffer = 0.5;
+        
+        /** Inscribed diameter of the reef hexagon (i.e. distance between opposite faces) in metres */
+        public static final double inscribedReefDiameter = 1.663;
+        
+        /** Buffer zone for the reef in metres */
+        public static final double reefBuffer = 0.25;
+
+        /** Buffer zone for the barge zone in metres */
+        public static final double bargeBuffer = 0.25;
 
         public static final GeoFenceObject field = new GeoFenceObject
         (
@@ -95,24 +107,34 @@ public class FieldConstants
             -fieldRight, 
             fieldFront, 
             fieldLeft, 
-            0.5,
+            wallBuffer,
             0.0,
             ObjectTypes.walls
         );
 
-        public static final double inscribedReefDiameter = 1.663;
+        public static final GeoFenceObject reefBlue = new GeoFenceObject(4.489, 4.026, reefBuffer, inscribedReefDiameter / 2);
+        public static final GeoFenceObject reefRed = new GeoFenceObject(13.059, 4.026, reefBuffer, inscribedReefDiameter / 2);
+        public static final GeoFenceObject bargeColumn = new GeoFenceObject(8.774, 4.026, 0.25, 0.305 / 2);
+        public static final GeoFenceObject bargeZoneBlue = new GeoFenceObject(8.190, 3.721, 9.358, 0, bargeBuffer, 0, ObjectTypes.box);
+        public static final GeoFenceObject bargeZoneRed = new GeoFenceObject(8.190, 4.331, 9.358, fieldWidth, bargeBuffer, 0, ObjectTypes.box);
+        public static final GeoFenceObject cornerSBlue = new GeoFenceObject(0, 1.276, 1.758, 0, wallBuffer);
+        public static final GeoFenceObject cornerNBlue = new GeoFenceObject(0, 6.775, 1.758, fieldWidth, wallBuffer);
+        public static final GeoFenceObject cornerSRed = new GeoFenceObject(fieldLength, 1.276, 15.791, 0, wallBuffer);
+        public static final GeoFenceObject cornerNRed = new GeoFenceObject(fieldLength, 6.775, 15.791, fieldWidth, wallBuffer);
 
-        public static final GeoFenceObject reefBlue = new GeoFenceObject(4.489, 4.026, 0, inscribedReefDiameter / 2);
-        public static final GeoFenceObject reefRed = new GeoFenceObject();
-        public static final GeoFenceObject bargeColumn = new GeoFenceObject();
-        public static final GeoFenceObject bargeZoneBlue = new GeoFenceObject();
-        public static final GeoFenceObject bargeZoneRed = new GeoFenceObject();
-        public static final GeoFenceObject cornerSBlue = new GeoFenceObject();
-        public static final GeoFenceObject cornerNBlue = new GeoFenceObject();
-        public static final GeoFenceObject cornerSRed = new GeoFenceObject();
-        public static final GeoFenceObject cornerNRed = new GeoFenceObject();
-
-        public static final GeoFenceObject[] fieldGeoFence = {field};
+        public static final GeoFenceObject[] fieldGeoFence = 
+        {
+            field, 
+            reefBlue, 
+            reefRed, 
+            bargeColumn, 
+            bargeZoneBlue, 
+            bargeZoneRed, 
+            cornerSBlue, 
+            cornerNBlue, 
+            cornerSRed, 
+            cornerNRed
+        };
         
         /** Radius from robot centre in metres where geofence is triggered */
         public static final double robotRadius = 0.55;

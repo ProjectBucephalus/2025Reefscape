@@ -49,17 +49,6 @@ public class GeoFenceObject
         }
 
         /**
-         * Define a simple point-type object with radius
-         * @param x x-coordinate, metres
-         * @param y y-coordinate, metres
-         * @param r hard-stop radius around object, metres
-         */
-        public GeoFenceObject(double x, double y, double r)
-        {
-            this(x, y, 0.5, r);
-        }
-
-        /**
          * Define a point-type object to avoid
          * @param x x-coordinate, metres
          * @param y y-coordinate, metres
@@ -78,15 +67,14 @@ public class GeoFenceObject
          * @param Xb x-coordinate in meters of the second point
          * @param Yb y-coordinate in meters of the second point
          * @param buffer range over which the robot slows down, metres  
-         * @param radius hard-stop radius around object, metres
          */
-        public GeoFenceObject(double Xa, double Ya, double Xb, double Yb, double buffer, double radius) 
+        public GeoFenceObject(double Xa, double Ya, double Xb, double Yb, double buffer) 
         {
-            this(Xa, Ya, Xb, Yb, buffer, radius, ObjectTypes.line);
+            this(Xa, Ya, Xb, Yb, buffer, 0, ObjectTypes.line);
         }
 
         /**
-         * Define rectangular geofence (box or walls)
+         * Define fully custom geofence
          * @param Xa Start x-coordinate of region, metres
          * @param Ya Start y-coordinate of region, metres
          * @param Xb Size of region in x-axis, metres
