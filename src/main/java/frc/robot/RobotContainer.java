@@ -14,7 +14,8 @@ import frc.robot.subsystems.*;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer 
+{
     /* Controllers */
     private final CommandXboxController driver = new CommandXboxController(0);
 
@@ -29,7 +30,8 @@ public class RobotContainer {
     private Limelight s_Limelight = new Limelight();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer() {
+    public RobotContainer() 
+    {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 s_Swerve, 
