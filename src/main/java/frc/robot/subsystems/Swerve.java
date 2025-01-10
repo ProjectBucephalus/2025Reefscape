@@ -231,42 +231,6 @@ public class Swerve extends SubsystemBase {
         return positions;
     }
 
-    public Pose2d getPose() 
-    {
-        return swerveOdometry.getPoseMeters();
-    }
-
-    public void setPose(Pose2d pose) 
-    {
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);
-    }
-
-    public Rotation2d getHeading()
-    {
-        return getPose().getRotation();
-    }
-
-    public void setHeading(double heading)
-    {
-        setHeading(new Rotation2d(heading));
-    }
-
-    public void setHeading(Rotation2d heading)
-    {
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), heading));
-    }
-
-    public void zeroHeading()
-    {
-        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
-        setTarget(0);
-    }
-
-    public Rotation2d getGyroYaw() 
-    {
-        return Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble());
-    }
-
     public void resetModulesToAbsolute()
     {
         for(SwerveModule mod : mSwerveMods){
@@ -274,32 +238,107 @@ public class Swerve extends SubsystemBase {
         }
     }
 
+    /**
+     * Get current robot pose
+     * @return Current robot pose, as a Pose2d
+     */
+    public Pose2d getPose() 
+        {return swerveOdometry.getPoseMeters();}
+
+    /**
+     * Set robot pose
+     * @param pose Pose2d to set the pose to
+     */
+    public void setPose(Pose2d pose) 
+        {swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), pose);}
+
+    /** Zero robot pose */
+    public void zeroPose()
+        {setPose(new Pose2d(new Translation2d(), getHeading()));}
+
+    /**
+     * Get current robot heading
+     * @return Current robot heading, as a Rotation2d
+     */
+    public Rotation2d getHeading()
+        {return getPose().getRotation();}
+
+    /**
+     * Set robot heading
+     * @param heading double to set the heading to
+     */
+    public void setHeading(double heading)
+        {setHeading(Rotation2d.fromDegrees(heading));}
+
+    /**
+     * Set robot heading
+     * @param heading Rotation2d to set the heading to
+     */
+    public void setHeading(Rotation2d heading)
+        {swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), heading));}
+
+    /**
+     * Zero robot heading and robot target angle
+     */
+    public void zeroHeading()
+    {
+        swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        setTarget(0);
+    }
+
+    /**
+     * Get current robot gyro yaw
+     * @return Current robot gyro yaw, as a Rotation2d
+     */
+    public Rotation2d getGyroYaw() 
+        {return Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble());}
+
+    /**
+     * Set the maximum translation throttle
+     * @param newMaxSpeed double to set the throttle to
+     */
     public void setMaxThrottle(double newMaxSpeed)
         {maxThrottle = newMaxSpeed;}
 
+    /**
+     * Set the minimum translation throttle
+     * @param newMaxSpeed double to set the throttle to
+     */
     public void setMinThrottle(double newMinSpeed)
         {minThrottle = newMinSpeed;}
-
+    /**
+     * Set the maximum rotational throttle
+     * @param newMaxSpeed double to set the throttle to
+     */
     public void setMaxRotThrottle(double newMaxSpeed)
         {maxRotThrottle = newMaxSpeed;}
-
+    /**
+     * Set the minimum rotational throttle
+     * @param newMaxSpeed double to set the throttle to
+     */
     public void setMinRotThrottle(double newMinSpeed)
         {minRotThrottle = newMinSpeed;}
 
+    /**
+     * Set the value to scale manual rotation by
+     * @param newRotationSpeed Double to set manual rotation scalar to
+     */
     public void setManualRotationScalar(double newRotationSpeed)
         {manualRotationScalar = newRotationSpeed;}
 
+    /**
+     * Get current robot target angle
+     * @return Current robot target angle, as a double
+     */
     public double getTarget()
         {return targetAngle;}
 
+    /**
+     * Set robot target angle
+     * @param newTargetAngle double to set the target angle to
+     */
     public void setTarget(double newTargetAngle)
         {targetAngle = newTargetAngle;}
-    
-    /** Zero robot position */
-    public void zeroPose()
-    {
-        setPose(new Pose2d(new Translation2d(), getHeading()));
-    }
 
     @Override
     public void periodic(){
