@@ -26,6 +26,7 @@ public class RobotContainer {
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
+    private Limelight s_Limelight = new Limelight();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
@@ -61,5 +62,10 @@ public class RobotContainer {
     public Swerve getSwerve()
     {
         return s_Swerve;
+    }
+
+    public Limelight getLimelight()
+    {
+        return s_Limelight;
     }
 }
