@@ -231,7 +231,7 @@ public class Swerve extends SubsystemBase {
         return positions;
     }
 
-    public static Pose2d getPose() 
+    public Pose2d getPose() 
     {
         return swerveOdometry.getPoseMeters();
     }
@@ -246,17 +246,23 @@ public class Swerve extends SubsystemBase {
         return getPose().getRotation();
     }
 
+    public void setHeading(double heading)
+    {
+        setHeading(new Rotation2d(heading));
+    }
+
     public void setHeading(Rotation2d heading)
     {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), heading));
     }
 
-    public static void zeroHeading()
+    public void zeroHeading()
     {
         swerveOdometry.resetPosition(getGyroYaw(), getModulePositions(), new Pose2d(getPose().getTranslation(), new Rotation2d()));
+        setTarget(0);
     }
 
-    public static Rotation2d getGyroYaw() 
+    public Rotation2d getGyroYaw() 
     {
         return Rotation2d.fromDegrees(gyro.getYaw().getValueAsDouble());
     }
@@ -288,38 +294,11 @@ public class Swerve extends SubsystemBase {
 
     public void setTarget(double newTargetAngle)
         {targetAngle = newTargetAngle;}
-
-    /** Zero robot headding and reset target angle */
-    public void zeroHeading(double targetAngle)
-    {
-        Swerve.zeroHeading();
-        setTarget(0);
-    }
     
     /** Zero robot position */
-    public void zeroPose(double targetAngle)
+    public void zeroPose()
     {
         setPose(new Pose2d(new Translation2d(), getHeading()));
-    }
-
-    public void shiftPose(double xShift, double yShift)
-    {
-        setPose(new Pose2d(new Translation2d(getPose().getX() - xShift, getPose().getY() - yShift), getHeading()));
-    }
-
-    public void setPoseX(double xPos)
-    {
-        setPose(new Pose2d(new Translation2d(xPos, getPose().getY()), getHeading()));
-    }
-
-    public void setPoseY(double yPos)
-    {
-        setPose(new Pose2d(new Translation2d(getPose().getX(), yPos), getHeading()));
-    }
-
-    public void setPoseXY(double xPos, double yPos)
-    {
-        setPose(new Pose2d(new Translation2d(xPos, yPos), getHeading()));
     }
 
     @Override

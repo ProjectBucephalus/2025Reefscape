@@ -70,11 +70,11 @@ public class Robot extends TimedRobot {
   {  
     if (FieldConstants.isRedAlliance()) 
     {
-      robotContainer.getSwerve().gyro.setYaw(robotContainer.getSwerve().getPose().getRotation().getDegrees() + 180);
+      robotContainer.getSwerve().setHeading(robotContainer.getSwerve().getPose().getRotation().getDegrees() + 180);
     }
     else 
     {
-      robotContainer.getSwerve().gyro.setYaw(robotContainer.getSwerve().getPose().getRotation().getDegrees());
+      robotContainer.getSwerve().setHeading(robotContainer.getSwerve().getPose().getRotation().getDegrees());
     }
   }
 
