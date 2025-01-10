@@ -41,7 +41,8 @@ public class Swerve extends SubsystemBase {
     private static double robotRadius = FieldConstants.GeoFencing.robotRadius;
     private boolean manualAngleFlag = false;
 
-    public Swerve() {
+    public Swerve() 
+    {   
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(0);
@@ -54,6 +55,33 @@ public class Swerve extends SubsystemBase {
         };
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
+
+        SmartDashboard.putData
+        (
+            "Swerve Drive", 
+            new Sendable() 
+            {
+                @Override
+                public void initSendable(SendableBuilder builder) 
+                {
+                    builder.setSmartDashboardType("SwerveDrive");
+
+                    builder.addDoubleProperty("Front Left Angle", () -> mSwerveMods[0].getPosition().angle.getRadians(), null);
+                    builder.addDoubleProperty("Front Left Velocity", () -> mSwerveMods[0].getState().speedMetersPerSecond, null);
+
+                    builder.addDoubleProperty("Front Right Angle", () -> mSwerveMods[1].getPosition().angle.getRadians(), null);
+                    builder.addDoubleProperty("Front Right Velocity", () -> mSwerveMods[1].getState().speedMetersPerSecond, null);
+
+                    builder.addDoubleProperty("Back Left Angle", () ->mSwerveMods[2].getPosition().angle.getRadians(), null);
+                    builder.addDoubleProperty("Back Left Velocity", () ->mSwerveMods[2].getState().speedMetersPerSecond, null);
+
+                    builder.addDoubleProperty("Back Right Angle", () -> mSwerveMods[3].getPosition().angle.getRadians(), null);
+                    builder.addDoubleProperty("Back Right Velocity", () -> mSwerveMods[3].getState().speedMetersPerSecond, null);
+
+                    builder.addDoubleProperty("Robot Angle", () -> getHeading().getRadians(), null);
+                }
+            }
+        );
     }
 
     // ------------------------------------------------------------------------------------------ //
@@ -348,33 +376,6 @@ public class Swerve extends SubsystemBase {
 
         SmartDashboard.putNumber("X", getPose().getTranslation().getX());
         SmartDashboard.putNumber("Y", getPose().getTranslation().getY());
-        
-        SmartDashboard.putData
-        (
-            "Swerve Drive", 
-            new Sendable() 
-            {
-                @Override
-                public void initSendable(SendableBuilder builder) 
-                {
-                    builder.setSmartDashboardType("SwerveDrive");
-
-                    builder.addDoubleProperty("Front Left Angle", () -> mSwerveMods[0].getPosition().angle.getRadians(), null);
-                    builder.addDoubleProperty("Front Left Velocity", () -> mSwerveMods[0].getState().speedMetersPerSecond, null);
-
-                    builder.addDoubleProperty("Front Right Angle", () -> mSwerveMods[1].getPosition().angle.getRadians(), null);
-                    builder.addDoubleProperty("Front Right Velocity", () -> mSwerveMods[1].getState().speedMetersPerSecond, null);
-
-                    builder.addDoubleProperty("Back Left Angle", () ->mSwerveMods[2].getPosition().angle.getRadians(), null);
-                    builder.addDoubleProperty("Back Left Velocity", () ->mSwerveMods[2].getState().speedMetersPerSecond, null);
-
-                    builder.addDoubleProperty("Back Right Angle", () -> mSwerveMods[3].getPosition().angle.getRadians(), null);
-                    builder.addDoubleProperty("Back Right Velocity", () -> mSwerveMods[3].getState().speedMetersPerSecond, null);
-
-                    builder.addDoubleProperty("Robot Angle", () -> getHeading().getRadians(), null);
-                }
-            }
-        );
 
         /* for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());

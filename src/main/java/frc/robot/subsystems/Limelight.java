@@ -6,14 +6,17 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
 
 
-public class Limelight extends SubsystemBase {
-  
+public class Limelight extends SubsystemBase 
+{  
   boolean doRejectUpdate;
   public LimelightHelpers.PoseEstimate llPoseEstimator;
   public SwerveDrivePoseEstimator WPIPosEst;
@@ -23,6 +26,7 @@ public class Limelight extends SubsystemBase {
   public Limelight() 
   {
     llPoseEstimator = new PoseEstimate(null, 0, 0, 0, 0, 0, 0, null, false);
+    WPIPosEst = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, new Rotation2d(), Swerve.getModulePositions(), new Pose2d());
   }
 
   public boolean getStatus()
