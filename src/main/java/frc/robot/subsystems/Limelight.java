@@ -65,7 +65,7 @@ public class Limelight extends SubsystemBase
     }
 
     SmartDashboard.putNumber("Robot X", WPIPosEst.getEstimatedPosition().getX());
-    SmartDashboard.getNumber("Robot Y", WPIPosEst.getEstimatedPosition().getY());
+    SmartDashboard.putNumber("Robot Y", WPIPosEst.getEstimatedPosition().getY());
     SmartDashboard.putNumber("Robot Rotation", WPIPosEst.getEstimatedPosition().getRotation().getDegrees());
     SmartDashboard.putBoolean("I Existance", true);
 
