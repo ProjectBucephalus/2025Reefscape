@@ -1,5 +1,8 @@
 package frc.robot.util;
 
+import java.util.List;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public class GeoFenceObject
@@ -8,7 +11,7 @@ public class GeoFenceObject
      * NOTE: +X is robot Forward, called North, +Y is robot Left, called West
      */
 
-    public enum ObjectTypes {walls, box, line, point};
+    public enum ObjectTypes {walls, box, line, point, polygon};
 
     private double Xa;
     private double Ya;
@@ -19,9 +22,15 @@ public class GeoFenceObject
     private double radius;
     private double fullRadius;
 
+    // Specialised values for line objects
     private double dXab = 0;
     private double dYab = 0;
     private double dot2ab = 0;
+
+    // Specialised values for polygon objects
+    List<GeoFenceObject> edgeLines;
+    List<Translation2d> edgeReference; 
+
 
     /**
      * Default empty constructor
@@ -80,7 +89,7 @@ public class GeoFenceObject
      * @param Yb Size of region in y-axis, metres
      * @param buffer range over which the robot slows down, metres  
      * @param radius hard-stop radius around object, metres
-     * @param objectType Type of object to avoid. Walls (stay within area), box (stay outside area), line, or point 
+     * @param objectType Type of object to avoid. Walls (stay within area), box (stay outside area), line, or point
      */
     public GeoFenceObject(double Xa, double Ya, double Xb, double Yb, double buffer, double radius, ObjectTypes objectType)
     {
@@ -112,6 +121,56 @@ public class GeoFenceObject
         this.objectType = objectType;
         this.buffer = Math.max(buffer, 0.1);
         this.radius = radius;
+    }
+
+    /**
+     * Define full polygon object
+     * @param X x-coordinate of centre, metres
+     * @param Y y-coordinate of centre, metres
+     * @param buffer range over which the robot slows down, metres  
+     * @param radius centre-corner radius of the object, metres
+     * @param theta angle of the object: 0 = point at North, degrees Widdershins
+     * @param N number of polygon sides, integer [3..12]
+     */
+    public GeoFenceObject(double X, double Y, double buffer, double radius, double theta, int N)
+    {
+        Translation2d[] polygonPoints = new Translation2d[2*N+1];
+
+        Xa = X;
+        Ya = Y;
+        Xb = X;
+        Yb = Y;
+        this.radius = radius;
+        this.buffer = buffer;
+
+        N = Conversions.clamp(N,3,12);
+
+        Translation2d centre = new Translation2d(Xa,Ya);
+
+        polygonPoints[0] = new Translation2d(X,Y + radius).rotateAround(centre, new Rotation2d(Math.toRadians(theta)));
+
+        Rotation2d rotationBetweenPoints = new Rotation2d(Math.toRadians(360/(2*N)));
+        for (int i = 1; i < polygonPoints.length; i++)
+        {
+            polygonPoints[i] = polygonPoints[i-1].rotateAround(centre, rotationBetweenPoints);
+        }
+
+        for (int i = 0; i < N; i++)
+        {
+            edgeLines.add(i, new GeoFenceObject
+            (
+                polygonPoints[2*i].getX(),
+                polygonPoints[2*i].getY(),
+                polygonPoints[2*i+2].getX(),
+                polygonPoints[2*i+2].getY(),
+                buffer
+            ));
+
+            edgeReference.add(i, polygonPoints[2*i+1]);
+        }
+
+        this.radius = rotationBetweenPoints.getCos() * radius;
+        this.buffer = buffer + (radius - this.radius);
     }
 
     /**
@@ -292,6 +351,9 @@ public class GeoFenceObject
                     motionY = Math.max(motionY, (-Conversions.clamp(distanceToEdgeY, 0, buffer)) / buffer);
                 }
                 return new Translation2d(motionX, motionY);
+            case polygon:
+                // Finds the closest edge of the polygon to the robot
+                robotXY.nearest(null);
             default:
                 return motionXY;
         }            
