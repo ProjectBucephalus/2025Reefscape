@@ -18,6 +18,7 @@ public class RobotContainer
 {
     /* Controllers */
     private final CommandXboxController driver = new CommandXboxController(0);
+    private final CommandXboxController controlXbox = new CommandXboxController(1);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -28,6 +29,7 @@ public class RobotContainer
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve();
     private Limelight s_Limelight = new Limelight();
+    private ControllerLayering s_ControllerLayering = new ControllerLayering();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
@@ -59,6 +61,14 @@ public class RobotContainer
         /* Driver Buttons */
         driver.start().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         driver.back().onTrue(new InstantCommand(() -> s_Swerve.zeroPose()));
+
+        /* Command Layering */
+        controlXbox.x().and(controlXbox.rightTrigger(0.2))
+            .whileTrue(new InstantCommand(() -> s_ControllerLayering.f1(true))).onFalse(new InstantCommand(() -> s_ControllerLayering.f1(false)));
+        
+        controlXbox.x().and(controlXbox.leftTrigger(0.2))
+            .whileTrue(new InstantCommand(() -> s_ControllerLayering.f2(true))).onFalse(new InstantCommand(() -> s_ControllerLayering.f2(false)));
+
     }
 
     public Swerve getSwerve()
