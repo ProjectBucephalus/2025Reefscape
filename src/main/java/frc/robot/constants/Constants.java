@@ -33,6 +33,11 @@ public final class Constants
         public static final double overswingReduction = 2;
     }
 
+    public static final class Vision
+    {
+        public static final int[] validIDs = {6, 7, 8, 9, 10, 11, 17, 18, 19, 20, 21, 22};
+    }
+
     public static final class Swerve
     {
         public static final int pigeonID = 5;

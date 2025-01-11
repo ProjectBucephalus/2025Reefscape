@@ -13,14 +13,17 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
+import frc.robot.util.LimelightHelpers.RawFiducial;
 
 
 public class Limelight extends SubsystemBase 
 {  
-  boolean doRejectUpdate;
+  private boolean doRejectUpdate;
   public LimelightHelpers.PoseEstimate llPoseEstimator;
   public SwerveDrivePoseEstimator WPIPosEst;
   public Swerve s_Swerve;
+  private LimelightHelpers.PoseEstimate mt1;
+  private int[] validIDs = Constants.Vision.validIDs;
   
   
   /** Creates a new Limelight. */
@@ -41,30 +44,37 @@ public class Limelight extends SubsystemBase
     return true;
   }
 
+  
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    int[] validIDs = {17, 18, 19, 20, 21, 22};
     LimelightHelpers.SetFiducialIDFiltersOverride("Limelight", validIDs);
 
-    LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+    mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+
+    doRejectUpdate = false;
       
     if(mt1 == null)
-      {doRejectUpdate = true;}
+      {doRejectUpdate = true;
+      SmartDashboard.putString("LL Error", "mt1 = null");}
     else if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
     {
-      if(mt1.rawFiducials[0].ambiguity > .7)
-        {doRejectUpdate = true;}
+      if(mt1.rawFiducials[0].ambiguity > .9)
+        {doRejectUpdate = true;
+          SmartDashboard.putString("LL Error", "Ambiguity > .9");}
 
       else if(mt1.rawFiducials[0].distToCamera > 3)
-        {doRejectUpdate = true;}
+        {doRejectUpdate = true;
+          SmartDashboard.putString("LL Error", "Distance to Camera > 3");}
     }
     else if(mt1.tagCount == 0)
-      {doRejectUpdate = true;}
+      {doRejectUpdate = true;
+        SmartDashboard.putString("LL Error", "Tag Count = 0");}
     else
       {doRejectUpdate = false;}
 
-
+    SmartDashboard.putBoolean("Reject LL Update", doRejectUpdate);
     if(!doRejectUpdate)
     {
       WPIPosEst.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
@@ -76,6 +86,7 @@ public class Limelight extends SubsystemBase
     SmartDashboard.putNumber("Robot Y", WPIPosEst.getEstimatedPosition().getY());
     SmartDashboard.putNumber("Robot Rotation", WPIPosEst.getEstimatedPosition().getRotation().getDegrees());
     SmartDashboard.putBoolean("I Existance", true);
+   
 
 
 
