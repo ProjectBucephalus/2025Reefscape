@@ -20,13 +20,20 @@ public class Limelight extends SubsystemBase
   boolean doRejectUpdate;
   public LimelightHelpers.PoseEstimate llPoseEstimator;
   public SwerveDrivePoseEstimator WPIPosEst;
+  public Swerve s_Swerve;
   
   
   /** Creates a new Limelight. */
-  public Limelight() 
+  public Limelight(Swerve s_Swerve) 
   {
     llPoseEstimator = new PoseEstimate(null, 0, 0, 0, 0, 0, 0, null, false);
     WPIPosEst = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, new Rotation2d(), Swerve.getModulePositions(), new Pose2d());
+    this.s_Swerve = s_Swerve;
+  }
+
+  public Pose2d getPose() 
+  {
+    return WPIPosEst.getEstimatedPosition();
   }
 
   public boolean getStatus()
@@ -62,12 +69,15 @@ public class Limelight extends SubsystemBase
     {
       WPIPosEst.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
       WPIPosEst.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
+      s_Swerve.setPose(WPIPosEst.getEstimatedPosition());
     }
 
     SmartDashboard.putNumber("Robot X", WPIPosEst.getEstimatedPosition().getX());
     SmartDashboard.putNumber("Robot Y", WPIPosEst.getEstimatedPosition().getY());
     SmartDashboard.putNumber("Robot Rotation", WPIPosEst.getEstimatedPosition().getRotation().getDegrees());
     SmartDashboard.putBoolean("I Existance", true);
+
+
 
     /* @TODO: UNCOMMENT WHEN LIMELIGHT 3G ARRIVES */
     /* LimelightHelpers.SetRobotOrientation("Limelight", 0, 0.0, 0.0, 0.0, 0.0, 0.0);
