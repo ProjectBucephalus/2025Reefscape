@@ -8,10 +8,12 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.LimelightHelpers;
+import frc.robot.util.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
 
 public class Limelight extends SubsystemBase 
@@ -98,6 +100,14 @@ public class Limelight extends SubsystemBase
     SmartDashboard.putNumber("Robot Y", mt1.pose.getY());
     SmartDashboard.putNumber("Robot Rotation", mt1.pose.getRotation().getDegrees());
     SmartDashboard.putBoolean("I Existance", true);
+    SmartDashboard.putNumber("Tag Count", mt1.tagCount);
+    SmartDashboard.putNumber("Tag Span", mt1.tagSpan);
+    SmartDashboard.putString("MT1", mt1.toString());
+    SmartDashboard.putNumber("Avg Tag Area", mt1.avgTagArea);
+    SmartDashboard.putNumber("Avg Tag Distance", mt1.avgTagDist);
+    SmartDashboard.putNumber("Valid IDs", validIDs.length);
+    SmartDashboard.putNumber("Latency", mt1.latency);
+    SmartDashboard.putNumber("Timestamp", mt1.timestampSeconds);
    
     /* @TODO: UNCOMMENT WHEN LIMELIGHT 3G ARRIVES */
     /* LimelightHelpers.SetRobotOrientation(Constants.Vision.limelightName, 0, 0.0, 0.0, 0.0, 0.0, 0.0);
