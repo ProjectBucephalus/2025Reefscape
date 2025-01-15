@@ -8,12 +8,10 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 import frc.robot.util.LimelightHelpers;
-import frc.robot.util.LimelightHelpers.LimelightTarget_Fiducial;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
 
 public class Limelight extends SubsystemBase 
@@ -53,8 +51,6 @@ public class Limelight extends SubsystemBase
     mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.Vision.limeLightName);
 
     doRejectUpdate = false;
-
-    SmartDashboard.putNumber("Raw Fiducials Length", LimelightHelpers.getRawFiducials(Constants.Vision.limeLightName).length);
       
     if(mt1 == null)
     {
@@ -63,20 +59,20 @@ public class Limelight extends SubsystemBase
     }
     else if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
     {
-      if(mt1.rawFiducials[0].ambiguity > .9)
+      if(mt1.rawFiducials[0].ambiguity > .7)
       {
-        //doRejectUpdate = true;
+        doRejectUpdate = true;
         SmartDashboard.putString("LL Error", "Ambiguity > .9");
       }
       else if(mt1.rawFiducials[0].distToCamera > 3)
       {
-        //doRejectUpdate = true;
+        doRejectUpdate = true;
         SmartDashboard.putString("LL Error", "Distance to Camera > 3");
       }
     }
     else if(mt1.tagCount == 0)
     {
-      //doRejectUpdate = true;
+      doRejectUpdate = true;
       SmartDashboard.putString("LL Error", "Tag Count = 0");
     }
     else
@@ -87,7 +83,6 @@ public class Limelight extends SubsystemBase
     }
 
     SmartDashboard.putBoolean("Reject LL Update", doRejectUpdate);
-    SmartDashboard.putString("mt1 Pose", mt1.pose.toString());
     
     if(!doRejectUpdate)
     {
@@ -95,19 +90,15 @@ public class Limelight extends SubsystemBase
       WPIPosEst.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
       s_Swerve.setPose(mt1.pose);
     }
-
-    SmartDashboard.putNumber("Robot X", mt1.pose.getX());
-    SmartDashboard.putNumber("Robot Y", mt1.pose.getY());
-    SmartDashboard.putNumber("Robot Rotation", mt1.pose.getRotation().getDegrees());
-    SmartDashboard.putBoolean("I Existance", true);
-    SmartDashboard.putNumber("Tag Count", mt1.tagCount);
-    SmartDashboard.putNumber("Tag Span", mt1.tagSpan);
-    SmartDashboard.putString("MT1", mt1.toString());
-    SmartDashboard.putNumber("Avg Tag Area", mt1.avgTagArea);
-    SmartDashboard.putNumber("Avg Tag Distance", mt1.avgTagDist);
-    SmartDashboard.putNumber("Valid IDs", validIDs.length);
-    SmartDashboard.putNumber("Latency", mt1.latency);
-    SmartDashboard.putNumber("Timestamp", mt1.timestampSeconds);
+    
+    if(mt1 != null)
+    {
+      SmartDashboard.putString("mt1 Pose", mt1.pose.toString());
+      SmartDashboard.putNumber("Robot X", mt1.pose.getX());
+      SmartDashboard.putNumber("Robot Y", mt1.pose.getY());
+      SmartDashboard.putNumber("Robot Rotation", mt1.pose.getRotation().getDegrees());
+      SmartDashboard.putBoolean("Existance", true);
+    }
    
     /* @TODO: UNCOMMENT WHEN LIMELIGHT 3G ARRIVES */
     /* LimelightHelpers.SetRobotOrientation(Constants.Vision.limelightName, 0, 0.0, 0.0, 0.0, 0.0, 0.0);
