@@ -39,7 +39,7 @@ public class TeleopSwerve extends Command {
         double translationVal = translationSup.getAsDouble();
         double strafeVal = strafeSup.getAsDouble();
         double brakeVal = brakeSup.getAsDouble();
-        if (Math.sqrt(Math.pow(translationSup.getAsDouble(), 2) + Math.pow(strafeSup.getAsDouble(), 2)) <= Constants.ControlConstants.stickDeadband) 
+        if (Math.hypot(translationSup.getAsDouble(), strafeSup.getAsDouble()) <= Constants.ControlConstants.stickDeadband) 
         {
             translationVal = 0;
             strafeVal = 0;   

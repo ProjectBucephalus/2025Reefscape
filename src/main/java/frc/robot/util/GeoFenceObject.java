@@ -214,7 +214,7 @@ public class GeoFenceObject
         double distanceX = pointX - robotXY.getX();
         double distanceY = pointY - robotXY.getY();
         // Calculates the normal distance to the corner through pythagoras; this is the actual distance between the robot and point
-        double distanceN = Math.sqrt(Math.pow(distanceX, 2) + Math.pow(distanceY, 2));
+        double distanceN = Math.hypot(distanceX, distanceY);
         // Calculates the robot's motion normal and tangent to the point; i.e., towards and away from the point, and from side to side relative to the point
         double motionN   = ((distanceX * motionXY.getX()) + (distanceY * motionXY.getY())) / distanceN;
         double motionT   = ((distanceX * motionXY.getY()) - (distanceY * motionXY.getX())) / distanceN;
