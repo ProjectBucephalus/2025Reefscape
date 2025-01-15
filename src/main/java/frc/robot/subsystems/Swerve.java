@@ -118,12 +118,6 @@ public class Swerve extends SubsystemBase {
         targetAngle = MathUtil.inputModulus(targetAngle, -180, 180); // Wraps value [-180..180]
         double targetOffset = targetAngle - getHeading().getDegrees(); // Difference between current and target angles
         
-        /* Optimises targetOffset direction (if direct turn would go further than 180 degrees, go opposite direction) */
-        if (targetOffset > 180)
-        { targetOffset -= 360; }
-        else if (targetOffset < -180)
-        { targetOffset += 360; }
-        
         /* 
          *  Triggers the first cycle after manual input ends 
          *  Reduces target offset and target angle to reduce overswing  
@@ -135,10 +129,17 @@ public class Swerve extends SubsystemBase {
             targetAngle = targetAngle - targetOffset;
         }
         /* Changes target angle based on scaled joystick position */
-        else
+        else if (manualAngleFlag)
         {
             targetAngle = getHeading().getDegrees() + targetDelta * manualRotationScalar;
         }
+        
+        /* Optimises targetOffset direction (if direct turn would go further than 180 degrees, go opposite direction) */
+        if (targetOffset > 180)
+        { targetOffset -= 360; }
+        else if (targetOffset < -180)
+        { targetOffset += 360; }
+        
 
         /* Apply deadband to target offset to prevent jittering */
         if (Math.abs(targetOffset) <= Constants.ControlConstants.stickDeadband)

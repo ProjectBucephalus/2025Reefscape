@@ -4,6 +4,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -13,6 +14,13 @@ import frc.robot.util.SwerveModuleConstants;
 
 public final class Constants 
 {
+
+    public static final class Testing
+    {
+        public static final Pose2d poseA = new Pose2d(2, 2, new Rotation2d(0));
+        public static final Pose2d poseB = new Pose2d(2, 3, new Rotation2d(0));
+        public static final double delay = 0.1;
+    }
     
     public static final class ControlConstants
     {
@@ -42,7 +50,7 @@ public final class Constants
     public static final class Swerve
     {
         public static final int pigeonID = 5;
-        public static final double initialHeading = 180;
+        public static final double initialHeading = 0;
 
         public static final COTSTalonFXSwerveConstants chosenModule = 
         COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
