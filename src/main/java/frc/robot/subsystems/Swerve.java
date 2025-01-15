@@ -30,7 +30,7 @@ public class Swerve extends SubsystemBase {
 
     private static GeoFenceObject[] fieldGeoFence = FieldConstants.GeoFencing.fieldGeoFence;
 
-    private double maxDriveSpeed = Constants.Swerve.maxSpeed;
+    private double maxDriveSpeed = Constants.SwerveConstants.maxSpeed;
     private static double maxThrottle = Constants.ControlConstants.maxThrottle;
     private static double minThrottle = Constants.ControlConstants.minThrottle;
     private static double maxRotThrottle = Constants.ControlConstants.maxRotThrottle;
@@ -43,18 +43,18 @@ public class Swerve extends SubsystemBase {
 
     public Swerve() 
     {   
-        gyro = new Pigeon2(Constants.Swerve.pigeonID);
+        gyro = new Pigeon2(Constants.SwerveConstants.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(0);
 
         mSwerveMods = new SwerveModule[] {
-            new SwerveModule(0, Constants.Swerve.Mod0.constants),
-            new SwerveModule(1, Constants.Swerve.Mod1.constants),
-            new SwerveModule(2, Constants.Swerve.Mod2.constants),
-            new SwerveModule(3, Constants.Swerve.Mod3.constants)
+            new SwerveModule(0, Constants.SwerveConstants.Mod0.constants),
+            new SwerveModule(1, Constants.SwerveConstants.Mod1.constants),
+            new SwerveModule(2, Constants.SwerveConstants.Mod2.constants),
+            new SwerveModule(3, Constants.SwerveConstants.Mod3.constants)
         };
 
-        swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
+        swerveOdometry = new SwerveDriveOdometry(Constants.SwerveConstants.swerveKinematics, getGyroYaw(), getModulePositions());
 
         SmartDashboard.putData
         (
@@ -214,7 +214,7 @@ public class Swerve extends SubsystemBase {
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop)
     {
         SwerveModuleState[] swerveModuleStates =
-            Constants.Swerve.swerveKinematics.toSwerveModuleStates(
+            Constants.SwerveConstants.swerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                                     translation.getX(), 
                                     translation.getY(), 

@@ -26,7 +26,7 @@ public class Limelight extends SubsystemBase
   public Limelight() 
   {
     llPoseEstimator = new PoseEstimate(null, 0, 0, 0, 0, 0, 0, null, false);
-    WPIPosEst = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, new Rotation2d(), Swerve.getModulePositions(), new Pose2d());
+    WPIPosEst = new SwerveDrivePoseEstimator(Constants.SwerveConstants.swerveKinematics, new Rotation2d(), Swerve.getModulePositions(), new Pose2d());
   }
 
   public boolean getStatus()

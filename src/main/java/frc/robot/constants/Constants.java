@@ -13,7 +13,21 @@ import frc.robot.util.SwerveModuleConstants;
 
 public final class Constants 
 {
-    
+    public static final class DiffectorConstants
+    {
+        public static final int ucMotorID = 0;
+        public static final int uaMotorID = 0;
+
+        public static final double diffectorMotorKP = 0;
+        public static final double diffectorMotorKI = 0;
+        public static final double diffectorMotorKD = 0;
+
+        /** Ratio of motor encoder position to elevator movement in mm */
+        public static final double motorToElevatorRatio = 1;
+        /** Ratio of motor encoder position to arm movement in degrees */
+        public static final double motorToArmRatio = 1;
+    }
+
     public static final class ControlConstants
     {
         public static final double stickDeadband = 0.1;
@@ -33,7 +47,7 @@ public final class Constants
         public static final double overswingReduction = 2;
     }
 
-    public static final class Swerve
+    public static final class SwerveConstants
     {
         public static final int pigeonID = 5;
 
