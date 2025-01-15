@@ -1,11 +1,16 @@
 package frc.robot;
 
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.configs.Pigeon2Configurator;
+import com.ctre.phoenix6.hardware.Pigeon2;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.commands.*;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
 
 /**
@@ -26,23 +31,27 @@ public class RobotContainer
     private final int brakeAxis = XboxController.Axis.kRightTrigger.value;
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve();
+    private final Swerve s_Swerve = new Swerve(Constants.Swerve.initialHeading);
     private Limelight s_Limelight = new Limelight(s_Swerve);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
     {
-        s_Swerve.setDefaultCommand(
-            new TeleopSwerve(
+        s_Swerve.setDefaultCommand
+        (
+            new TeleopSwerve
+            (
                 s_Swerve, 
                 () -> -driver.getRawAxis(translationAxis), 
                 () -> -driver.getRawAxis(strafeAxis), 
                 () -> -driver.getRawAxis(rotationAxis), 
                 () -> driver.getRawAxis(brakeAxis),
-                () -> false,
+                () -> true,
                 () -> !driver.leftTrigger().getAsBoolean()
             )
         );
+
+        //s_Swerve.gyro.setYaw(Constants.Swerve.initialHeading);
 
         // Configure the button bindings
         configureButtonBindings();

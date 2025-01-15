@@ -45,11 +45,11 @@ public class Swerve extends SubsystemBase {
     private Field2d m_field = new Field2d();
 
 
-    public Swerve() 
+    public Swerve(double initialHeading)
     {   
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
-        gyro.setYaw(0);
+        gyro.setYaw(initialHeading);
         SmartDashboard.putData("Field", m_field);
 
         m_field = new Field2d();
@@ -61,8 +61,6 @@ public class Swerve extends SubsystemBase {
             new SwerveModule(2, Constants.Swerve.Mod2.constants),
             new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
-
-        
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
 
