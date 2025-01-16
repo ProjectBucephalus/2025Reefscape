@@ -48,4 +48,9 @@ public final class IDConstants
     public static final int vacuumMotor2ID = 0; //22
     public static final int vacuumMotor1PDHChannel = 0; //1
     public static final int vacuumMotor2PDHChannel = 0; //2
+
+    /* Climber */
+    /* _______ */
+    public static final int climberClawMotorID = 0; //23
+    public static final int climberWinchMotorID = 0; //24
 }
