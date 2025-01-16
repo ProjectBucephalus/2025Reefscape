@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.util.COTSTalonFXSwerveConstants;
 import frc.robot.util.SwerveModuleConstants;
+import frc.robot.constants.IDConstants;
 
 public final class Constants 
 {
@@ -183,5 +184,42 @@ public final class Constants
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
+
+    public static final class Intake
+    {
+        //TODO: Get proper Motor IDs, Speeds and Angles
+        public static final class MotorID
+        {
+            public static final int mTopIntakeID = IDConstants.mTopIntakeID;
+            public static final int mBottomIntakeID = IDConstants.mBottomIntakeID;
+            public static final int mTopArmID = IDConstants.mTopArmID;
+            public static final int mBottomArmID = IDConstants.mBottomArmID;
+        }
+
+        public static final class MotorSpeeds
+        {
+            public static final double mIntakeSpeed = 0.8;
+            public static final double mTransferSpeed = 0;
+        }
+
+        public static final class ArmPosition
+        {
+            public static final double mTopCoralIntakeArmPos = 0;
+            public static final double mTopAlgaeIntakeArmPos = 0;
+            public static final double mTopClimbingArmPos = 0;
+            public static final double mTopStandByArmPos = 0;
+            public static final double mTopStowedArmPos = 0;
+            public static final double mTopCoralTransferArmPos = 0;
+            public static final double mTopAlgaeTransferArmPos = 0;
+
+            public static final double mBottomCoralIntakeArmPos = 0;
+            public static final double mBottomAlgaeIntakeArmPos = 0;
+            public static final double mBottomClimbingArmPos = 0;
+            public static final double mBottomStandByArmPos = 0;
+            public static final double mBottomStowedArmPos = 0;
+            public static final double mBottomCoralTransferArmPos = 0;
+            public static final double mBottomAlgaeTransferArmPos = 0;
+        }
     }
 }
