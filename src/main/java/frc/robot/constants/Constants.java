@@ -53,7 +53,7 @@ public final class Constants
         public static final String limeLightName = "limelight";
     }
 
-    public static final class SwerveConstants
+    public static final class Swerve
     {
         public static final int pigeonID = IDConstants.pigeonID;
         public static final double initialHeading = 0;
