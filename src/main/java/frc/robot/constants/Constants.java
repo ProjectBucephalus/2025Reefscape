@@ -3,6 +3,7 @@ package frc.robot.constants;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -26,7 +27,7 @@ public final class Constants
     {
         public static final double stickDeadband = 0.1;
         /** Normal maximum robot speed, relative to maximum uncapped speed */
-        public static final double maxThrottle = 0.3;
+        public static final double maxThrottle = 0.5;
         /** Minimum robot speed when braking, relative to maximum uncapped speed */
         public static final double minThrottle = 0.1;
         /** Normal maximum rotational robot speed, relative to maximum uncapped rotational speed */
@@ -110,7 +111,7 @@ public final class Constants
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 1; // ERROR: Unsure if this value works as it should
+        public static final double maxSpeed = 5; // ERROR: Unsure if this value works as it should
         /** Radians per Second */
         public static final double maxAngularVelocity = 3;
         

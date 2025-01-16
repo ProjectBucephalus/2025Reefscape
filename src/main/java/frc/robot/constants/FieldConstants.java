@@ -87,7 +87,7 @@ public class FieldConstants
         public static final double fieldFront = fieldLength;
 
         /** Metres the robot can travel back */
-        public static final double fieldBack = 0;
+        public static final double fieldBack = 1;
 
         /** Buffer zone for the field walls in metres */
         public static final double wallBuffer = 0.5;
@@ -128,8 +128,8 @@ public class FieldConstants
             reefBlue, 
             reefRed, 
             bargeColumn, 
-            bargeZoneBlue, 
-            bargeZoneRed, 
+            //bargeZoneBlue, 
+            //bargeZoneRed, 
             cornerSBlue, 
             cornerNBlue, 
             cornerSRed, 

@@ -44,7 +44,6 @@ public class Swerve extends SubsystemBase {
 
     private Field2d m_field = new Field2d();
 
-
     public Swerve(double initialHeading)
     {   
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
@@ -275,6 +274,11 @@ public class Swerve extends SubsystemBase {
         for(SwerveModule mod : mSwerveMods){
             mod.resetToAbsolute();
         }
+    }
+
+    public ChassisSpeeds getRobotRelativeSpeeds()
+    {
+        return ChassisSpeeds.fromFieldRelativeSpeeds(swerveOdometry., translation.getY(), rotation, getHeading());
     }
 
     /**
