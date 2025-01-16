@@ -15,8 +15,8 @@ public final class Constants
 {
     public static final class DiffectorConstants
     {
-        public static final int ucMotorID = 0;
-        public static final int uaMotorID = 0;
+        public static final int ucMotorID = IDConstants.ucMotorID;
+        public static final int uaMotorID = IDConstants.uaMotorID;
 
         public static final double diffectorMotorKP = 0;
         public static final double diffectorMotorKI = 0;
