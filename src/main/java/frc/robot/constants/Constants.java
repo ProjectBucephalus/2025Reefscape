@@ -13,8 +13,7 @@ import frc.robot.util.SwerveModuleConstants;
 
 public final class Constants 
 {
-    
-    public static final class ControlConstants
+    public static final class Control
     {
         public static final double stickDeadband = 0.1;
         /** Normal maximum robot speed, relative to maximum uncapped speed */
@@ -33,9 +32,28 @@ public final class Constants
         public static final double overswingReduction = 2;
     }
 
+    public static final class Vision
+    {
+        public static final int[] validIDs = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
+        public static final String limeLightName = "limelight";
+    }
+
+    public static final class Vacuum
+    {
+        public static final int vacuumSolenoidID = IDConstants.vacuumSolenoidID;
+        public static final int vacuumMotor1ID = IDConstants.vacuumMotor1ID;
+        public static final int vacuumMotor2ID = IDConstants.vacuumMotor2ID;
+        public static final int pdhID = IDConstants.pdhID;
+        public static final double vacuumMotorMaxCurrent = 30;
+        public static final int vacuumMotor1PDHChannel = IDConstants.vacuumMotor1PDHChannel;
+        public static final int vacuumMotor2PDHChannel = IDConstants.vacuumMotor2PDHChannel;
+        public static final double vacuumLowMotorPercent = 0.25;
+    }
+
     public static final class Swerve
     {
-        public static final int pigeonID = 5;
+        public static final int pigeonID = IDConstants.pigeonID;
+        public static final double initialHeading = 0;
 
         public static final COTSTalonFXSwerveConstants chosenModule = 
         COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
@@ -108,9 +126,9 @@ public final class Constants
         /* Front Left Module - Module 0 */
         public static final class Mod0
         { 
-            public static final int driveMotorID = 9;
-            public static final int angleMotorID = 11;
-            public static final int canCoderID = 10;
+            public static final int driveMotorID = IDConstants.mod0DriveMotorID;
+            public static final int angleMotorID = IDConstants.mod0AngleMotorID;
+            public static final int canCoderID = IDConstants.mod0CanCoderID;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(90.0);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
@@ -119,9 +137,9 @@ public final class Constants
         /* Front Right Module - Module 1 */
         public static final class Mod1
         { 
-            public static final int driveMotorID = 6;
-            public static final int angleMotorID = 8;
-            public static final int canCoderID = 7;
+            public static final int driveMotorID = IDConstants.mod1DriveMotorID;
+            public static final int angleMotorID = IDConstants.mod1AngleMotorID;
+            public static final int canCoderID = IDConstants.mod1CanCoderID;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(180.0);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
@@ -130,9 +148,9 @@ public final class Constants
         /* Back Left Module - Module 2 */
         public static final class Mod2
         { 
-            public static final int driveMotorID = 16;
-            public static final int angleMotorID = 18;
-            public static final int canCoderID = 17;
+            public static final int driveMotorID = IDConstants.mod2DriveMotorID;
+            public static final int angleMotorID = IDConstants.mod2AngleMotorID;
+            public static final int canCoderID = IDConstants.mod2CanCoderID;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(0.0);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
@@ -141,16 +159,16 @@ public final class Constants
         /* Back Right Module - Module 3 */
         public static final class Mod3
         { 
-            public static final int driveMotorID = 1;
-            public static final int angleMotorID = 3;
-            public static final int canCoderID = 2;
+            public static final int driveMotorID = IDConstants.mod3DriveMotorID;
+            public static final int angleMotorID = IDConstants.mod3AngleMotorID;
+            public static final int canCoderID = IDConstants.mod3CanCoderID;
             public static final Rotation2d angleOffset = Rotation2d.fromDegrees(270.0);
             public static final SwerveModuleConstants constants = 
                 new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
         }
     }
 
-    public static final class AutoConstants // TODO: The below constants are used in the example auto, and must be tuned to specific robot
+    public static final class Auto // TODO: The below constants are used in the example auto, and must be tuned to specific robot
     {
         public static final double kMaxSpeedMetersPerSecond = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
@@ -165,5 +183,42 @@ public final class Constants
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
+
+    public static final class Intake
+    {
+        //TODO: Get proper Motor IDs, Speeds and Angles
+        public static final class MotorID
+        {
+            public static final int mTopIntakeID = IDConstants.mTopIntakeID;
+            public static final int mBottomIntakeID = IDConstants.mBottomIntakeID;
+            public static final int mTopArmID = IDConstants.mTopArmID;
+            public static final int mBottomArmID = IDConstants.mBottomArmID;
+        }
+
+        public static final class MotorSpeeds
+        {
+            public static final double mIntakeSpeed = 0.8;
+            public static final double mTransferSpeed = 0;
+        }
+
+        public static final class ArmPosition
+        {
+            public static final double mTopCoralIntakeArmPos = 0;
+            public static final double mTopAlgaeIntakeArmPos = 0;
+            public static final double mTopClimbingArmPos = 0;
+            public static final double mTopStandByArmPos = 0;
+            public static final double mTopStowedArmPos = 0;
+            public static final double mTopCoralTransferArmPos = 0;
+            public static final double mTopAlgaeTransferArmPos = 0;
+
+            public static final double mBottomCoralIntakeArmPos = 0;
+            public static final double mBottomAlgaeIntakeArmPos = 0;
+            public static final double mBottomClimbingArmPos = 0;
+            public static final double mBottomStandByArmPos = 0;
+            public static final double mBottomStowedArmPos = 0;
+            public static final double mBottomCoralTransferArmPos = 0;
+            public static final double mBottomAlgaeTransferArmPos = 0;
+        }
     }
 }

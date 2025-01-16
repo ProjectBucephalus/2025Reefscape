@@ -257,7 +257,7 @@ public class GeoFenceObject
             case point:
                 return pointDamping(Xa, Ya, motionXY, robotR, robotXY);
             case line:
-                /*
+                   /*
                     * Calculates the nearest point on the line to the robot
                     * Uses the dot product of the lines A-B and A-Robot to project the robot position onto the line
                     * Then clamps the calculated point between the line endpoints
@@ -358,8 +358,6 @@ public class GeoFenceObject
                 return motionXY;
         }            
     }
-
-
 
     public Translation2d[] getObject()
     {
