@@ -103,10 +103,10 @@ public class FieldConstants
 
         public static final GeoFenceObject field = new GeoFenceObject
         (
-            -fieldBack, 
-            -fieldRight, 
-            fieldFront, 
-            fieldLeft, 
+            0.5,//-fieldBack, 
+            0.5,//-fieldRight, 
+            3,//fieldFront, 
+            7,//fieldLeft, 
             wallBuffer,
             0.0,
             ObjectTypes.walls

@@ -15,6 +15,7 @@ public class PoseTest extends Command
 {
   public Swerve s_Swerve;
   public Pose2d target;
+  private boolean A;
 
   /** Creates a new PoseTestA. */
   public PoseTest(Swerve s_Swerve) 
@@ -30,6 +31,7 @@ public class PoseTest extends Command
   {
     SmartDashboard.putString("TestStatus:", "Init A");
     s_Swerve.setTarget(target.getRotation().getDegrees());
+    A = true;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,12 +39,27 @@ public class PoseTest extends Command
   public void execute() 
   {
     SmartDashboard.putString("TestStatus:", "Driving to A");
-    s_Swerve.driveFenced(Conversions.clamp(target.getX()-s_Swerve.getPose().getX()),Conversions.clamp(target.getY()-s_Swerve.getPose().getY()),0,0,true);
+    s_Swerve.driveFenced(Conversions.clamp(3*(target.getX()-s_Swerve.getPose().getX())),Conversions.clamp(3*(target.getY()-s_Swerve.getPose().getY())),0,0,true);
+    if (target.getTranslation().getDistance(s_Swerve.getPose().getTranslation()) <= 0.1)
+    {
+      if(A)
+      {
+        target = Constants.Testing.poseB;
+        s_Swerve.setTarget(target.getRotation().getDegrees());
+        A = false;
+      }
+      else
+      {
+        target = Constants.Testing.poseA;
+        s_Swerve.setTarget(target.getRotation().getDegrees());
+        A = true;
+      }
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) 
+  public void end(boolean interrupted)
   {
     SmartDashboard.putString("TestStatus:", "Ending A");
   }
@@ -51,6 +68,7 @@ public class PoseTest extends Command
   @Override
   public boolean isFinished() 
   {
-    return (target.getTranslation().getDistance(s_Swerve.getPose().getTranslation()) <= 0.1);
+    
+    return false;
   }
 }
