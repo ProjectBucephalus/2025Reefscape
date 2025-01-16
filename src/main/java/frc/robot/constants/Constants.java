@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.util.COTSTalonFXSwerveConstants;
 import frc.robot.util.SwerveModuleConstants;
+import frc.robot.constants.IDConstants;
 
 public final class Constants 
 {
@@ -178,10 +179,10 @@ public final class Constants
         //TODO: Get proper Motor IDs, Speeds and Angles
         public static final class MotorID
         {
-            public static final int mTopIntakeID = 19;
-            public static final int mBottomIntakeID = 20;
-            public static final int mTopArmID = 21;
-            public static final int mBottomArmID = 22;
+            public static final int mTopIntakeID = IDConstants.mTopIntakeID;
+            public static final int mBottomIntakeID = IDConstants.mBottomIntakeID;
+            public static final int mTopArmID = IDConstants.mTopArmID;
+            public static final int mBottomArmID = IDConstants.mBottomArmID;
         }
 
         public static final class MotorSpeeds
