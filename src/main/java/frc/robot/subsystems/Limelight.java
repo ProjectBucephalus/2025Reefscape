@@ -18,7 +18,6 @@ public class Limelight extends SubsystemBase
   private boolean doRejectUpdate;
   public SwerveDrivePoseEstimator WPIPosEst;
   public Swerve s_Swerve;
-  private LimelightHelpers.PoseEstimate mt1;
   private LimelightHelpers.PoseEstimate mt2;
   private int[] validIDs = Constants.Vision.validIDs;
   
@@ -45,60 +44,11 @@ public class Limelight extends SubsystemBase
     // This method will be called once per scheduler run
     LimelightHelpers.SetFiducialIDFiltersOverride(Constants.Vision.limeLightName, validIDs);
     
-    mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(Constants.Vision.limeLightName);
-    
     LimelightHelpers.SetRobotOrientation(Constants.Vision.limeLightName, s_Swerve.getGyroYaw().getDegrees(), 0.0, 0.0, 0.0, 0.0, 0.0);
     
     mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.Vision.limeLightName);
  
     doRejectUpdate = false;
-      
-    if(mt1 == null)
-    {
-      doRejectUpdate = true;
-      SmartDashboard.putString("LL Error", "mt1 = null");
-    }
-    else if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
-    {
-      if(mt1.rawFiducials[0].ambiguity > .7)
-      {
-        doRejectUpdate = true;
-        SmartDashboard.putString("LL Error", "Ambiguity > .9");
-      }
-      else if(mt1.rawFiducials[0].distToCamera > 3)
-      {
-        doRejectUpdate = true;
-        SmartDashboard.putString("LL Error", "Distance to Camera > 3");
-      }
-    }
-    else if(mt1.tagCount == 0)
-    {
-      doRejectUpdate = true;
-      SmartDashboard.putString("LL Error", "Tag Count = 0");
-    }
-    else
-    {
-      doRejectUpdate = false;
-      SmartDashboard.putString("LL Error", "clear");
-
-    }
-
-    SmartDashboard.putBoolean("Reject LL Update", doRejectUpdate);
-    
-    if(!doRejectUpdate)
-    {
-      WPIPosEst.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
-      WPIPosEst.addVisionMeasurement(mt1.pose, mt1.timestampSeconds);
-      s_Swerve.setPose(mt1.pose);
-    }
-    
-    if(mt1 != null)
-    {
-      SmartDashboard.putString("mt1 Pose", mt1.pose.toString());
-      SmartDashboard.putNumber("Robot X", mt1.pose.getX());
-      SmartDashboard.putNumber("Robot Y", mt1.pose.getY());
-      SmartDashboard.putNumber("Robot Rotation", mt1.pose.getRotation().getDegrees());
-    }
     
     if (mt2.tagCount == 0) 
     {
