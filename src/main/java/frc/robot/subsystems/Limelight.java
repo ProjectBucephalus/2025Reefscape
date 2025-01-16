@@ -16,7 +16,7 @@ import frc.robot.util.LimelightHelpers;
 public class Limelight extends SubsystemBase 
 {  
   private boolean doRejectUpdate;
-  public SwerveDrivePoseEstimator WPIPosEst;
+  public static SwerveDrivePoseEstimator WPIPosEst;
   public Swerve s_Swerve;
   private LimelightHelpers.PoseEstimate mt2;
   private int[] validIDs = Constants.Vision.validIDs;
@@ -65,11 +65,10 @@ public class Limelight extends SubsystemBase
     {
       SmartDashboard.putString("mt2 Pose", mt2.pose.toString());
     }
-    
-    SmartDashboard.putNumber("Robot X", WPIPosEst.getEstimatedPosition().getX());
-    SmartDashboard.getNumber("Robot Y", WPIPosEst.getEstimatedPosition().getY());
-    SmartDashboard.putNumber("Robot Rotation", WPIPosEst.getEstimatedPosition().getRotation().getDegrees());
+      
     SmartDashboard.putBoolean("Existance", true);
-    SmartDashboard.putString("MegaTag2 BotPose", WPIPosEst.toString());
+    SmartDashboard.putBoolean("Reject LL Update", doRejectUpdate);
+    SmartDashboard.putNumber("Tags", mt2.tagCount);
+    SmartDashboard.putString("WPI BotPose", WPIPosEst.getEstimatedPosition().toString());
   }
 }

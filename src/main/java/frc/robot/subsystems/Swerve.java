@@ -380,6 +380,8 @@ public class Swerve extends SubsystemBase {
 
     @Override
     public void periodic(){
+        Limelight.WPIPosEst.update(getGyroYaw(), getModulePositions());
+        swerveOdometry.resetPose(Limelight.WPIPosEst.getEstimatedPosition());
         swerveOdometry.update(getGyroYaw(), getModulePositions());
 
         SmartDashboard.putNumber("X", getPose().getX());
