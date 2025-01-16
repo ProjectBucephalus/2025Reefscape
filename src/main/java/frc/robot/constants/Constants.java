@@ -17,8 +17,8 @@ public final class Constants
 
     public static final class Testing
     {
-        public static final Pose2d poseA = new Pose2d(2, 2, new Rotation2d(0));
-        public static final Pose2d poseB = new Pose2d(2, 3, new Rotation2d(0));
+        public static final Pose2d poseA = new Pose2d(1.5, 2, new Rotation2d(0));
+        public static final Pose2d poseB = new Pose2d(1.5, 4, new Rotation2d(0));
         public static final double delay = 0.1;
     }
     
@@ -26,7 +26,7 @@ public final class Constants
     {
         public static final double stickDeadband = 0.1;
         /** Normal maximum robot speed, relative to maximum uncapped speed */
-        public static final double maxThrottle = 0.3;
+        public static final double maxThrottle = 0.6;
         /** Minimum robot speed when braking, relative to maximum uncapped speed */
         public static final double minThrottle = 0.1;
         /** Normal maximum rotational robot speed, relative to maximum uncapped rotational speed */
@@ -36,7 +36,7 @@ public final class Constants
         /** Scales manual rotation speed */
         public static final double manualRotationScalar = 15;
         /** Maximum robot rotation speed */
-        public static final double maxRotationSpeed = 3;
+        public static final double maxRotationSpeed = 2;
         /** Steering overswing compensation factor */
         public static final double overswingReduction = 2;
     }

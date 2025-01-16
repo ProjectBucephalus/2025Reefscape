@@ -47,13 +47,19 @@ public class PoseTestB extends Command
   public void end(boolean interrupted) 
   {
     SmartDashboard.putString("TestStatus:", "Ending B");
-    new WaitCommand(Constants.Testing.delay).andThen(new PoseTestA(s_Swerve));
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
   {
-    return (target.getTranslation().getDistance(s_Swerve.getPose().getTranslation()) <= 0.1);
+    if (target.getTranslation().getDistance(s_Swerve.getPose().getTranslation()) <= 0.1)
+    {
+      SmartDashboard.putString("TestStatus:", "Handing to A");
+      new WaitCommand(Constants.Testing.delay).andThen(new PoseTestA(s_Swerve));
+      return true;
+    }
+    else
+    return false;
   }
 }
