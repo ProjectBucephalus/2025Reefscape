@@ -38,6 +38,18 @@ public final class Constants
         public static final String limeLightName = "limelight";
     }
 
+    public static final class Vacuum
+    {
+        public static final int vacuumSolenoidID = IDConstants.vacuumSolenoidID;
+        public static final int vacuumMotor1ID = IDConstants.vacuumMotor1ID;
+        public static final int vacuumMotor2ID = IDConstants.vacuumMotor2ID;
+        public static final int pdhID = IDConstants.pdhID;
+        public static final double vacuumMotorMaxCurrent = 30;
+        public static final int vacuumMotor1PDHChannel = IDConstants.vacuumMotor1PDHChannel;
+        public static final int vacuumMotor2PDHChannel = IDConstants.vacuumMotor2PDHChannel;
+        public static final double vacuumLowMotorPercent = 0.25;
+    }
+
     public static final class Swerve
     {
         public static final int pigeonID = IDConstants.pigeonID;
