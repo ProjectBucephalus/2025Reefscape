@@ -10,11 +10,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.util.COTSTalonFXSwerveConstants;
 import frc.robot.util.SwerveModuleConstants;
-import frc.robot.constants.IDConstants;
 
 public final class Constants 
 {
-    public static final class ControlConstants
+    public static final class Control
     {
         public static final double stickDeadband = 0.1;
         /** Normal maximum robot speed, relative to maximum uncapped speed */
@@ -169,7 +168,7 @@ public final class Constants
         }
     }
 
-    public static final class AutoConstants // TODO: The below constants are used in the example auto, and must be tuned to specific robot
+    public static final class Auto // TODO: The below constants are used in the example auto, and must be tuned to specific robot
     {
         public static final double kMaxSpeedMetersPerSecond = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
