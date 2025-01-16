@@ -33,9 +33,16 @@ public final class Constants
         public static final double overswingReduction = 2;
     }
 
+    public static final class Vision
+    {
+        public static final int[] validIDs = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
+        public static final String limeLightName = "limelight";
+    }
+
     public static final class Swerve
     {
         public static final int pigeonID = 5;
+        public static final double initialHeading = 180;
 
         public static final COTSTalonFXSwerveConstants chosenModule = 
         COTSTalonFXSwerveConstants.SDS.MK4i.Falcon500(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);

@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -41,11 +42,18 @@ public class Swerve extends SubsystemBase {
     private static double robotRadius = FieldConstants.GeoFencing.robotRadius;
     private boolean manualAngleFlag = false;
 
-    public Swerve() 
+    private Field2d m_field = new Field2d();
+
+
+    public Swerve(double initialHeading)
     {   
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
-        gyro.setYaw(0);
+        gyro.setYaw(initialHeading);
+        SmartDashboard.putData("Field", m_field);
+
+        m_field = new Field2d();
+        SmartDashboard.putData(m_field);
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -374,8 +382,10 @@ public class Swerve extends SubsystemBase {
     public void periodic(){
         swerveOdometry.update(getGyroYaw(), getModulePositions());
 
-        SmartDashboard.putNumber("X", getPose().getTranslation().getX());
-        SmartDashboard.putNumber("Y", getPose().getTranslation().getY());
+        SmartDashboard.putNumber("X", getPose().getX());
+        SmartDashboard.putNumber("Y", getPose().getY());
+
+        m_field.setRobotPose(swerveOdometry.getPoseMeters());
 
         /* for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
