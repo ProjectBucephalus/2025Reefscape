@@ -134,8 +134,8 @@ public class Swerve extends SubsystemBase {
         if (targetDelta == 0 && manualAngleFlag)
         {
             manualAngleFlag = false;
-            targetOffset = targetOffset / Constants.Control.overswingReduction;
-            targetAngle = targetAngle - targetOffset;
+            //targetOffset = targetOffset / Constants.Control.overswingReduction;
+            //targetAngle = targetAngle - targetOffset;
         }
         /* Changes target angle based on scaled joystick position */
         else
@@ -385,12 +385,16 @@ public class Swerve extends SubsystemBase {
     public void periodic(){
         Limelight.WPIPosEst.update(getGyroYaw(), getModulePositions());
         swerveOdometry.resetPose(Limelight.WPIPosEst.getEstimatedPosition());
-        swerveOdometry.update(getGyroYaw(), getModulePositions());
+        //swerveOdometry.update(getGyroYaw(), getModulePositions());
 
         SmartDashboard.putNumber("X", getPose().getX());
         SmartDashboard.putNumber("Y", getPose().getY());
 
         field.setRobotPose(swerveOdometry.getPoseMeters());
+
+        SmartDashboard.putData("Rotation Controller", rotationController);
+        SmartDashboard.putNumber("Rotation Target", targetAngle);
+        SmartDashboard.putNumber("Rotation Lag", Limelight.WPIPosEst.getEstimatedPosition().getRotation().getDegrees() - targetAngle);
 
         /* for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
