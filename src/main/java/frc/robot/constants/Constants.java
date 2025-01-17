@@ -173,9 +173,8 @@ public final class Constants
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
 
-    public static final class Intake
+    public static final class Intake // TODO: Speeds and Angles must be tuned to the specific robot
     {
-        //TODO: Get proper Motor IDs, Speeds and Angles
         public static final class MotorID
         {
             public static final int mTopIntakeID = IDConstants.mTopIntakeID;
@@ -186,12 +185,21 @@ public final class Constants
 
         public static final class MotorSpeeds
         {
-            public static final double mIntakeSpeed = 0.8;
-            public static final double mTransferSpeed = 0;
+            /* Constants for the intake motors speeds */
+            public static final double mCoralIntakeMotorSpeed = 0.8;
+            public static final double mAlgaeIntakeMotorSpeed = 0.8;
+            public static final double mCoralTransferMotorSpeed = 0;
+            public static final double mAlgaeTransferMotorSpeed = 0;
+            public static final double mClimbingIntakeMotorSpeed = 0;
+            public static final double mStandByMotorSpeed = 0;
+            public static final double mStowedMotorSpeed = 0;
         }
 
         public static final class ArmPosition
         {
+            /* Top intake arm positions 
+             * TODO: Put in Degrees for the arm top and bottom position in this comment
+            */
             public static final double mTopCoralIntakeArmPos = 0;
             public static final double mTopAlgaeIntakeArmPos = 0;
             public static final double mTopClimbingArmPos = 0;
@@ -200,6 +208,7 @@ public final class Constants
             public static final double mTopCoralTransferArmPos = 0;
             public static final double mTopAlgaeTransferArmPos = 0;
 
+            /* Bottom intake arm positions */
             public static final double mBottomCoralIntakeArmPos = 0;
             public static final double mBottomAlgaeIntakeArmPos = 0;
             public static final double mBottomClimbingArmPos = 0;
