@@ -13,16 +13,21 @@ import frc.robot.constants.Constants;
 
 public class Diffector extends SubsystemBase 
 {
-  /* Name is effect of motor when running forwards (e.g. elevator Up, arm Clockwise) */
+  /* Name is effect of motor when running clockwise/positive (e.g. elevator Up, arm Clockwise) */
+  /** motor L in kirby's docs */
   private static TalonFX m_diffectorUC;
+  /** motor R in kirby's docs */
   private static TalonFX m_diffectorUA;
   private final MotionMagicVoltage motionMagicRequester;
   private double targetElevator;
   private double targetArm;
   /** Distance travelled by elevator in mm, from starting point of 0 mm (all the way down) */
   private double elevatorTravel;
-    /** Distance travelled by arm in degrees, from starting point of 0 degrees ( ) */
-    private double armTravel;
+  /** 
+   * Distance travelled by arm in degrees, from starting point of 0 degrees 
+   * When viewed from the front of the robot, clockwise spin is positive 
+   */
+  private double armTravel;
 
   /** Creates a new Diffector. */
   public Diffector() 
@@ -45,19 +50,20 @@ public class Diffector extends SubsystemBase
    */
   private double getArmPos()
   {
-    /* PLACEHOLDER confirm once kirby sends through formulas */
-    return ((m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorUA.getPosition().getValueAsDouble()) / 2) * Constants.DiffectorConstants.rotationRatio;
+    return (m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorUA.getPosition().getValueAsDouble()) * Constants.DiffectorConstants.rotationRatio;
   }
 
-    /**
+  /**
    * Calculates elevator height based on motor positions
    * @return Elevator height in mm
    */
   private double getElevatorPos()
   {
     /* PLACEHOLDER replace once kirby sends through formulas */
-    return Constants.DiffectorConstants.travelRatio;
+    return ((m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorUA.getPosition().getValueAsDouble()) / 2) * Constants.DiffectorConstants.travelRatio;
   }
+
+  //private double[] calculateMotorTargets()
 
   @Override
   public void periodic() {
