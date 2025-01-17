@@ -66,53 +66,51 @@ public class Intake extends SubsystemBase {
     switch (Status)
     {
 
-      //TODO: Get proper values of the speeds and angles
-
       case INTAKE_CORAL:
-      setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mIntakeSpeed);
-      setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mIntakeSpeed);
+      setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mCoralIntakeMotorSpeed);
+      setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mCoralIntakeMotorSpeed);
       setTopArmPos(Constants.Intake.ArmPosition.mTopCoralIntakeArmPos);
       setBottomArmPos(Constants.Intake.ArmPosition.mBottomCoralIntakeArmPos);
       break;
 
       case INTAKE_ALGAE:
-      setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mIntakeSpeed);
-      setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mIntakeSpeed);
+      setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mAlgaeIntakeMotorSpeed);
+      setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mAlgaeIntakeMotorSpeed);
       setTopArmPos(Constants.Intake.ArmPosition.mTopAlgaeIntakeArmPos);
       setBottomArmPos(Constants.Intake.ArmPosition.mBottomAlgaeIntakeArmPos);
       break;
 
       case CLIMBING:
-      setTopIntakeSpeed(0);
-      setBottomIntakeSpeed(0);
+      setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mClimbingIntakeMotorSpeed);
+      setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mClimbingIntakeMotorSpeed);
       setTopArmPos(Constants.Intake.ArmPosition.mTopClimbingArmPos);
       setBottomArmPos(Constants.Intake.ArmPosition.mBottomClimbingArmPos);
       break;
 
       case STAND_BY:
-      setTopIntakeSpeed(0);
-      setBottomIntakeSpeed(0);
+      setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mStandByMotorSpeed);
+      setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mStandByMotorSpeed);
       setTopArmPos(Constants.Intake.ArmPosition.mTopStandByArmPos);
       setBottomArmPos(Constants.Intake.ArmPosition.mBottomStandByArmPos);
       break;
 
       case STOWED:
-      setTopIntakeSpeed(0);
-      setBottomIntakeSpeed(0);
+      setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mStowedMotorSpeed);
+      setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mStowedMotorSpeed);
       setTopArmPos(Constants.Intake.ArmPosition.mTopStowedArmPos);
       setBottomArmPos(Constants.Intake.ArmPosition.mBottomStowedArmPos);
       break;
 
       case TRANSFER_CORAL:
-      setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mTransferSpeed);
-      setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mTransferSpeed);
+      setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mCoralTransferMotorSpeed);
+      setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mCoralTransferMotorSpeed);
       setTopArmPos(Constants.Intake.ArmPosition.mTopCoralTransferArmPos);
       setBottomArmPos(Constants.Intake.ArmPosition.mBottomCoralTransferArmPos);
       break;
 
       case TRANSFER_ALGAE:
-      setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mTransferSpeed);
-      setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mTransferSpeed);
+      setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mAlgaeTransferMotorSpeed);
+      setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mAlgaeTransferMotorSpeed);
       setTopArmPos(Constants.Intake.ArmPosition.mTopAlgaeTransferArmPos);
       setBottomArmPos(Constants.Intake.ArmPosition.mBottomAlgaeTransferArmPos);
       break;

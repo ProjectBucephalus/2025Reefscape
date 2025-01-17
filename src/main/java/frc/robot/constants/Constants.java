@@ -187,8 +187,13 @@ public final class Constants
 
         public static final class MotorSpeeds
         {
-            public static final double mIntakeSpeed = 0.8;
-            public static final double mTransferSpeed = 0;
+            public static final double mCoralIntakeMotorSpeed = 0.8;
+            public static final double mAlgaeIntakeMotorSpeed = 0.8;
+            public static final double mCoralTransferMotorSpeed = 0;
+            public static final double mAlgaeTransferMotorSpeed = 0;
+            public static final double mClimbingIntakeMotorSpeed = 0;
+            public static final double mStandByMotorSpeed = 0;
+            public static final double mStowedMotorSpeed = 0;
         }
 
         public static final class ArmPosition
