@@ -5,22 +5,32 @@
 package frc.robot.subsystems;
 
 
-
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.Constants;
 
-
+/**
+ * Intake subsystem, handling the intake wheels, and intake arms
+ * 
+ * @author 5985
+ * @author Sebastian Aiello 
+ */
 public class Intake extends SubsystemBase {
-  /** Creates a new Intake. */
-  
+
+  /* Declarations of all the motor controllers */
   private TalonFX mTopIntake;
   private TalonFX mBottomIntake;
   private TalonFX mTopArm;
   private TalonFX mBottomArm;
   
+  /* Enum representing the status the intake is in
+   * (Spinning inwards for a coral, spinning inwards for an algae, position for when the robot is climbing,
+   * Position for before the robot intakes, stowing the coral or algae, transferring the coral to the robot's scorer,
+   * Transferring the algae to the robot's scorer)
+   */
+
   public enum IntakeStatus 
   {
     INTAKE_CORAL,
@@ -40,27 +50,53 @@ public class Intake extends SubsystemBase {
     mBottomArm = new TalonFX(Constants.Intake.MotorID.mBottomArmID);
   }
 
-
+  /** 
+   * Set speed of the top intake motor
+   * 
+   * @param speed Top intake motor speed [-1..0..1]
+   */
   private void setTopIntakeSpeed(double speed)
   {
     mTopIntake.set(speed);
   };
 
+  /** 
+   * Set speed of the bottom intake motor
+   * 
+   * @param speed Bottom intake motor speed [-1..0..1]
+   */
   private void setBottomIntakeSpeed(double speed)
   {
     mBottomIntake.set(speed);
   };
 
+  /**
+   * Set the angle of the top arm 
+   * 
+   * @param pos Top arm angle [0..90..180..270]
+   */
   private void setTopArmPos(double pos)
   {
     mTopArm.set(pos);
   };    
 
+  /**
+   * Set the angle of the bottom arm 
+   * 
+   * @param pos Bottom arm angle [0..90..180.207]
+   */
   private void setBottomArmPos(double pos)
   {
     mBottomArm.set(pos);
   };
 
+
+  /**
+   * Sets the speeds to the intake and position to the arms
+   * 
+   * @param Status Enum corresponds to the intake motor speeds and
+   * arms position
+   */
   public void setIntakeStatus(IntakeStatus Status)
   {
     switch (Status)
