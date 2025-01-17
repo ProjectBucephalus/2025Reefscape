@@ -30,7 +30,6 @@ public class RobotContainer
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve(Constants.Swerve.initialHeading);
     private Limelight s_Limelight = new Limelight(s_Swerve);
-    private ControllerLayering s_ControllerLayering = new ControllerLayering();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
@@ -69,10 +68,10 @@ public class RobotContainer
 
         /* Command Layering */
         controlXbox.x().and(controlXbox.rightTrigger(0.2))
-            .whileTrue(new InstantCommand(() -> s_ControllerLayering.f1(true))).onFalse(new InstantCommand(() -> s_ControllerLayering.f1(false)));
+            .whileTrue(new InstantCommand()).onFalse(new InstantCommand());
         
         controlXbox.x().and(controlXbox.leftTrigger(0.2))
-            .whileTrue(new InstantCommand(() -> s_ControllerLayering.f2(true))).onFalse(new InstantCommand(() -> s_ControllerLayering.f2(false)));
+            .whileTrue(new InstantCommand()).onFalse(new InstantCommand());
 
     }
 
