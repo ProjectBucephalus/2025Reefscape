@@ -22,10 +22,18 @@ public final class Constants
         public static final double diffectorMotorKI = 0;
         public static final double diffectorMotorKD = 0;
 
-        /** Ratio of motor encoder position to elevator movement in mm */
-        public static final double motorToElevatorRatio = 1;
-        /** Ratio of motor encoder position to arm movement in degrees */
-        public static final double motorToArmRatio = 1;
+        /** Output sprocket rotations per motor rotation */
+        public static final double gearboxRatio = 8/60;
+        /** Pitch Diameter of the sprocket, in mm */
+        public static final double sprocketPitchDiameter = 36.576;
+        /** 
+         * Number of chain mm moved for one motor degree. 
+         * Sprocket rotations per motor rotation * mm of chain moved per sprocket rotation (pitch diam. * pi), 
+         * all divided by 360 to convert rotations to degrees 
+         */
+        public static final double travelRatio = (gearboxRatio * sprocketPitchDiameter * Math.PI) / 360;
+        /** Number of arm degrees moved for one motor degree of a single motor */
+        public static final double rotationRatio = 1;
     }
 
     public static final class ControlConstants

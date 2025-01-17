@@ -19,6 +19,10 @@ public class Diffector extends SubsystemBase
   private final MotionMagicVoltage motionMagicRequester;
   private double targetElevator;
   private double targetArm;
+  /** Distance travelled by elevator in mm, from starting point of 0 mm (all the way down) */
+  private double elevatorTravel;
+    /** Distance travelled by arm in degrees, from starting point of 0 degrees ( ) */
+    private double armTravel;
 
   /** Creates a new Diffector. */
   public Diffector() 
@@ -42,7 +46,7 @@ public class Diffector extends SubsystemBase
   private double getArmPos()
   {
     /* PLACEHOLDER confirm once kirby sends through formulas */
-    return ((m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorUA.getPosition().getValueAsDouble()) / 2) * Constants.DiffectorConstants.motorToArmRatio;
+    return ((m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorUA.getPosition().getValueAsDouble()) / 2) * Constants.DiffectorConstants.rotationRatio;
   }
 
     /**
@@ -52,7 +56,7 @@ public class Diffector extends SubsystemBase
   private double getElevatorPos()
   {
     /* PLACEHOLDER replace once kirby sends through formulas */
-    return Constants.DiffectorConstants.motorToElevatorRatio;
+    return Constants.DiffectorConstants.travelRatio;
   }
 
   @Override
