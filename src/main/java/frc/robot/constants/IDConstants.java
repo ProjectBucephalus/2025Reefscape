@@ -41,14 +41,6 @@ public final class IDConstants
     public static final int mTopArmID = 21; //18
     public static final int mBottomArmID = 22; //19
 
-    /* Vacuum */
-    /* ______ */
-    public static final int vacuumSolenoidID = 0; //20
-    public static final int vacuumMotor1ID = 0; //21
-    public static final int vacuumMotor2ID = 0; //22
-    public static final int vacuumMotor1PDHChannel = 0; //1
-    public static final int vacuumMotor2PDHChannel = 0; //2
-
     /* Climber */
     /* _______ */
     public static final int climberClawMotorID = 0; //23
