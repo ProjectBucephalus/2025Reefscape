@@ -1,12 +1,15 @@
 package frc.robot;
 
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.commands.*;
-import frc.robot.constants.Constants;
+import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.*;
 
 /**
@@ -28,7 +31,7 @@ public class RobotContainer
     private final int brakeAxis = XboxController.Axis.kRightTrigger.value;
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve(Constants.Swerve.initialHeading);
+    public final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
     private Limelight s_Limelight = new Limelight(s_Swerve);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -52,6 +55,33 @@ public class RobotContainer
 
         // Configure the button bindings
         configureButtonBindings();
+
+        SmartDashboard.putData
+        (
+            "Swerve Drive", 
+            new Sendable() 
+            {
+                @Override
+                public void initSendable(SendableBuilder builder) 
+                {
+                    builder.setSmartDashboardType("SwerveDrive");
+
+                    builder.addDoubleProperty("Front Left Angle", () -> s_Swerve.getModule(0).getCurrentState().angle.getRadians(), null);
+                    builder.addDoubleProperty("Front Left Velocity", () -> s_Swerve.getModule(0).getCurrentState().speedMetersPerSecond, null);
+
+                    builder.addDoubleProperty("Front Right Angle", () -> s_Swerve.getModule(1).getCurrentState().angle.getRadians(), null);
+                    builder.addDoubleProperty("Front Right Velocity", () -> s_Swerve.getModule(1).getCurrentState().speedMetersPerSecond, null);
+
+                    builder.addDoubleProperty("Back Left Angle", () ->s_Swerve.getModule(2).getCurrentState().angle.getRadians(), null);
+                    builder.addDoubleProperty("Back Left Velocity", () ->s_Swerve.getModule(2).getCurrentState().speedMetersPerSecond, null);
+
+                    builder.addDoubleProperty("Back Right Angle", () -> s_Swerve.getModule(3).getCurrentState().angle.getRadians(), null);
+                    builder.addDoubleProperty("Back Right Velocity", () -> s_Swerve.getModule(3).getCurrentState().speedMetersPerSecond, null);
+
+                    builder.addDoubleProperty("Robot Angle", () -> s_Swerve.getState().Pose.getRotation().getDegrees(), null);
+                }
+            }
+        );
     }
 
     /**
@@ -63,8 +93,8 @@ public class RobotContainer
     private void configureButtonBindings() 
     {
         /* Driver Buttons */
-        driver.start().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        driver.back().onTrue(new InstantCommand(() -> s_Swerve.zeroPose()));
+        driver.start().onTrue(new InstantCommand(() -> s_Swerve.seedFieldCentric()));
+        driver.back().onTrue(new InstantCommand(() -> s_Swerve.tareEverything()));
 
         /* Command Layering */
         controlXbox.x().and(controlXbox.rightTrigger(0.2))
@@ -75,7 +105,7 @@ public class RobotContainer
 
     }
 
-    public Swerve getSwerve()
+    public CommandSwerveDrivetrain getSwerve()
     {
         return s_Swerve;
     }
