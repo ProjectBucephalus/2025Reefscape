@@ -14,6 +14,7 @@ import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -37,12 +38,13 @@ public class Swerve extends SubsystemBase {
     private static double maxRotThrottle = Constants.Control.maxRotThrottle;
     private static double minRotThrottle = Constants.Control.minRotThrottle;
     private static double manualRotationScalar = Constants.Control.manualRotationScalar;
-    private static double maxRotationSpeed = Constants.Control.maxRotationSpeed;
     private static double targetAngle = 0;
     private static double robotRadius = FieldConstants.GeoFencing.robotRadius;
     private boolean manualAngleFlag = false;
 
-    private Field2d m_field = new Field2d();
+    private Field2d field = new Field2d();
+
+    private PIDController rotationController;
 
 
     public Swerve(double initialHeading)
@@ -50,10 +52,10 @@ public class Swerve extends SubsystemBase {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(initialHeading);
-        SmartDashboard.putData("Field", m_field);
+        SmartDashboard.putData("Field", field);
 
-        m_field = new Field2d();
-        SmartDashboard.putData(m_field);
+        field = new Field2d();
+        SmartDashboard.putData(field);
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -63,6 +65,8 @@ public class Swerve extends SubsystemBase {
         };
 
         swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
+
+        rotationController = new PIDController(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
 
         SmartDashboard.putData
         (
@@ -144,8 +148,8 @@ public class Swerve extends SubsystemBase {
         if (Math.abs(targetOffset) <= Constants.Control.stickDeadband)
             {targetOffset = 0;}
 
-        /* Calculates rotation value based on target offset and max speed */
-        double rotationVal = Conversions.clamp(Math.toRadians(targetOffset) * maxRotationSpeed);
+        /* Calculates rotation value based on target offset and PID */
+        double rotationVal = Conversions.clamp(rotationController.calculate(targetOffset));
         
         /** Checks if brakes are at all pressed; if not, skips calculations */
         if(brakeVal != 0)
@@ -387,7 +391,7 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("X", getPose().getX());
         SmartDashboard.putNumber("Y", getPose().getY());
 
-        m_field.setRobotPose(swerveOdometry.getPoseMeters());
+        field.setRobotPose(swerveOdometry.getPoseMeters());
 
         /* for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());

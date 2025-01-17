@@ -94,6 +94,11 @@ public final class Constants
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
 
+        /* Rotation Control PID Values */
+        public static final double rotationKP = 0; //TODO: Tune to robot
+        public static final double rotationKI = 0;
+        public static final double rotationKD = 0;
+
         /* Drive Motor Characterization Values From SYSID */
         public static final double driveKS = 0.32 / 12; 
         public static final double driveKV = 1.51 / 12;
