@@ -46,7 +46,6 @@ public class Swerve extends SubsystemBase {
 
     private PIDController rotationController;
 
-
     public Swerve(double initialHeading)
     {   
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
