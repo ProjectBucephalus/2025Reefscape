@@ -209,4 +209,30 @@ public final class Constants
             public static final double mBottomAlgaeTransferArmPos = 0;
         }
     }
+
+    public static final class Climber
+    {
+        public static final class MotorID
+        {
+            public static final int m_Claws = IDConstants.climberClawMotorID;
+            public static final int m_Winch = IDConstants.climberWinchMotorID;
+        }
+
+        public static final class MotorSpeeds
+        {
+            public static final double m_InitSpeed = 0;
+            public static final double m_DeploySpeed = 0.8;
+            public static final double m_ClimbSpeed = 0.8;
+        }
+
+        public static final class ClimberPos 
+        {
+            public static final double m_InitClawPos = 0;
+            public static final double m_InitWinchPos = 0;
+            public static final double m_DeployClawPos = 90;
+            public static final double m_DeployWinchPos = 0;
+            public static final double m_ClimbClawPos = 0;
+            public static final double m_ClimbWinchPos = 0;
+        }
+    }
 }
