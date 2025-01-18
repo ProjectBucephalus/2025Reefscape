@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.commands.*;
-import frc.robot.constants.Constants;
+import frc.robot.constants.Intake;
 import frc.robot.subsystems.*;
 
 /**
@@ -19,6 +19,7 @@ public class RobotContainer
 {
     /* Controllers */
     private final CommandXboxController driver = new CommandXboxController(0);
+    private final CommandXboxController controlXbox = new CommandXboxController(1);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -27,7 +28,7 @@ public class RobotContainer
     private final int brakeAxis = XboxController.Axis.kRightTrigger.value;
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve(Constants.Swerve.initialHeading);
+    private final Swerve s_Swerve = new Swerve(Intake.Swerve.initialHeading);
     private Limelight s_Limelight = new Limelight(s_Swerve);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -64,6 +65,14 @@ public class RobotContainer
         /* Driver Buttons */
         driver.start().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         driver.back().onTrue(new InstantCommand(() -> s_Swerve.zeroPose()));
+
+        /* Command Layering */
+        controlXbox.x().and(controlXbox.rightTrigger(0.2))
+            .whileTrue(new InstantCommand()).onFalse(new InstantCommand());
+        
+        controlXbox.x().and(controlXbox.leftTrigger(0.2))
+            .whileTrue(new InstantCommand()).onFalse(new InstantCommand());
+
     }
 
     public Swerve getSwerve()

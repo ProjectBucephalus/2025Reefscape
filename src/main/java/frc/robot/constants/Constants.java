@@ -66,7 +66,7 @@ public final class Constants
         public static final CargoStates startingCargoState = CargoStates.empty;
     }
 
-    public static final class ControlConstants
+    public static final class Control
     {
         public static final double stickDeadband = 0.1;
         /** Normal maximum robot speed, relative to maximum uncapped speed */
@@ -209,7 +209,7 @@ public final class Constants
         }
     }
 
-    public static final class AutoConstants // TODO: The below constants are used in the example auto, and must be tuned to specific robot
+    public static final class Auto // TODO: The below constants are used in the example auto, and must be tuned to specific robot
     {
         public static final double kMaxSpeedMetersPerSecond = 3;
         public static final double kMaxAccelerationMetersPerSecondSquared = 3;
@@ -224,5 +224,77 @@ public final class Constants
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
+
+    public static final class Intake // TODO: Speeds and Angles must be tuned to the specific robot
+    {
+        public static final class MotorID
+        {
+            public static final int mTopIntakeID = IDConstants.mTopIntakeID;
+            public static final int mBottomIntakeID = IDConstants.mBottomIntakeID;
+            public static final int mTopArmID = IDConstants.mTopArmID;
+            public static final int mBottomArmID = IDConstants.mBottomArmID;
+        }
+
+        public static final class MotorSpeeds
+        {
+            /* Constants for the intake motors speeds */
+            public static final double mCoralIntakeMotorSpeed = 0.8;
+            public static final double mAlgaeIntakeMotorSpeed = 0.8;
+            public static final double mCoralTransferMotorSpeed = 0;
+            public static final double mAlgaeTransferMotorSpeed = 0;
+            public static final double mClimbingIntakeMotorSpeed = 0;
+            public static final double mStandByMotorSpeed = 0;
+            public static final double mStowedMotorSpeed = 0;
+        }
+
+        public static final class ArmPosition
+        {
+            /* Top intake arm positions 
+             * TODO: Put in Degrees for the arm top and bottom position in this comment
+            */
+            public static final double mTopCoralIntakeArmTarget = 0;
+            public static final double mTopAlgaeIntakeArmTarget = 0;
+            public static final double mTopClimbingArmTarget = 0;
+            public static final double mTopStandByArmTarget = 0;
+            public static final double mTopStowedArmTarget = 0;
+            public static final double mTopCoralTransferArmTarget = 0;
+            public static final double mTopAlgaeTransferArmTarget = 0;
+
+            /* Bottom intake arm positions */
+            public static final double mBottomCoralIntakeArmTarget = 0;
+            public static final double mBottomAlgaeIntakeArmTarget = 0;
+            public static final double mBottomClimbingArmTarget = 0;
+            public static final double mBottomStandByArmTarget = 0;
+            public static final double mBottomStowedArmTarget = 0;
+            public static final double mBottomCoralTransferArmTarget = 0;
+            public static final double mBottomAlgaeTransferArmTarget = 0;
+        }
+    }
+
+    public static final class Climber
+    {
+        public static final class MotorID
+        {
+            public static final int m_Claws = IDConstants.climberClawMotorID;
+            public static final int m_Winch = IDConstants.climberWinchMotorID;
+        }
+
+        public static final class MotorSpeeds
+        {
+            public static final double m_InitSpeed = 0;
+            public static final double m_DeploySpeed = 0.8;
+            public static final double m_ClimbSpeed = 0.8;
+        }
+
+        public static final class ClimberPos 
+        {
+            public static final double m_InitClawPos = 0;
+            public static final double m_InitWinchPos = 0;
+            public static final double m_DeployClawPos = 90;
+            public static final double m_DeployWinchPos = 0;
+            public static final double m_ClimbClawPos = 0;
+            public static final double m_ClimbWinchPos = 0;
+        }
     }
 }
