@@ -56,8 +56,16 @@ public final class CTREConfigs {
         swerveDriveFXConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = Constants.Swerve.closedLoopRamp;
 
         /* Diffector Motor Config */
+        diffectorFXConfig.Slot0.kS = Constants.DiffectorConstants.diffectorMotorKP;
+        diffectorFXConfig.Slot0.kV = Constants.DiffectorConstants.diffectorMotorKI;
+        diffectorFXConfig.Slot0.kA = Constants.DiffectorConstants.diffectorMotorKD;
         diffectorFXConfig.Slot0.kP = Constants.DiffectorConstants.diffectorMotorKP;
         diffectorFXConfig.Slot0.kI = Constants.DiffectorConstants.diffectorMotorKI;
         diffectorFXConfig.Slot0.kD = Constants.DiffectorConstants.diffectorMotorKD;
+
+        /* Diffector MotionMagic Config */
+        diffectorFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.DiffectorConstants.diffectorMotionMagicCruise;
+        diffectorFXConfig.MotionMagic.MotionMagicAcceleration = Constants.DiffectorConstants.diffectorMotionMagicAccel;
+
     }
 }

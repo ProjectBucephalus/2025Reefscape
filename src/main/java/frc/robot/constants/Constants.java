@@ -18,9 +18,15 @@ public final class Constants
         public static final int ucMotorID = IDConstants.ucMotorID;
         public static final int uaMotorID = IDConstants.uaMotorID;
 
+        public static final double diffectorMotorKS = 0;
+        public static final double diffectorMotorKV = 0;
+        public static final double diffectorMotorKA = 0;
         public static final double diffectorMotorKP = 0;
         public static final double diffectorMotorKI = 0;
         public static final double diffectorMotorKD = 0;
+
+        public static final double diffectorMotionMagicCruise = 0;
+        public static final double diffectorMotionMagicAccel = 0;
 
         /** Output sprocket rotations per motor rotation */
         public static final double gearboxRatio = 8/60;
