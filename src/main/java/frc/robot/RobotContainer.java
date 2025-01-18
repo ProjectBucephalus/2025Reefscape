@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.*;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Intake.IntakeStatus;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -19,7 +20,7 @@ public class RobotContainer
 {
     /* Controllers */
     private final CommandXboxController driver = new CommandXboxController(0);
-    private final CommandXboxController controlXbox = new CommandXboxController(1);
+    private final CommandXboxController copilot = new CommandXboxController(1);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -30,6 +31,8 @@ public class RobotContainer
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve(Constants.Swerve.initialHeading);
     private Limelight s_Limelight = new Limelight(s_Swerve);
+
+    private final Intake s_Intake = new Intake();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
@@ -44,7 +47,7 @@ public class RobotContainer
                 () -> -driver.getRawAxis(rotationAxis), 
                 () -> driver.getRawAxis(brakeAxis),
                 () -> true,
-                () -> !driver.leftTrigger().getAsBoolean()
+                () -> !driver.leftStick().getAsBoolean()
             )
         );
 
@@ -66,12 +69,30 @@ public class RobotContainer
         driver.start().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
         driver.back().onTrue(new InstantCommand(() -> s_Swerve.zeroPose()));
 
-        /* Command Layering */
-        controlXbox.x().and(controlXbox.rightTrigger(0.2))
-            .whileTrue(new InstantCommand()).onFalse(new InstantCommand());
+        driver.leftTrigger().whileTrue(new InstantCommand(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_CORAL)));
+        driver.leftBumper().whileTrue(new InstantCommand(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_ALGAE)));
+
+        /*!TODO drop piece */
+        //driver.rightBumper().whileTrue(new InstantCommand(() -> s_Intake.setIntakeStatus(?)));
+
+        /* driveToCageCentre */
+        driver.y().and(driver.povUp()).onTrue(new InstantCommand(() -> s_Swerve.autoDrive("cage", 0)));
+        /* driveToCageLeft */
+        driver.y().and(driver.povLeft()).onTrue(new InstantCommand(() -> s_Swerve.autoDrive("cage", -1)));
+        /* driveToCageRight */
+        driver.y().and(driver.povRight()).onTrue(new InstantCommand(() -> s_Swerve.autoDrive("cage" ,1)));
+
+        /* driveToStationCentre */
+        driver.x().and(driver.povUp()).onTrue(new InstantCommand(() -> s_Swerve.autoDrive("station", 0)));
+        /* driveToStationLeft */
+        driver.x().and(driver.povLeft()).onTrue(new InstantCommand(() -> s_Swerve.autoDrive("station", -1)));
+        /* driveToStationRight */
+        driver.x().and(driver.povRight()).onTrue(new InstantCommand(() -> s_Swerve.autoDrive("station", 1)));
+
+
+        /* Copilot Buttons*/
         
-        controlXbox.x().and(controlXbox.leftTrigger(0.2))
-            .whileTrue(new InstantCommand()).onFalse(new InstantCommand());
+
 
     }
 
