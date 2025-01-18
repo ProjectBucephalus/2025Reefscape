@@ -34,13 +34,13 @@ public final class Constants
          * Sprocket rotations per motor rotation * mm of chain moved per sprocket rotation (pitch diam. * pi), 
          * all divided by 360 to convert rotations to degrees 
          */
-        public static final double travelRatio = (gearboxRatio * sprocketPitchDiameter * Math.PI) / 360;
+        public static final double travelRatio = ((gearboxRatio * sprocketPitchDiameter * Math.PI) / 360) / 2;
         /** 
          * Number of arm degrees moved for one motor degree of a single motor 
          * Output sprocket rotations per motor rotation * output sprocket to arm sprocket ratio,
          * halved to account for the dynamics of a sprocket with only one moving chain
          */
-        public static final double rotationRatio = gearboxRatio * sprocketRatio * 0.5;
+        public static final double rotationRatio = gearboxRatio * sprocketRatio / 2;
 
     }
 

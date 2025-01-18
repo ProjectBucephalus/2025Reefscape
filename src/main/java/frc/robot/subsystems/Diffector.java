@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
@@ -17,29 +18,28 @@ public class Diffector extends SubsystemBase
   /** motor L in kirby's docs */
   private static TalonFX m_diffectorUC;
   /** motor R in kirby's docs */
-  private static TalonFX m_diffectorUA;
+  private static TalonFX m_diffectorDC;
   private final MotionMagicVoltage motionMagicRequester;
   private double targetElevator;
   private double targetArm;
-  /** Distance travelled by elevator in mm, from starting point of 0 mm (all the way down) */
-  private double elevatorTravel;
-  /** 
-   * Distance travelled by arm in degrees, from starting point of 0 degrees 
-   * When viewed from the front of the robot, clockwise spin is positive 
-   */
-  private double armTravel;
+  private final double rotationRatio;
+  private final double travelRatio;
+  private double[] motorTargets = new double[2];
 
   /** Creates a new Diffector. */
   public Diffector() 
   {
     m_diffectorUC = new TalonFX(Constants.DiffectorConstants.ucMotorID);
-    m_diffectorUA = new TalonFX(Constants.DiffectorConstants.uaMotorID);
+    m_diffectorDC = new TalonFX(Constants.DiffectorConstants.uaMotorID);
 
     targetElevator = 0;
     targetArm = 0;
 
     m_diffectorUC.getConfigurator().apply(CTREConfigs.diffectorFXConfig);
-    m_diffectorUA.getConfigurator().apply(CTREConfigs.diffectorFXConfig);
+    m_diffectorDC.getConfigurator().apply(CTREConfigs.diffectorFXConfig);
+
+    rotationRatio = Constants.DiffectorConstants.rotationRatio;
+    travelRatio = Constants.DiffectorConstants.travelRatio;
 
     motionMagicRequester = new MotionMagicVoltage(0);
   }
@@ -48,25 +48,54 @@ public class Diffector extends SubsystemBase
    * Calculates arm rotation based on motor positions
    * @return Arm rotation in degrees
    */
-  private double getArmPos()
+  public double getArmPos()
   {
-    return (m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorUA.getPosition().getValueAsDouble()) * Constants.DiffectorConstants.rotationRatio;
+    return (m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorDC.getPosition().getValueAsDouble()) * rotationRatio;
   }
 
   /**
    * Calculates elevator height based on motor positions
    * @return Elevator height in mm
    */
-  private double getElevatorPos()
+  public double getElevatorPos()
   {
-    /* PLACEHOLDER replace once kirby sends through formulas */
-    return ((m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorUA.getPosition().getValueAsDouble()) / 2) * Constants.DiffectorConstants.travelRatio;
+    return ((m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorDC.getPosition().getValueAsDouble())) * travelRatio;
   }
 
-  //private double[] calculateMotorTargets()
+  private void calculateMotorTargets(double elevatorTarget, double armTarget)
+  {
+    motorTargets[0] = (armTarget / rotationRatio) + (elevatorTarget / travelRatio);
+    motorTargets[1] = (armTarget / rotationRatio) - (elevatorTarget / travelRatio);
+  }
+
+  public void setArmTarget(double newTarget)
+  {
+    targetArm = newTarget;
+  }
+
+  public double getArmTarget()
+  {
+    return targetArm;
+  }
+
+  public void setElevatorTarget(double newTarget)
+  {
+    targetElevator = newTarget;
+  }
+
+  public double getElevatorTarget()
+  {
+    return targetElevator;
+  }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public void periodic() 
+  { 
+    calculateMotorTargets(targetElevator, targetArm);
+    m_diffectorUC.setControl(motionMagicRequester.withPosition(motorTargets[0]));
+    m_diffectorDC.setControl(motionMagicRequester.withPosition(motorTargets[1]));
+
+    SmartDashboard.putNumber("Elevator Height", getElevatorPos());
+    SmartDashboard.putNumber("Arm Rotation", getArmPos());
   }
 }
