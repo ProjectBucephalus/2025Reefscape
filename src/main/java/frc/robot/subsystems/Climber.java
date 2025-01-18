@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.Intake;
+import frc.robot.constants.Constants;
 
 
 public class Climber extends SubsystemBase {
@@ -26,8 +26,8 @@ public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   public Climber() 
   { 
-    m_Claws = new TalonFX(Intake.Climber.MotorID.m_Claws);
-    m_Winch = new TalonFX(Intake.Climber.MotorID.m_Winch);
+    m_Claws = new TalonFX(Constants.Climber.MotorID.m_Claws);
+    m_Winch = new TalonFX(Constants.Climber.MotorID.m_Winch);
     motionMagic = new MotionMagicVoltage(0);
     clawTarget = 0;
     winchTarget = 0;
@@ -60,18 +60,18 @@ public void setClimberStatus (ClimberStatus Status)
     switch (Status)
     {
         case INIT_CONFIG:
-        setClimberSpeed(Intake.Climber.MotorSpeeds.m_InitSpeed);
-        setClimbTargets(Intake.Climber.ClimberPos.m_InitClawPos, Intake.Climber.ClimberPos.m_InitWinchPos);
+        setClimberSpeed(Constants.Climber.MotorSpeeds.m_InitSpeed);
+        setClimbTargets(Constants.Climber.ClimberPos.m_InitClawPos, Constants.Climber.ClimberPos.m_InitWinchPos);
         break;
 
         case DEPLOY_CONFIG:
-        setClimberSpeed(Intake.Climber.MotorSpeeds.m_DeploySpeed);
-        setClimbTargets(Intake.Climber.ClimberPos.m_DeployClawPos, Intake.Climber.ClimberPos.m_DeployWinchPos);
+        setClimberSpeed(Constants.Climber.MotorSpeeds.m_DeploySpeed);
+        setClimbTargets(Constants.Climber.ClimberPos.m_DeployClawPos, Constants.Climber.ClimberPos.m_DeployWinchPos);
         break;
 
         case CLIMB_CONFIG:
-        setClimberSpeed(Intake.Climber.MotorSpeeds.m_ClimbSpeed);
-        setClimbTargets(Intake.Climber.ClimberPos.m_ClimbClawPos, Intake.Climber.ClimberPos.m_ClimbWinchPos);
+        setClimberSpeed(Constants.Climber.MotorSpeeds.m_ClimbSpeed);
+        setClimbTargets(Constants.Climber.ClimberPos.m_ClimbClawPos, Constants.Climber.ClimberPos.m_ClimbWinchPos);
         break;
     }
 }

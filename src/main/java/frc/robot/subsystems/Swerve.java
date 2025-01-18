@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 import frc.robot.util.GeoFenceObject;
 import frc.robot.util.Conversions;
 import frc.robot.util.SwerveModule;
-import frc.robot.constants.Intake;
+import frc.robot.constants.Constants;
 import frc.robot.constants.FieldConstants;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -31,13 +31,13 @@ public class Swerve extends SubsystemBase {
 
     private static GeoFenceObject[] fieldGeoFence = FieldConstants.GeoFencing.fieldGeoFence;
 
-    private double maxDriveSpeed = Intake.Swerve.maxSpeed;
-    private static double maxThrottle = Intake.Control.maxThrottle;
-    private static double minThrottle = Intake.Control.minThrottle;
-    private static double maxRotThrottle = Intake.Control.maxRotThrottle;
-    private static double minRotThrottle = Intake.Control.minRotThrottle;
-    private static double manualRotationScalar = Intake.Control.manualRotationScalar;
-    private static double maxRotationSpeed = Intake.Control.maxRotationSpeed;
+    private double maxDriveSpeed = Constants.Swerve.maxSpeed;
+    private static double maxThrottle = Constants.Control.maxThrottle;
+    private static double minThrottle = Constants.Control.minThrottle;
+    private static double maxRotThrottle = Constants.Control.maxRotThrottle;
+    private static double minRotThrottle = Constants.Control.minRotThrottle;
+    private static double manualRotationScalar = Constants.Control.manualRotationScalar;
+    private static double maxRotationSpeed = Constants.Control.maxRotationSpeed;
     private static double targetAngle = 0;
     private static double robotRadius = FieldConstants.GeoFencing.robotRadius;
     private boolean manualAngleFlag = false;
@@ -47,7 +47,7 @@ public class Swerve extends SubsystemBase {
 
     public Swerve(double initialHeading)
     {   
-        gyro = new Pigeon2(Intake.Swerve.pigeonID);
+        gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(initialHeading);
         SmartDashboard.putData("Field", field);
@@ -56,13 +56,13 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putData(field);
 
         mSwerveMods = new SwerveModule[] {
-            new SwerveModule(0, Intake.Swerve.Mod0.constants),
-            new SwerveModule(1, Intake.Swerve.Mod1.constants),
-            new SwerveModule(2, Intake.Swerve.Mod2.constants),
-            new SwerveModule(3, Intake.Swerve.Mod3.constants)
+            new SwerveModule(0, Constants.Swerve.Mod0.constants),
+            new SwerveModule(1, Constants.Swerve.Mod1.constants),
+            new SwerveModule(2, Constants.Swerve.Mod2.constants),
+            new SwerveModule(3, Constants.Swerve.Mod3.constants)
         };
 
-        swerveOdometry = new SwerveDriveOdometry(Intake.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
+        swerveOdometry = new SwerveDriveOdometry(Constants.Swerve.swerveKinematics, getGyroYaw(), getModulePositions());
 
         SmartDashboard.putData
         (
@@ -131,7 +131,7 @@ public class Swerve extends SubsystemBase {
         if (targetDelta == 0 && manualAngleFlag)
         {
             manualAngleFlag = false;
-            targetOffset = targetOffset / Intake.Control.overswingReduction;
+            targetOffset = targetOffset / Constants.Control.overswingReduction;
             targetAngle = targetAngle - targetOffset;
         }
         /* Changes target angle based on scaled joystick position */
@@ -141,7 +141,7 @@ public class Swerve extends SubsystemBase {
         }
 
         /* Apply deadband to target offset to prevent jittering */
-        if (Math.abs(targetOffset) <= Intake.Control.stickDeadband)
+        if (Math.abs(targetOffset) <= Constants.Control.stickDeadband)
             {targetOffset = 0;}
 
         /* Calculates rotation value based on target offset and max speed */
@@ -222,7 +222,7 @@ public class Swerve extends SubsystemBase {
     public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop)
     {
         SwerveModuleState[] swerveModuleStates =
-            Intake.Swerve.swerveKinematics.toSwerveModuleStates(
+            Constants.Swerve.swerveKinematics.toSwerveModuleStates(
                 fieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(
                                     translation.getX(), 
                                     translation.getY(), 

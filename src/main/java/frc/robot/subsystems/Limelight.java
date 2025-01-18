@@ -11,7 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.Intake;
+import frc.robot.constants.Constants;
 import frc.robot.util.LimelightHelpers;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 
@@ -21,12 +21,12 @@ public class Limelight extends SubsystemBase
   public static SwerveDrivePoseEstimator WPIPosEst;
   public Swerve s_Swerve;
   private LimelightHelpers.PoseEstimate mt2;
-  private int[] validIDs = Intake.Vision.validIDs;
+  private int[] validIDs = Constants.Vision.validIDs;
   
   /** Creates a new Limelight. */
   public Limelight(Swerve s_Swerve) 
   {
-    WPIPosEst = new SwerveDrivePoseEstimator(Intake.Swerve.swerveKinematics, new Rotation2d(), Swerve.getModulePositions(), new Pose2d());
+    WPIPosEst = new SwerveDrivePoseEstimator(Constants.Swerve.swerveKinematics, new Rotation2d(), Swerve.getModulePositions(), new Pose2d());
     this.s_Swerve = s_Swerve;
     FieldObject2d test = (s_Swerve.field.getObject("Box"));
     test.setPoses(new Pose2d(2.65,4.15,new Rotation2d()), new Pose2d(8.25,4.15,new Rotation2d(0)), new Pose2d(1,4.15,new Rotation2d()), new Pose2d(2,2,new Rotation2d())); 
@@ -47,11 +47,11 @@ public class Limelight extends SubsystemBase
   public void periodic() 
   {
     // This method will be called once per scheduler run
-    LimelightHelpers.SetFiducialIDFiltersOverride(Intake.Vision.limeLightName, validIDs);
+    LimelightHelpers.SetFiducialIDFiltersOverride(Constants.Vision.limeLightName, validIDs);
     
-    LimelightHelpers.SetRobotOrientation(Intake.Vision.limeLightName, s_Swerve.getGyroYaw().getDegrees(), 0.0, 0.0, 0.0, 0.0, 0.0);
+    LimelightHelpers.SetRobotOrientation(Constants.Vision.limeLightName, s_Swerve.getGyroYaw().getDegrees(), 0.0, 0.0, 0.0, 0.0, 0.0);
     
-    mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Intake.Vision.limeLightName);
+    mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.Vision.limeLightName);
     
     doRejectUpdate = false;
     
