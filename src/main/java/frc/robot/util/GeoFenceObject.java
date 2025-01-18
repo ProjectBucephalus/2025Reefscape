@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -137,6 +138,9 @@ public class GeoFenceObject
      */
     public GeoFenceObject(double X, double Y, double buffer, double radius, double theta, int sides)
     {
+        edgeLines = new ArrayList<GeoFenceObject>();
+        edgeReference = new ArrayList<Translation2d>();
+
         objectType = ObjectTypes.polygon;
         
         Translation2d[] polygonPoints = new Translation2d[2*sides+1];

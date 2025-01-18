@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class TeleopSwerve extends Command {    
@@ -52,6 +53,7 @@ public class TeleopSwerve extends Command {
         this.brakeSup = brakeSup;
         this.fieldCentricSup = fieldCentricSup;
         this.fencedSup = fencedSup;
+        SmartDashboard.putBoolean("Existance: The Sequel", true);
     }
 
     @Override
@@ -66,6 +68,10 @@ public class TeleopSwerve extends Command {
 
         motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
         rotationVal *= (Constants.Control.maxRotThrottle - ((Constants.Control.maxRotThrottle - Constants.Control.minRotThrottle) * brakeVal));
+
+        SmartDashboard.putNumber("MotionX", motionXY.getX());
+        SmartDashboard.putNumber("MotionY", motionXY.getY());
+        SmartDashboard.putNumber("Rotation", rotationVal);
 
         if (fieldCentricSup.getAsBoolean())
         {
