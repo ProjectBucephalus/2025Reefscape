@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -14,6 +15,7 @@ import frc.robot.constants.Constants;
 
 public class Diffector extends SubsystemBase 
 {
+  public enum CargoStates{empty, oneItem, twoItem}
   /* Name is effect of motor when running clockwise/positive (e.g. elevator Up, arm Clockwise) */
   /** motor L in kirby's docs */
   private static TalonFX m_diffectorUC;
@@ -25,21 +27,30 @@ public class Diffector extends SubsystemBase
   private final double rotationRatio;
   private final double travelRatio;
   private double[] motorTargets = new double[2];
+  private TalonFXConfiguration motorConfig;
+  private CargoStates cargoState;
+  private boolean coral;
+  private boolean algae;
+
 
   /** Creates a new Diffector. */
   public Diffector() 
   {
+    motorConfig = CTREConfigs.diffectorFXConfig;
+
     m_diffectorUC = new TalonFX(Constants.DiffectorConstants.ucMotorID);
     m_diffectorDC = new TalonFX(Constants.DiffectorConstants.uaMotorID);
 
     targetElevator = 0;
     targetArm = 0;
 
-    m_diffectorUC.getConfigurator().apply(CTREConfigs.diffectorFXConfig);
-    m_diffectorDC.getConfigurator().apply(CTREConfigs.diffectorFXConfig);
+    m_diffectorUC.getConfigurator().apply(motorConfig);
+    m_diffectorDC.getConfigurator().apply(motorConfig);
 
     rotationRatio = Constants.DiffectorConstants.rotationRatio;
     travelRatio = Constants.DiffectorConstants.travelRatio;
+
+    cargoState = Constants.DiffectorConstants.startingCargoState;
 
     motionMagicRequester = new MotionMagicVoltage(0);
   }
@@ -59,13 +70,28 @@ public class Diffector extends SubsystemBase
    */
   public double getElevatorPos()
   {
-    return ((m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorDC.getPosition().getValueAsDouble())) * travelRatio;
+    return (m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorDC.getPosition().getValueAsDouble()) * travelRatio;
   }
 
-  private void calculateMotorTargets(double elevatorTarget, double armTarget)
+  /**
+   * Calculates the position to drive each motor to, based on the target positions for the elevator and arm
+   * @param elevatorTarget
+   * @param armTarget
+   * @return
+   */
+  public double[] calculateMotorTargets(double elevatorTarget, double armTarget)
   {
-    motorTargets[0] = (armTarget / rotationRatio) + (elevatorTarget / travelRatio);
-    motorTargets[1] = (armTarget / rotationRatio) - (elevatorTarget / travelRatio);
+    double[] calculatedTargets = new double[2];
+
+    calculatedTargets[0] = (armTarget / rotationRatio) + (elevatorTarget / travelRatio);
+    calculatedTargets[1] = (armTarget / rotationRatio) - (elevatorTarget / travelRatio);
+
+    return calculatedTargets;
+  }
+
+  private void calculateMotorTargets()
+  {
+    motorTargets = calculateMotorTargets(targetElevator, targetArm);
   }
 
   public void setArmTarget(double newTarget)
@@ -88,12 +114,62 @@ public class Diffector extends SubsystemBase
     return targetElevator;
   }
 
+  public void setCargoState(CargoStates newCargoState)
+  {
+    cargoState = newCargoState;
+  }
+
+  public CargoStates getCargoState()
+  {
+    return cargoState;
+  }
+
+  public void setCoral(boolean coralState)
+  {
+    coral = coralState;
+    updateCargoState();
+  }
+
+  public void setAlgae(boolean algaeState)
+  {
+    algae = algaeState;
+    updateCargoState();
+  }
+
+  private void updateCargoState()
+  {
+    if(coral && algae)
+    {
+      setCargoState(CargoStates.twoItem);
+    }
+    else if(coral ^ algae)
+    {
+      setCargoState(CargoStates.oneItem);
+    }
+    else if(!coral && !algae)
+    {
+      setCargoState(CargoStates.empty);
+    }
+  }
+
+  private int getSlot()
+  {
+    switch (cargoState) 
+    {
+      case empty: return 0;
+      case oneItem: return 1;
+      case twoItem: return 2;
+      default: return 0;
+    }
+  }
+
   @Override
   public void periodic() 
   { 
-    calculateMotorTargets(targetElevator, targetArm);
-    m_diffectorUC.setControl(motionMagicRequester.withPosition(motorTargets[0]));
-    m_diffectorDC.setControl(motionMagicRequester.withPosition(motorTargets[1]));
+    calculateMotorTargets();
+
+    m_diffectorUC.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(getSlot()));
+    m_diffectorDC.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
 
     SmartDashboard.putNumber("Elevator Height", getElevatorPos());
     SmartDashboard.putNumber("Arm Rotation", getArmPos());

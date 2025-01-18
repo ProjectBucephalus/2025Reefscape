@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.subsystems.Diffector.CargoStates;
 import frc.robot.util.COTSTalonFXSwerveConstants;
 import frc.robot.util.SwerveModuleConstants;
 
@@ -18,12 +19,26 @@ public final class Constants
         public static final int ucMotorID = IDConstants.ucMotorID;
         public static final int uaMotorID = IDConstants.uaMotorID;
 
-        public static final double diffectorMotorKS = 0;
-        public static final double diffectorMotorKV = 0;
-        public static final double diffectorMotorKA = 0;
-        public static final double diffectorMotorKP = 0;
-        public static final double diffectorMotorKI = 0;
-        public static final double diffectorMotorKD = 0;
+        public static final double diffectorMotorKSEmpty = 0;
+        public static final double diffectorMotorKVEmpty = 0;
+        public static final double diffectorMotorKAEmpty = 0;
+        public static final double diffectorMotorKPEmpty = 0;
+        public static final double diffectorMotorKIEmpty = 0;
+        public static final double diffectorMotorKDEmpty = 0;
+
+        public static final double diffectorMotorKSOneItem = 0;
+        public static final double diffectorMotorKVOneItem = 0;
+        public static final double diffectorMotorKAOneItem = 0;
+        public static final double diffectorMotorKPOneItem = 0;
+        public static final double diffectorMotorKIOneItem = 0;
+        public static final double diffectorMotorKDOneItem = 0;
+
+        public static final double diffectorMotorKSTwoItem = 0;
+        public static final double diffectorMotorKVTwoItem = 0;
+        public static final double diffectorMotorKATwoItem = 0;
+        public static final double diffectorMotorKPTwoItem = 0;
+        public static final double diffectorMotorKITwoItem = 0;
+        public static final double diffectorMotorKDTwoItem = 0;
 
         public static final double diffectorMotionMagicCruise = 0;
         public static final double diffectorMotionMagicAccel = 0;
@@ -48,6 +63,7 @@ public final class Constants
          */
         public static final double rotationRatio = gearboxRatio * sprocketRatio / 2;
 
+        public static final CargoStates startingCargoState = CargoStates.empty;
     }
 
     public static final class ControlConstants

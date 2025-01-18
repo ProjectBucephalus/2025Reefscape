@@ -55,13 +55,29 @@ public final class CTREConfigs {
         swerveDriveFXConfig.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = Constants.Swerve.closedLoopRamp;
         swerveDriveFXConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = Constants.Swerve.closedLoopRamp;
 
-        /* Diffector Motor Config */
-        diffectorFXConfig.Slot0.kS = Constants.DiffectorConstants.diffectorMotorKP;
-        diffectorFXConfig.Slot0.kV = Constants.DiffectorConstants.diffectorMotorKI;
-        diffectorFXConfig.Slot0.kA = Constants.DiffectorConstants.diffectorMotorKD;
-        diffectorFXConfig.Slot0.kP = Constants.DiffectorConstants.diffectorMotorKP;
-        diffectorFXConfig.Slot0.kI = Constants.DiffectorConstants.diffectorMotorKI;
-        diffectorFXConfig.Slot0.kD = Constants.DiffectorConstants.diffectorMotorKD;
+        /* Diffector Motor Config (Empty) */
+        diffectorFXConfig.Slot0.kS = Constants.DiffectorConstants.diffectorMotorKPEmpty;
+        diffectorFXConfig.Slot0.kV = Constants.DiffectorConstants.diffectorMotorKIEmpty;
+        diffectorFXConfig.Slot0.kA = Constants.DiffectorConstants.diffectorMotorKDEmpty;
+        diffectorFXConfig.Slot0.kP = Constants.DiffectorConstants.diffectorMotorKPEmpty;
+        diffectorFXConfig.Slot0.kI = Constants.DiffectorConstants.diffectorMotorKIEmpty;
+        diffectorFXConfig.Slot0.kD = Constants.DiffectorConstants.diffectorMotorKDEmpty;
+        
+        /* Diffector Motor Config (Algae or Coral) */
+        diffectorFXConfig.Slot1.kS = Constants.DiffectorConstants.diffectorMotorKPOneItem;
+        diffectorFXConfig.Slot1.kV = Constants.DiffectorConstants.diffectorMotorKIOneItem;
+        diffectorFXConfig.Slot1.kA = Constants.DiffectorConstants.diffectorMotorKDOneItem;
+        diffectorFXConfig.Slot1.kP = Constants.DiffectorConstants.diffectorMotorKPOneItem;
+        diffectorFXConfig.Slot1.kI = Constants.DiffectorConstants.diffectorMotorKIOneItem;
+        diffectorFXConfig.Slot1.kD = Constants.DiffectorConstants.diffectorMotorKDOneItem;        
+
+        /* Diffector Motor Config (Algae and Coral) */
+        diffectorFXConfig.Slot2.kS = Constants.DiffectorConstants.diffectorMotorKPTwoItem;
+        diffectorFXConfig.Slot2.kV = Constants.DiffectorConstants.diffectorMotorKITwoItem;
+        diffectorFXConfig.Slot2.kA = Constants.DiffectorConstants.diffectorMotorKDTwoItem;
+        diffectorFXConfig.Slot2.kP = Constants.DiffectorConstants.diffectorMotorKPTwoItem;
+        diffectorFXConfig.Slot2.kI = Constants.DiffectorConstants.diffectorMotorKITwoItem;
+        diffectorFXConfig.Slot2.kD = Constants.DiffectorConstants.diffectorMotorKDTwoItem;
 
         /* Diffector MotionMagic Config */
         diffectorFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.DiffectorConstants.diffectorMotionMagicCruise;
