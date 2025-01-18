@@ -200,22 +200,22 @@ public final class Constants
             /* Top intake arm positions 
              * TODO: Put in Degrees for the arm top and bottom position in this comment
             */
-            public static final double mTopCoralIntakeArmPos = 0;
-            public static final double mTopAlgaeIntakeArmPos = 0;
-            public static final double mTopClimbingArmPos = 0;
-            public static final double mTopStandByArmPos = 0;
-            public static final double mTopStowedArmPos = 0;
-            public static final double mTopCoralTransferArmPos = 0;
-            public static final double mTopAlgaeTransferArmPos = 0;
+            public static final double mTopCoralIntakeArmTarget = 0;
+            public static final double mTopAlgaeIntakeArmTarget = 0;
+            public static final double mTopClimbingArmTarget = 0;
+            public static final double mTopStandByArmTarget = 0;
+            public static final double mTopStowedArmTarget = 0;
+            public static final double mTopCoralTransferArmTarget = 0;
+            public static final double mTopAlgaeTransferArmTarget = 0;
 
             /* Bottom intake arm positions */
-            public static final double mBottomCoralIntakeArmPos = 0;
-            public static final double mBottomAlgaeIntakeArmPos = 0;
-            public static final double mBottomClimbingArmPos = 0;
-            public static final double mBottomStandByArmPos = 0;
-            public static final double mBottomStowedArmPos = 0;
-            public static final double mBottomCoralTransferArmPos = 0;
-            public static final double mBottomAlgaeTransferArmPos = 0;
+            public static final double mBottomCoralIntakeArmTarget = 0;
+            public static final double mBottomAlgaeIntakeArmTarget = 0;
+            public static final double mBottomClimbingArmTarget = 0;
+            public static final double mBottomStandByArmTarget = 0;
+            public static final double mBottomStowedArmTarget = 0;
+            public static final double mBottomCoralTransferArmTarget = 0;
+            public static final double mBottomAlgaeTransferArmTarget = 0;
         }
     }
 
