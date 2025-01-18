@@ -42,7 +42,7 @@ public class Swerve extends SubsystemBase {
     private static double robotRadius = FieldConstants.GeoFencing.robotRadius;
     private boolean manualAngleFlag = false;
 
-    private Field2d m_field = new Field2d();
+    public Field2d field = new Field2d();
 
 
     public Swerve(double initialHeading)
@@ -50,10 +50,10 @@ public class Swerve extends SubsystemBase {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(initialHeading);
-        SmartDashboard.putData("Field", m_field);
+        SmartDashboard.putData("Field", field);
 
-        m_field = new Field2d();
-        SmartDashboard.putData(m_field);
+        field = new Field2d();
+        SmartDashboard.putData(field);
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -387,7 +387,7 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("X", getPose().getX());
         SmartDashboard.putNumber("Y", getPose().getY());
 
-        m_field.setRobotPose(swerveOdometry.getPoseMeters());
+        field.setRobotPose(swerveOdometry.getPoseMeters());
 
         /* for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());

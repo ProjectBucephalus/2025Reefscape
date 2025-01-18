@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -24,6 +25,13 @@ public class Intake extends SubsystemBase {
   private TalonFX mBottomIntake;
   private TalonFX mTopArm;
   private TalonFX mBottomArm;
+
+  private final MotionMagicVoltage motionMagic;
+  private double topArmTarget;
+  private double bottomArmTarget;
+  private final double topArmRatio;
+  private final double bottomArmRatio;
+  private double[] armTargets = new double[2];
   
   /* Enum representing the status the intake is in
    * (Spinning inwards for a coral, spinning inwards for an algae, position for when the robot is climbing,
@@ -48,6 +56,13 @@ public class Intake extends SubsystemBase {
     mBottomIntake = new TalonFX(Constants.Intake.MotorID.mBottomIntakeID);
     mTopArm = new TalonFX(Constants.Intake.MotorID.mTopArmID);
     mBottomArm = new TalonFX(Constants.Intake.MotorID.mBottomArmID);
+
+    topArmTarget = 0;
+    bottomArmTarget = 0;
+
+    motionMagic = new MotionMagicVoltage(0);
+    topArmRatio = 0;
+    bottomArmRatio = 0;
   }
 
   /** 
@@ -73,22 +88,35 @@ public class Intake extends SubsystemBase {
   /**
    * Set the angle of the top arm 
    * 
-   * @param pos Top arm angle [0..90..180..270]
+   * @param newTopTarget Top arm angle [0..90..180..270]
    */
-  private void setTopArmPos(double pos)
-  {
-    mTopArm.set(pos);
-  };    
+   public void setTopArmTarget(double newTopTarget)
+   {
+     topArmTarget = newTopTarget;
+   }
+    
 
   /**
    * Set the angle of the bottom arm 
    * 
-   * @param pos Bottom arm angle [0..90..180.207]
+   * @param newBottomTarget Bottom arm angle [0..90..180.207]
    */
-  private void setBottomArmPos(double pos)
+  public void setBottomArmTarget(double newBottomTarget)
   {
-    mBottomArm.set(pos);
-  };
+    bottomArmTarget = newBottomTarget;
+  }
+
+  /**
+   * Calculates the arms target angles
+   * 
+   * @param newTopTarget Top arm's target angle
+   * @param newBottomTarget Bottom arms target angle
+   */
+  private void calculateArmTargets(double newTopTarget, double newBottomTarget)
+  {
+    armTargets[0] = newTopTarget / topArmRatio;
+    armTargets[1] = newBottomTarget / bottomArmRatio;
+  }
 
 
   /**
@@ -105,57 +133,70 @@ public class Intake extends SubsystemBase {
       case INTAKE_CORAL:
       setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mCoralIntakeMotorSpeed);
       setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mCoralIntakeMotorSpeed);
-      setTopArmPos(Constants.Intake.ArmPosition.mTopCoralIntakeArmPos);
-      setBottomArmPos(Constants.Intake.ArmPosition.mBottomCoralIntakeArmPos);
+      setTopArmTarget(Constants.Intake.ArmPosition.mTopCoralIntakeArmTarget);
+      setBottomArmTarget(Constants.Intake.ArmPosition.mBottomCoralIntakeArmTarget);
       break;
 
       case INTAKE_ALGAE:
       setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mAlgaeIntakeMotorSpeed);
       setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mAlgaeIntakeMotorSpeed);
-      setTopArmPos(Constants.Intake.ArmPosition.mTopAlgaeIntakeArmPos);
-      setBottomArmPos(Constants.Intake.ArmPosition.mBottomAlgaeIntakeArmPos);
+      setTopArmTarget(Constants.Intake.ArmPosition.mTopAlgaeIntakeArmTarget);
+      setBottomArmTarget(Constants.Intake.ArmPosition.mBottomAlgaeIntakeArmTarget);
       break;
 
       case CLIMBING:
       setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mClimbingIntakeMotorSpeed);
       setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mClimbingIntakeMotorSpeed);
-      setTopArmPos(Constants.Intake.ArmPosition.mTopClimbingArmPos);
-      setBottomArmPos(Constants.Intake.ArmPosition.mBottomClimbingArmPos);
+      setTopArmTarget(Constants.Intake.ArmPosition.mTopClimbingArmTarget);
+      setBottomArmTarget(Constants.Intake.ArmPosition.mBottomClimbingArmTarget);
       break;
 
       case STAND_BY:
       setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mStandByMotorSpeed);
       setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mStandByMotorSpeed);
-      setTopArmPos(Constants.Intake.ArmPosition.mTopStandByArmPos);
-      setBottomArmPos(Constants.Intake.ArmPosition.mBottomStandByArmPos);
+      setTopArmTarget(Constants.Intake.ArmPosition.mTopStandByArmTarget);
+      setBottomArmTarget(Constants.Intake.ArmPosition.mBottomStandByArmTarget);
       break;
 
       case STOWED:
       setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mStowedMotorSpeed);
       setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mStowedMotorSpeed);
-      setTopArmPos(Constants.Intake.ArmPosition.mTopStowedArmPos);
-      setBottomArmPos(Constants.Intake.ArmPosition.mBottomStowedArmPos);
+      setTopArmTarget(Constants.Intake.ArmPosition.mTopStowedArmTarget);
+      setBottomArmTarget(Constants.Intake.ArmPosition.mBottomStowedArmTarget);
       break;
 
       case TRANSFER_CORAL:
       setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mCoralTransferMotorSpeed);
       setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mCoralTransferMotorSpeed);
-      setTopArmPos(Constants.Intake.ArmPosition.mTopCoralTransferArmPos);
-      setBottomArmPos(Constants.Intake.ArmPosition.mBottomCoralTransferArmPos);
+      setTopArmTarget(Constants.Intake.ArmPosition.mTopCoralTransferArmTarget);
+      setBottomArmTarget(Constants.Intake.ArmPosition.mBottomCoralTransferArmTarget);
       break;
 
       case TRANSFER_ALGAE:
       setTopIntakeSpeed(Constants.Intake.MotorSpeeds.mAlgaeTransferMotorSpeed);
       setBottomIntakeSpeed(Constants.Intake.MotorSpeeds.mAlgaeTransferMotorSpeed);
-      setTopArmPos(Constants.Intake.ArmPosition.mTopAlgaeTransferArmPos);
-      setBottomArmPos(Constants.Intake.ArmPosition.mBottomAlgaeTransferArmPos);
+      setTopArmTarget(Constants.Intake.ArmPosition.mTopAlgaeTransferArmTarget);
+      setBottomArmTarget(Constants.Intake.ArmPosition.mBottomAlgaeTransferArmTarget);
       break;
     }
-  };
+  }
+
+  public double getTopArmTarget()
+  {
+    return topArmTarget;
+  }
+
+  public double getBottomArmTarget()
+  {
+    return bottomArmTarget;
+  }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
+  public void periodic()  
+  {
+    calculateArmTargets(topArmTarget, bottomArmTarget);
+    mTopArm.setControl(motionMagic.withPosition(armTargets[0]));
+    mBottomArm.setControl(motionMagic.withPosition(armTargets[1]));
   }
 }
 
