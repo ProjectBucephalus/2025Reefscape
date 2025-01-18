@@ -23,6 +23,18 @@ public class Conversions
     {
         return Math.min(Math.max(value, Math.min(min,max)), Math.max(min,max));
     }
+
+    /**
+     * Clamps values to parameters
+     * @param value Value to clamp
+     * @param min Minimum value
+     * @param max Maximum value
+     * @return Clamped value
+     */
+    public static int clamp(int value, int min, int max)
+    {
+        return (int) Math.min(Math.max(value, Math.min(min,max)), Math.max(min,max));
+    }
     
     /**
      * @param wheelRPS Wheel Velocity: (in Rotations per Second)
