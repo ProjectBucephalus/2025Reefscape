@@ -15,7 +15,6 @@ public class Climber extends SubsystemBase {
   double winchTarget;
   private double[] climbTargets = new double[2];
   
-  
   public enum ClimberStatus 
   {
     INIT_CONFIG,
@@ -33,48 +32,48 @@ public class Climber extends SubsystemBase {
     winchTarget = 0;
   }
 
-private void setClimberSpeed (double speed)
+  private void setClimberSpeed(double speed)
   {
     m_Claws.set(speed);
     m_Winch.set(speed);
   };
 
-private void setClawTargetPos (double newClawTarget)
-{
-  clawTarget = newClawTarget;
-}
+  private void setClawTargetPos(double newClawTarget)
+  {
+    clawTarget = newClawTarget;
+  }
 
-private void setWinchTargetPos (double newWinchTarget)
-{
-  winchTarget = newWinchTarget;
-}
+  private void setWinchTargetPos(double newWinchTarget)
+  {
+    winchTarget = newWinchTarget;
+  }
 
-private void setClimbTargets(double newClawTarget, double newWinchTarget)
-{
-  climbTargets[0] = newClawTarget;
-  climbTargets[1] = newWinchTarget;
-}
+  private void setClimbTargets(double newClawTarget, double newWinchTarget)
+  {
+    climbTargets[0] = newClawTarget;
+    climbTargets[1] = newWinchTarget;
+  }
 
-public void setClimberStatus (ClimberStatus Status)
-{
+  public void setClimberStatus(ClimberStatus Status)
+  {
     switch (Status)
     {
-        case INIT_CONFIG:
-        setClimberSpeed(Constants.Climber.MotorSpeeds.m_InitSpeed);
-        setClimbTargets(Constants.Climber.ClimberPos.m_InitClawPos, Constants.Climber.ClimberPos.m_InitWinchPos);
-        break;
+      case INIT_CONFIG:
+      setClimberSpeed(Constants.Climber.MotorSpeeds.m_InitSpeed);
+      setClimbTargets(Constants.Climber.ClimberPos.m_InitClawPos, Constants.Climber.ClimberPos.m_InitWinchPos);
+      break;
 
-        case DEPLOY_CONFIG:
-        setClimberSpeed(Constants.Climber.MotorSpeeds.m_DeploySpeed);
-        setClimbTargets(Constants.Climber.ClimberPos.m_DeployClawPos, Constants.Climber.ClimberPos.m_DeployWinchPos);
-        break;
+      case DEPLOY_CONFIG:
+      setClimberSpeed(Constants.Climber.MotorSpeeds.m_DeploySpeed);
+      setClimbTargets(Constants.Climber.ClimberPos.m_DeployClawPos, Constants.Climber.ClimberPos.m_DeployWinchPos);
+      break;
 
-        case CLIMB_CONFIG:
-        setClimberSpeed(Constants.Climber.MotorSpeeds.m_ClimbSpeed);
-        setClimbTargets(Constants.Climber.ClimberPos.m_ClimbClawPos, Constants.Climber.ClimberPos.m_ClimbWinchPos);
-        break;
+      case CLIMB_CONFIG:
+      setClimberSpeed(Constants.Climber.MotorSpeeds.m_ClimbSpeed);
+      setClimbTargets(Constants.Climber.ClimberPos.m_ClimbClawPos, Constants.Climber.ClimberPos.m_ClimbWinchPos);
+      break;
     }
-}
+  }
 
   @Override
   public void periodic()
