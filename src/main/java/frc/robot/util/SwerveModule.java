@@ -19,8 +19,8 @@ public class SwerveModule
     public int moduleNumber;
     private Rotation2d angleOffset;
 
-    private TalonFX mAngleMotor;
-    private TalonFX mDriveMotor;
+    private TalonFX m_AngleMotor;
+    private TalonFX m_DriveMotor;
     private CANcoder angleEncoder;
 
     private final SimpleMotorFeedforward driveFeedForward = new SimpleMotorFeedforward(Constants.Swerve.driveKS, Constants.Swerve.driveKV, Constants.Swerve.driveKA);
@@ -46,22 +46,22 @@ public class SwerveModule
         angleEncoder.getConfigurator().apply(Robot.ctreConfigs.swerveCANcoderConfig); // Push standard configs with previous MagnetOffset into new CANcoder
 
         /* Angle Motor Config */
-        mAngleMotor = new TalonFX(moduleConstants.angleMotorID);
-        mAngleMotor.getConfigurator().apply(Robot.ctreConfigs.swerveAngleFXConfig);
+        m_AngleMotor = new TalonFX(moduleConstants.angleMotorID);
+        m_AngleMotor.getConfigurator().apply(Robot.ctreConfigs.swerveAngleFXConfig);
         //if(moduleNumber == 1) {mAngleMotor.getConfigurator().apply(Robot.ctreConfigs.swerveAngleFXConfigAlt);} // ERROR: The physical gearing on the specific robot is built wrong, remove this if all swerve modules are built correctly
         resetToAbsolute();
 
         /* Drive Motor Config */
-        mDriveMotor = new TalonFX(moduleConstants.driveMotorID);
-        mDriveMotor.getConfigurator().apply(Robot.ctreConfigs.swerveDriveFXConfig);
-        mDriveMotor.getConfigurator().setPosition(0.0);
+        m_DriveMotor = new TalonFX(moduleConstants.driveMotorID);
+        m_DriveMotor.getConfigurator().apply(Robot.ctreConfigs.swerveDriveFXConfig);
+        m_DriveMotor.getConfigurator().setPosition(0.0);
     }
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop)
     {
         SwerveModuleState state = desiredState;
         state.optimize(getState().angle); 
-        mAngleMotor.setControl(anglePosition.withPosition(desiredState.angle.getRotations()));
+        m_AngleMotor.setControl(anglePosition.withPosition(desiredState.angle.getRotations()));
         setSpeed(desiredState, isOpenLoop);
     }
 
@@ -69,12 +69,12 @@ public class SwerveModule
     {
         if(isOpenLoop){
             driveDutyCycle.Output = desiredState.speedMetersPerSecond / Constants.Swerve.maxSpeed;
-            mDriveMotor.setControl(driveDutyCycle);
+            m_DriveMotor.setControl(driveDutyCycle);
         }
         else {
             driveVelocity.Velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond, Constants.Swerve.wheelCircumference);
             driveVelocity.FeedForward = driveFeedForward.calculate(desiredState.speedMetersPerSecond);
-            mDriveMotor.setControl(driveVelocity);
+            m_DriveMotor.setControl(driveVelocity);
         }
     }
 
@@ -86,22 +86,22 @@ public class SwerveModule
     public void resetToAbsolute()
     {
         double absolutePosition = getCANcoder().getRotations() - angleOffset.getRotations();
-        mAngleMotor.setPosition(absolutePosition);
+        m_AngleMotor.setPosition(absolutePosition);
     }
 
     public SwerveModuleState getState()
     {
         return new SwerveModuleState(
-            Conversions.RPSToMPS(mDriveMotor.getVelocity().getValueAsDouble(), Constants.Swerve.wheelCircumference), 
-            Rotation2d.fromRotations(mAngleMotor.getPosition().getValueAsDouble())
+            Conversions.RPSToMPS(m_DriveMotor.getVelocity().getValueAsDouble(), Constants.Swerve.wheelCircumference), 
+            Rotation2d.fromRotations(m_AngleMotor.getPosition().getValueAsDouble())
         );
     }
 
     public SwerveModulePosition getPosition()
     {
         return new SwerveModulePosition(
-            Conversions.rotationsToMeters(mDriveMotor.getPosition().getValueAsDouble(), Constants.Swerve.wheelCircumference), 
-            Rotation2d.fromRotations(mAngleMotor.getPosition().getValueAsDouble())
+            Conversions.rotationsToMeters(m_DriveMotor.getPosition().getValueAsDouble(), Constants.Swerve.wheelCircumference), 
+            Rotation2d.fromRotations(m_AngleMotor.getPosition().getValueAsDouble())
         );
     }
 }
