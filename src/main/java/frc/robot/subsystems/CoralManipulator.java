@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Constants;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -13,11 +14,13 @@ public class CoralManipulator extends SubsystemBase {
 
   private TalonFX coralMotor;
 
-  private DigitalInput beamBreak1;
-  private DigitalInput beamBreak2;
+  private DigitalInput coralBeamBreak1;
+  private DigitalInput coralBeamBreak2;
 
-  private boolean useBeamBreak1 = false;
-  private boolean useBeamBreak2 = false;
+  private coralManipulatorStatus coralStatus;
+
+  // private boolean useBeamBreak1 = false;
+  // private boolean useBeamBreak2 = false;
 
 
   public enum coralManipulatorStatus
@@ -29,9 +32,9 @@ public class CoralManipulator extends SubsystemBase {
 
   public CoralManipulator() 
   {
-    coralMotor = new TalonFX(0);
-    beamBreak1 = new DigitalInput(0);
-    beamBreak2 = new DigitalInput(0);
+    coralMotor = new TalonFX(Constants.GamePiecesManipulator.ManipulatorIDs.coralMotorID);
+    coralBeamBreak1 = new DigitalInput(Constants.GamePiecesManipulator.ManipulatorIDs.coralBeamBreak1DigitalInput);
+    coralBeamBreak2 = new DigitalInput(Constants.GamePiecesManipulator.ManipulatorIDs.coralBeamBreak2DigitalInput);
   }
 
   private void setCoralIntakeSpeed(double Speed)
@@ -39,38 +42,60 @@ public class CoralManipulator extends SubsystemBase {
     coralMotor.set(Speed);
   }
 
-  private void getBeamBreak1State()
+  private boolean getCoralBeamBreak1State()
   {
-    beamBreak1.get();
+    return coralBeamBreak1.get();
   }
 
-  private void getBeamBreak2State()
+  private boolean getCoralBeamBreak2State()
   {
-    beamBreak2.get();
+    return coralBeamBreak2.get();
   }
 
   public void setCoralManipulatorStatus(coralManipulatorStatus Status)
   {
-    switch(Status)
-    {
-      case INTAKE:
-      setCoralIntakeSpeed(0);
-      break;
-
-      case DELIVERY:
-      setCoralIntakeSpeed(0);
-      break;
-
-      case HOLDING:
-      setCoralIntakeSpeed(0);
-      break;
-    }
+    coralStatus = Status;
   }
   
 
   @Override
   public void periodic() 
   {
-    // This method will be called once per scheduler run
+    switch(coralStatus)
+    {
+      case INTAKE:
+        setCoralIntakeSpeed(Constants.GamePiecesManipulator.CoralManipulator.coralManipulatorIntakeSpeed);
+        break;
+
+      case DELIVERY:
+        setCoralIntakeSpeed(Constants.GamePiecesManipulator.CoralManipulator.coralManipulatorDeliverySpeed);
+        if (Diffector.getArmPos() >= 0 && Diffector.getArmPos() <= 90)
+        {
+          setCoralIntakeSpeed(Constants.GamePiecesManipulator.CoralManipulator.coralManipulatorDeliverySpeed);
+        } else if 
+        break;
+
+      case HOLDING:
+        if (getCoralBeamBreak1State() && getCoralBeamBreak2State())
+        {
+          setCoralIntakeSpeed(0);
+        }
+        
+        else if (getCoralBeamBreak1State() && !getCoralBeamBreak2State())
+        {
+          setCoralIntakeSpeed(Constants.GamePiecesManipulator.CoralManipulator.coralManipulatorHoldingSpeed);
+        }
+        
+        else if (!getCoralBeamBreak1State() && getCoralBeamBreak2State()) 
+        {
+          setCoralIntakeSpeed(-Constants.GamePiecesManipulator.CoralManipulator.coralManipulatorHoldingSpeed);
+        }
+        
+        else if (!getCoralBeamBreak1State() && !getCoralBeamBreak1State()) 
+        {
+          setCoralIntakeSpeed(0);
+        }
+        break;
+    }
   }
 }

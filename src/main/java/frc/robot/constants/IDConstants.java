@@ -53,4 +53,9 @@ public final class IDConstants
     /* _______ */
     public static final int climberClawMotorID = 0; //23
     public static final int climberWinchMotorID = 0; //24
+
+    /* Manipulator */
+    /* ___________ */
+    public static final int coralMotorID = 0;
+    public static final int algaeMotorID = 0;
 }
