@@ -78,14 +78,14 @@ public class RobotContainer
         driver.rightBumper().whileTrue(new Test("dropPiece", "dropPiece"));
 
         /* driveToCage */
-        driver.y().and(driver.povUp()).onTrue(new Test("autoDrive", "drive centre cage"));
-        driver.y().and(driver.povLeft()).onTrue(new Test("autoDrive", "drive left cage"));
-        driver.y().and(driver.povRight()).onTrue(new Test("autoDrive", "drive right cage"));
+        driver.y().and(driver.povUp()).whileTrue(new Test("autoDrive", "drive centre cage"));
+        driver.y().and(driver.povLeft()).whileTrue(new Test("autoDrive", "drive left cage"));
+        driver.y().and(driver.povRight()).whileTrue(new Test("autoDrive", "drive right cage"));
 
         /* driveToStationCentre */
-        driver.x().and(driver.povUp()).onTrue(new Test("autoDrive", "drive centre station"));
-        driver.x().and(driver.povLeft()).onTrue(new Test("autoDrive", "drive left station"));
-        driver.x().and(driver.povRight()).onTrue(new Test("autoDrive", "drive right station"));
+        driver.x().and(driver.povUp()).whileTrue(new Test("autoDrive", "drive centre station"));
+        driver.x().and(driver.povLeft()).whileTrue(new Test("autoDrive", "drive left station"));
+        driver.x().and(driver.povRight()).whileTrue(new Test("autoDrive", "drive right station"));
 
         /* driveToProcessorCentre */
         driver.b().and(driver.povUp()).onTrue(new Test("autoDrive", "drive centre processor"));
@@ -93,11 +93,11 @@ public class RobotContainer
         driver.b().and(driver.povRight()).onTrue(new Test("autoDrive", "drive right processor"));
 
         /* driveToReefCentre */
-        driver.a().and(driver.povUp()).onTrue(new Test("autoDrive", "drive centre reef"));
-        driver.a().and(driver.povLeft()).onTrue(new Test("autoDrive", "drive left reef"));
-        driver.a().and(driver.povRight()).onTrue(new Test("autoDrive", "drive right reef"));
+        driver.a().and(driver.povUp()).whileTrue(new Test("autoDrive", "drive centre reef"));
+        driver.a().and(driver.povLeft()).whileTrue(new Test("autoDrive", "drive left reef"));
+        driver.a().and(driver.povRight()).whileTrue(new Test("autoDrive", "drive right reef"));
 
-        driver.rightStick().onTrue(new Test("targetObj", "Target Obj"));
+        driver.rightStick().whileTrue(new Test("targetObj", "Target Obj"));
 
 
         /* Copilot Buttons*/
