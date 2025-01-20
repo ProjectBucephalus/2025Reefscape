@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -64,11 +65,11 @@ public class Robot extends TimedRobot
   {  
     if (FieldConstants.isRedAlliance()) 
     {
-      robotContainer.getSwerve().setHeading(robotContainer.getSwerve().getPose().getRotation().getDegrees() + 180);
+      robotContainer.getSwerve().resetRotation(robotContainer.getSwerve().getState().Pose.getRotation().plus(Rotation2d.k180deg));
     }
     else 
     {
-      robotContainer.getSwerve().setHeading(robotContainer.getSwerve().getPose().getRotation().getDegrees());
+      robotContainer.getSwerve().resetRotation(robotContainer.getSwerve().getState().Pose.getRotation());
     }
   }
 
