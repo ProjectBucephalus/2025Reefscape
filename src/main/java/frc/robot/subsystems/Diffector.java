@@ -24,8 +24,8 @@ public class Diffector extends SubsystemBase
   private final MotionMagicVoltage motionMagicRequester;
   private double targetElevator;
   private double targetArm;
-  private final double rotationRatio;
-  private final double travelRatio;
+  private static double rotationRatio;
+  private static double travelRatio;
   private double[] motorTargets = new double[2];
   private TalonFXConfiguration motorConfig;
   private CargoStates cargoState;
@@ -59,7 +59,7 @@ public class Diffector extends SubsystemBase
    * Calculates arm rotation based on motor positions
    * @return Arm rotation in degrees
    */
-  public double getArmPos()
+  public static double getArmPos()
   {
     return (m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorDC.getPosition().getValueAsDouble()) * rotationRatio;
   }
@@ -68,7 +68,7 @@ public class Diffector extends SubsystemBase
    * Calculates elevator height based on motor positions
    * @return Elevator height in mm
    */
-  public double getElevatorPos()
+  public static double getElevatorPos()
   {
     return (m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorDC.getPosition().getValueAsDouble()) * travelRatio;
   }
