@@ -239,6 +239,34 @@ public final class Constants
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
     }
 
+    public static final class GamePiecesManipulator 
+    {
+        public static final class ManipulatorIDs {
+            public static final int coralMotorID = IDConstants.coralMotorID;
+            public static final int algaeMotorID = IDConstants.algaeMotorID;
+
+            public static final int coralBeamBreak1DigitalInput = 0;
+            public static final int coralBeamBreak2DigitalInput = 1;
+            public static final int algaeBeamBreakDigitalInput = 2;
+        }
+
+        public static final class CoralManipulator
+        {
+            public static final double coralManipulatorIntakeSpeed = 0;
+            public static final double coralManipulatorDeliverySpeed = 0.9;
+            public static final double coralManipulatorHoldingSpeed = 0.2;
+        }
+
+        public static final class AlgaeManipulator
+        {
+            public static final double algaeManipulatorIntakeSpeed = -0.7;
+            public static final double algaeManipulatorHoldingSpeed = 0.1;
+            public static final double algaeManipulatorNetSpeed = 1;
+            public static final double algaeManipulatorProcessorSpeed = 0.6;
+            public static final double algaeManipulatorEmptySpeed = 0;
+        }
+    }
+
     public static final class Intake // TODO: Speeds and Angles must be tuned to the specific robot
     {
         public static final class MotorID
