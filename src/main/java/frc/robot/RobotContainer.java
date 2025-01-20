@@ -30,9 +30,11 @@ public class RobotContainer
 
     /* Subsystems */
     private final Swerve s_Swerve = new Swerve(Constants.Swerve.initialHeading);
-    private Limelight s_Limelight = new Limelight(s_Swerve);
-
+    private final Limelight s_Limelight = new Limelight(s_Swerve);
+    private final Diffector s_Diffector = new Diffector();
+    private final Climber s_Climber = new Climber();
     private final Intake s_Intake = new Intake();
+    private final Rumbler s_Rumbler = new Rumbler(driver, copilot);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 

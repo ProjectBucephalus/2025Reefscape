@@ -14,7 +14,7 @@ import frc.robot.util.SwerveModuleConstants;
 
 public final class Constants 
 {
-    public static final class DiffectorConstants
+    public static final class Diffector
     {
         public static final int ucMotorID = IDConstants.ucMotorID;
         public static final int uaMotorID = IDConstants.uaMotorID;
@@ -64,6 +64,12 @@ public final class Constants
         public static final double rotationRatio = gearboxRatio * sprocketRatio / 2;
 
         public static final CargoStates startingCargoState = CargoStates.empty;
+    }
+
+    public static final class Rumbler 
+    {
+        public static final double driver_Default = 1;
+        public static final double coDriver_Default = 1;  
     }
 
     public static final class Control
