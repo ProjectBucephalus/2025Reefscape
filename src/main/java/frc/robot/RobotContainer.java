@@ -9,15 +9,21 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.commands.*;
 import frc.robot.constants.Constants;
+import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Intake.IntakeStatus;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -29,6 +35,7 @@ public class RobotContainer
 {
     /* Controllers */
     private final CommandXboxController driver = new CommandXboxController(0);
+    private final CommandXboxController copilot = new CommandXboxController(1);
 
     /* Drive Controls */
     private final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -37,10 +44,12 @@ public class RobotContainer
     private final int brakeAxis = XboxController.Axis.kRightTrigger.value;
 
     /* Subsystems */
-    private final Swerve s_Swerve = new Swerve(Constants.Swerve.initialHeading);
-    private Limelight s_Limelight = new Limelight(s_Swerve);
-
-    private RobotConfig robotConfig;
+    public final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
+    private final Limelight s_Limelight = new Limelight(s_Swerve);
+    private final Diffector s_Diffector = new Diffector();
+    private final Climber s_Climber = new Climber();
+    private final Intake s_Intake = new Intake();
+    private final Rumbler s_Rumbler = new Rumbler(driver, copilot);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
@@ -55,48 +64,42 @@ public class RobotContainer
                 () -> -driver.getRawAxis(rotationAxis), 
                 () -> driver.getRawAxis(brakeAxis),
                 () -> true,
-                () -> !driver.leftTrigger().getAsBoolean()
+                () -> !driver.leftStick().getAsBoolean()
             )
         );
 
-        try
-        {
-            robotConfig = RobotConfig.fromGUISettings();
-        } 
-        catch(Exception e) 
-        {
-            // Handle exception as needed
-            e.printStackTrace();
-            robotConfig = new RobotConfig(0, 0, null, 0);
-        }
 
-        //s_Swerve.gyro.setYaw(Constants.Swerve.initialHeading);
+
+        s_Swerve.resetRotation(new Rotation2d(Math.toRadians(Constants.Swerve.initialHeading)));
 
         // Configure the button bindings
         configureButtonBindings();
 
-        AutoBuilder.configure(
-            () -> s_Swerve.getPose(), // Robot pose supplier
-            () -> s_Swerve.setPose(), // Method to reset odometry (will be called if your auto has a starting pose)
-            s_Swerve.getRobotRelativeSpeeds(), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> s_Swerve.driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-            ),
-            robotConfig, // The robot configuration
-            () -> {
-              // Boolean supplier that controls when the path will be mirrored for the red alliance
-              // This will flip the path being followed to the red side of the field.
-              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+        SmartDashboard.putData
+        (
+            "Swerve Drive", 
+            new Sendable() 
+            {
+                @Override
+                public void initSendable(SendableBuilder builder) 
+                {
+                    builder.setSmartDashboardType("SwerveDrive");
 
-              var alliance = DriverStation.getAlliance();
-              if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-              }
-              return false;
-            },
-            this // Reference to this subsystem to set requirements
+                    builder.addDoubleProperty("Front Left Angle", () -> s_Swerve.getModule(0).getCurrentState().angle.getRadians(), null);
+                    builder.addDoubleProperty("Front Left Velocity", () -> s_Swerve.getModule(0).getCurrentState().speedMetersPerSecond, null);
+
+                    builder.addDoubleProperty("Front Right Angle", () -> s_Swerve.getModule(1).getCurrentState().angle.getRadians(), null);
+                    builder.addDoubleProperty("Front Right Velocity", () -> s_Swerve.getModule(1).getCurrentState().speedMetersPerSecond, null);
+
+                    builder.addDoubleProperty("Back Left Angle", () ->s_Swerve.getModule(2).getCurrentState().angle.getRadians(), null);
+                    builder.addDoubleProperty("Back Left Velocity", () ->s_Swerve.getModule(2).getCurrentState().speedMetersPerSecond, null);
+
+                    builder.addDoubleProperty("Back Right Angle", () -> s_Swerve.getModule(3).getCurrentState().angle.getRadians(), null);
+                    builder.addDoubleProperty("Back Right Velocity", () -> s_Swerve.getModule(3).getCurrentState().speedMetersPerSecond, null);
+
+                    builder.addDoubleProperty("Robot Angle", () -> s_Swerve.getState().Pose.getRotation().getRadians(), null);
+                }
+            }
         );
     }
 
@@ -109,14 +112,45 @@ public class RobotContainer
     private void configureButtonBindings() 
     {
         /* Driver Buttons */
-        driver.start().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
-        driver.back().onTrue(new InstantCommand(() -> s_Swerve.zeroPose()));
+        driver.start().onTrue(new InstantCommand(() -> s_Swerve.seedFieldCentric()));
+        driver.back().onTrue(new InstantCommand(() -> s_Swerve.tareEverything()));
 
-        //PoseTest TestA = new PoseTest(s_Swerve);
-        //driver.a().onTrue(TestA);
+        driver.leftTrigger().whileTrue(new InstantCommand(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_CORAL)));
+        driver.leftBumper().whileTrue(new InstantCommand(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_ALGAE)));
+
+        /*!TODO drop piece */
+        driver.rightBumper().whileTrue(new Test("dropPiece", "dropPiece"));
+
+        /* driveToCage */
+        driver.y().and(driver.povUp()).whileTrue(new Test("autoDrive", "drive centre cage"));
+        driver.y().and(driver.povLeft()).whileTrue(new Test("autoDrive", "drive left cage"));
+        driver.y().and(driver.povRight()).whileTrue(new Test("autoDrive", "drive right cage"));
+
+        /* driveToStationCentre */
+        driver.x().and(driver.povUp()).whileTrue(new Test("autoDrive", "drive centre station"));
+        driver.x().and(driver.povLeft()).whileTrue(new Test("autoDrive", "drive left station"));
+        driver.x().and(driver.povRight()).whileTrue(new Test("autoDrive", "drive right station"));
+
+        /* driveToProcessorCentre */
+        driver.b().and(driver.povUp()).onTrue(new Test("autoDrive", "drive centre processor"));
+        driver.b().and(driver.povLeft()).onTrue(new Test("autoDrive", "drive left processor"));
+        driver.b().and(driver.povRight()).onTrue(new Test("autoDrive", "drive right processor"));
+
+        /* driveToReefCentre */
+        driver.a().and(driver.povUp()).whileTrue(new Test("autoDrive", "drive centre reef"));
+        driver.a().and(driver.povLeft()).whileTrue(new Test("autoDrive", "drive left reef"));
+        driver.a().and(driver.povRight()).whileTrue(new Test("autoDrive", "drive right reef"));
+
+        driver.rightStick().whileTrue(new Test("targetObj", "Target Obj"));
+
+
+        /* Copilot Buttons*/
+        
+
+
     }
 
-    public Swerve getSwerve()
+    public CommandSwerveDrivetrain getSwerve()
     {
         return s_Swerve;
     }
