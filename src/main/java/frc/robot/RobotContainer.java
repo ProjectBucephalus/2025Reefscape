@@ -6,6 +6,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -58,7 +59,7 @@ public class RobotContainer
             )
         );
 
-
+        SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
 
         s_Swerve.resetRotation(new Rotation2d(Math.toRadians(Constants.Swerve.initialHeading)));
 
@@ -133,6 +134,7 @@ public class RobotContainer
 
         driver.rightStick().whileTrue(new Test("targetObj", "Target Obj"));
 
+        driver.a().whileTrue(new TargetHeading(s_Swerve, Rotation2d.kCW_90deg));
 
         /* Copilot Buttons*/
         
