@@ -6,14 +6,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 public final class CTREConfigs {
     public TalonFXConfiguration swerveAngleFXConfig = new TalonFXConfiguration();
     public TalonFXConfiguration swerveDriveFXConfig = new TalonFXConfiguration();
-    public static TalonFXConfiguration leftPivotMotorFXConfig = new TalonFXConfiguration();
-    public static TalonFXConfiguration rightPivotMotorFXConfig = new TalonFXConfiguration();
-    public static TalonFXConfiguration bottomShooterMotorFXConfig = new TalonFXConfiguration();
-    public static TalonFXConfiguration topShooterMotorFXConfig = new TalonFXConfiguration();
-    public static TalonFXConfiguration intakeMotorFXConfig = new TalonFXConfiguration();
-    public static TalonFXConfiguration indexerMotorFXConfig = new TalonFXConfiguration();
-
     public CANcoderConfiguration swerveCANcoderConfig = new CANcoderConfiguration();
+    public static TalonFXConfiguration diffectorFXConfig = new TalonFXConfiguration();
 
     public CTREConfigs(){
         /** Swerve CANCoder Configuration */
@@ -60,5 +54,34 @@ public final class CTREConfigs {
 
         swerveDriveFXConfig.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = Constants.Swerve.closedLoopRamp;
         swerveDriveFXConfig.ClosedLoopRamps.VoltageClosedLoopRampPeriod = Constants.Swerve.closedLoopRamp;
+
+        /* Diffector Motor Config (Empty) */
+        diffectorFXConfig.Slot0.kS = Constants.Diffector.diffectorMotorKPEmpty;
+        diffectorFXConfig.Slot0.kV = Constants.Diffector.diffectorMotorKIEmpty;
+        diffectorFXConfig.Slot0.kA = Constants.Diffector.diffectorMotorKDEmpty;
+        diffectorFXConfig.Slot0.kP = Constants.Diffector.diffectorMotorKPEmpty;
+        diffectorFXConfig.Slot0.kI = Constants.Diffector.diffectorMotorKIEmpty;
+        diffectorFXConfig.Slot0.kD = Constants.Diffector.diffectorMotorKDEmpty;
+        
+        /* Diffector Motor Config (Algae or Coral) */
+        diffectorFXConfig.Slot1.kS = Constants.Diffector.diffectorMotorKPOneItem;
+        diffectorFXConfig.Slot1.kV = Constants.Diffector.diffectorMotorKIOneItem;
+        diffectorFXConfig.Slot1.kA = Constants.Diffector.diffectorMotorKDOneItem;
+        diffectorFXConfig.Slot1.kP = Constants.Diffector.diffectorMotorKPOneItem;
+        diffectorFXConfig.Slot1.kI = Constants.Diffector.diffectorMotorKIOneItem;
+        diffectorFXConfig.Slot1.kD = Constants.Diffector.diffectorMotorKDOneItem;        
+
+        /* Diffector Motor Config (Algae and Coral) */
+        diffectorFXConfig.Slot2.kS = Constants.Diffector.diffectorMotorKPTwoItem;
+        diffectorFXConfig.Slot2.kV = Constants.Diffector.diffectorMotorKITwoItem;
+        diffectorFXConfig.Slot2.kA = Constants.Diffector.diffectorMotorKDTwoItem;
+        diffectorFXConfig.Slot2.kP = Constants.Diffector.diffectorMotorKPTwoItem;
+        diffectorFXConfig.Slot2.kI = Constants.Diffector.diffectorMotorKITwoItem;
+        diffectorFXConfig.Slot2.kD = Constants.Diffector.diffectorMotorKDTwoItem;
+
+        /* Diffector MotionMagic Config */
+        diffectorFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.Diffector.diffectorMotionMagicCruise;
+        diffectorFXConfig.MotionMagic.MotionMagicAcceleration = Constants.Diffector.diffectorMotionMagicAccel;
+
     }
 }

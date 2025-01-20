@@ -32,17 +32,17 @@ public class Swerve extends SubsystemBase {
     private static GeoFenceObject[] fieldGeoFence = FieldConstants.GeoFencing.fieldGeoFence;
 
     private double maxDriveSpeed = Constants.Swerve.maxSpeed;
-    private static double maxThrottle = Constants.ControlConstants.maxThrottle;
-    private static double minThrottle = Constants.ControlConstants.minThrottle;
-    private static double maxRotThrottle = Constants.ControlConstants.maxRotThrottle;
-    private static double minRotThrottle = Constants.ControlConstants.minRotThrottle;
-    private static double manualRotationScalar = Constants.ControlConstants.manualRotationScalar;
-    private static double maxRotationSpeed = Constants.ControlConstants.maxRotationSpeed;
+    private static double maxThrottle = Constants.Control.maxThrottle;
+    private static double minThrottle = Constants.Control.minThrottle;
+    private static double maxRotThrottle = Constants.Control.maxRotThrottle;
+    private static double minRotThrottle = Constants.Control.minRotThrottle;
+    private static double manualRotationScalar = Constants.Control.manualRotationScalar;
+    private static double maxRotationSpeed = Constants.Control.maxRotationSpeed;
     private static double targetAngle = 0;
     private static double robotRadius = FieldConstants.GeoFencing.robotRadius;
     private boolean manualAngleFlag = false;
 
-    private Field2d m_field = new Field2d();
+    public Field2d field = new Field2d();
 
 
     public Swerve(double initialHeading)
@@ -50,10 +50,10 @@ public class Swerve extends SubsystemBase {
         gyro = new Pigeon2(Constants.Swerve.pigeonID);
         gyro.getConfigurator().apply(new Pigeon2Configuration());
         gyro.setYaw(initialHeading);
-        SmartDashboard.putData("Field", m_field);
+        SmartDashboard.putData("Field", field);
 
-        m_field = new Field2d();
-        SmartDashboard.putData(m_field);
+        field = new Field2d();
+        SmartDashboard.putData(field);
 
         mSwerveMods = new SwerveModule[] {
             new SwerveModule(0, Constants.Swerve.Mod0.constants),
@@ -131,7 +131,7 @@ public class Swerve extends SubsystemBase {
         if (targetDelta == 0 && manualAngleFlag)
         {
             manualAngleFlag = false;
-            targetOffset = targetOffset / Constants.ControlConstants.overswingReduction;
+            targetOffset = targetOffset / Constants.Control.overswingReduction;
             targetAngle = targetAngle - targetOffset;
         }
         /* Changes target angle based on scaled joystick position */
@@ -141,7 +141,7 @@ public class Swerve extends SubsystemBase {
         }
 
         /* Apply deadband to target offset to prevent jittering */
-        if (Math.abs(targetOffset) <= Constants.ControlConstants.stickDeadband)
+        if (Math.abs(targetOffset) <= Constants.Control.stickDeadband)
             {targetOffset = 0;}
 
         /* Calculates rotation value based on target offset and max speed */
@@ -387,7 +387,7 @@ public class Swerve extends SubsystemBase {
         SmartDashboard.putNumber("X", getPose().getX());
         SmartDashboard.putNumber("Y", getPose().getY());
 
-        m_field.setRobotPose(swerveOdometry.getPoseMeters());
+        field.setRobotPose(swerveOdometry.getPoseMeters());
 
         /* for(SwerveModule mod : mSwerveMods){
             SmartDashboard.putNumber("Mod " + mod.moduleNumber + " CANcoder", mod.getCANcoder().getDegrees());
