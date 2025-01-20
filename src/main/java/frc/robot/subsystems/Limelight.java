@@ -9,6 +9,7 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
@@ -29,6 +30,12 @@ public class Limelight extends SubsystemBase
   public Limelight(CommandSwerveDrivetrain s_Swerve) 
   {
     this.s_Swerve = s_Swerve;
+
+    FieldObject2d algaeTest = (s_Swerve.field.getObject("Algae"));
+    /* FieldObject2d test = (s_Swerve.field.getObject("Box"));
+    test.setPoses(new Pose2d(2.65,4.15,new Rotation2d()), new Pose2d(8.25,4.15,new Rotation2d(0)), new Pose2d(1,4.15,new Rotation2d()), new Pose2d(2,2,new Rotation2d())); 
+    SmartDashboard.putString("Test Box", test.toString()); */
+    
     SmartDashboard.putBoolean("Use Limelight", true);
   }
   
@@ -72,10 +79,7 @@ public class Limelight extends SubsystemBase
       SmartDashboard.putString("mt2 Pose", mt2.pose.toString());
     }
 
-    SmartDashboard.putBoolean("Existance", true);
     SmartDashboard.putBoolean("Reject LL Update", doRejectUpdate);
     SmartDashboard.putNumber("Tags", mt2.tagCount);
   }
-
-
 }

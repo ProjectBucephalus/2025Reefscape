@@ -38,8 +38,8 @@ public class Diffector extends SubsystemBase
   {
     motorConfig = CTREConfigs.diffectorFXConfig;
 
-    m_diffectorUC = new TalonFX(Constants.DiffectorConstants.ucMotorID);
-    m_diffectorDC = new TalonFX(Constants.DiffectorConstants.uaMotorID);
+    m_diffectorUC = new TalonFX(Constants.Diffector.ucMotorID);
+    m_diffectorDC = new TalonFX(Constants.Diffector.uaMotorID);
 
     targetElevator = 0;
     targetArm = 0;
@@ -47,10 +47,10 @@ public class Diffector extends SubsystemBase
     m_diffectorUC.getConfigurator().apply(motorConfig);
     m_diffectorDC.getConfigurator().apply(motorConfig);
 
-    rotationRatio = Constants.DiffectorConstants.rotationRatio;
-    travelRatio = Constants.DiffectorConstants.travelRatio;
+    rotationRatio = Constants.Diffector.rotationRatio;
+    travelRatio = Constants.Diffector.travelRatio;
 
-    cargoState = Constants.DiffectorConstants.startingCargoState;
+    cargoState = Constants.Diffector.startingCargoState;
 
     motionMagicRequester = new MotionMagicVoltage(0);
   }

@@ -10,9 +10,6 @@ public class Climber extends SubsystemBase {
   private final MotionMagicVoltage motionMagic;
   private TalonFX m_Claws;
   private TalonFX m_Winch;
-  
-  double clawTarget;
-  double winchTarget;
   private double[] climbTargets = new double[2];
   
   public enum ClimberStatus 
@@ -28,8 +25,6 @@ public class Climber extends SubsystemBase {
     m_Claws = new TalonFX(Constants.Climber.MotorID.m_Claws);
     m_Winch = new TalonFX(Constants.Climber.MotorID.m_Winch);
     motionMagic = new MotionMagicVoltage(0);
-    clawTarget = 0;
-    winchTarget = 0;
   }
 
   private void setClimberSpeed(double speed)
@@ -38,21 +33,24 @@ public class Climber extends SubsystemBase {
     m_Winch.set(speed);
   };
 
-  private void setClawTargetPos(double newClawTarget)
-  {
-    clawTarget = newClawTarget;
-  }
+private void setClawTargetPos (double newClawTarget)
+{
+  climbTargets[0] = newClawTarget;
+  //Use for Manual Controls as to not set winch as well
+}
 
-  private void setWinchTargetPos(double newWinchTarget)
-  {
-    winchTarget = newWinchTarget;
-  }
+private void setWinchTargetPos (double newWinchTarget)
+{
+  climbTargets[1] = newWinchTarget;
+  //Use for Manual Controls as to not set claws as well
+}
 
-  private void setClimbTargets(double newClawTarget, double newWinchTarget)
-  {
-    climbTargets[0] = newClawTarget;
-    climbTargets[1] = newWinchTarget;
-  }
+private void setClimbTargets(double newClawTarget, double newWinchTarget)
+{
+  climbTargets[0] = newClawTarget;
+  climbTargets[1] = newWinchTarget;
+  //Use for auto-positoning
+}
 
   public void setClimberStatus(ClimberStatus Status)
   {
