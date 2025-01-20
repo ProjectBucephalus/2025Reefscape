@@ -76,7 +76,7 @@ public final class Constants
     {
         public static final double stickDeadband = 0.1;
         /** Normal maximum robot speed, relative to maximum uncapped speed */
-        public static final double maxThrottle = 0.3;
+        public static final double maxThrottle = 0.7;
         /** Minimum robot speed when braking, relative to maximum uncapped speed */
         public static final double minThrottle = 0.1;
         /** Normal maximum rotational robot speed, relative to maximum uncapped rotational speed */
@@ -155,6 +155,11 @@ public final class Constants
         public static final double driveKD = 0.0;
         public static final double driveKF = 0.0;
 
+        /* Rotation Control PID Values */
+        public static final double rotationKP = 0.06; //TODO: Tune to robot
+        public static final double rotationKI = 0;
+        public static final double rotationKD = 0.00075;
+
         /* Drive Motor Characterization Values From SYSID */
         public static final double driveKS = 0.32 / 12; 
         public static final double driveKV = 1.51 / 12;
@@ -162,7 +167,7 @@ public final class Constants
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double maxSpeed = 1; // ERROR: Unsure if this value works as it should
+        public static final double maxSpeed = 5; // ERROR: Unsure if this value works as it should
         /** Radians per Second */
         public static final double maxAngularVelocity = 3;
         
