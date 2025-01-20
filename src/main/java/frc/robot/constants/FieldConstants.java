@@ -119,8 +119,8 @@ public class FieldConstants
             ObjectTypes.walls
         );
 
-        public static final GeoFenceObject reefBlue = new GeoFenceObject(4.489, 4.026, reefBuffer, circumscribedReefZoneDiameter / 2, 0, 6); // TODO: set as reef zone for testing
-        public static final GeoFenceObject reefRed = new GeoFenceObject(13.059, 4.026, reefBuffer, circumscribedReefZoneDiameter / 2, 0, 6);
+        //public static final GeoFenceObject reefBlue = new GeoFenceObject(4.489, 4.026, reefBuffer, circumscribedReefZoneDiameter / 2, 0, 6); // TODO: set as reef zone for testing
+        //public static final GeoFenceObject reefRed = new GeoFenceObject(13.059, 4.026, reefBuffer, circumscribedReefZoneDiameter / 2, 0, 6);
         public static final GeoFenceObject bargeColumn = new GeoFenceObject(8.774, 4.026, 0.25, 0.15);
         public static final GeoFenceObject bargeZoneBlue = new GeoFenceObject(8.190, 3.721, 9.358, 0, bargeBuffer, 0, ObjectTypes.box);
         public static final GeoFenceObject bargeZoneRed = new GeoFenceObject(8.190, 4.331, 9.358, fieldWidth, bargeBuffer, 0, ObjectTypes.box);
@@ -132,8 +132,8 @@ public class FieldConstants
         public static final GeoFenceObject[] fieldGeoFence = 
         {
             field, 
-            reefBlue, 
-            reefRed, 
+            //reefBlue, 
+            //reefRed, 
             bargeColumn, 
             bargeZoneBlue, 
             bargeZoneRed, 
