@@ -16,9 +16,9 @@ public class AlgaeManipulator extends SubsystemBase {
 
   private DigitalInput algaeBeamBreak;
 
-  private algaeManipulatorStatus algaeStatus;
+  private AlgaeManipulatorStatus algaeStatus;
 
-  public enum algaeManipulatorStatus
+  public enum AlgaeManipulatorStatus
   {
     INTAKE,
     HOLDING,
@@ -43,7 +43,7 @@ public class AlgaeManipulator extends SubsystemBase {
     return algaeBeamBreak.get();
   }
   
-  public void setAlgaeManipulatorStatus(algaeManipulatorStatus status)
+  public void setAlgaeManipulatorStatus(AlgaeManipulatorStatus status)
   {
     algaeStatus = status;
   }
@@ -56,19 +56,20 @@ public class AlgaeManipulator extends SubsystemBase {
     {
       case INTAKE:
         setAlgaeIntakeSpeed(Constants.GamePiecesManipulator.AlgaeManipulator.algaeManipulatorIntakeSpeed);
+        if (getAlgaeBeamBreakState()) {
+          algaeStatus = AlgaeManipulatorStatus.HOLDING;
+        }
         break;
 
       case HOLDING:
-        if (getAlgaeBeamBreakState() == true) 
+        if (getAlgaeBeamBreakState()) 
         {
           algaeMotor.setVoltage(Constants.GamePiecesManipulator.AlgaeManipulator.algaeManipulatorHoldingSpeed);      
-        }
-  
-        else if (getAlgaeBeamBreakState() == false)
+        } else
         {
           setAlgaeIntakeSpeed(0);
         }
-      break;
+        break;
 
       case NET:
         setAlgaeIntakeSpeed(Constants.GamePiecesManipulator.AlgaeManipulator.algaeManipulatorNetSpeed);
