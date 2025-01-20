@@ -19,6 +19,8 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -35,7 +37,7 @@ import frc.robot.constants.TunerConstants.TunerSwerveDrivetrain;
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
  * Subsystem so it can easily be used in command-based projects.
  */
-public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem {
+public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem, Sendable {
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -164,6 +166,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        SmartDashboard.putData("Field", field);
     }
 
     /**
@@ -197,6 +200,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
         configureAutoBuilder();
+        SmartDashboard.putData("Field", field);
     }
 
     private void configureAutoBuilder() {
@@ -226,6 +230,23 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         } catch (Exception ex) {
             DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
         }
+    }
+
+    @Override
+    public void initSendable(SendableBuilder builder) 
+    {
+        builder.setSmartDashboardType("Subsystem");
+
+        builder.addBooleanProperty(".hasDefault", () -> getDefaultCommand() != null, null);
+        builder.addStringProperty(
+            ".default",
+            () -> getDefaultCommand() != null ? getDefaultCommand().getName() : "none",
+            null);
+        builder.addBooleanProperty(".hasCommand", () -> getCurrentCommand() != null, null);
+        builder.addStringProperty(
+            ".command",
+            () -> getCurrentCommand() != null ? getCurrentCommand().getName() : "none",
+            null);
     }
 
     /**
@@ -281,9 +302,12 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
         field.setRobotPose(getState().Pose);
+
+        SmartDashboard.putNumber("gyro reading", getState().RawHeading.getDegrees());
     }
 
-    private void startSimThread() {
+    private void startSimThread() 
+    {
         m_lastSimTime = Utils.getCurrentTimeSeconds();
 
         /* Run simulation at a faster rate so PID gains behave more reasonably */
