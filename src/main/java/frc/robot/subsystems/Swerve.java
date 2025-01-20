@@ -92,60 +92,6 @@ public class Swerve extends SubsystemBase {
         );
     }
 
-    public void autoDrive(String input1, Integer input2)
-    {
-        SmartDashboard.putString("autoDrive", input1+input2);
-        if (input1 == "cage")
-        {
-            if (input2 == 0)
-            {
-                //!TODO centre cage
-            } else if (input2 == -1)
-            {
-                //!TODO left cage
-            } else if (input2 == 1)
-            {
-                //!TODO right cage
-            }
-        } else if (input1 == "station")
-        {
-            if (input2 == 0)
-            {
-                //!TODO centre station 
-            } else if (input2 == -1)
-            {
-                //!TODO left station 
-            } else if (input2 == 1)
-            {
-                //!TODO right station 
-            }
-        } else if (input1 == "processor")
-        {
-            if (input2 == 0)
-            {
-                //!TODO centre processor 
-            } else if (input2 == -1)
-            {
-                //!TODO left processor 
-            } else if (input2 == 1)
-            {
-                //!TODO right processor 
-            }
-        } else if (input1 == "reef")
-        {
-            if (input2 == 0)
-            {
-                //!TODO centre reef 
-            } else if (input2 == -1)
-            {
-                //!TODO left reef 
-            } else if (input2 == 1)
-            {
-                //!TODO right reef 
-            }
-        }
-    }
-
     // ------------------------------------------------------------------------------------------ //
     // | # 5985 Additional drive functions to provide more customisable driving functionality # | //
     // | #                                                                                    # | //
