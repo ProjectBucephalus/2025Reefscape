@@ -163,7 +163,7 @@ public class GeoFenceObject
 
         for (int i = 0; i < sides; i++)
         {
-            edgeLines.set(i, new GeoFenceObject
+            edgeLines.add(i, new GeoFenceObject
             (
                 polygonPoints[2*i].getX(),
                 polygonPoints[2*i].getY(),
@@ -172,7 +172,7 @@ public class GeoFenceObject
                 buffer
             ));
 
-            edgeReference.set(i, polygonPoints[2*i+1]);
+            edgeReference.add(i, polygonPoints[2*i+1]);
         }
 
         /* 

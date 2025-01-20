@@ -302,8 +302,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
         field.setRobotPose(getState().Pose);
-
-        SmartDashboard.putNumber("gyro reading", getState().RawHeading.getDegrees());
     }
 
     private void startSimThread() 

@@ -46,20 +46,20 @@ public class Limelight extends SubsystemBase
     LimelightHelpers.SetRobotOrientation(Constants.Vision.limeLightName, s_Swerve.getPigeon2().getYaw().getValueAsDouble(), 0.0, 0.0, 0.0, 0.0, 0.0);
     
     mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.Vision.limeLightName);
+
+    driveState = s_Swerve.getState();
+    headingDeg = driveState.Pose.getRotation().getDegrees();
+    omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
     
     doRejectUpdate = false;
     
-    if (mt2 != null && mt2.tagCount > 0 && omegaRps < 2.0) 
+    if (mt2 == null || mt2.tagCount == 0 || omegaRps > 2.0) 
     {
       doRejectUpdate = true;
     }
 
     if (SmartDashboard.getBoolean("Use Limelight", true)) 
     {
-      driveState = s_Swerve.getState();
-      headingDeg = driveState.Pose.getRotation().getDegrees();
-      omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
-
       LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
       if (!doRejectUpdate) 
       {

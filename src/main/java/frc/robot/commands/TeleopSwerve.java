@@ -17,12 +17,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class TeleopSwerve extends Command {    
     private final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
-        .withDeadband(Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
+        .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
         .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
         .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
         .withSteerRequestType(SteerRequestType.MotionMagicExpo);
     private final SwerveRequest.RobotCentric driveRequestRoboCentric = new SwerveRequest.RobotCentric()
-        .withDeadband(Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
+        .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
         .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
         .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
         .withSteerRequestType(SteerRequestType.MotionMagicExpo);
@@ -53,7 +53,6 @@ public class TeleopSwerve extends Command {
         this.brakeSup = brakeSup;
         this.fieldCentricSup = fieldCentricSup;
         this.fencedSup = fencedSup;
-        SmartDashboard.putBoolean("Existance: The Sequel", true);
     }
 
     @Override
@@ -68,10 +67,6 @@ public class TeleopSwerve extends Command {
 
         motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
         rotationSpeed *= (Constants.Control.maxRotThrottle - ((Constants.Control.maxRotThrottle - Constants.Control.minRotThrottle) * brakeVal));
-
-        SmartDashboard.putNumber("MotionX", motionXY.getX());
-        SmartDashboard.putNumber("MotionY", motionXY.getY());
-        SmartDashboard.putNumber("Rotation", rotationSpeed);
 
         if (fieldCentricSup.getAsBoolean())
         {

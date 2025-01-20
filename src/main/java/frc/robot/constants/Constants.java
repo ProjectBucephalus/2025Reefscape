@@ -70,7 +70,7 @@ public final class Constants
     {
         public static final double stickDeadband = 0.1;
         /** Normal maximum robot speed, relative to maximum uncapped speed */
-        public static final double maxThrottle = 1;
+        public static final double maxThrottle = 0.7;
         /** Minimum robot speed when braking, relative to maximum uncapped speed */
         public static final double minThrottle = 0.1;
         /** Normal maximum rotational robot speed, relative to maximum uncapped rotational speed */
