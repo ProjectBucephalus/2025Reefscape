@@ -115,7 +115,9 @@ public final class Constants
         /* Module Gear Ratios */
         public static final double driveGearRatio = chosenModule.driveGearRatio;
         public static final double angleGearRatio = chosenModule.angleGearRatio;
-        //public static final double angleGearRatioAlt = 12.17; // ERROR: The physical gearing on the specific robot is built wrong, remove this if all swerve modules are built correctly! Should be ~13.37
+        /* public static final double angleGearRatioAlt = 12.17; 
+        * ERROR: The physical gearing on the specific robot is built wrong, remove this if all swerve modules are built correctly! 
+        * Should be ~13.37 */
 
         /* Motor Inverts */
         public static final InvertedValue angleMotorInvert = chosenModule.angleMotorInvert;
@@ -162,7 +164,7 @@ public final class Constants
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
         public static final NeutralModeValue driveNeutralMode = NeutralModeValue.Brake;
 
-        // # 5985 Fix: With the additiona of persistant calibration, the angleOffset values should not need to be changed # //
+        // # 5985 Fix: With the additional of persistant calibration, the angleOffset values should not need to be changed # //
         /* Module Specific Constants */
         /* Front Left Module - Module 0 */
         public static final class Mod0
