@@ -55,7 +55,7 @@ public class TargetHeading extends Command
     this.targetHeading = targetHeading;
     this.rotationSup = rotationSup;
 
-    driveRequest.HeadingController.setPID(Constants.Swerve.driveKP, Constants.Swerve.driveKI, Constants.Swerve.driveKD);
+    driveRequest.HeadingController.setPID(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
