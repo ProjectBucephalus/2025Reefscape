@@ -71,6 +71,12 @@ public class Robot extends TimedRobot
     {
       robotContainer.getSwerve().resetRotation(robotContainer.getSwerve().getState().Pose.getRotation());
     }
+    
+    m_autonomousCommand = robotContainer.getAutoCommand();
+
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
+    }
   }
 
   @Override
