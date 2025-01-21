@@ -77,9 +77,9 @@ public class Limelight extends SubsystemBase
     if(mt2 != null)
     {
       SmartDashboard.putString("mt2 Pose", mt2.pose.toString());
+      SmartDashboard.putNumber("Tags", mt2.tagCount);
     }
 
     SmartDashboard.putBoolean("Reject LL Update", doRejectUpdate);
-    SmartDashboard.putNumber("Tags", mt2.tagCount);
   }
 }

@@ -302,6 +302,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             });
         }
         field.setRobotPose(getState().Pose);
+        SmartDashboard.putNumber("Robot Speed", Math.hypot(getState().Speeds.vxMetersPerSecond, getState().Speeds.vyMetersPerSecond));
     }
 
     private void startSimThread() 
