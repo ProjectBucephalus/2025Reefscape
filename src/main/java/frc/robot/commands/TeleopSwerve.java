@@ -5,6 +5,7 @@ import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.GeoFenceObject;
 
+import java.lang.reflect.Field;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -36,11 +37,12 @@ public class TeleopSwerve extends Command {
     private BooleanSupplier fencedSup;
     private Translation2d motionXY;
     private final GeoFenceObject[] fieldGeoFence = FieldConstants.GeoFencing.fieldGeoFence;
-    private final double robotRadius = FieldConstants.GeoFencing.robotRadius;
+    private double robotRadius;
+    private double robotSpeed;
 
-    double rotationSpeed;
-    double translationSpeed;
-    double strafeSpeed;
+    double rotationVal;
+    double translationVal;
+    double strafeVal;
     double brakeVal;
 
     public TeleopSwerve(CommandSwerveDrivetrain s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fieldCentricSup, BooleanSupplier fencedSup) {
@@ -59,20 +61,29 @@ public class TeleopSwerve extends Command {
     public void execute() 
     {
         /* Get Values and apply Deadband*/
-        rotationSpeed = rotationSup.getAsDouble() * Constants.Swerve.maxAngularVelocity;
-        translationSpeed = translationSup.getAsDouble() * Constants.Swerve.maxSpeed;
-        strafeSpeed = strafeSup.getAsDouble() * Constants.Swerve.maxSpeed;
+        rotationVal = rotationSup.getAsDouble();
+        translationVal = translationSup.getAsDouble();
+        strafeVal = strafeSup.getAsDouble();
         brakeVal = brakeSup.getAsDouble();
-        motionXY = new Translation2d(translationSpeed, strafeSpeed);
+        motionXY = new Translation2d(translationVal, strafeVal);
 
         motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
-        rotationSpeed *= (Constants.Control.maxRotThrottle - ((Constants.Control.maxRotThrottle - Constants.Control.minRotThrottle) * brakeVal));
-
+        rotationVal *= (Constants.Control.maxRotThrottle - ((Constants.Control.maxRotThrottle - Constants.Control.minRotThrottle) * brakeVal));
+        
         if (fieldCentricSup.getAsBoolean())
         {
             if (fencedSup.getAsBoolean())
             {
+                robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
                 SmartDashboard.putString("Drive State", "Fenced");
+                if (robotSpeed >= FieldConstants.GeoFencing.robotSpeedThreshold)
+                {
+                    robotRadius = FieldConstants.GeoFencing.robotRadiusCircumscribed;
+                }
+                else
+                {
+                    robotRadius = FieldConstants.GeoFencing.robotRadiusInscribed;
+                }
                 // Read down the list of geofence objects
                 // Outer wall is index 0, so has highest authority by being processed last
                 for (int i = fieldGeoFence.length - 1; i >= 0; i--)
@@ -83,9 +94,9 @@ public class TeleopSwerve extends Command {
                 s_Swerve.setControl
                 (
                     driveRequest
-                    .withVelocityX(motionXY.getX())
-                    .withVelocityY(motionXY.getY())
-                    .withRotationalRate(rotationSpeed)
+                    .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
+                    .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
+                    .withRotationalRate(rotationVal * Constants.Swerve.maxAngularVelocity)
                 );
             }
             else
@@ -94,9 +105,9 @@ public class TeleopSwerve extends Command {
                 s_Swerve.setControl
                 (
                     driveRequest
-                    .withVelocityX(motionXY.getX())
-                    .withVelocityY(motionXY.getY())
-                    .withRotationalRate(rotationSpeed)
+                    .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
+                    .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
+                    .withRotationalRate(rotationVal * Constants.Swerve.maxAngularVelocity)
                 );
             }
         }
@@ -106,9 +117,9 @@ public class TeleopSwerve extends Command {
             s_Swerve.setControl
             (
                 driveRequestRoboCentric
-                .withVelocityX(motionXY.getX())
-                .withVelocityY(motionXY.getY())
-                .withRotationalRate(rotationSpeed)
+                .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
+                .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
+                .withRotationalRate(rotationVal * Constants.Swerve.maxAngularVelocity)
             );
         }
     }
