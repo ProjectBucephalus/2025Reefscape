@@ -259,7 +259,7 @@ public final class Constants
         public static final class AlgaeManipulator
         {
             public static final double algaeManipulatorIntakeSpeed = -0.7;
-            public static final double algaeManipulatorHoldingSpeed = 0.1;
+            public static final double algaeManipulatorHoldingVoltage = 0.1;
             public static final double algaeManipulatorNetSpeed = 1;
             public static final double algaeManipulatorProcessorSpeed = 0.6;
             public static final double algaeManipulatorEmptySpeed = 0;

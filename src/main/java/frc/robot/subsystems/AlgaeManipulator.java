@@ -56,7 +56,8 @@ public class AlgaeManipulator extends SubsystemBase {
     {
       case INTAKE:
         setAlgaeIntakeSpeed(Constants.GamePiecesManipulator.AlgaeManipulator.algaeManipulatorIntakeSpeed);
-        if (getAlgaeBeamBreakState()) {
+        if (getAlgaeBeamBreakState()) 
+        {
           algaeStatus = AlgaeManipulatorStatus.HOLDING;
         }
         break;
@@ -64,7 +65,7 @@ public class AlgaeManipulator extends SubsystemBase {
       case HOLDING:
         if (getAlgaeBeamBreakState()) 
         {
-          algaeMotor.setVoltage(Constants.GamePiecesManipulator.AlgaeManipulator.algaeManipulatorHoldingSpeed);      
+          algaeMotor.setVoltage(Constants.GamePiecesManipulator.AlgaeManipulator.algaeManipulatorHoldingVoltage);      
         } else
         {
           setAlgaeIntakeSpeed(0);
