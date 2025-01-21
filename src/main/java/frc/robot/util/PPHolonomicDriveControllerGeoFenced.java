@@ -35,7 +35,7 @@ public class PPHolonomicDriveControllerGeoFenced implements PathFollowingControl
     private static DoubleSupplier rotFeedbackOverride = null;
 
     private static GeoFenceObject[] fieldGeoFence = FieldConstants.GeoFencing.fieldGeoFence;
-    private static double robotRadius = FieldConstants.GeoFencing.robotRadius;
+    private static double robotRadius = FieldConstants.GeoFencing.robotRadiusInscribed;
 
     /**
      * Constructs a HolonomicDriveController

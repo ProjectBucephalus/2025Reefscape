@@ -35,7 +35,8 @@ public class TargetHeading extends Command
   private BooleanSupplier fencedSup;
   private Translation2d motionXY;
   private final GeoFenceObject[] fieldGeoFence = FieldConstants.GeoFencing.fieldGeoFence;
-  private final double robotRadius = FieldConstants.GeoFencing.robotRadius;
+  private double robotRadius;
+  private double robotSpeed;
 
   private double translationSpeed;
   private double strafeSpeed;
@@ -71,7 +72,16 @@ public class TargetHeading extends Command
     
     if (fencedSup.getAsBoolean())
     {
+      robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
       SmartDashboard.putString("Drive State", "Fenced");
+      if (robotSpeed >= FieldConstants.GeoFencing.robotSpeedThreshold)
+      {
+          robotRadius = FieldConstants.GeoFencing.robotRadiusCircumscribed;
+      }
+      else
+      {
+          robotRadius = FieldConstants.GeoFencing.robotRadiusInscribed;
+      }
       // Read down the list of geofence objects
       // Outer wall is index 0, so has highest authority by being processed last
       for (int i = fieldGeoFence.length - 1; i >= 0; i--)
