@@ -293,13 +293,13 @@ public class GeoFenceObject
                 return pointDamping(Conversions.clamp(Xa + dXab * dot, Xa, Xb), Conversions.clamp(Ya + dYab * dot, Ya, Yb), motionXY, robotR, robotXY);
 
             case box:
-                if (robotXY.getX() < Xa - radius)
+                if (robotXY.getX() < Xa)
                 {
-                    if (robotXY.getY() < Ya - radius) // SW Corner
+                    if (robotXY.getY() < Ya) // SW Corner
                     {
                         return pointDamping(Xa, Ya, motionXY, robotR, robotXY);
                     }
-                    else if (robotXY.getY() > Yb + radius) // NW Corner
+                    else if (robotXY.getY() > Yb) // NW Corner
                     {
                         return pointDamping(Xa, Yb, motionXY, robotR, robotXY);
                     }
@@ -309,13 +309,13 @@ public class GeoFenceObject
                         motionX = Math.min(motionX, (Conversions.clamp(distanceToEdgeX, 0, buffer)) / buffer);
                     }
                 }
-                else if (robotXY.getX() > Xb + radius)
+                else if (robotXY.getX() > Xb)
                 {
-                    if (robotXY.getY() < Ya - radius) // SE Corner
+                    if (robotXY.getY() < Ya) // SE Corner
                     {
                         return pointDamping(Xb, Ya, motionXY, robotR, robotXY);
                     }
-                    else if (robotXY.getY() > Yb + radius) // NE Corner
+                    else if (robotXY.getY() > Yb) // NE Corner
                     {   
                         return pointDamping(Xb, Yb, motionXY, robotR, robotXY);
                     }
@@ -327,12 +327,12 @@ public class GeoFenceObject
                 }
                 else 
                 {
-                    if (robotXY.getY() < Ya - radius) // S Cardinal
+                    if (robotXY.getY() < Ya) // S Cardinal
                     {
                         distanceToEdgeY = Math.abs((Ya - radius) - (robotXY.getY() + robotR));
                         motionY = Math.min(motionY, (Conversions.clamp(distanceToEdgeY, 0, buffer)) / buffer);
                     } 
-                    else if (robotXY.getY() > Yb + radius) // N Cardinal
+                    else if (robotXY.getY() > Yb) // N Cardinal
                     {
                         distanceToEdgeY = Math.abs((robotXY.getY() - robotR) - (Yb + radius));
                         motionY = Math.max(motionY, (-Conversions.clamp(distanceToEdgeY, 0, buffer)) / buffer);

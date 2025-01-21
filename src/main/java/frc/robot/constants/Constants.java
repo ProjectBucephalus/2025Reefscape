@@ -75,7 +75,7 @@ public final class Constants
     {
         public static final double stickDeadband = 0.1;
         /** Normal maximum robot speed, relative to maximum uncapped speed */
-        public static final double maxThrottle = 0.7;
+        public static final double maxThrottle = 1;
         /** Minimum robot speed when braking, relative to maximum uncapped speed */
         public static final double minThrottle = 0.1;
         /** Normal maximum rotational robot speed, relative to maximum uncapped rotational speed */
@@ -168,7 +168,7 @@ public final class Constants
         /** Meters per Second */
         public static final double maxSpeed = 5; // ERROR: Unsure if this value works as it should
         /** Radians per Second */
-        public static final double maxAngularVelocity = 3;
+        public static final double maxAngularVelocity = 6;
         
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
@@ -236,6 +236,34 @@ public final class Constants
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
             new TrapezoidProfile.Constraints(
                 kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    }
+
+    public static final class GamePiecesManipulator 
+    {
+        public static final class ManipulatorIDs {
+            public static final int coralMotorID = IDConstants.coralMotorID;
+            public static final int algaeMotorID = IDConstants.algaeMotorID;
+
+            public static final int coralBeamBreak1DigitalInput = 0;
+            public static final int coralBeamBreak2DigitalInput = 1;
+            public static final int algaeBeamBreakDigitalInput = 2;
+        }
+
+        public static final class CoralManipulator
+        {
+            public static final double coralManipulatorIntakeSpeed = 0;
+            public static final double coralManipulatorDeliverySpeed = 0.9;
+            public static final double coralManipulatorHoldingSpeed = 0.2;
+        }
+
+        public static final class AlgaeManipulator
+        {
+            public static final double algaeManipulatorIntakeSpeed = -0.7;
+            public static final double algaeManipulatorHoldingSpeed = 0.1;
+            public static final double algaeManipulatorNetSpeed = 1;
+            public static final double algaeManipulatorProcessorSpeed = 0.6;
+            public static final double algaeManipulatorEmptySpeed = 0;
+        }
     }
 
     public static final class Intake // TODO: Speeds and Angles must be tuned to the specific robot
