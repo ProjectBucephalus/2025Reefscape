@@ -82,12 +82,6 @@ public final class Constants
         public static final double maxRotThrottle = 1;
         /** Minimum rotational robot speed when braking, relative to maximum uncapped rotational speed */
         public static final double minRotThrottle = 0.5;
-        /** Scales manual rotation speed */
-        public static final double manualRotationScalar = 15;
-        /** Maximum robot rotation speed */
-        public static final double maxRotationSpeed = 2;
-        /** Steering overswing compensation factor */
-        public static final double overswingReduction = 2;
     }
 
     public static final class Vision
