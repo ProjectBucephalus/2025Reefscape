@@ -4,49 +4,106 @@
 
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
+import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.util.GeoFenceObject;
 
 public class TargetHeading extends Command 
 {
   private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
-  .withSteerRequestType(SteerRequestType.MotionMagicExpo);  
+    .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
+    .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
+    .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
+    .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
-  private CommandSwerveDrivetrain s_Swerve;
+  private CommandSwerveDrivetrain s_Swerve;    
+  private DoubleSupplier translationSup;
+  private DoubleSupplier strafeSup;
+  private DoubleSupplier rotationSup;
+  private DoubleSupplier brakeSup;
+  private BooleanSupplier fencedSup;
+  private Translation2d motionXY;
+  private final GeoFenceObject[] fieldGeoFence = FieldConstants.GeoFencing.fieldGeoFence;
+  private final double robotRadius = FieldConstants.GeoFencing.robotRadius;
+
+  private double translationSpeed;
+  private double strafeSpeed;
+  private double brakeVal;
+  
   private Rotation2d targetHeading;
 
-  public TargetHeading(CommandSwerveDrivetrain s_Swerve, Rotation2d targetHeading) 
+  public TargetHeading(CommandSwerveDrivetrain s_Swerve, Rotation2d targetHeading, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
     this.s_Swerve = s_Swerve;
-    this.targetHeading = targetHeading;
     addRequirements(s_Swerve);
-  }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+    this.translationSup = translationSup;
+    this.strafeSup = strafeSup;
+    this.brakeSup = brakeSup;
+    this.fencedSup = fencedSup;
+    this.targetHeading = targetHeading;
+    this.rotationSup = rotationSup;
+
+    driveRequest.HeadingController.setPID(Constants.Swerve.driveKP, Constants.Swerve.driveKI, Constants.Swerve.driveKD);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    SmartDashboard.putBoolean("exist", true);
-    s_Swerve.setControl(driveRequest.withTargetDirection(targetHeading));   
-  }
+    translationSpeed = translationSup.getAsDouble() * Constants.Swerve.maxSpeed;
+    strafeSpeed = strafeSup.getAsDouble() * Constants.Swerve.maxSpeed;
+    brakeVal = brakeSup.getAsDouble();
+    motionXY = new Translation2d(translationSpeed, strafeSpeed);
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+    motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
+    
+    if (fencedSup.getAsBoolean())
+    {
+      SmartDashboard.putString("Drive State", "Fenced");
+      // Read down the list of geofence objects
+      // Outer wall is index 0, so has highest authority by being processed last
+      for (int i = fieldGeoFence.length - 1; i >= 0; i--)
+      {
+          Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
+          motionXY = inputDamping;
+      }
+      s_Swerve.setControl
+      (
+          driveRequest
+          .withVelocityX(motionXY.getX())
+          .withVelocityY(motionXY.getY())
+          .withTargetDirection(targetHeading)
+      );
+    }
+    else
+    {   
+      SmartDashboard.putString("Drive State", "Non-Fenced");
+      s_Swerve.setControl
+      (
+          driveRequest
+          .withVelocityX(motionXY.getX())
+          .withVelocityY(motionXY.getY())
+          .withTargetDirection(targetHeading)
+      );
+    }
+  }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
-    return false;
+  public boolean isFinished() 
+  {
+    return Math.abs(rotationSup.getAsDouble()) > Constants.Control.stickDeadband;
   }
 }

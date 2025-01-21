@@ -38,10 +38,10 @@ public class TeleopSwerve extends Command {
     private final GeoFenceObject[] fieldGeoFence = FieldConstants.GeoFencing.fieldGeoFence;
     private final double robotRadius = FieldConstants.GeoFencing.robotRadius;
 
-    double rotationSpeed;
-    double translationSpeed;
-    double strafeSpeed;
-    double brakeVal;
+    private double rotationSpeed;
+    private double translationSpeed;
+    private double strafeSpeed;
+    private double brakeVal;
 
     public TeleopSwerve(CommandSwerveDrivetrain s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fieldCentricSup, BooleanSupplier fencedSup) {
         this.s_Swerve = s_Swerve;

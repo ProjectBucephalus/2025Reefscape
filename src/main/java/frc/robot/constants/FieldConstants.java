@@ -144,6 +144,6 @@ public class FieldConstants
         };
         
         /** Radius from robot centre in metres where geofence is triggered */
-        public static final double robotRadius = 0.55;
+        public static final double robotRadius = 0.45;
     }
 }

@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TunerConstants;
@@ -134,7 +134,20 @@ public class RobotContainer
 
         driver.rightStick().whileTrue(new Test("targetObj", "Target Obj"));
 
-        driver.a().whileTrue(new TargetHeading(s_Swerve, Rotation2d.kCW_90deg));
+        driver.a().and(new Trigger(() -> Math.abs(driver.getRightX()) < Constants.Control.stickDeadband))
+            .onTrue
+            (
+                new TargetHeading
+                (
+                    s_Swerve, 
+                    Rotation2d.kCW_90deg,
+                    () -> -driver.getRawAxis(translationAxis), 
+                    () -> -driver.getRawAxis(strafeAxis), 
+                    () -> -driver.getRawAxis(rotationAxis), 
+                    () -> driver.getRawAxis(brakeAxis),
+                    () -> !driver.leftStick().getAsBoolean()
+                )
+            );
 
         /* Copilot Buttons*/
         
