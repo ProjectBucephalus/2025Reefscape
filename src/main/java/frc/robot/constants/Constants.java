@@ -3,7 +3,6 @@ package frc.robot.constants;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -83,12 +82,6 @@ public final class Constants
         public static final double maxRotThrottle = 1;
         /** Minimum rotational robot speed when braking, relative to maximum uncapped rotational speed */
         public static final double minRotThrottle = 0.5;
-        /** Scales manual rotation speed */
-        public static final double manualRotationScalar = 15;
-        /** Maximum robot rotation speed */
-        public static final double maxRotationSpeed = 3;
-        /** Steering overswing compensation factor */
-        public static final double overswingReduction = 2;
     }
 
     public static final class Vision
@@ -156,9 +149,9 @@ public final class Constants
         public static final double driveKF = 0.0;
 
         /* Rotation Control PID Values */
-        public static final double rotationKP = 0.06; //TODO: Tune to robot
+        public static final double rotationKP = 3; //TODO: Tune to robot
         public static final double rotationKI = 0;
-        public static final double rotationKD = 0.00075;
+        public static final double rotationKD = 0;
 
         /* Drive Motor Characterization Values From SYSID */
         public static final double driveKS = 0.32 / 12; 
@@ -260,7 +253,7 @@ public final class Constants
         public static final class AlgaeManipulator
         {
             public static final double algaeManipulatorIntakeSpeed = -0.7;
-            public static final double algaeManipulatorHoldingSpeed = 0.1;
+            public static final double algaeManipulatorHoldingVoltage = 0.1;
             public static final double algaeManipulatorNetSpeed = 1;
             public static final double algaeManipulatorProcessorSpeed = 0.6;
             public static final double algaeManipulatorEmptySpeed = 0;

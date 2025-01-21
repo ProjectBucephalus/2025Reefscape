@@ -5,7 +5,6 @@ import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.GeoFenceObject;
 
-import java.lang.reflect.Field;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
@@ -40,10 +39,10 @@ public class TeleopSwerve extends Command {
     private double robotRadius;
     private double robotSpeed;
 
-    double rotationVal;
-    double translationVal;
-    double strafeVal;
-    double brakeVal;
+    private double rotationVal;
+    private double translationVal;
+    private double strafeVal;
+    private double brakeVal;
 
     public TeleopSwerve(CommandSwerveDrivetrain s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fieldCentricSup, BooleanSupplier fencedSup) {
         this.s_Swerve = s_Swerve;
