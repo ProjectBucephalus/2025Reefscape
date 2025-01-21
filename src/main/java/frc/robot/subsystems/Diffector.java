@@ -57,7 +57,7 @@ public class Diffector extends SubsystemBase
 
   /**
    * Calculates arm rotation based on motor positions
-   * @return Arm rotation in degrees
+   * @return Arm rotation, degrees clockwise, 0 = algae at top
    */
   public static double getArmPos()
   {

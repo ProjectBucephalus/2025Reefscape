@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
 
 /**
- * Intake subsystem, handling the intake wheels, and intake arms
+ * Intake subsystem, handling the intake wheels, and intake arms.
  * 
  * @author 5985
  * @author Sebastian Aiello 
@@ -26,6 +26,7 @@ public class Intake extends SubsystemBase {
   private TalonFX mTopArm;
   private TalonFX mBottomArm;
 
+  /* Declarations of all the motion magic variables */
   private final MotionMagicVoltage motionMagic;
   private double topArmTarget;
   private double bottomArmTarget;
@@ -68,7 +69,7 @@ public class Intake extends SubsystemBase {
   /** 
    * Set speed of the top intake motor
    * 
-   * @param speed Top intake motor speed [-1..0..1]
+   * @param speed Top intake motor speed [-1..1]
    */
   private void setTopIntakeSpeed(double speed)
   {
@@ -78,7 +79,7 @@ public class Intake extends SubsystemBase {
   /** 
    * Set speed of the bottom intake motor
    * 
-   * @param speed Bottom intake motor speed [-1..0..1]
+   * @param speed Bottom intake motor speed [-1..1]
    */
   private void setBottomIntakeSpeed(double speed)
   {
@@ -88,7 +89,7 @@ public class Intake extends SubsystemBase {
   /**
    * Set the angle of the top arm 
    * 
-   * @param newTopTarget Top arm angle [0..90..180..270]
+   * @param newTopTarget Top arm angle, degrees clockwise
    */
    public void setTopArmTarget(double newTopTarget)
    {
@@ -99,7 +100,7 @@ public class Intake extends SubsystemBase {
   /**
    * Set the angle of the bottom arm 
    * 
-   * @param newBottomTarget Bottom arm angle [0..90..180.207]
+   * @param newBottomTarget Bottom arm angle, degrees clockwise
    */
   public void setBottomArmTarget(double newBottomTarget)
   {
@@ -181,11 +182,21 @@ public class Intake extends SubsystemBase {
     }
   }
 
+  /**
+   * Gets the target the top arm wants to go to
+   * 
+   * @return TopArmTarget current value
+   */
   public double getTopArmTarget()
   {
     return topArmTarget;
   }
 
+  /**
+   * Gets the target the bottom arm want to go to
+   * 
+   * @return BottomArmTarget current value
+   */
   public double getBottomArmTarget()
   {
     return bottomArmTarget;
