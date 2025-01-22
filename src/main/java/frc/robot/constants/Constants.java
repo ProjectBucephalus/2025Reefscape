@@ -3,10 +3,11 @@ package frc.robot.constants;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.path.PathConstraints;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.subsystems.Diffector.CargoStates;
 import frc.robot.util.COTSTalonFXSwerveConstants;
 import frc.robot.util.SwerveModuleConstants;
@@ -216,20 +217,17 @@ public final class Constants
     }
 
     public static final class Auto // TODO: The below constants are used in the example auto, and must be tuned to specific robot
-    {
-        public static final double kMaxSpeedMetersPerSecond = 3;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
-    
-        public static final double kPXController = 1;
-        public static final double kPYController = 1;
-        public static final double kPThetaController = 1;
-    
-        /* Constraint for the motion profilied robot angle controller */
-        public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
-            new TrapezoidProfile.Constraints(
-                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    {   
+        /** m/s */
+        public static final double pathplannerMaxSpeed = 5;
+        /** m/s^2 */
+        public static final double pathplannerMaxAcceleration = 5.5;
+        /** degrees/s */
+        public static final double pathplannerMaxAngularSpeed = 720;
+        /** degrees/s^2 */
+        public static final double pathplannerMaxAngularAcceleration = 1050;
+        public static final PathConstraints defaultConstraints = new PathConstraints
+            (pathplannerMaxSpeed, pathplannerMaxAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
     }
 
     public static final class GamePiecesManipulator 

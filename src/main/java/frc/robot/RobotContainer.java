@@ -1,7 +1,6 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
@@ -160,8 +159,9 @@ public class RobotContainer
                 )
             );
 
-        driver.x().onTrue(new FollowPath("TestPath1"));
-        driver.b().onTrue(new FollowPath("TestPath2"));
+        driver.y().onTrue(new PathfindToAndFollow("ReefTag"));
+        driver.x().onTrue(new PathfindToAndFollow("ReefLeft"));
+        driver.b().onTrue(new PathfindToAndFollow("ReefRight"));
 
         /* Copilot Buttons*/
     }
