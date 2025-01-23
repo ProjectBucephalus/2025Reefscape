@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.CTREConfigs;
+import frc.robot.constants.Constants;
 import frc.robot.constants.FieldConstants;
 
 /**
@@ -38,9 +39,11 @@ public class Robot extends TimedRobot
   @Override
   public void robotInit() 
   {
-    SmartDashboard.putData("Field", autoPosition);
     robotContainer = new RobotContainer();
     PathfindingCommand.warmupCommand().schedule();
+
+    SmartDashboard.putData("Field", autoPosition);
+    SmartDashboard.putString("Auto Command List", Constants.Auto.defaultAuto);
   }
 
   /**

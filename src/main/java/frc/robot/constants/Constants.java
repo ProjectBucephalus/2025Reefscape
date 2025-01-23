@@ -1,5 +1,8 @@
 package frc.robot.constants;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -228,6 +231,49 @@ public final class Constants
         public static final double pathplannerMaxAngularAcceleration = 1050;
         public static final PathConstraints defaultConstraints = new PathConstraints
             (pathplannerMaxSpeed, pathplannerMaxAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
+        
+        /* Maps all dynamic auto paths to the name used for them in the dashbord. Dashboard Name, Path Name */
+        public static final Map<String, String> pathMap = new HashMap<>(5)
+        {
+            {
+                put("cL1", "test");
+                put("cL2", "test");
+                put("cL3", "test");
+                put("cL4", "test");
+                put("cL5", "test");
+                put("cL6", "test");
+                put("cL7", "test");
+                put("cL8", "test");
+                put("cL9", "test");
+                put("cR1", "test");
+                put("cR2", "test");
+                put("cR3", "test");
+                put("cR4", "test");
+                put("cR5", "test");
+                put("cR6", "test");
+                put("cR7", "test");
+                put("cR8", "test");
+                put("cR9", "test");
+                put("a1", "test");
+                put("a2", "test");                
+                put("a3", "test");                
+                put("a4", "test");                
+                put("a5", "test");                
+                put("a6", "test");
+                put("sC1", "test");
+                put("sC2", "test");
+                put("sC3", "test");
+                put("sA1", "test");
+                put("sA2", "test");
+                put("sA3", "test");
+                put("b1", "test");
+                put("b2", "test");
+                put("b3", "test");
+                put("p", "test");                                
+            }
+        };
+
+        public static final String defaultAuto = "a1,rA3,p,cR3";
     }
 
     public static final class GamePiecesManipulator 

@@ -19,6 +19,7 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake.IntakeStatus;
+import frc.robot.util.DynamicAuto;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -178,6 +179,6 @@ public class RobotContainer
 
     public Command getAutoCommand()
     {
-        return autoChooser.getSelected();
+        return new PathfindThroughPathList(DynamicAuto.getPathList(SmartDashboard.getString("Auto Command List", Constants.Auto.defaultAuto)));
     }
 }
