@@ -18,7 +18,7 @@ public class CancelRumble extends Command {
 
     @Override
     public void execute(){
-        s_Rumbler.RemoveRequest(Aside,Request);
+        s_Rumbler.removeRequest(Aside,Request);
     }
 
     public boolean isFinished(){
