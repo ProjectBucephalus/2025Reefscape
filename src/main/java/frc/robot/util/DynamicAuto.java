@@ -58,7 +58,7 @@ public class DynamicAuto
           // Each iteration fills two indexes in the command list
           autoMapValue = Constants.Auto.autoMap.get(splitCommands[i]);
           commandList.add(AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile(autoMapValue.pathName), constraints));
-          commandList.add(autoMapValue.command);
+          commandList.add(autoMapValue.command.get());
         }
       } 
       catch (Exception e) 

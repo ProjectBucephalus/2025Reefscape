@@ -2,6 +2,7 @@ package frc.robot.constants;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -237,9 +238,9 @@ public final class Constants
         public static class AutoMapping
         {
             public final String pathName;
-            public final Command command;
+            public final Supplier<Command> command;
 
-            public AutoMapping(String pathName, Command command)
+            public AutoMapping(String pathName, Supplier<Command> command)
             {
                 this.pathName = pathName;
                 this.command = command;
@@ -263,7 +264,7 @@ public final class Constants
                 put("cr2", new AutoMapping("test", null));
                 put("cr3", new AutoMapping("test", null));
                 put("cr4", new AutoMapping("test", null));
-                put("cr5", new AutoMapping("StationSouth", new Test("Pickup", "picked up cR5")));
+                put("cr5", new AutoMapping("StationSouth", () -> new Test("Pickup", "picked up cR5")));
                 put("cr6", new AutoMapping("test", null));
                 put("cr7", new AutoMapping("test", null));
                 put("cr8", new AutoMapping("test", null));
