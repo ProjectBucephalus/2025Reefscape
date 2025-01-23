@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.Test;
 import frc.robot.subsystems.Diffector.CargoStates;
 import frc.robot.util.COTSTalonFXSwerveConstants;
 import frc.robot.util.SwerveModuleConstants;
@@ -249,44 +250,44 @@ public final class Constants
         public static final Map<String, AutoMapping> autoMap = new HashMap<>(34)
         {
             {
-                put("cL1", new AutoMapping("test", null));
-                put("cL2", new AutoMapping("test", null));
-                put("cL3", new AutoMapping("test", null));
-                put("cL4", new AutoMapping("test", null));
-                put("cL5", new AutoMapping("test", null));
-                put("cL6", new AutoMapping("test", null));
-                put("cL7", new AutoMapping("test", null));
-                put("cL8", new AutoMapping("test", null));
-                put("cL9", new AutoMapping("test", null));
-                put("cR1", new AutoMapping("test", null));
-                put("cR2", new AutoMapping("test", null));
-                put("cR3", new AutoMapping("test", null));
-                put("cR4", new AutoMapping("test", null));
-                put("cR5", new AutoMapping("test", null));
-                put("cR6", new AutoMapping("test", null));
-                put("cR7", new AutoMapping("test", null));
-                put("cR8", new AutoMapping("test", null));
-                put("cR9", new AutoMapping("test", null));
+                put("cl1", new AutoMapping("test", null));
+                put("cl2", new AutoMapping("test", null));
+                put("cl3", new AutoMapping("test", null));
+                put("cl4", new AutoMapping("test", null));
+                put("cl5", new AutoMapping("test", null));
+                put("cl6", new AutoMapping("test", null));
+                put("cl7", new AutoMapping("test", null));
+                put("cl8", new AutoMapping("test", null));
+                put("cl9", new AutoMapping("test", null));
+                put("cr1", new AutoMapping("test", null));
+                put("cr2", new AutoMapping("test", null));
+                put("cr3", new AutoMapping("test", null));
+                put("cr4", new AutoMapping("test", null));
+                put("cr5", new AutoMapping("StationSouth", new Test("Pickup", "picked up cR5")));
+                put("cr6", new AutoMapping("test", null));
+                put("cr7", new AutoMapping("test", null));
+                put("cr8", new AutoMapping("test", null));
+                put("cr9", new AutoMapping("test", null));
                 put("a1" , new AutoMapping("test", null));
                 put("a2" , new AutoMapping("test", null));                
                 put("a3" , new AutoMapping("test", null));                
                 put("a4" , new AutoMapping("test", null));                
                 put("a5" , new AutoMapping("test", null));                
                 put("a6" , new AutoMapping("test", null));
-                put("sC1", new AutoMapping("test", null));
-                put("sC2", new AutoMapping("test", null));
-                put("sC3", new AutoMapping("test", null));
-                put("sA1", new AutoMapping("test", null));
-                put("sA2", new AutoMapping("test", null));
-                put("sA3", new AutoMapping("test", null));
+                put("sc1", new AutoMapping("test", null));
+                put("sc2", new AutoMapping("test", null));
+                put("sc3", new AutoMapping("test", null));
+                put("sa1", new AutoMapping("test", null));
+                put("sa2", new AutoMapping("test", null));
+                put("sa3", new AutoMapping("test", null));
                 put("b1" , new AutoMapping("test", null));
                 put("b2" , new AutoMapping("test", null));
                 put("b3" , new AutoMapping("test", null));
-                put("p"  , new AutoMapping("test", null));                                
+                put("p"  , new AutoMapping("test", null));                
             }
         };
 
-        public static final String defaultAuto = "a1,rA3,p,cR3";
+        public static final String defaultAuto = "t5,cR5,w3.5,cR5";
     }
 
     public static final class GamePiecesManipulator 

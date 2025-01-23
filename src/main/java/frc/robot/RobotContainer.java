@@ -1,13 +1,10 @@
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -47,14 +44,10 @@ public class RobotContainer
     private final Intake s_Intake = new Intake();
     private final Rumbler s_Rumbler = new Rumbler(driver, copilot);
 
-    /* Autos */
-    private final SendableChooser<Command> autoChooser;
-
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
     {
-        autoChooser = AutoBuilder.buildAutoChooser("TestAuto");
-        SmartDashboard.putData("Auto Mode", autoChooser);
+        SmartDashboard.putString("Auto Input", Constants.Auto.defaultAuto);
 
         s_Swerve.setDefaultCommand
         (
@@ -179,7 +172,7 @@ public class RobotContainer
 
     public Command getAutoCommand()
     {
-        // Gets the input string of command phrases, processes into a list of commands, and runs those commands
-        return new PathfindThroughPathList(DynamicAuto.getCommandList(SmartDashboard.getString("Auto Command List", Constants.Auto.defaultAuto)));
+        // Gets the input string of command phrases, processes into a list of commands, and puts them into a sequential command group
+        return new RunAutoCommandList(DynamicAuto.getCommandList(SmartDashboard.getString("Auto Input", Constants.Auto.defaultAuto)));
     }
 }

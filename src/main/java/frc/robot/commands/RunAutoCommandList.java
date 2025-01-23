@@ -4,13 +4,15 @@
 
 package frc.robot.commands;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class PathfindThroughPathList extends SequentialCommandGroup 
+public class RunAutoCommandList extends SequentialCommandGroup 
 {
-  public PathfindThroughPathList(Command[] commandList) 
+  public RunAutoCommandList(ArrayList<Command> commandList) 
   {
-    addCommands(commandList);
+    addCommands((Command[]) commandList.toArray());
   }
 }

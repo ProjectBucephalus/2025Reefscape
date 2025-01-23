@@ -4,6 +4,8 @@
 
 package frc.robot.util;
 
+import java.util.ArrayList;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -18,6 +20,7 @@ import frc.robot.constants.Constants.Auto.AutoMapping;
 public class DynamicAuto 
 {
   private static final PathConstraints constraints = Constants.Auto.defaultConstraints;
+  
   /** Creates a new DynamicAuto. */
   public DynamicAuto() {}
 
@@ -26,12 +29,12 @@ public class DynamicAuto
    * @param commandInput The string of commands to split, seperated by commas with no spaces (e.g. "a1,rA1,p,cR3")
    * @return An array of commands, from the input command phrase string, in the same order
    */
-  public static Command[] getCommandList(String commandInput)
+  public static ArrayList<Command> getCommandList(String commandInput)
   {
     // Splits the single-String command phrases into individual strings, which are stored in an array
-    String[] splitCommands = commandInput.split(",");
+    String[] splitCommands = commandInput.toLowerCase().split(",");
     // Length of the command list is twice the number of command phrases, as each phrase maps to two commands (one path and one robot)
-    Command[] commandList = new Command[splitCommands.length * 2];
+    ArrayList<Command> commandList = new ArrayList<>();
     
     AutoMapping autoMapValue;
 
@@ -43,26 +46,24 @@ public class DynamicAuto
         // 'w' is a command
         if (splitCommands[i].charAt(0) == 'w')
         {
-          commandList[i * 2] = null; // No path to follow when waiting
-          commandList[(i * 2) + 1] = new WaitCommand(Double.parseDouble(splitCommands[i].substring(1)));
+          commandList.add(new WaitCommand(Double.parseDouble(splitCommands[i].substring(1))));
         }
         // 't' is a wait until match time command
         else if (splitCommands[i].charAt(0) == 't') 
         {
-          commandList[i * 2] = null; // No path to follow when waiting
-          commandList[(i * 2) + 1] = new WaitUntilCommand(Double.parseDouble(splitCommands[i].substring(1)));
+          commandList.add(new WaitUntilCommand(Double.parseDouble(splitCommands[i].substring(1))));
         }
         else
         {
           // Each iteration fills two indexes in the command list
           autoMapValue = Constants.Auto.autoMap.get(splitCommands[i]);
-          commandList[i * 2] = AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile(autoMapValue.pathName), constraints);
-          commandList[(i * 2) + 1] = autoMapValue.command;
+          commandList.add(AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile(autoMapValue.pathName), constraints));
+          commandList.add(autoMapValue.command);
         }
       } 
       catch (Exception e) 
       {
-          DriverStation.reportError("Path error: " + e.getMessage(), e.getStackTrace());
+        DriverStation.reportError("Path error: " + e.getMessage(), e.getStackTrace());
       }  
     }
 

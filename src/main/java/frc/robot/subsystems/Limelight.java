@@ -31,7 +31,7 @@ public class Limelight extends SubsystemBase
   {
     this.s_Swerve = s_Swerve;
 
-    FieldObject2d algaeTest = (s_Swerve.field.getObject("Algae"));
+    //FieldObject2d algaeTest = (s_Swerve.field.getObject("Algae"));
     /* FieldObject2d test = (s_Swerve.field.getObject("Box"));
     test.setPoses(new Pose2d(2.65,4.15,new Rotation2d()), new Pose2d(8.25,4.15,new Rotation2d(0)), new Pose2d(1,4.15,new Rotation2d()), new Pose2d(2,2,new Rotation2d())); 
     SmartDashboard.putString("Test Box", test.toString()); */
