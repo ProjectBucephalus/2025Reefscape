@@ -37,9 +37,9 @@ public class RobotContainer
     private final int brakeAxis = XboxController.Axis.kRightTrigger.value;
 
     /* Subsystems */
-    public final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
+    public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
     private final Limelight s_Limelight = new Limelight(s_Swerve);
-    private final Diffector s_Diffector = new Diffector();
+    public static final Diffector s_Diffector = new Diffector();
     private final Climber s_Climber = new Climber();
     private final Intake s_Intake = new Intake();
     private final Rumbler s_Rumbler = new Rumbler(driver, copilot);

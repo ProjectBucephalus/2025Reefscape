@@ -251,6 +251,18 @@ public final class Constants
         public static final Map<String, AutoMapping> autoMap = new HashMap<>(34)
         {
             {
+                put("ra" , new AutoMapping("test", null));
+                put("rb" , new AutoMapping("test", null));
+                put("rc" , new AutoMapping("test", null));
+                put("rd" , new AutoMapping("test", null));
+                put("re" , new AutoMapping("test", null));
+                put("rf" , new AutoMapping("test", null));
+                put("rg" , new AutoMapping("test", null));
+                put("rh" , new AutoMapping("test", null));
+                put("ri" , new AutoMapping("test", null));
+                put("rj" , new AutoMapping("test", null));
+                put("rk" , new AutoMapping("test", null));
+                put("rl" , new AutoMapping("test", null));
                 put("cl1", new AutoMapping("test", null));
                 put("cl2", new AutoMapping("test", null));
                 put("cl3", new AutoMapping("test", null));

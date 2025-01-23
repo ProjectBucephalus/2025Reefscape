@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.RobotContainer;
+import frc.robot.commands.ScoreReef;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Auto.AutoMapping;
 
@@ -52,6 +54,11 @@ public class DynamicAuto
         else if (splitCommands[i].charAt(0) == 't') 
         {
           commandList.add(new WaitUntilCommand(Double.parseDouble(splitCommands[i].substring(1))));
+        }
+        else if (splitCommands[i].charAt(0) == 'r')
+        {
+          commandList.add(AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile(Constants.Auto.autoMap.get(splitCommands[i].substring(0, 1)).pathName), constraints));
+          commandList.add(new ScoreReef(RobotContainer.s_Diffector, Integer.parseInt(splitCommands[i].substring(2))));
         }
         else
         {

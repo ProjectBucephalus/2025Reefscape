@@ -13,6 +13,9 @@ public class RunAutoCommandList extends SequentialCommandGroup
 {
   public RunAutoCommandList(ArrayList<Command> commandList) 
   {
-    addCommands((Command[]) commandList.toArray());
+    Command[] commandArray = new Command[commandList.size()];
+    commandArray = commandList.toArray(commandArray);
+    
+    addCommands(commandArray);
   }
 }
