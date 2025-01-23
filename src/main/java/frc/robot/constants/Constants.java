@@ -323,19 +323,26 @@ public final class Constants
 
         public static final class MotorSpeeds
         {
-            public static final double m_InitSpeed = 0;
-            public static final double m_DeploySpeed = 0.8;
-            public static final double m_ClimbSpeed = 0.8;
+            public static final double initSpeed = 0;
+            public static final double deploySpeed = 0.8;
+            public static final double climbSpeed = 0.8;
         }
 
         public static final class ClimberPos 
         {
-            public static final double m_InitClawPos = 0;
-            public static final double m_InitWinchPos = 0;
-            public static final double m_DeployClawPos = 90;
-            public static final double m_DeployWinchPos = 0;
-            public static final double m_ClimbClawPos = 0;
-            public static final double m_ClimbWinchPos = 0;
+            public static final double initClawPos = 0;
+            public static final double initWinchPos = 0;
+            public static final double deployClawPos = 90;
+            public static final double deployWinchPos = 0;
+            public static final double climbClawPos = 0;
+            public static final double climbWinchPos = 0;
         }
+    }
+
+    public static final class ArmControl
+    {
+        public static final double maxRotations = 3;
+        public static final double maxAbsPos = maxRotations * 360;
+        public static final double returnPos = 0;
     }
 }

@@ -2,6 +2,11 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+//TODO: -Shortest Path
+//      -Choose Path
+//      -Go to (Shortest Path / Toward Zero)
+//      -Unwind Command (Put In Commands Folder)
+
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.Utils;
@@ -15,9 +20,26 @@ import frc.robot.constants.Constants;
 
 public class ArmControl extends SubsystemBase 
 {
-    double rotationCount
-    double currentAbsPos
-    double targetRelPos
-    double currentRelPos
+    double rotationCount;
+    double currentPos;
+    double targetPos;
+    double maxAbsPos = constants.Constants.ArmControl.maxAbsPos;
+    double maxRotations = constant.Constants.ArmControl.maxRotations;
 
+    private void unwind()
+    {
+        targetPos = constants.Constants.ArmControl.returnPos;
+    }
+
+    private void goToPosition(double targetPos)
+    {
+        if (targetPos > maxRotations)
+        {
+            
+        }
+        else 
+        {
+            
+        }
+    }
 }
