@@ -4,30 +4,61 @@
 
 package frc.robot.util;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.Auto.AutoMapping;
 
-public class DynamicAuto {
+public class DynamicAuto 
+{
+  private static final PathConstraints constraints = Constants.Auto.defaultConstraints;
   /** Creates a new DynamicAuto. */
   public DynamicAuto() {}
 
   /**
-   * Splits a string of auto commands and gets the path associated with each command
+   * Splits a string of auto command phrases and gets the path command and robot command associated with each command phrase
    * @param commandInput The string of commands to split, seperated by commas with no spaces (e.g. "a1,rA1,p,cR3")
-   * @return An array of path names, from the input command string, in the same order
+   * @return An array of commands, from the input command phrase string, in the same order
    */
-  public static PathPlannerPath[] getPathList(String commandInput)
+  public static Command[] getCommandList(String commandInput)
   {
+    // Splits the single-String command phrases into individual strings, which are stored in an array
     String[] splitCommands = commandInput.split(",");
-    PathPlannerPath[] pathList = new PathPlannerPath[splitCommands.length];
-  
-    for (int i = 0; i < pathList.length; i++) 
+    // Length of the command list is twice the number of command phrases, as each phrase maps to two commands (one path and one robot)
+    Command[] commandList = new Command[splitCommands.length * 2];
+    
+    AutoMapping autoMapValue;
+
+    // For each command phrase, adds the associated path and then the associated command to the command list
+    for (int i = 0; i < splitCommands.length; i++) 
     {
       try
       {
-        pathList[i] = PathPlannerPath.fromPathFile(Constants.Auto.pathMap.get(splitCommands[i]));
+        // 'w' is a command
+        if (splitCommands[i].charAt(0) == 'w')
+        {
+          commandList[i * 2] = null; // No path to follow when waiting
+          commandList[(i * 2) + 1] = new WaitCommand(Double.parseDouble(splitCommands[i].substring(1)));
+        }
+        // 't' is a wait until match time command
+        else if (splitCommands[i].charAt(0) == 't') 
+        {
+          commandList[i * 2] = null; // No path to follow when waiting
+          commandList[(i * 2) + 1] = new WaitUntilCommand(Double.parseDouble(splitCommands[i].substring(1)));
+        }
+        else
+        {
+          // Each iteration fills two indexes in the command list
+          autoMapValue = Constants.Auto.autoMap.get(splitCommands[i]);
+          commandList[i * 2] = AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile(autoMapValue.pathName), constraints);
+          commandList[(i * 2) + 1] = autoMapValue.command;
+        }
       } 
       catch (Exception e) 
       {
@@ -35,6 +66,6 @@ public class DynamicAuto {
       }  
     }
 
-    return pathList;
+    return commandList;
   }
 }

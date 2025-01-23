@@ -179,6 +179,7 @@ public class RobotContainer
 
     public Command getAutoCommand()
     {
-        return new PathfindThroughPathList(DynamicAuto.getPathList(SmartDashboard.getString("Auto Command List", Constants.Auto.defaultAuto)));
+        // Gets the input string of command phrases, processes into a list of commands, and runs those commands
+        return new PathfindThroughPathList(DynamicAuto.getCommandList(SmartDashboard.getString("Auto Command List", Constants.Auto.defaultAuto)));
     }
 }

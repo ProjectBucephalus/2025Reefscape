@@ -4,27 +4,13 @@
 
 package frc.robot.commands;
 
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.constants.Constants;
 
 public class PathfindThroughPathList extends SequentialCommandGroup 
 {
-  private final PathConstraints constraints = Constants.Auto.defaultConstraints;
-
-  public PathfindThroughPathList(PathPlannerPath[] pathList) 
+  public PathfindThroughPathList(Command[] commandList) 
   {
-    Command[] commandList = new Command[pathList.length];
-
-    for (int i = 0; i < commandList.length; i++) 
-    {
-      commandList[i] = AutoBuilder.pathfindThenFollowPath(pathList[i], constraints);
-    }
-
     addCommands(commandList);
   }
 }

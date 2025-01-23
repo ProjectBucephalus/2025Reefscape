@@ -11,6 +11,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Diffector.CargoStates;
 import frc.robot.util.COTSTalonFXSwerveConstants;
 import frc.robot.util.SwerveModuleConstants;
@@ -232,44 +233,56 @@ public final class Constants
         public static final PathConstraints defaultConstraints = new PathConstraints
             (pathplannerMaxSpeed, pathplannerMaxAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
         
+        public static class AutoMapping
+        {
+            public final String pathName;
+            public final Command command;
+
+            public AutoMapping(String pathName, Command command)
+            {
+                this.pathName = pathName;
+                this.command = command;
+            }
+        }
+
         /* Maps all dynamic auto paths to the name used for them in the dashbord. Dashboard Name, Path Name */
-        public static final Map<String, String> pathMap = new HashMap<>(5)
+        public static final Map<String, AutoMapping> autoMap = new HashMap<>(34)
         {
             {
-                put("cL1", "test");
-                put("cL2", "test");
-                put("cL3", "test");
-                put("cL4", "test");
-                put("cL5", "test");
-                put("cL6", "test");
-                put("cL7", "test");
-                put("cL8", "test");
-                put("cL9", "test");
-                put("cR1", "test");
-                put("cR2", "test");
-                put("cR3", "test");
-                put("cR4", "test");
-                put("cR5", "test");
-                put("cR6", "test");
-                put("cR7", "test");
-                put("cR8", "test");
-                put("cR9", "test");
-                put("a1", "test");
-                put("a2", "test");                
-                put("a3", "test");                
-                put("a4", "test");                
-                put("a5", "test");                
-                put("a6", "test");
-                put("sC1", "test");
-                put("sC2", "test");
-                put("sC3", "test");
-                put("sA1", "test");
-                put("sA2", "test");
-                put("sA3", "test");
-                put("b1", "test");
-                put("b2", "test");
-                put("b3", "test");
-                put("p", "test");                                
+                put("cL1", new AutoMapping("test", null));
+                put("cL2", new AutoMapping("test", null));
+                put("cL3", new AutoMapping("test", null));
+                put("cL4", new AutoMapping("test", null));
+                put("cL5", new AutoMapping("test", null));
+                put("cL6", new AutoMapping("test", null));
+                put("cL7", new AutoMapping("test", null));
+                put("cL8", new AutoMapping("test", null));
+                put("cL9", new AutoMapping("test", null));
+                put("cR1", new AutoMapping("test", null));
+                put("cR2", new AutoMapping("test", null));
+                put("cR3", new AutoMapping("test", null));
+                put("cR4", new AutoMapping("test", null));
+                put("cR5", new AutoMapping("test", null));
+                put("cR6", new AutoMapping("test", null));
+                put("cR7", new AutoMapping("test", null));
+                put("cR8", new AutoMapping("test", null));
+                put("cR9", new AutoMapping("test", null));
+                put("a1" , new AutoMapping("test", null));
+                put("a2" , new AutoMapping("test", null));                
+                put("a3" , new AutoMapping("test", null));                
+                put("a4" , new AutoMapping("test", null));                
+                put("a5" , new AutoMapping("test", null));                
+                put("a6" , new AutoMapping("test", null));
+                put("sC1", new AutoMapping("test", null));
+                put("sC2", new AutoMapping("test", null));
+                put("sC3", new AutoMapping("test", null));
+                put("sA1", new AutoMapping("test", null));
+                put("sA2", new AutoMapping("test", null));
+                put("sA3", new AutoMapping("test", null));
+                put("b1" , new AutoMapping("test", null));
+                put("b2" , new AutoMapping("test", null));
+                put("b3" , new AutoMapping("test", null));
+                put("p"  , new AutoMapping("test", null));                                
             }
         };
 
