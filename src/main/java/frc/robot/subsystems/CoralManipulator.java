@@ -55,7 +55,7 @@ public class CoralManipulator extends SubsystemBase {
    * 
    * @param Speed Coral manipulator motor speed, positive to eject [-1..1]
    */
-  private void setCoralManipulatorSpeed(double Speed)
+  public void setCoralManipulatorSpeed(double Speed)
   {
     coralMotor.set(Speed);
   }
