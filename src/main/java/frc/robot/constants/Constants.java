@@ -316,6 +316,7 @@ public final class Constants
 
         public static final class CoralManipulator
         {
+            /* Coral manipulator speeds */
             public static final double coralManipulatorIntakeSpeed = 0;
             public static final double coralManipulatorDeliverySpeed = 0.9;
             public static final double coralManipulatorHoldingSpeed = 0.2;
@@ -323,6 +324,7 @@ public final class Constants
 
         public static final class AlgaeManipulator
         {
+            /* Algae manipulator speeds */
             public static final double algaeManipulatorIntakeSpeed = -0.7;
             public static final double algaeManipulatorHoldingVoltage = 0.1;
             public static final double algaeManipulatorNetSpeed = 1;
@@ -343,7 +345,7 @@ public final class Constants
 
         public static final class MotorSpeeds
         {
-            /* Constants for the intake motors speeds */
+            /* Intake motors speeds */
             public static final double mCoralIntakeMotorSpeed = 0.8;
             public static final double mAlgaeIntakeMotorSpeed = 0.8;
             public static final double mCoralTransferMotorSpeed = 0;
