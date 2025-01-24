@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -107,11 +108,11 @@ public class RobotContainer
     private void configureButtonBindings() 
     {
         /* Driver Buttons */
-        driver.start().onTrue(new InstantCommand(() -> s_Swerve.seedFieldCentric()));
-        driver.back().onTrue(new InstantCommand(() -> s_Swerve.tareEverything()));
+        driver.start().onTrue(Commands.runOnce(() -> s_Swerve.seedFieldCentric()));
+        driver.back().onTrue(Commands.runOnce(() -> s_Swerve.tareEverything()));
 
-        driver.leftTrigger().whileTrue(new InstantCommand(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_CORAL)));
-        driver.leftBumper().whileTrue(new InstantCommand(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_ALGAE)));
+        driver.leftTrigger().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_CORAL)));
+        driver.leftBumper().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_ALGAE)));
 
         /*!TODO drop piece */
         driver.rightBumper().whileTrue(new Test("dropPiece", "dropPiece"));
