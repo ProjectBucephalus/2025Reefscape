@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.2,
-        "y": 4.026
+        "x": 6.85,
+        "y": 0.790675
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2,
-        "y": 3.776
+        "x": 7.1,
+        "y": 0.7906749999999998
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.2,
-        "y": 3.861365
+        "x": 7.2,
+        "y": 0.790675
       },
       "prevControl": {
-        "x": 3.2,
-        "y": 4.111365
+        "x": 6.95,
+        "y": 0.7906749999999998
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Barge Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
