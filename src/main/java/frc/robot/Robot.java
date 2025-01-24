@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.commands.PathfindingCommand;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -36,8 +38,10 @@ public class Robot extends TimedRobot
   @Override
   public void robotInit() 
   {
-    SmartDashboard.putData("Field", autoPosition);
     robotContainer = new RobotContainer();
+    PathfindingCommand.warmupCommand().schedule();
+
+    SmartDashboard.putData("Field", autoPosition);
   }
 
   /**
@@ -70,6 +74,12 @@ public class Robot extends TimedRobot
     else 
     {
       robotContainer.getSwerve().resetRotation(robotContainer.getSwerve().getState().Pose.getRotation());
+    }
+    
+    m_autonomousCommand = robotContainer.getAutoCommand();
+
+    if (m_autonomousCommand != null) {
+      m_autonomousCommand.schedule();
     }
   }
 

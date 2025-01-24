@@ -1,12 +1,19 @@
 package frc.robot.constants;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.path.PathConstraints;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.Test;
 import frc.robot.subsystems.Diffector.CargoStates;
 import frc.robot.util.COTSTalonFXSwerveConstants;
 import frc.robot.util.SwerveModuleConstants;
@@ -216,20 +223,84 @@ public final class Constants
     }
 
     public static final class Auto // TODO: The below constants are used in the example auto, and must be tuned to specific robot
-    {
-        public static final double kMaxSpeedMetersPerSecond = 3;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-        public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
-        public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
-    
-        public static final double kPXController = 1;
-        public static final double kPYController = 1;
-        public static final double kPThetaController = 1;
-    
-        /* Constraint for the motion profilied robot angle controller */
-        public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
-            new TrapezoidProfile.Constraints(
-                kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    {   
+        /** m/s */
+        public static final double pathplannerMaxSpeed = 5;
+        /** m/s^2 */
+        public static final double pathplannerMaxAcceleration = 5.5;
+        /** degrees/s */
+        public static final double pathplannerMaxAngularSpeed = 720;
+        /** degrees/s^2 */
+        public static final double pathplannerMaxAngularAcceleration = 1050;
+        public static final PathConstraints defaultConstraints = new PathConstraints
+            (pathplannerMaxSpeed, pathplannerMaxAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
+        
+        public static class AutoMapping
+        {
+            public final String pathName;
+            public final Supplier<Command> command;
+
+            public AutoMapping(String pathName, Supplier<Command> command)
+            {
+                this.pathName = pathName;
+                this.command = command;
+            }
+        }
+
+        /* Maps all dynamic auto paths to the name used for them in the dashbord. Dashboard Name, Path Name */
+        public static final Map<String, AutoMapping> autoMap = new HashMap<>(34)
+        {
+            {
+                put("ra" , new AutoMapping("test", null));
+                put("rb" , new AutoMapping("test", null));
+                put("rc" , new AutoMapping("test", null));
+                put("rd" , new AutoMapping("test", null));
+                put("re" , new AutoMapping("test", null));
+                put("rf" , new AutoMapping("test", null));
+                put("rg" , new AutoMapping("test", null));
+                put("rh" , new AutoMapping("test", null));
+                put("ri" , new AutoMapping("test", null));
+                put("rj" , new AutoMapping("test", null));
+                put("rk" , new AutoMapping("test", null));
+                put("rl" , new AutoMapping("test", null));
+                put("cl1", new AutoMapping("test", null));
+                put("cl2", new AutoMapping("test", null));
+                put("cl3", new AutoMapping("test", null));
+                put("cl4", new AutoMapping("test", null));
+                put("cl5", new AutoMapping("test", null));
+                put("cl6", new AutoMapping("test", null));
+                put("cl7", new AutoMapping("test", null));
+                put("cl8", new AutoMapping("test", null));
+                put("cl9", new AutoMapping("test", null));
+                put("cr1", new AutoMapping("test", null));
+                put("cr2", new AutoMapping("test", null));
+                put("cr3", new AutoMapping("test", null));
+                put("cr4", new AutoMapping("test", null));
+                put("cr5", new AutoMapping("StationSouth", () -> new Test("Pickup", "picked up cR5")));
+                put("cr6", new AutoMapping("test", null));
+                put("cr7", new AutoMapping("test", null));
+                put("cr8", new AutoMapping("test", null));
+                put("cr9", new AutoMapping("test", null));
+                put("a1" , new AutoMapping("test", null));
+                put("a2" , new AutoMapping("test", null));                
+                put("a3" , new AutoMapping("test", null));                
+                put("a4" , new AutoMapping("test", null));                
+                put("a5" , new AutoMapping("test", null));                
+                put("a6" , new AutoMapping("test", null));
+                put("sc1", new AutoMapping("test", null));
+                put("sc2", new AutoMapping("test", null));
+                put("sc3", new AutoMapping("test", null));
+                put("sa1", new AutoMapping("test", null));
+                put("sa2", new AutoMapping("test", null));
+                put("sa3", new AutoMapping("test", null));
+                put("b1" , new AutoMapping("test", null));
+                put("b2" , new AutoMapping("test", null));
+                put("b3" , new AutoMapping("test", null));
+                put("p"  , new AutoMapping("test", null));                
+            }
+        };
+
+        public static final String defaultAuto = "t5,cR5,w3.5,cR5";
     }
 
     public static final class GamePiecesManipulator 

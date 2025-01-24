@@ -87,7 +87,7 @@ public class FieldConstants
         public static final double fieldEast = fieldLength;
 
         /** Metres the robot can travel back */
-        public static final double fieldWest = 0;
+        public static final double fieldWest = 1;
 
         /** Buffer zone for the field walls in metres */
         public static final double wallBuffer = 0.5;
@@ -145,8 +145,9 @@ public class FieldConstants
         
         /** Radius from robot centre in metres where geofence is triggered */
         public static final double robotRadiusInscribed = 0.45;
+        /** Radius from robot centre in metres where geofence is triggered */
         public static final double robotRadiusCircumscribed = 0.55;
         /** Speed threshold at which the robot changes between radii, in meters per second*/
-        public static final double robotSpeedThreshold = 2;
+        public static final double robotSpeedThreshold = 1.5;
     }
 }
