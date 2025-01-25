@@ -230,8 +230,8 @@ public final class Constants
         public static final double stowedMotorSpeed = 0;
 
         /* Top intake arm positions 
-            * TODO: Put in Degrees for the arm top and bottom position in this comment
-        */
+         * TODO: Put in Degrees for the arm top and bottom position in this comment
+         */
         public static final double topCoralIntakeArmTarget = 0;
         public static final double topAlgaeIntakeArmTarget = 0;
         public static final double topClimbingArmTarget = 0;
@@ -249,12 +249,22 @@ public final class Constants
         public static final double bottomCoralTransferArmTarget = 0;
         public static final double bottomAlgaeTransferArmTarget = 0;
 
-        public static final double armSpringKP = 0;
-        public static final double armSpringKI = 0;
-        public static final double armSpringKD = 0;
-        public static final double armStopKP = 0;
-        public static final double armStopKI = 0;
-        public static final double armStopKD = 0;
+        /* Top arm PID values */
+        public static final double topArmSpringKP = 1;
+        public static final double topArmSpringKI = 0;
+        public static final double topArmSpringKD = 0;
+        public static final double topArmStopKP = 0;
+        public static final double topArmStopKI = 0;
+        public static final double topArmStopKD = 0;
+
+        /* Bottom arm PID values */
+        public static final double bottomArmKP = 1;
+        public static final double bottomArmKI = 1;
+        public static final double bottomArmKD = 1;
+
+        /* Arm ratios */
+        public static final double topArmRatio = 1;
+        public static final double bottomArmRatio = 1;
     }
 
     public static final class Climber

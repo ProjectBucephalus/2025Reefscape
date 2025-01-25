@@ -30,16 +30,12 @@ public class Intake extends SubsystemBase {
   private final MotionMagicVoltage motionMagic;
   private double topArmTarget;
   private double bottomArmTarget;
-  private final double topArmRatio;
-  private final double bottomArmRatio;
-  private double[] armTargets = new double[2];
   
   /* Enum representing the status the intake is in
    * (Spinning inwards for a coral, spinning inwards for an algae, position for when the robot is climbing,
    * Position for before the robot intakes, stowing the coral or algae, transferring the coral to the robot's scorer,
    * Transferring the algae to the robot's scorer)
    */
-
   public enum IntakeStatus 
   {
     INTAKE_CORAL,
@@ -59,13 +55,22 @@ public class Intake extends SubsystemBase {
     m_BottomArm = new TalonFX(Constants.Intake.bottomArmID);
 
     m_TopArm.getConfigurator().apply(CTREConfigs.intakeTopArmFXConfig);
+    m_BottomArm.getConfigurator().apply(CTREConfigs.intakeBottomArmFXConfig);
 
     topArmTarget = 0;
     bottomArmTarget = 0;
 
     motionMagic = new MotionMagicVoltage(0);
-    topArmRatio = 0;
-    bottomArmRatio = 0;
+  }
+
+  public double getTopArmAngle()
+  {
+    return m_TopArm.getPosition().getValueAsDouble();
+  }
+
+  public double getBottomArmAngle()
+  {
+    return m_TopArm.getPosition().getValueAsDouble();
   }
 
   /** 
@@ -108,19 +113,6 @@ public class Intake extends SubsystemBase {
   {
     bottomArmTarget = newBottomTarget;
   }
-
-  /**
-   * Calculates the arms target angles
-   * 
-   * @param newTopTarget Top arm's target angle
-   * @param newBottomTarget Bottom arms target angle
-   */
-  private void calculateArmTargets(double newTopTarget, double newBottomTarget)
-  {
-    armTargets[0] = newTopTarget / topArmRatio;
-    armTargets[1] = newBottomTarget / bottomArmRatio;
-  }
-
 
   /**
    * Sets the speeds to the intake and position to the arms
@@ -207,9 +199,16 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic()  
   {
-    calculateArmTargets(topArmTarget, bottomArmTarget);
-    m_TopArm.setControl(motionMagic.withPosition(armTargets[0]));
-    m_BottomArm.setControl(motionMagic.withPosition(armTargets[1]));
+    if (getTopArmAngle() > topArmTarget) 
+    {
+      m_TopArm.setControl(motionMagic.withPosition(topArmTarget).withSlot(0));
+    }
+    else
+    {
+      m_TopArm.setControl(motionMagic.withPosition(topArmTarget).withSlot(1));
+    }
+
+    m_BottomArm.setControl(motionMagic.withPosition(bottomArmTarget));
   }
 }
 
