@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 
 
@@ -24,6 +25,10 @@ public class Climber extends SubsystemBase {
   { 
     m_Claws = new TalonFX(Constants.Climber.clawID);
     m_Winch = new TalonFX(Constants.Climber.winchID);
+
+    m_Claws.getConfigurator().apply(CTREConfigs.climberClawFXConfiguration);
+    m_Winch.getConfigurator().apply(CTREConfigs.climberWinchFXConfiguration);
+
     motionMagic = new MotionMagicVoltage(0);
   }
 
