@@ -24,10 +24,10 @@ public class GoToClimbConfig extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    s_Diffector.setArmTarget(0);
+    s_Diffector.goToPosition(0);
     if (s_Diffector.getArmPos() < 10 && s_Diffector.getArmPos() > -10)
     {
-      s_Diffector.setElevatorTarget(0);
+      s_Diffector.setElevationTarget(0);
     }
   }
 

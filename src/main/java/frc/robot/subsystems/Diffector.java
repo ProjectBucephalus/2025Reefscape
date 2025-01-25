@@ -209,12 +209,12 @@ public class Diffector extends SubsystemBase
     return targetAngle;
   }
 
-  public void setElevatorTarget(double newTarget)
+  public void setElevationTarget(double newTarget)
   {
     targetElevation = newTarget;
   }
 
-  public double getElevatorTarget()
+  public double getElevationTarget()
   {
     return targetElevation;
   }

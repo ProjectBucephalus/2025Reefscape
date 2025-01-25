@@ -27,8 +27,8 @@ public class MoveTo extends Command
   @Override
   public void execute() 
   {
-    s_Diffector.setElevatorTarget(Height);
-    s_Diffector.setArmTarget(Angle);
+    s_Diffector.setElevationTarget(Height);
+    s_Diffector.goToPosition(Angle);
   }
 
   // Returns true when the command should end.
