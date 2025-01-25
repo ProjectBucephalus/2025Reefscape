@@ -18,20 +18,12 @@ public class OutTakeCoral extends Command
     addRequirements(s_CoralManipulator);
   }
 
-  // Called when the command is initially scheduled.
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void initialize() 
+  public void execute() 
   {
     s_CoralManipulator.setCoralManipulatorSpeed(0.5);
   }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

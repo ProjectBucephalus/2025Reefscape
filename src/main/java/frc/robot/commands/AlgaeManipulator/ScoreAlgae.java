@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.MoveTo;
 import frc.robot.subsystems.AlgaeManipulator;
+import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.Diffector;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -19,17 +20,20 @@ public class ScoreAlgae extends SequentialCommandGroup
   Command algaeManipulatorCommand;
   Diffector s_Diffector;
   AlgaeManipulator s_AlgaeManipulator;
-  public ScoreAlgae(boolean toNet, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator) 
+  AlgaeManipulatorStatus s_AlgaeManipulatorStatus;
+  public ScoreAlgae(boolean toNet, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator, AlgaeManipulatorStatus s_AlgaeManipulatorStatus) 
   {
     this.s_Diffector = s_Diffector;
+    this.s_AlgaeManipulator = s_AlgaeManipulator;
+    this.s_AlgaeManipulatorStatus = s_AlgaeManipulatorStatus;
     if (toNet)
     {
       diffectorPosCommand = new MoveTo(s_Diffector, 4.3, 2);
-      algaeManipulatorCommand = new OutTakeAlgae(s_AlgaeManipulator);
+      algaeManipulatorCommand = new OutTakeAlgae(s_AlgaeManipulator, s_AlgaeManipulatorStatus);
     } else 
     {
       diffectorPosCommand = new MoveTo(s_Diffector, 0.0, 0.0);
-      algaeManipulatorCommand = new OutTakeAlgae(s_AlgaeManipulator);
+      algaeManipulatorCommand = new OutTakeAlgae(s_AlgaeManipulator, s_AlgaeManipulatorStatus);
     }
     addCommands(diffectorPosCommand, algaeManipulatorCommand);
   }

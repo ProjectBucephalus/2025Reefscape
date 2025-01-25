@@ -5,29 +5,38 @@
 package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.Diffector.MoveTo;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Diffector;
+import frc.robot.subsystems.Intake.IntakeStatus;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TransferGamePiece extends Command {
-  /** Creates a new TransferGamePiece. */
-  public TransferGamePiece() {
-    // Use addRequirements() here to declare subsystem dependencies.
-  }
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+public class TransferGamePiece extends SequentialCommandGroup {
+  Command diffectorPosCommand;
+  Command intakeCommand;
+  Diffector s_Diffector;
+  Intake s_Intake;
+  IntakeStatus s_IntakeStatus;
+  boolean isCoral;
+  public TransferGamePiece(Diffector s_Diffector, Intake s_Intake, IntakeStatus s_IntakeStatus, boolean isCoral) 
+  {
+    this.isCoral = isCoral;
+    this.s_Intake = s_Intake;
+    this.s_IntakeStatus = s_IntakeStatus;
+    this.s_Diffector = s_Diffector;
+    if (isCoral)
+    {
+      diffectorPosCommand = new MoveTo(s_Diffector, 0.1, 0.1);
+      intakeCommand = new TransferOutTake(s_Intake, s_IntakeStatus);
+    } else
+    {
+      diffectorPosCommand = new MoveTo(s_Diffector, 0.1, 0.1);
+      intakeCommand = new TransferOutTake(s_Intake, s_IntakeStatus);
+    }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
+    addCommands(diffectorPosCommand, intakeCommand);
   }
 }

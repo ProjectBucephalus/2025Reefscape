@@ -15,11 +15,9 @@ public class IntakeCoral extends Command
   public IntakeCoral(CoralManipulator s_CoralManipulator) 
   {
     this.s_CoralManipulator = s_CoralManipulator;
-  }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
+    addRequirements(s_CoralManipulator);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -27,10 +25,6 @@ public class IntakeCoral extends Command
   {
     s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.INTAKE);
   }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
