@@ -17,11 +17,11 @@ public class GoToStartConfig extends SequentialCommandGroup {
   {
     if (s_Diffector.getElevatorPos() >= 0.5)
     {
-      addCommands(Commands.runOnce(() -> s_Diffector.setElevationTarget(0.6), s_Diffector));
+      addCommands(Commands.runOnce(() -> s_Diffector.setElevatorTarget(0.6), s_Diffector));
     }  
     
     addCommands( 
       Commands.runOnce(() -> s_Diffector.unwind(), s_Diffector).unless(() -> s_Diffector.unwind()), 
-      Commands.runOnce(() -> s_Diffector.setElevationTarget(0), s_Diffector));
+      Commands.runOnce(() -> s_Diffector.setElevatorTarget(0), s_Diffector));
   }
 }

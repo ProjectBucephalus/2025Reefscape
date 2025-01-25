@@ -27,7 +27,7 @@ public class GoToClimbConfig extends Command {
     s_Diffector.goToPosition(0);
     if (s_Diffector.getArmPos() < 10 && s_Diffector.getArmPos() > -10)
     {
-      s_Diffector.setElevationTarget(0);
+      s_Diffector.setElevatorTarget(0);
     }
   }
 
