@@ -2,7 +2,14 @@
   "robotWidth": 0.79,
   "robotLength": 0.78,
   "holonomicMode": true,
-  "pathFolders": [],
+  "pathFolders": [
+    "Algae Paths",
+    "Barge Paths",
+    "Left Station Paths",
+    "Cage Paths",
+    "Reef Paths",
+    "Right Station Paths"
+  ],
   "autoFolders": [],
   "defaultMaxVel": 5.0,
   "defaultMaxAccel": 5.5,

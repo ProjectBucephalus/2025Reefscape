@@ -35,6 +35,6 @@ public class MoveTo extends Command
   @Override
   public boolean isFinished() 
   {
-    return true;
+    return s_Diffector.armAtAngle() && s_Diffector.elevatorAtElevation();
   }
 }

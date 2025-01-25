@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.2,
-        "y": 4.026
+        "x": 7.75,
+        "y": 0.790675
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2,
-        "y": 4.276
+        "x": 8.0,
+        "y": 0.7906749999999998
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.2,
-        "y": 4.190635
+        "x": 8.1,
+        "y": 0.790675
       },
       "prevControl": {
-        "x": 3.2,
-        "y": 3.9406350000000003
+        "x": 7.85,
+        "y": 0.7906749999999998
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Cage Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

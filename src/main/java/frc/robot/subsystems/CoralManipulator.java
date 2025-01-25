@@ -65,7 +65,7 @@ public class CoralManipulator extends SubsystemBase {
    * 
    * @return 1st CoralBeamBreak current state, false when object present?
    */
-  private boolean getCoralBeamBreak1State()
+  public boolean getCoralBeamBreak1State()
   {
     return coralBeamBreak1.get();
   }
@@ -75,7 +75,7 @@ public class CoralManipulator extends SubsystemBase {
    * 
    * @return 2nd CoralBeamBreak current state, false when object present?
    */
-  private boolean getCoralBeamBreak2State()
+  public boolean getCoralBeamBreak2State()
   {
     return coralBeamBreak2.get();
   }
