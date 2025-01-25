@@ -210,14 +210,16 @@ public final class Constants
         public static final double algaeTransferAngle = 0;
 
         /* Preset elevator heights */
-        public static final double netHeight = 0;
-        public static final double processorHeight = 0; 
-        public static final double reef4Height = 0;
-        public static final double reef3Height = 0;
-        public static final double reef2Height = 0;
-        public static final double reef1Height = 0;
-        public static final double coralTransferHeight = 0;
-        public static final double algaeTransferHeight = 0;
+        public static final double netElevation = 0;
+        public static final double processorElevation = 0; 
+        public static final double reef4Elevation = 0;
+        public static final double reef3Elevation = 0;
+        public static final double reef2Elevation = 0;
+        public static final double reef1Elevation = 0;
+        public static final double coralTransferElevation = 0;
+        public static final double algaeTransferElevation = 0;
+        public static final double climbElevation = 0;
+        public static final double startingElevation = 0;
 
         /* Manipulator arm geometry */
         public static final double algaeArmLength = 0;
