@@ -196,7 +196,7 @@ public final class Constants
         /**
          * How many degrees off 0 
          */
-        public static final double stowThreshold = 1;
+        public static final double angleTolerance = 1;
 
         /* Preset arm angles */
         public static final double netAngle = 0;

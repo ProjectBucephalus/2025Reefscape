@@ -34,7 +34,7 @@ public class Diffector extends SubsystemBase
   private boolean algae;
   private double maxAbsPos = Constants.Diffector.maxAbsPos;
   private double turnBackThreshold = Constants.Diffector.turnBackThreshold;
-  private double stowThreshold = Constants.Diffector.stowThreshold;
+  private double stowThreshold = Constants.Diffector.angleTolerance;
   private double offset;
   private double altOffset;
   private double armPos;
@@ -101,6 +101,10 @@ public class Diffector extends SubsystemBase
     motorTargets = calculateMotorTargets(targetElevation, targetAngle);
   }
 
+  public boolean atPosition()
+  {
+    return Math.abs(getArmPos() - targetAngle) < Constants.Diffector.angleTolerance;
+  }
 
   /** 
    * Sets the Diffector arm to unwind to starting position 
