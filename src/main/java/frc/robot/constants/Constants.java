@@ -287,12 +287,6 @@ public final class Constants
                 put("a4" , new AutoMapping("a4", null));                
                 put("a5" , new AutoMapping("a5", null));                
                 put("a6" , new AutoMapping("a6", null));
-                put("sc1", new AutoMapping("sc1", null));
-                put("sc2", new AutoMapping("sc2", null));
-                put("sc3", new AutoMapping("sc3", null));
-                put("sa1", new AutoMapping("sa1", null));
-                put("sa2", new AutoMapping("sa2", null));
-                put("sa3", new AutoMapping("sa3", null));
                 put("b1" , new AutoMapping("b1", null));
                 put("b2" , new AutoMapping("b2", null));
                 put("b3" , new AutoMapping("b3", null));
