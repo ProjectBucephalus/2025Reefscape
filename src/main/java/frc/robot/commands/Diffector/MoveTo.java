@@ -28,7 +28,7 @@ public class MoveTo extends Command
   public void execute() 
   {
     s_Diffector.setElevatorTarget(Height);
-    s_Diffector.goToPosition(Angle);
+    s_Diffector.goToAngle(Angle);
   }
 
   // Returns true when the command should end.

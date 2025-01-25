@@ -193,6 +193,7 @@ public final class Constants
         public static final double maxAbsPos = maxRotation * 360;
         public static final double turnBackThreshold = 135;
         public static final double returnPos = 0;
+        public static final double climbAngle = 90;
         /**
          * How many degrees off 0 
          */
