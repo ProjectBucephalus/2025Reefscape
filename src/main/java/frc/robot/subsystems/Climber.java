@@ -22,8 +22,8 @@ public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   public Climber() 
   { 
-    m_Claws = new TalonFX(Constants.Climber.MotorID.m_Claws);
-    m_Winch = new TalonFX(Constants.Climber.MotorID.m_Winch);
+    m_Claws = new TalonFX(Constants.Climber.MotorID.clawID);
+    m_Winch = new TalonFX(Constants.Climber.MotorID.winchID);
     motionMagic = new MotionMagicVoltage(0);
   }
 
@@ -57,18 +57,18 @@ private void setClimbTargets(double newClawTarget, double newWinchTarget)
     switch (Status)
     {
       case INIT_CONFIG:
-      setClimberSpeed(Constants.Climber.MotorSpeeds.m_InitSpeed);
-      setClimbTargets(Constants.Climber.ClimberPos.m_InitClawPos, Constants.Climber.ClimberPos.m_InitWinchPos);
+      setClimberSpeed(Constants.Climber.MotorSpeeds.initSpeed);
+      setClimbTargets(Constants.Climber.ClimberPos.initClawPos, Constants.Climber.ClimberPos.initWinchPos);
       break;
 
       case DEPLOY_CONFIG:
-      setClimberSpeed(Constants.Climber.MotorSpeeds.m_DeploySpeed);
-      setClimbTargets(Constants.Climber.ClimberPos.m_DeployClawPos, Constants.Climber.ClimberPos.m_DeployWinchPos);
+      setClimberSpeed(Constants.Climber.MotorSpeeds.deploySpeed);
+      setClimbTargets(Constants.Climber.ClimberPos.deployClawPos, Constants.Climber.ClimberPos.deployWinchPos);
       break;
 
       case CLIMB_CONFIG:
-      setClimberSpeed(Constants.Climber.MotorSpeeds.m_ClimbSpeed);
-      setClimbTargets(Constants.Climber.ClimberPos.m_ClimbClawPos, Constants.Climber.ClimberPos.m_ClimbWinchPos);
+      setClimberSpeed(Constants.Climber.MotorSpeeds.climbSpeed);
+      setClimbTargets(Constants.Climber.ClimberPos.climbClawPos, Constants.Climber.ClimberPos.climbWinchPos);
       break;
     }
   }
