@@ -345,5 +345,6 @@ public final class Constants
         public static final double maxAbsPos = maxRotations * 360;
         public static final double returnPos = 0;
         public static final double turnBackThreshold = 135;
+        public static final double stowThreshold = 1;
     }
 }
