@@ -189,6 +189,12 @@ public final class Constants
         public static final double rotationRatio = gearboxRatio * sprocketRatio / 2;
 
         public static final CargoStates startingCargoState = CargoStates.empty;
+
+        public static final double maxRotation = 3;
+        public static final double maxAbsPos = maxRotation * 360;
+        public static final double turnBackThreshold = 135;
+        public static final double returnPos = 0;
+        public static final double stowThreshold = 1;
     }
 
     public static final class GamePiecesManipulator 
