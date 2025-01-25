@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Rumble;
 
 import frc.robot.subsystems.Rumbler;
 import frc.robot.subsystems.Rumbler.Sides;

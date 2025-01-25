@@ -2,21 +2,22 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.Util;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Diffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ScoreReef extends Command 
+public class Test extends Command 
 {
-  private Diffector s_Diffector;
-  private int reefLevel;  
+  private String SDname;
+  private String SDvalue;
 
-  public ScoreReef(Diffector s_Diffector, int reefLevel) 
+  /** Creates a new Test. */
+  public Test(String name, String value) 
   {
-    this.s_Diffector = s_Diffector;
-    this.reefLevel = reefLevel;
+    SDname = name;
+    SDvalue = value;
   }
 
   // Called when the command is initially scheduled.
@@ -25,16 +26,20 @@ public class ScoreReef extends Command
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+  public void execute() 
+  {
+    SmartDashboard.putString(SDname, SDvalue);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
   {
-    return false;
+    return true;
   }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
 }
