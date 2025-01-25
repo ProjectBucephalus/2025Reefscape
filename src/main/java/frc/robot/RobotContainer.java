@@ -6,7 +6,9 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -15,6 +17,7 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake.IntakeStatus;
+import frc.robot.util.DynamicAuto;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,9 +38,9 @@ public class RobotContainer
     private final int brakeAxis = XboxController.Axis.kRightTrigger.value;
 
     /* Subsystems */
-    public final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
+    public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
     private final Limelight s_Limelight = new Limelight(s_Swerve);
-    private final Diffector s_Diffector = new Diffector();
+    public static final Diffector s_Diffector = new Diffector();
     private final Climber s_Climber = new Climber();
     private final Intake s_Intake = new Intake();
     private final Rumbler s_Rumbler = new Rumbler(driver, copilot);
@@ -45,6 +48,8 @@ public class RobotContainer
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
     {
+        SmartDashboard.putString("Auto Input", Constants.Auto.defaultAuto);
+
         s_Swerve.setDefaultCommand
         (
             new TeleopSwerve
@@ -103,11 +108,11 @@ public class RobotContainer
     private void configureButtonBindings() 
     {
         /* Driver Buttons */
-        driver.start().onTrue(new InstantCommand(() -> s_Swerve.seedFieldCentric()));
-        driver.back().onTrue(new InstantCommand(() -> s_Swerve.tareEverything()));
+        driver.start().onTrue(Commands.runOnce(() -> s_Swerve.seedFieldCentric()));
+        driver.back().onTrue(Commands.runOnce(() -> s_Swerve.tareEverything()));
 
-        driver.leftTrigger().whileTrue(new InstantCommand(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_CORAL)));
-        driver.leftBumper().whileTrue(new InstantCommand(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_ALGAE)));
+        driver.leftTrigger().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_CORAL)));
+        driver.leftBumper().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_ALGAE)));
 
         /*!TODO drop piece */
         driver.rightBumper().whileTrue(new Test("dropPiece", "dropPiece"));
@@ -149,10 +154,11 @@ public class RobotContainer
                 )
             );
 
+        driver.y().onTrue(new PathfindToAndFollow("ReefTag"));
+        driver.x().onTrue(new PathfindToAndFollow("ReefLeft"));
+        driver.b().onTrue(new PathfindToAndFollow("ReefRight"));
+
         /* Copilot Buttons*/
-        
-
-
     }
 
     public CommandSwerveDrivetrain getSwerve()
@@ -163,5 +169,11 @@ public class RobotContainer
     public Limelight getLimelight()
     {
         return s_Limelight;
+    }
+
+    public Command getAutoCommand()
+    {
+        // Gets the input string of command phrases, processes into a list of commands, and puts them into a sequential command group
+        return new RunAutoCommandList(DynamicAuto.getCommandList(SmartDashboard.getString("Auto Input", Constants.Auto.defaultAuto)));
     }
 }

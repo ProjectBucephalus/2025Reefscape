@@ -46,8 +46,8 @@ public class AlgaeManipulator extends SubsystemBase {
 
   public AlgaeManipulator() 
   {
-    algaeMotor = new TalonFX(Constants.GamePiecesManipulator.ManipulatorIDs.algaeMotorID);
-    algaeBeamBreak = new DigitalInput(Constants.GamePiecesManipulator.ManipulatorIDs.algaeBeamBreakDigitalInput);
+    algaeMotor = new TalonFX(Constants.GamePiecesManipulator.algaeMotorID);
+    algaeBeamBreak = new DigitalInput(Constants.GamePiecesManipulator.algaeBeamBreakDigitalInput);
   }
 
   /**
@@ -82,7 +82,7 @@ public class AlgaeManipulator extends SubsystemBase {
     switch(algaeStatus)
     {
       case INTAKE:
-        setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.AlgaeManipulator.algaeManipulatorIntakeSpeed);
+        setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorIntakeSpeed);
         if (getAlgaeBeamBreakState()) {
           algaeStatus = AlgaeManipulatorStatus.HOLDING;
         }
@@ -91,7 +91,7 @@ public class AlgaeManipulator extends SubsystemBase {
       case HOLDING:
         if (getAlgaeBeamBreakState()) 
         {
-          algaeMotor.setVoltage(Constants.GamePiecesManipulator.AlgaeManipulator.algaeManipulatorHoldingVoltage);      
+          algaeMotor.setVoltage(Constants.GamePiecesManipulator.algaeManipulatorHoldingVoltage);      
         } else
         {
           setAlgaeManipulatorSpeed(0);
@@ -99,15 +99,15 @@ public class AlgaeManipulator extends SubsystemBase {
         break;
 
       case NET:
-        setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.AlgaeManipulator.algaeManipulatorNetSpeed);
+        setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);
         break;
 
       case PROCESSOR:
-        setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.AlgaeManipulator.algaeManipulatorProcessorSpeed);
+        setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorProcessorSpeed);
         break;
 
       case EMPTY:
-        setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.AlgaeManipulator.algaeManipulatorEmptySpeed);
+        setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorEmptySpeed);
         break;
     }
   }

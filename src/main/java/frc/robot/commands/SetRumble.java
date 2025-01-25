@@ -19,7 +19,7 @@ public class SetRumble extends Command {
 
     @Override
     public void execute(){
-        s_Rumbler.AddRequest(aside,request);
+        s_Rumbler.addRequest(aside,request);
     }
 
     public boolean isFinished(){
