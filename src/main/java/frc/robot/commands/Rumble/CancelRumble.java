@@ -1,10 +1,11 @@
-package frc.robot.commands;
+package frc.robot.commands.Rumble;
 
 import frc.robot.subsystems.Rumbler;
 import frc.robot.subsystems.Rumbler.Sides;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class CancelRumble extends Command {
+public class CancelRumble extends Command 
+{
     // command framework to call the remove request method in the rumbler subsystem
     private Rumbler s_Rumbler;
     private Sides Aside;
@@ -17,11 +18,13 @@ public class CancelRumble extends Command {
     }
 
     @Override
-    public void execute(){
+    public void execute()
+    {
         s_Rumbler.removeRequest(Aside,Request);
     }
 
-    public boolean isFinished(){
+    public boolean isFinished()
+    {
         return true;
     }
 }

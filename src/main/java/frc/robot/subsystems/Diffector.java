@@ -34,7 +34,7 @@ public class Diffector extends SubsystemBase
   private boolean algae;
   private double maxAbsPos = Constants.Diffector.maxAbsPos;
   private double turnBackThreshold = Constants.Diffector.turnBackThreshold;
-  private double stowThreshold = Constants.Diffector.stowThreshold;
+  private double stowThreshold = Constants.Diffector.angleTolerance;
   private double offset;
   private double altOffset;
   private double armPos;
@@ -73,11 +73,11 @@ public class Diffector extends SubsystemBase
 
   /**
    * Calculates elevator height based on motor positions
-   * @return Elevator height in mm
+   * @return Elevator height in m
    */
   public static double getElevatorPos()
   {
-    return (m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorDC.getPosition().getValueAsDouble()) * travelRatio;
+    return ((m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorDC.getPosition().getValueAsDouble()) * travelRatio);
   }
 
   /**
@@ -101,108 +101,110 @@ public class Diffector extends SubsystemBase
     motorTargets = calculateMotorTargets(targetElevation, targetAngle);
   }
 
-  // TODO: Fancy new ArmControl functions go here ↓
+  public boolean atPosition()
+  {
+    return Math.abs(getArmPos() - targetAngle) < Constants.Diffector.angleTolerance;
+  }
+
+  /** 
+   * Sets the Diffector arm to unwind to starting position 
+   * @return Safe to stow
+   */
+  public boolean unwind()
+  {
+      targetAngle = Constants.Diffector.returnPos;
+      return (Math.abs(armPos) < stowThreshold);
+  }
+
+  /**
+   * Sets the Diffector arm to rotate the shortest path to the target angle, with protection against over-rotation
+   * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
+   */
+  public void goShortest(double targetAngle)
+  {
+      targetAngle %= 360;
+      offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
 
 
-    /** 
-     * Sets the Diffector arm to unwind to starting position 
-     * @return Safe to stow
-     */
-    public boolean unwind()
-    {
-        targetAngle = Constants.Diffector.returnPos;
-        return (Math.abs(armPos) < stowThreshold);
-    }
+      if (armPos + offset > maxAbsPos)
+          {targetAngle = (armPos + offset - 360);}
 
-    /**
-     * Sets the Diffector arm to rotate the shortest path to the target angle, with protection against over-rotation
-     * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
-     */
-    public void goShortest(double targetAngle)
-    {
-        targetAngle %= 360;
-        offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
+      else if (armPos + offset < -maxAbsPos)
+          {targetAngle = (armPos + offset + 360);}
 
+      else
+          {targetAngle = (armPos + offset);}
+  }
 
-        if (armPos + offset > maxAbsPos)
-            {targetAngle = (armPos + offset - 360);}
-
-        else if (armPos + offset < -maxAbsPos)
-            {targetAngle = (armPos + offset + 360);}
-
-        else
-            {targetAngle = (armPos + offset);}
-    }
-
-    /**
-     * Sets the Diffector arm to rotate Clockwise (viewed from bow) to the target angle, with protection against over-rotation
-     * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
-     */
-    public void goClockwise(double targetAngle)
-    {
-        targetAngle %= 360;
-        offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -360, 0);
+  /**
+   * Sets the Diffector arm to rotate Clockwise (viewed from bow) to the target angle, with protection against over-rotation
+   * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
+   */
+  public void goClockwise(double targetAngle)
+  {
+      targetAngle %= 360;
+      offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -360, 0);
 
 
-        if (armPos + offset > maxAbsPos)
-            {targetAngle = (armPos + offset - 360);}
+      if (armPos + offset > maxAbsPos)
+          {targetAngle = (armPos + offset - 360);}
 
-        else if (armPos + offset < -maxAbsPos)
-            {targetAngle = (armPos + offset + 360);}
+      else if (armPos + offset < -maxAbsPos)
+          {targetAngle = (armPos + offset + 360);}
 
-        else
-            {targetAngle = (armPos + offset);}
-    }
+      else
+          {targetAngle = (armPos + offset);}
+  }
 
-    /**
-     * Sets the Diffector arm to rotate Anticlockwise (viewed from bow) to the target angle, with protection against over-rotation
-     * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
-     */
-    public void goAnticlockwise(double targetAngle)
-    {
-        targetAngle %= 360;
-        offset = MathUtil.inputModulus(targetAngle - (armPos % 360), 0, 360);
+  /**
+   * Sets the Diffector arm to rotate Anticlockwise (viewed from bow) to the target angle, with protection against over-rotation
+   * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
+   */
+  public void goAntiClockwise(double targetAngle)
+  {
+      targetAngle %= 360;
+      offset = MathUtil.inputModulus(targetAngle - (armPos % 360), 0, 360);
 
 
-        if (armPos + offset > maxAbsPos)
-            {targetAngle = (armPos + offset - 360);}
+      if (armPos + offset > maxAbsPos)
+          {targetAngle = (armPos + offset - 360);}
 
-        else if (armPos + offset < -maxAbsPos)
-            {targetAngle = (armPos + offset + 360);}
+      else if (armPos + offset < -maxAbsPos)
+          {targetAngle = (armPos + offset + 360);}
 
-        else
-            {targetAngle = (armPos + offset);}
-    }
+      else
+          {targetAngle = (armPos + offset);}
+  }
 
     /**
      * Sets the Diffector arm to rotate the safest path to the target angle, with protection against over-rotation. 
      * Below a threshold will go shortest path, otherwise will minimise total rotations
      * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
      */
-    public void goToPosition(double targetAngle)
+    public void goToAngle(double targetAngle)
     {
         targetAngle %= 360;
         offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
 
-        if (Math.abs(offset) >= turnBackThreshold)
-        {
-            altOffset = offset - Math.copySign(360, offset);
+      if (Math.abs(offset) >= turnBackThreshold)
+      {
+          altOffset = offset - Math.copySign(360, offset);
 
-            if (Math.abs(armPos + offset) > Math.abs(armPos + altOffset))
-                {targetAngle = (armPos + altOffset);}
-            
-            else 
-                {targetAngle = (armPos + offset);}
-        }
-        else if (armPos + offset > maxAbsPos)
-            {targetAngle = (armPos + offset - 360);}
+          if (Math.abs(armPos + offset) > Math.abs(armPos + altOffset))
+              {targetAngle = (armPos + altOffset);}
+          
+          else 
+              {targetAngle = (armPos + offset);}
+      }
+      else if (armPos + offset > maxAbsPos)
+          {targetAngle = (armPos + offset - 360);}
 
-        else if (armPos + offset < -maxAbsPos)
-            {targetAngle = (armPos + offset + 360);}
+      else if (armPos + offset < -maxAbsPos)
+          {targetAngle = (armPos + offset + 360);}
 
-        else
-            {targetAngle = (armPos + offset);}
-    }
+      else
+          {targetAngle = (armPos + offset);}
+  }
 
   public double getArmTarget()
   {

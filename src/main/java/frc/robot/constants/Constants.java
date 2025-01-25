@@ -3,11 +3,9 @@ package frc.robot.constants;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-
 import com.pathplanner.lib.path.PathConstraints;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.Test;
+import frc.robot.commands.Util.Test;
 import frc.robot.subsystems.Diffector.CargoStates;
 
 public final class Constants 
@@ -171,14 +169,15 @@ public final class Constants
 
         /** 
          * Number of chain mm moved for one motor degree. 
-         * Sprocket rotations per motor rotation * mm of chain moved per sprocket rotation (pitch diam. * pi), 
-         * all divided by 360 to convert rotations to degrees 
+         * Sprocket rotations per motor rotation * m of chain moved per sprocket rotation (pitch diam. * pi), 
+         * divided by 360 to convert rotations to degrees
+         * divided by 2 to give the contribution of a single motor
          */
-        public static final double travelRatio = ((gearboxRatio * sprocketPitchDiameter * Math.PI) / 360) / 2;
+        public static final double travelRatio = ((gearboxRatio * (sprocketPitchDiameter / 1000) * Math.PI) / 360) / 2;
         /** 
          * Number of arm degrees moved for one motor degree of a single motor 
          * Output sprocket rotations per motor rotation * output sprocket to arm sprocket ratio,
-         * halved to account for the dynamics of a sprocket with only one moving chain
+         * divided by 2 to give the contribution of a single motor
          */
         public static final double rotationRatio = gearboxRatio * sprocketRatio / 2;
 
@@ -188,7 +187,40 @@ public final class Constants
         public static final double maxAbsPos = maxRotation * 360;
         public static final double turnBackThreshold = 135;
         public static final double returnPos = 0;
-        public static final double stowThreshold = 1;
+        public static final double climbAngle = 90;
+        /**
+         * How many degrees off 0 
+         */
+        public static final double angleTolerance = 1;
+
+        /* Preset arm angles */
+        public static final double netAngle = 0;
+        public static final double processorAngle = 0;
+        public static final double reef4Angle = 0;
+        public static final double reef3Angle = 0;
+        public static final double reef2Angle = 0;
+        public static final double reef1Angle = 0;
+        public static final double coralTransferAngle = 0;
+        public static final double algaeTransferAngle = 0;
+
+        /* Preset elevator heights */
+        public static final double netElevation = 0;
+        public static final double processorElevation = 0; 
+        public static final double reef4Elevation = 0;
+        public static final double reef3Elevation = 0;
+        public static final double reef2Elevation = 0;
+        public static final double reef1Elevation = 0;
+        public static final double coralTransferElevation = 0;
+        public static final double algaeTransferElevation = 0;
+        public static final double climbElevation = 0;
+        public static final double startingElevation = 0;
+
+        /* Manipulator arm geometry */
+        public static final double algaeArmLength = 0;
+        public static final double coralArmLength = 0;
+        public static final double algaeArmWidth = 0;
+        public static final double coralArmWidth = 0;
+        public static final double algaeProtrusion = 0;
     }
 
     public static final class GamePiecesManipulator 
@@ -266,8 +298,8 @@ public final class Constants
         public static final double bottomArmKD = 0.25;
 
         /* Arm MotionMagic values */
-        public static final double targetVelocity = 0.25;
-        public static final double targetAcceleration = 0.25;
+        public static final double intakeArmMotionMagicCruise = 0.25;
+        public static final double intakeArmMotionMagicAccel = 0.25;
 
         /* Arm ratios */
         public static final double topArmRatio = 16.7;
@@ -289,5 +321,19 @@ public final class Constants
         public static final double deployWinchPos = 0;
         public static final double climbClawPos = 0;
         public static final double climbWinchPos = 0;
+
+        public static final double clawKP = 0;
+        public static final double clawKI = 0;
+        public static final double clawKD = 0;
+
+        public static final double winchKP = 0;
+        public static final double winchKI = 0;
+        public static final double winchKD = 0;
+
+        public static final double clawMotionMagicCruise = 0;
+        public static final double clawMotionMagicAccel = 0;
+
+        public static final double winchMotionMagicCruise = 0;
+        public static final double winchMotionMagicAccel = 0;
     }
 }
