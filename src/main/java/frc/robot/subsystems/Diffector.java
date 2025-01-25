@@ -32,9 +32,9 @@ public class Diffector extends SubsystemBase
   private CargoStates cargoState;
   private boolean coral;
   private boolean algae;
-  private double maxAbsPos = Constants.ArmControl.maxAbsPos;
-  private double turnBackThreshold = Constants.ArmControl.turnBackThreshold;
-  private double stowThreshold = Constants.ArmControl.stowThreshold;
+  private double maxAbsPos = Constants.Diffector.maxAbsPos;
+  private double turnBackThreshold = Constants.Diffector.turnBackThreshold;
+  private double stowThreshold = Constants.Diffector.stowThreshold;
   private double offset;
   private double altOffset;
   private double armPos;
@@ -64,7 +64,7 @@ public class Diffector extends SubsystemBase
 
   /**
    * Calculates arm rotation based on motor positions
-   * @return Arm rotation in degrees
+   * @return Arm rotation, degrees clockwise, 0 = algae at top
    */
   public static double getArmPos()
   {
@@ -110,7 +110,7 @@ public class Diffector extends SubsystemBase
      */
     public boolean unwind()
     {
-        targetAngle = Constants.ArmControl.returnPos;
+        targetAngle = Constants.Diffector.returnPos;
         return (Math.abs(armPos) < stowThreshold);
     }
 
