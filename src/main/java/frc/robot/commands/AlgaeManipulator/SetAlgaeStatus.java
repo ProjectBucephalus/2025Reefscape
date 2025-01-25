@@ -9,23 +9,24 @@ import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class OutTakeAlgae extends Command 
+public class SetAlgaeStatus extends Command 
 {
   AlgaeManipulator s_AlgaeManipulator;
-  AlgaeManipulatorStatus s_AlgaeManipulatorStatus;
+  AlgaeManipulatorStatus algaeManipulatorStatus;
 
-  public OutTakeAlgae(AlgaeManipulator s_AlgaeManipulator, AlgaeManipulatorStatus s_AlgaeManipulatorStatus) 
+  public SetAlgaeStatus(AlgaeManipulator s_AlgaeManipulator, AlgaeManipulatorStatus algaeManipulatorStatus) 
   {
     this.s_AlgaeManipulator = s_AlgaeManipulator;
-    this.s_AlgaeManipulatorStatus = s_AlgaeManipulatorStatus;
+    this.algaeManipulatorStatus = algaeManipulatorStatus;
 
     addRequirements(s_AlgaeManipulator);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    s_AlgaeManipulator.setAlgaeManipulatorStatus(s_AlgaeManipulatorStatus);
+  public void execute() 
+  {
+    s_AlgaeManipulator.setAlgaeManipulatorStatus(algaeManipulatorStatus);
   }
 
   // Returns true when the command should end.

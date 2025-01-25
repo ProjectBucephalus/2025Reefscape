@@ -20,20 +20,20 @@ public class ScoreAlgae extends SequentialCommandGroup
   Command algaeManipulatorCommand;
   Diffector s_Diffector;
   AlgaeManipulator s_AlgaeManipulator;
-  AlgaeManipulatorStatus s_AlgaeManipulatorStatus;
-  public ScoreAlgae(boolean toNet, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator, AlgaeManipulatorStatus s_AlgaeManipulatorStatus) 
+
+  public ScoreAlgae(boolean toNet, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator) 
   {
     this.s_Diffector = s_Diffector;
     this.s_AlgaeManipulator = s_AlgaeManipulator;
-    this.s_AlgaeManipulatorStatus = s_AlgaeManipulatorStatus;
+
     if (toNet)
     {
       diffectorPosCommand = new MoveTo(s_Diffector, 4.3, 2);
-      algaeManipulatorCommand = new OutTakeAlgae(s_AlgaeManipulator, s_AlgaeManipulatorStatus);
+      algaeManipulatorCommand = new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.NET);
     } else 
     {
       diffectorPosCommand = new MoveTo(s_Diffector, 0.0, 0.0);
-      algaeManipulatorCommand = new OutTakeAlgae(s_AlgaeManipulator, s_AlgaeManipulatorStatus);
+      algaeManipulatorCommand = new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.PROCESSOR);
     }
     addCommands(diffectorPosCommand, algaeManipulatorCommand);
   }

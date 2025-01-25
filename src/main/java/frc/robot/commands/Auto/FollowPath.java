@@ -14,7 +14,6 @@ public class FollowPath extends Command
 {
   private PathPlannerPath path;
 
-  
   public FollowPath(String pathName) 
   {
     try

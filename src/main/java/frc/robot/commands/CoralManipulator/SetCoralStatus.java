@@ -9,12 +9,15 @@ import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class HoldCoral extends Command 
+public class SetCoralStatus extends Command 
 {
   CoralManipulator s_CoralManipulator;
-  public HoldCoral(CoralManipulator s_CoralManipulator) 
+  CoralManipulatorStatus coralManipulatorStatus;
+
+  public SetCoralStatus(CoralManipulator s_CoralManipulator, CoralManipulatorStatus coralManipulatorStatus) 
   {
     this.s_CoralManipulator = s_CoralManipulator;
+    this.coralManipulatorStatus = coralManipulatorStatus;
 
     addRequirements(s_CoralManipulator);
   }
@@ -23,7 +26,7 @@ public class HoldCoral extends Command
   @Override
   public void execute() 
   {
-    s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.HOLDING);
+    s_CoralManipulator.setCoralManipulatorStatus(coralManipulatorStatus);
   }
 
   // Returns true when the command should end.

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.MoveTo;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
+import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -41,6 +42,6 @@ public class ScoreCoral extends SequentialCommandGroup
       diffectorPosCommand = new MoveTo(s_Diffector, 0, 0);
       break;
     }
-    addCommands(diffectorPosCommand, new OutTakeCoral(s_CoralManipulator));
+    addCommands(diffectorPosCommand, new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY));
   }
 }
