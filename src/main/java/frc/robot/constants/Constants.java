@@ -272,8 +272,8 @@ public final class Constants
         public static final double bottomArmKD = 0.25;
 
         /* Arm MotionMagic values */
-        public static final double targetVelocity = 0.25;
-        public static final double targetAcceleration = 0.25;
+        public static final double intakeArmMotionMagicCruise = 0.25;
+        public static final double intakeArmMotionMagicAccel = 0.25;
 
         /* Arm ratios */
         public static final double topArmRatio = 16.7;
@@ -295,5 +295,19 @@ public final class Constants
         public static final double deployWinchPos = 0;
         public static final double climbClawPos = 0;
         public static final double climbWinchPos = 0;
+
+        public static final double clawKP = 0;
+        public static final double clawKI = 0;
+        public static final double clawKD = 0;
+
+        public static final double winchKP = 0;
+        public static final double winchKI = 0;
+        public static final double winchKD = 0;
+
+        public static final double clawMotionMagicCruise = 0;
+        public static final double clawMotionMagicAccel = 0;
+
+        public static final double winchMotionMagicCruise = 0;
+        public static final double winchMotionMagicAccel = 0;
     }
 }

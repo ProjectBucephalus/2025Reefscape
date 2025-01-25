@@ -2,12 +2,16 @@ package frc.robot.constants;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
-public final class CTREConfigs {
-    public static TalonFXConfiguration intakeTopArmFXConfig = new TalonFXConfiguration();
-    public static TalonFXConfiguration intakeBottomArmFXConfig = new TalonFXConfiguration();
-    public static TalonFXConfiguration diffectorFXConfig = new TalonFXConfiguration();
+public final class CTREConfigs 
+{
+    public static final TalonFXConfiguration climberClawFXConfiguration = new TalonFXConfiguration();
+    public static final TalonFXConfiguration climberWinchFXConfiguration = new TalonFXConfiguration();
+    public static final TalonFXConfiguration intakeTopArmFXConfig = new TalonFXConfiguration();
+    public static final TalonFXConfiguration intakeBottomArmFXConfig = new TalonFXConfiguration();
+    public static final TalonFXConfiguration diffectorFXConfig = new TalonFXConfiguration();
 
-    public CTREConfigs(){
+    public CTREConfigs()
+    {
         /* Diffector Motor Config (Empty) */
         diffectorFXConfig.Slot0.kS = Constants.Diffector.diffectorMotorKPEmpty;
         diffectorFXConfig.Slot0.kV = Constants.Diffector.diffectorMotorKIEmpty;
@@ -56,13 +60,27 @@ public final class CTREConfigs {
         intakeBottomArmFXConfig.Slot0.kD = Constants.Intake.bottomArmKD;
 
         /* Intake Arm MotionMagic Values */
-        intakeTopArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.Intake.targetAcceleration;
-        intakeTopArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.Intake.targetVelocity;
-        intakeBottomArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.Intake.targetAcceleration;
-        intakeBottomArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.Intake.targetVelocity;
+        intakeTopArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.Intake.intakeArmMotionMagicAccel;
+        intakeTopArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.Intake.intakeArmMotionMagicCruise;
+        intakeBottomArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.Intake.intakeArmMotionMagicAccel;
+        intakeBottomArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.Intake.intakeArmMotionMagicCruise;
 
         /* Intake Arm Ratios */
         intakeTopArmFXConfig.Feedback.SensorToMechanismRatio = Constants.Intake.topArmRatio;
         intakeBottomArmFXConfig.Feedback.SensorToMechanismRatio = Constants.Intake.bottomArmRatio;
+
+        /* Climber Claw Values */
+        climberClawFXConfiguration.Slot0.kP = Constants.Climber.clawKP;
+        climberClawFXConfiguration.Slot0.kI = Constants.Climber.clawKI;
+        climberClawFXConfiguration.Slot0.kD = Constants.Climber.clawKD;
+        climberClawFXConfiguration.MotionMagic.MotionMagicCruiseVelocity = Constants.Climber.clawMotionMagicCruise;
+        climberClawFXConfiguration.MotionMagic.MotionMagicAcceleration = Constants.Climber.clawMotionMagicAccel;
+        
+        /* Climber Winch Values */
+        climberClawFXConfiguration.Slot0.kP = Constants.Climber.clawKP;
+        climberClawFXConfiguration.Slot0.kI = Constants.Climber.clawKI;
+        climberClawFXConfiguration.Slot0.kD = Constants.Climber.clawKD;
+        climberClawFXConfiguration.MotionMagic.MotionMagicCruiseVelocity = Constants.Climber.clawMotionMagicCruise;
+        climberClawFXConfiguration.MotionMagic.MotionMagicAcceleration = Constants.Climber.clawMotionMagicAccel; 
     }
 }
