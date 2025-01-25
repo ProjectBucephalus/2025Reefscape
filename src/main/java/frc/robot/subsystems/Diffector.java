@@ -160,7 +160,7 @@ public class Diffector extends SubsystemBase
    * Sets the Diffector arm to rotate Anticlockwise (viewed from bow) to the target angle, with protection against over-rotation
    * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public void goAnticlockwise(double targetAngle)
+  public void goAntiClockwise(double targetAngle)
   {
       targetAngle %= 360;
       offset = MathUtil.inputModulus(targetAngle - (armPos % 360), 0, 360);
