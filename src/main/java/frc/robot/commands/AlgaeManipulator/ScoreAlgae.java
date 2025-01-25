@@ -7,6 +7,7 @@ package frc.robot.commands.AlgaeManipulator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.MoveTo;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.Diffector;
@@ -28,11 +29,11 @@ public class ScoreAlgae extends SequentialCommandGroup
 
     if (toNet)
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, 4.3, 2);
+      diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.netHeight, Constants.Diffector.netAngle);
       algaeManipulatorCommand = new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.NET);
     } else 
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, 0.0, 0.0);
+      diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.processorHeight, Constants.Diffector.processorAngle);
       algaeManipulatorCommand = new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.PROCESSOR);
     }
     addCommands(diffectorPosCommand, algaeManipulatorCommand);

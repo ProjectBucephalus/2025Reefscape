@@ -9,14 +9,15 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeStatus;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class TransferOutTake extends Command 
+public class SetIntakeStatus extends Command 
 {
   Intake s_Intake;
-  IntakeStatus s_IntakeStatus;
-  public TransferOutTake(Intake s_Intake, IntakeStatus s_IntakeStatus) 
+  IntakeStatus intakeStatus;
+
+  public SetIntakeStatus(Intake s_Intake, IntakeStatus intakeStatus) 
   {
     this.s_Intake = s_Intake;
-    this.s_IntakeStatus = s_IntakeStatus;
+    this.intakeStatus = intakeStatus;
 
     addRequirements(s_Intake);
   }
@@ -25,13 +26,13 @@ public class TransferOutTake extends Command
   @Override
   public void execute() 
   {
-    s_Intake.setIntakeStatus(s_IntakeStatus);
+    s_Intake.setIntakeStatus(intakeStatus);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
   {
-    return false;
+    return true;
   }
 }

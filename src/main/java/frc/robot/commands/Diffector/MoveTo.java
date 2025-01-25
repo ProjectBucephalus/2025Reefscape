@@ -10,14 +10,14 @@ import frc.robot.subsystems.Diffector;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class MoveTo extends Command 
 {
-  double Height;
-  double Angle;
+  double height;
+  double angle;
   Diffector s_Diffector;
 
-  public MoveTo(Diffector s_Diffector, double Height, double Angle) 
+  public MoveTo(Diffector s_Diffector, double height, double angle) 
   {
-    this.Height = Height;
-    this.Angle = Angle;
+    this.height = height;
+    this.angle = angle;
     this.s_Diffector = s_Diffector;
 
     addRequirements(s_Diffector);
@@ -27,8 +27,8 @@ public class MoveTo extends Command
   @Override
   public void execute() 
   {
-    s_Diffector.setElevatorTarget(Height);
-    s_Diffector.goToPosition(Angle);
+    s_Diffector.setElevatorTarget(height);
+    s_Diffector.goToPosition(angle);
   }
 
   // Returns true when the command should end.
