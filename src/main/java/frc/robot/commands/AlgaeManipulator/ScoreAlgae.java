@@ -7,6 +7,7 @@ package frc.robot.commands.AlgaeManipulator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.MoveTo;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.Diffector;
@@ -20,20 +21,20 @@ public class ScoreAlgae extends SequentialCommandGroup
   Command algaeManipulatorCommand;
   Diffector s_Diffector;
   AlgaeManipulator s_AlgaeManipulator;
-  AlgaeManipulatorStatus s_AlgaeManipulatorStatus;
-  public ScoreAlgae(boolean toNet, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator, AlgaeManipulatorStatus s_AlgaeManipulatorStatus) 
+
+  public ScoreAlgae(boolean toNet, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator) 
   {
     this.s_Diffector = s_Diffector;
     this.s_AlgaeManipulator = s_AlgaeManipulator;
-    this.s_AlgaeManipulatorStatus = s_AlgaeManipulatorStatus;
+
     if (toNet)
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, 4.3, 2);
-      algaeManipulatorCommand = new OutTakeAlgae(s_AlgaeManipulator, s_AlgaeManipulatorStatus);
+      diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.netHeight, Constants.Diffector.netAngle);
+      algaeManipulatorCommand = new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.NET);
     } else 
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, 0.0, 0.0);
-      algaeManipulatorCommand = new OutTakeAlgae(s_AlgaeManipulator, s_AlgaeManipulatorStatus);
+      diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.processorHeight, Constants.Diffector.processorAngle);
+      algaeManipulatorCommand = new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.PROCESSOR);
     }
     addCommands(diffectorPosCommand, algaeManipulatorCommand);
   }

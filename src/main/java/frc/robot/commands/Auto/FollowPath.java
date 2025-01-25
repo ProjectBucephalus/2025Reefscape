@@ -2,23 +2,19 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.Auto;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.Constants;
 
-public class PathfindToAndFollow extends Command 
+public class FollowPath extends Command 
 {
   private PathPlannerPath path;
-  private final PathConstraints constraints = Constants.Auto.defaultConstraints;
-  private Command pathfindingCommand;
-  
-  public PathfindToAndFollow(String pathName) 
+
+  public FollowPath(String pathName) 
   {
     try
     {
@@ -34,8 +30,7 @@ public class PathfindToAndFollow extends Command
   @Override
   public void execute() 
   {
-    pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, constraints);
-    pathfindingCommand.schedule();
+    AutoBuilder.followPath(path).schedule();
   }
 
   // Returns true when the command should end.

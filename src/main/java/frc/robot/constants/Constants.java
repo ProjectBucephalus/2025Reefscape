@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.Test;
+import frc.robot.commands.Util.Test;
 import frc.robot.subsystems.Diffector.CargoStates;
 
 public final class Constants 
@@ -197,7 +197,34 @@ public final class Constants
         /**
          * How many degrees off 0 
          */
-        public static final double stowThreshold = 1;
+        public static final double angleTolerance = 1;
+
+        /* Preset arm angles */
+        public static final double netAngle = 0;
+        public static final double processorAngle = 0;
+        public static final double reef4Angle = 0;
+        public static final double reef3Angle = 0;
+        public static final double reef2Angle = 0;
+        public static final double reef1Angle = 0;
+        public static final double coralTransferAngle = 0;
+        public static final double algaeTransferAngle = 0;
+
+        /* Preset elevator heights */
+        public static final double netHeight = 0;
+        public static final double processorHeight = 0; 
+        public static final double reef4Height = 0;
+        public static final double reef3Height = 0;
+        public static final double reef2Height = 0;
+        public static final double reef1Height = 0;
+        public static final double coralTransferHeight = 0;
+        public static final double algaeTransferHeight = 0;
+
+        /* Manipulator arm geometry */
+        public static final double algaeArmLength = 0;
+        public static final double coralArmLength = 0;
+        public static final double algaeArmWidth = 0;
+        public static final double coralArmWidth = 0;
+        public static final double algaeProtrusion = 0;
     }
 
     public static final class GamePiecesManipulator 

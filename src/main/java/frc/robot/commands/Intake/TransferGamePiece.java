@@ -7,6 +7,7 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.MoveTo;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Diffector;
 import frc.robot.subsystems.Intake.IntakeStatus;
@@ -18,24 +19,26 @@ public class TransferGamePiece extends SequentialCommandGroup
 {
   Command diffectorPosCommand;
   Command intakeCommand;
+
   Diffector s_Diffector;
   Intake s_Intake;
-  IntakeStatus s_IntakeStatus;
   boolean isCoral;
-  public TransferGamePiece(Diffector s_Diffector, Intake s_Intake, IntakeStatus s_IntakeStatus, boolean isCoral) 
+
+  public TransferGamePiece(Diffector s_Diffector, Intake s_Intake, boolean isCoral) 
   {
     this.isCoral = isCoral;
     this.s_Intake = s_Intake;
-    this.s_IntakeStatus = s_IntakeStatus;
     this.s_Diffector = s_Diffector;
+
     if (isCoral)
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, 0.1, 0.1);
-      intakeCommand = new TransferOutTake(s_Intake, s_IntakeStatus);
-    } else
+      diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.coralTransferHeight, Constants.Diffector.coralTransferAngle);
+      intakeCommand = new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_CORAL);
+    } 
+    else
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, 0.1, 0.1);
-      intakeCommand = new TransferOutTake(s_Intake, s_IntakeStatus);
+      diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.algaeTransferHeight, Constants.Diffector.algaeTransferAngle);
+      intakeCommand = new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE);
     }
 
     addCommands(diffectorPosCommand, intakeCommand);
