@@ -65,7 +65,7 @@ public class AlgaeManipulator extends SubsystemBase {
    * 
    * @return AlgaeBeamBreak current state, false when object present
    */
-  private boolean getAlgaeBeamBreakState()
+  public boolean getAlgaeBeamBreakState()
   {
     return algaeBeamBreak.get();
   }

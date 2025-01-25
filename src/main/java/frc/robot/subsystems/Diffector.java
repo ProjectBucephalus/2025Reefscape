@@ -101,9 +101,14 @@ public class Diffector extends SubsystemBase
     motorTargets = calculateMotorTargets(targetElevation, targetAngle);
   }
 
-  public boolean atPosition()
+  public boolean armAtAngle()
   {
     return Math.abs(getArmPos() - targetAngle) < Constants.Diffector.angleTolerance;
+  }
+
+  public boolean elevatorAtElevation()
+  {
+    return Math.abs(getElevatorPos() - targetElevation) < Constants.Diffector.elevationTolerance;
   }
 
   /** 

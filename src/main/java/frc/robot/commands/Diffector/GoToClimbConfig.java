@@ -33,7 +33,7 @@ public class GoToClimbConfig extends Command
   @Override
   public void execute() 
   {
-    if (s_Diffector.atPosition())
+    if (s_Diffector.armAtAngle())
     {
       s_Diffector.setElevatorTarget(Constants.Diffector.climbElevation);
       isFinished = true;
