@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Diffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ScoreReef extends Command {
+public class ScoreReef extends Command 
+{
   private Diffector s_Diffector;
   private int reefLevel;  
 
@@ -32,7 +33,8 @@ public class ScoreReef extends Command {
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished() 
+  {
     return false;
   }
 }

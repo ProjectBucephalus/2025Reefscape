@@ -15,7 +15,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class TeleopSwerve extends Command {    
+public class TeleopSwerve extends Command 
+{    
     private final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
         .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
         .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
@@ -44,7 +45,8 @@ public class TeleopSwerve extends Command {
     private double strafeVal;
     private double brakeVal;
 
-    public TeleopSwerve(CommandSwerveDrivetrain s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fieldCentricSup, BooleanSupplier fencedSup) {
+    public TeleopSwerve(CommandSwerveDrivetrain s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fieldCentricSup, BooleanSupplier fencedSup) 
+    {
         this.s_Swerve = s_Swerve;
         addRequirements(s_Swerve);
 

@@ -73,11 +73,11 @@ public class Diffector extends SubsystemBase
 
   /**
    * Calculates elevator height based on motor positions
-   * @return Elevator height in mm
+   * @return Elevator height in m
    */
   public static double getElevatorPos()
   {
-    return (m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorDC.getPosition().getValueAsDouble()) * travelRatio;
+    return ((m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorDC.getPosition().getValueAsDouble()) * travelRatio);
   }
 
   /**
@@ -100,8 +100,6 @@ public class Diffector extends SubsystemBase
   {
     motorTargets = calculateMotorTargets(targetElevation, targetAngle);
   }
-
-  // TODO: Fancy new ArmControl functions go here ↓
 
 
     /** 
@@ -209,12 +207,12 @@ public class Diffector extends SubsystemBase
     return targetAngle;
   }
 
-  public void setElevationTarget(double newTarget)
+  public void setElevatorTarget(double newTarget)
   {
     targetElevation = newTarget;
   }
 
-  public double getElevationTarget()
+  public double getElevatorTarget()
   {
     return targetElevation;
   }

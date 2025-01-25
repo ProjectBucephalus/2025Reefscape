@@ -8,10 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Diffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class GoToClimbConfig extends Command {
+public class GoToClimbConfig extends Command 
+{
   /** Creates a new GoToClimbConfig. */
   Diffector s_Diffector;
-  public GoToClimbConfig(Diffector s_Diffector) {
+  public GoToClimbConfig(Diffector s_Diffector) 
+  {
     this.s_Diffector = s_Diffector;
 
     addRequirements(s_Diffector);
@@ -37,7 +39,8 @@ public class GoToClimbConfig extends Command {
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished() 
+  {
     return false;
   }
 }

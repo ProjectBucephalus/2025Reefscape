@@ -12,7 +12,8 @@ import frc.robot.subsystems.Diffector;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class GoToStartConfig extends SequentialCommandGroup {
+public class GoToStartConfig extends SequentialCommandGroup 
+{
   public GoToStartConfig(Diffector s_Diffector) 
   {
     if (s_Diffector.getElevatorPos() >= 0.5)

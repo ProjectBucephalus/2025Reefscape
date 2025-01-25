@@ -9,10 +9,12 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeStatus;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Stowed extends Command {
+public class Stowed extends Command 
+{
   Intake s_Intake;
   boolean isStowed;
-  public Stowed(Intake s_Intake, boolean isStowed) {
+  public Stowed(Intake s_Intake, boolean isStowed) 
+  {
     this.s_Intake = s_Intake;
     this.isStowed = isStowed;
 
@@ -24,17 +26,15 @@ public class Stowed extends Command {
   public void execute() 
   {
     if (isStowed)
-    {
-      s_Intake.setIntakeStatus(IntakeStatus.STOWED);
-    } else
-    {
-      s_Intake.setIntakeStatus(IntakeStatus.CLIMBING);
-    }
+      {s_Intake.setIntakeStatus(IntakeStatus.STOWED);} 
+    else
+      {s_Intake.setIntakeStatus(IntakeStatus.CLIMBING);}
   }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished() 
+  {
     return false;
   }
 }

@@ -9,7 +9,8 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeStatus;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeGamePiece extends Command {
+public class IntakeGamePiece extends Command 
+{
 Intake s_Intake;
 boolean isCoral;
   public IntakeGamePiece(Intake s_Intake, boolean isCoral) 
@@ -35,7 +36,8 @@ boolean isCoral;
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished() 
+  {
     return false;
   }
 }

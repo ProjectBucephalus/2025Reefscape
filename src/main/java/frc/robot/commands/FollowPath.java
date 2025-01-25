@@ -10,7 +10,8 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class FollowPath extends Command {
+public class FollowPath extends Command 
+{
   private PathPlannerPath path;
 
   
@@ -35,7 +36,8 @@ public class FollowPath extends Command {
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() {
+  public boolean isFinished() 
+  {
     return true;
   }
 }
