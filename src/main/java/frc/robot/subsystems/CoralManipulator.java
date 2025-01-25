@@ -45,9 +45,9 @@ public class CoralManipulator extends SubsystemBase {
 
   public CoralManipulator() 
   {
-    coralMotor = new TalonFX(Constants.GamePiecesManipulator.ManipulatorIDs.coralMotorID);
-    coralBeamBreak1 = new DigitalInput(Constants.GamePiecesManipulator.ManipulatorIDs.coralBeamBreak1DigitalInput);
-    coralBeamBreak2 = new DigitalInput(Constants.GamePiecesManipulator.ManipulatorIDs.coralBeamBreak2DigitalInput);
+    coralMotor = new TalonFX(Constants.GamePiecesManipulator.coralMotorID);
+    coralBeamBreak1 = new DigitalInput(Constants.GamePiecesManipulator.coralBeamBreak1DigitalInput);
+    coralBeamBreak2 = new DigitalInput(Constants.GamePiecesManipulator.coralBeamBreak2DigitalInput);
   }
 
   /**
@@ -91,16 +91,16 @@ public class CoralManipulator extends SubsystemBase {
     switch(coralStatus)
     {
       case INTAKE:
-        setCoralManipulatorSpeed(Constants.GamePiecesManipulator.CoralManipulator.coralManipulatorIntakeSpeed);
+        setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);
         break;
 
       case DELIVERY:
         if (Diffector.getArmPos() % 360 <= 180)
         {
-          setCoralManipulatorSpeed(Constants.GamePiecesManipulator.CoralManipulator.coralManipulatorDeliverySpeed);
+          setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed);
         } else
         {
-          setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.CoralManipulator.coralManipulatorDeliverySpeed);
+          setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed);
         }
         break;
 
@@ -110,13 +110,13 @@ public class CoralManipulator extends SubsystemBase {
           setCoralManipulatorSpeed(0);
         } else if (getCoralBeamBreak1State() && !getCoralBeamBreak2State())
         {
-          setCoralManipulatorSpeed(Constants.GamePiecesManipulator.CoralManipulator.coralManipulatorHoldingSpeed);
+          setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
         } else if (!getCoralBeamBreak1State() && getCoralBeamBreak2State()) 
         {
-          setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.CoralManipulator.coralManipulatorHoldingSpeed);
+          setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
         } else if (!getCoralBeamBreak1State() && !getCoralBeamBreak1State()) 
         {
-          setCoralManipulatorSpeed(Constants.GamePiecesManipulator.CoralManipulator.coralManipulatorIntakeSpeed);
+          setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);
         }
         break;
     }
