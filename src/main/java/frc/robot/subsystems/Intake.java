@@ -65,12 +65,12 @@ public class Intake extends SubsystemBase {
 
   public double getTopArmAngle()
   {
-    return m_TopArm.getPosition().getValueAsDouble();
+    return m_TopArm.getPosition().getValueAsDouble() * 360;
   }
 
   public double getBottomArmAngle()
   {
-    return m_TopArm.getPosition().getValueAsDouble();
+    return m_BottomArm.getPosition().getValueAsDouble() * 360;
   }
 
   /** 
@@ -102,7 +102,6 @@ public class Intake extends SubsystemBase {
    {
      topArmTarget = newTopTarget;
    }
-    
 
   /**
    * Set the angle of the bottom arm 
@@ -199,16 +198,18 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic()  
   {
-    if (getTopArmAngle() > topArmTarget) 
+    if (getTopArmAngle() >= topArmTarget) 
     {
-      m_TopArm.setControl(motionMagic.withPosition(topArmTarget).withSlot(0));
+      // Runs arm with PID slot for spring behaviour
+      m_TopArm.setControl(motionMagic.withPosition(topArmTarget / 360).withSlot(0));
     }
     else
     {
-      m_TopArm.setControl(motionMagic.withPosition(topArmTarget).withSlot(1));
+      // Runs arm with PID slot for hardstop behaviour
+      m_TopArm.setControl(motionMagic.withPosition(topArmTarget / 360).withSlot(1));
     }
 
-    m_BottomArm.setControl(motionMagic.withPosition(bottomArmTarget));
+    m_BottomArm.setControl(motionMagic.withPosition(bottomArmTarget / 360));
   }
 }
 

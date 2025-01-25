@@ -40,16 +40,26 @@ public final class CTREConfigs {
         intakeTopArmFXConfig.Slot0.kP = Constants.Intake.topArmSpringKP;
         intakeTopArmFXConfig.Slot0.kI = Constants.Intake.topArmSpringKI;
         intakeTopArmFXConfig.Slot0.kD = Constants.Intake.topArmSpringKD;
+        intakeTopArmFXConfig.Slot0.kS = Constants.Intake.topArmKS;
+        intakeTopArmFXConfig.Slot0.kG = -Constants.Intake.topArmKG;
 
         /* Intake Top Arm PID Config, Stop Behaviour */
         intakeTopArmFXConfig.Slot1.kP = Constants.Intake.topArmStopKP;
         intakeTopArmFXConfig.Slot1.kI = Constants.Intake.topArmStopKI;
         intakeTopArmFXConfig.Slot1.kD = Constants.Intake.topArmStopKD;
+        intakeTopArmFXConfig.Slot1.kS = Constants.Intake.topArmKS;
+        intakeTopArmFXConfig.Slot1.kG = Constants.Intake.topArmKG;
 
         /* Intake Bottom Arm PID Config */
         intakeBottomArmFXConfig.Slot0.kP = Constants.Intake.bottomArmKP;
         intakeBottomArmFXConfig.Slot0.kI = Constants.Intake.bottomArmKI;
         intakeBottomArmFXConfig.Slot0.kD = Constants.Intake.bottomArmKD;
+
+        /* Intake Arm MotionMagic Values */
+        intakeTopArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.Intake.targetAcceleration;
+        intakeTopArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.Intake.targetVelocity;
+        intakeBottomArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.Intake.targetAcceleration;
+        intakeBottomArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.Intake.targetVelocity;
 
         /* Intake Arm Ratios */
         intakeTopArmFXConfig.Feedback.SensorToMechanismRatio = Constants.Intake.topArmRatio;

@@ -255,21 +255,28 @@ public final class Constants
         public static final double bottomCoralTransferArmTarget = 0;
         public static final double bottomAlgaeTransferArmTarget = 0;
 
-        /* Top arm PID values */
+        /* Top arm PID + FeedForward values */
         public static final double topArmSpringKP = 1;
         public static final double topArmSpringKI = 0;
         public static final double topArmSpringKD = 0;
-        public static final double topArmStopKP = 0;
+        public static final double topArmStopKP = 12.5;
         public static final double topArmStopKI = 0;
         public static final double topArmStopKD = 0;
+        
+        public static final double topArmKS = 0.15;
+        public static final double topArmKG = 0.15;
 
         /* Bottom arm PID values */
         public static final double bottomArmKP = 1;
-        public static final double bottomArmKI = 1;
-        public static final double bottomArmKD = 1;
+        public static final double bottomArmKI = 0;
+        public static final double bottomArmKD = 0.25;
+
+        /* Arm MotionMagic values */
+        public static final double targetVelocity = 0.25;
+        public static final double targetAcceleration = 0.25;
 
         /* Arm ratios */
-        public static final double topArmRatio = 1;
+        public static final double topArmRatio = 16.7;
         public static final double bottomArmRatio = 1;
     }
 
