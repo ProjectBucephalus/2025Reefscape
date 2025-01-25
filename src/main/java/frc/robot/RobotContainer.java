@@ -15,6 +15,7 @@ import frc.robot.commands.*;
 import frc.robot.commands.Auto.PathfindToAndFollow;
 import frc.robot.commands.Auto.RunAutoCommandList;
 import frc.robot.commands.Auto.TargetHeading;
+import frc.robot.commands.Intake.SetIntakeStatus;
 import frc.robot.commands.Util.Test;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TunerConstants;
@@ -116,52 +117,33 @@ public class RobotContainer
         driver.start().onTrue(Commands.runOnce(() -> s_Swerve.seedFieldCentric()));
         driver.back().onTrue(Commands.runOnce(() -> s_Swerve.tareEverything()));
 
-        driver.leftTrigger().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_CORAL)));
-        driver.leftBumper().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_ALGAE)));
+        driver.leftTrigger().onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_CORAL)).onFalse(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));
+        driver.leftBumper().onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_ALGAE)).onFalse(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));
 
         /*!TODO drop piece */
         driver.rightBumper().whileTrue(new Test("dropPiece", "dropPiece"));
 
         /* driveToCage */
-        driver.y().and(driver.povUp()).whileTrue(new Test("autoDrive", "drive centre cage"));
-        driver.y().and(driver.povLeft()).whileTrue(new Test("autoDrive", "drive left cage"));
-        driver.y().and(driver.povRight()).whileTrue(new Test("autoDrive", "drive right cage"));
+        driver.y().and(driver.povUp()).whileTrue(new PathfindToAndFollow("cage2"));
+        driver.y().and(driver.povLeft()).whileTrue(new PathfindToAndFollow("cage3"));
+        driver.y().and(driver.povRight()).whileTrue(new PathfindToAndFollow("cage1"));
 
-        /* driveToStationCentre */
+        /* driveToStation */
         driver.x().and(driver.povUp()).whileTrue(new Test("autoDrive", "drive centre station"));
         driver.x().and(driver.povLeft()).whileTrue(new Test("autoDrive", "drive left station"));
         driver.x().and(driver.povRight()).whileTrue(new Test("autoDrive", "drive right station"));
 
-        /* driveToProcessorCentre */
+        /* driveToProcessor */
         driver.b().and(driver.povUp()).onTrue(new Test("autoDrive", "drive centre processor"));
         driver.b().and(driver.povLeft()).onTrue(new Test("autoDrive", "drive left processor"));
         driver.b().and(driver.povRight()).onTrue(new Test("autoDrive", "drive right processor"));
 
-        /* driveToReefCentre */
+        /* driveToReef */
         driver.a().and(driver.povUp()).whileTrue(new Test("autoDrive", "drive centre reef"));
         driver.a().and(driver.povLeft()).whileTrue(new Test("autoDrive", "drive left reef"));
         driver.a().and(driver.povRight()).whileTrue(new Test("autoDrive", "drive right reef"));
 
         driver.rightStick().whileTrue(new Test("targetObj", "Target Obj"));
-
-        driver.a().and(new Trigger(() -> Math.abs(driver.getRightX()) < Constants.Control.stickDeadband))
-            .onTrue
-            (
-                new TargetHeading
-                (
-                    s_Swerve, 
-                    Rotation2d.kCW_90deg,
-                    () -> -driver.getRawAxis(translationAxis), 
-                    () -> -driver.getRawAxis(strafeAxis), 
-                    () -> -driver.getRawAxis(rotationAxis), 
-                    () -> driver.getRawAxis(brakeAxis),
-                    () -> !driver.leftStick().getAsBoolean()
-                )
-            );
-
-        driver.y().onTrue(new PathfindToAndFollow("ReefTag"));
-        driver.x().onTrue(new PathfindToAndFollow("ReefLeft"));
-        driver.b().onTrue(new PathfindToAndFollow("ReefRight"));
 
         /* Copilot Buttons*/
     }
