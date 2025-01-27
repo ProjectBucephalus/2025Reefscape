@@ -8,6 +8,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
@@ -25,6 +26,12 @@ public class Intake extends SubsystemBase {
   private TalonFX m_BottomIntake;
   private TalonFX m_TopArm;
   private TalonFX m_BottomArm;
+  private IntakeStatus status;
+  boolean touchedAlgae;
+
+  private DigitalInput coralLimitSwitch1;
+  private DigitalInput coralLimitSwitch2;
+  private DigitalInput algaeBeamBreak;
 
   /* Declarations of all the motion magic variables */
   private final MotionMagicVoltage motionMagic;
@@ -113,15 +120,24 @@ public class Intake extends SubsystemBase {
     bottomArmTarget = newBottomTarget;
   }
 
+  public boolean getCoralSwitch1State()
+    { return coralLimitSwitch1.get();}
+
+  public boolean getCoralSwitch2State()
+    { return coralLimitSwitch2.get();}
+
+  public boolean getAlgaeBeamBreakState()
+    { return algaeBeamBreak.get();}
+
   /**
    * Sets the speeds to the intake and position to the arms
    * 
    * @param Status Enum corresponds to the intake motor speeds and
    * arms position
    */
-  public void setIntakeStatus(IntakeStatus Status)
+  public void setIntakeStatus(IntakeStatus status)
   {
-    switch (Status)
+    switch (status)
     {
 
       case INTAKE_CORAL:
@@ -198,6 +214,19 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic()  
   {
+    if (getCoralSwitch1State() || getCoralSwitch2State() && status == IntakeStatus.INTAKE_CORAL)
+    {setIntakeStatus(IntakeStatus.TRANSFER_CORAL);}
+
+    if (!getAlgaeBeamBreakState() && status == IntakeStatus.INTAKE_ALGAE)
+    {
+      touchedAlgae = true;
+    }
+    if (getAlgaeBeamBreakState() && touchedAlgae)
+    {
+      setIntakeStatus(IntakeStatus.TRANSFER_ALGAE);
+      touchedAlgae = false;
+    }
+
     if (getTopArmAngle() >= topArmTarget) 
     {
       // Runs arm with PID slot for spring behaviour

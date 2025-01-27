@@ -108,13 +108,16 @@ public class CoralManipulator extends SubsystemBase {
         if (getCoralBeamBreak1State() && getCoralBeamBreak2State())
         {
           setCoralManipulatorSpeed(0);
-        } else if (getCoralBeamBreak1State() && !getCoralBeamBreak2State())
+        } 
+        else if (getCoralBeamBreak1State() && !getCoralBeamBreak2State())
         {
           setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
-        } else if (!getCoralBeamBreak1State() && getCoralBeamBreak2State()) 
+        } 
+        else if (!getCoralBeamBreak1State() && getCoralBeamBreak2State()) 
         {
           setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
-        } else if (!getCoralBeamBreak1State() && !getCoralBeamBreak1State()) 
+        } 
+        else if (!getCoralBeamBreak1State() && !getCoralBeamBreak1State()) 
         {
           setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);
         }

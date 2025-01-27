@@ -9,6 +9,8 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CTREConfigs;
@@ -38,6 +40,7 @@ public class Diffector extends SubsystemBase
   private double offset;
   private double altOffset;
   private double armPos;
+  private DutyCycleEncoder encoder = new DutyCycleEncoder(0);
   
   
   /** Creates a new Diffector. */
@@ -64,11 +67,21 @@ public class Diffector extends SubsystemBase
 
   /**
    * Calculates arm rotation based on motor positions
-   * @return Arm rotation, degrees clockwise, 0 = algae at top
+   * @return Arm rotation, degrees clockwise, 0 = coral at top
    */
   public static double getArmPos()
   {
     return (m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorDC.getPosition().getValueAsDouble()) * rotationRatio;
+  }
+
+  /**
+   * Arm Rotation as measured from encoder
+   * @return Arm rotation, degrees clockwise, 0 = coral at top
+   */
+  public double getEncoderPos()
+  {
+    // Encoder outputs [0..1] and is geared 1:1 to the arm
+    return (1 - encoder.get()) * 360;
   }
 
   /**
