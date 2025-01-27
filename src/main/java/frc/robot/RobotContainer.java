@@ -16,6 +16,11 @@ import frc.robot.commands.Auto.PathfindToAndFollow;
 import frc.robot.commands.Auto.RunAutoCommandList;
 import frc.robot.commands.Auto.TargetHeading;
 import frc.robot.commands.Util.Test;
+import frc.robot.commands.AlgaeManipulator.*;
+import frc.robot.commands.CoralManipulator.*;
+import frc.robot.commands.Diffector.*;
+import frc.robot.commands.Intake.*;
+import frc.robot.commands.Rumble.*;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.*;
@@ -129,7 +134,7 @@ public class RobotContainer
 
         /* driveToStationCentre */
         driver.x().and(driver.povUp()).whileTrue(new Test("autoDrive", "drive centre station"));
-        driver.x().and(driver.povLeft()).whileTrue(new Test("autoDrive", "drive left station"));
+        driver.x().and(driver.povLeft().negate()).whileTrue(new Test("autoDrive", "drive left station"));
         driver.x().and(driver.povRight()).whileTrue(new Test("autoDrive", "drive right station"));
 
         /* driveToProcessorCentre */
@@ -163,7 +168,58 @@ public class RobotContainer
         driver.x().onTrue(new PathfindToAndFollow("ReefLeft"));
         driver.b().onTrue(new PathfindToAndFollow("ReefRight"));
 
-        /* Copilot Buttons*/
+        /* Copilot Buttons */
+        copilot.start().onTrue(new Test("climber", "activate"));
+        copilot.back().onTrue(new Test("climber", "deploy"));
+
+
+        /* scoringGamePieces */
+        copilot.a().and(copilot.rightBumper()).onTrue(new Test("Coral/Algae Scoring", "Lvl 1/Processor"));
+        copilot.b().and(copilot.rightBumper()).onTrue(new Test("Coral/Algae Scoring", "Lvl 2"));
+        copilot.x().and(copilot.rightBumper()).onTrue(new Test("Coral/Algae Scoring", "Lvl 3"));
+        copilot.y().and(copilot.rightBumper()).onTrue(new Test("Coral/Algae Scoring", "Lvl 4/Net"));
+
+
+        /* transferPosition */
+        copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new Test("transferPosition", null));
+        copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new Test("transferPosition", null));
+        copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new Test("transferPosition", null));
+        copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new Test("transferPosition", "Climbing"));
+
+        /* deploy/TransferGamePieces */
+        copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new Test("deploy/Transfer", null));
+        copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new Test("deploy/Transfer", null));
+        copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new Test("deploy/Transfer", null));
+        copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new Test("deploy/Transfer", null));
+
+        /* stowGamePieces */
+        copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new Test("stowPosition", null));
+        copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new Test("stowPosition", null));
+        copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new Test("stowPosition", null));
+        copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new Test("stowPosition", null));
+
+        /* intakeFromCoralStation */
+        copilot.povLeft().and(copilot.rightBumper()).onTrue(new Test("coralStation", null));
+
+        /* arm/IntakeGrab */
+        copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new Test("Arm/Intake", null));
+        copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new Test("Arm/Intake", null));
+        copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new Test("Arm/Intake", null));
+        copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new Test("Arm/Intake", null));
+
+        /* arm/IntakeRelease */
+        copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new Test("Arm/Intake", null));
+        copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new Test("Arm/Intake", null));
+        copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new Test("Arm/Intake", null));
+        copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new Test("Arm/Intake", null));
+
+        /* robotModifiers */
+        copilot.rightTrigger().onTrue(new Test("algaeModifier", "on")).onFalse(new Test("algaeModifier", "off"));
+        copilot.rightBumper().onTrue(new Test("intakeModifier", "on")).onFalse(new Test("intakeModifier", "off"));
+
+        // copilot.leftStick().and(copilot.rightTrigger()).onTrue(new Test("manualIntake/Winch", null));
+        // copilot.rightStick().and(copilot.rightTrigger()).onTrue(new Test("manualDiffector", null));
+
     }
 
     public CommandSwerveDrivetrain getSwerve()
