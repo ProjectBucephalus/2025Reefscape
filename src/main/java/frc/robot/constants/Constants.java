@@ -197,8 +197,8 @@ public final class Constants
          */
         public static final double angleTolerance = 1;
 
-        /** Elevation height tolerance, mm */
-        public static final double elevationTolerance = 1;
+        /** Elevation height tolerance, m */
+        public static final double elevationTolerance = 0.05;
 
         /* Preset arm angles */
         public static final double netAngle = 0;
