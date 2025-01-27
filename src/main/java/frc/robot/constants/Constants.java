@@ -221,10 +221,10 @@ public final class Constants
 
     public static final class Intake // TODO: Speeds and Angles must be tuned to the specific robot
     {
-        public static final int topIntakeID = IDConstants.mTopIntakeID;
-        public static final int bottomIntakeID = IDConstants.mBottomIntakeID;
-        public static final int topArmID = IDConstants.mTopArmID;
-        public static final int bottomArmID = IDConstants.mBottomArmID;
+        public static final int algaeIntakeID = IDConstants.mTopIntakeID;
+        public static final int coralIntakeID = IDConstants.mBottomIntakeID;
+        public static final int algaeArmID = IDConstants.mTopArmID;
+        public static final int coralArmID = IDConstants.mBottomArmID;
 
         /* Intake motors speeds */
         public static final double coralIntakeMotorSpeed = 0.8;
@@ -255,6 +255,9 @@ public final class Constants
         public static final double bottomCoralTransferArmTarget = 0;
         public static final double bottomAlgaeTransferArmTarget = 0;
 
+        public static final double coralStowedThreshold = 10;
+        public static final double algaeStowedThreshold = 10;
+
         public static final double armSpringKP = 0;
         public static final double armSpringKI = 0;
         public static final double armSpringKD = 0;
@@ -278,5 +281,6 @@ public final class Constants
         public static final double deployWinchPos = 0;
         public static final double climbClawPos = 0;
         public static final double climbWinchPos = 0;
+        public static final double initWinchThreshold = 10;
     }
 }

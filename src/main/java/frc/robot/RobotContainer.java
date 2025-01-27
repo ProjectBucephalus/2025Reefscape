@@ -41,9 +41,9 @@ public class RobotContainer
     public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
     private final Limelight s_Limelight = new Limelight(s_Swerve);
     public static final Diffector s_Diffector = new Diffector();
-    private final Climber s_Climber = new Climber();
-    private final Intake s_Intake = new Intake();
-    private final Rumbler s_Rumbler = new Rumbler(driver, copilot);
+    public static final Climber s_Climber = new Climber();
+    public static final Intake s_Intake = new Intake();
+    public final Rumbler s_Rumbler = new Rumbler(driver, copilot);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
