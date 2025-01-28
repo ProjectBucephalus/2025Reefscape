@@ -115,6 +115,50 @@ public class Diffector extends SubsystemBase
    */
   private double[] pathfindIK(double elevationTarget, double angleTarget, double elevationCurrent, double angleCurrent)
   {
+    /*
+      Note: if height constantly above rail+algaeL+harpoonL, don't worry
+      Note adendum: dealing with field objects may change this...
+    
+      Min height: 0.444 -> used for climb
+      Max height: 1.709 -> used for net scoring
+      Stow height: 0.574
+
+      Coral manip:
+        64 degree arc, centred on 0
+        0.5m radius
+        
+        Lateral:
+          Keep lower point above rail
+      
+        Medial:
+          Keep lower point above deck
+          If points are either side of mast, keep above deck+coralL  
+      
+      Algae manip:
+        60 degree arc, centred on 180
+        0.6m radius
+
+        107 degree arc, centred on 180
+        0.3m radius, then projected paralel to arm
+
+        Lateral:
+          90:
+            keep inner above rail
+          intercept beyond rail:
+            keep intercept above rail
+          outer point beyond rail:
+            keep midpoint above rail
+          outer within rail:
+            keep outer point above rail
+          
+        Medial: (outer point within inner rail)
+          Keep distance to inner rail above algaeL
+          Keep lower point above deck
+          If points either side of mast, keep above deck+algaeL
+          If algae held:
+            17 degrees either side of mast, increase deck height by 0.1
+    */
+
     return new Double[2] = {elevationTarget, angleTarget};
   }
 
