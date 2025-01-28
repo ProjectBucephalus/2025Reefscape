@@ -55,7 +55,7 @@ public class AlgaeManipulator extends SubsystemBase {
    * 
    * @param Speed Algae manipulator motor speed, positive to eject [-1..1]
    */
-  private void setAlgaeManipulatorSpeed(double Speed)
+  public void setAlgaeManipulatorSpeed(double Speed)
   {
     algaeMotor.set(Speed);
   }
@@ -65,7 +65,7 @@ public class AlgaeManipulator extends SubsystemBase {
    * 
    * @return AlgaeBeamBreak current state, false when object present
    */
-  private boolean getAlgaeBeamBreakState()
+  public boolean getAlgaeBeamBreakState()
   {
     return algaeBeamBreak.get();
   }

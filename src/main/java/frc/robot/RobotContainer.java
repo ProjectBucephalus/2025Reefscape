@@ -9,10 +9,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
+import frc.robot.commands.Auto.PathfindToAndFollow;
+import frc.robot.commands.Auto.RunAutoCommandList;
+import frc.robot.commands.Auto.TargetHeading;
+import frc.robot.commands.Util.Test;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TunerConstants;
 import frc.robot.subsystems.*;
@@ -39,11 +42,13 @@ public class RobotContainer
 
     /* Subsystems */
     public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
-    private final Limelight s_Limelight = new Limelight(s_Swerve);
+    public static final Limelight s_Limelight = new Limelight(s_Swerve);
     public static final Diffector s_Diffector = new Diffector();
     public static final Climber s_Climber = new Climber();
     public static final Intake s_Intake = new Intake();
-    public final Rumbler s_Rumbler = new Rumbler(driver, copilot);
+    public static final CoralManipulator s_CoralManipulator = new CoralManipulator();
+    public static final AlgaeManipulator s_AlgaeManipulator = new AlgaeManipulator();
+    public Rumbler s_Rumbler = new Rumbler(driver, copilot);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 

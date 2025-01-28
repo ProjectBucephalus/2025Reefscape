@@ -3,11 +3,12 @@ package frc.robot.constants;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
-
 import com.pathplanner.lib.path.PathConstraints;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.Test;
+import frc.robot.RobotContainer;
+import frc.robot.commands.AlgaeManipulator.IntakeAlgae;
+import frc.robot.commands.AlgaeManipulator.ScoreAlgae;
+import frc.robot.commands.CoralManipulator.IntakeCoral;
 import frc.robot.subsystems.Diffector.CargoStates;
 
 public final class Constants 
@@ -87,52 +88,46 @@ public final class Constants
         public static final Map<String, AutoMapping> autoMap = new HashMap<>(34)
         {
             {
-                put("ra" , new AutoMapping("test", null));
-                put("rb" , new AutoMapping("test", null));
-                put("rc" , new AutoMapping("test", null));
-                put("rd" , new AutoMapping("test", null));
-                put("re" , new AutoMapping("test", null));
-                put("rf" , new AutoMapping("test", null));
-                put("rg" , new AutoMapping("test", null));
-                put("rh" , new AutoMapping("test", null));
-                put("ri" , new AutoMapping("test", null));
-                put("rj" , new AutoMapping("test", null));
-                put("rk" , new AutoMapping("test", null));
-                put("rl" , new AutoMapping("test", null));
-                put("cl1", new AutoMapping("test", null));
-                put("cl2", new AutoMapping("test", null));
-                put("cl3", new AutoMapping("test", null));
-                put("cl4", new AutoMapping("test", null));
-                put("cl5", new AutoMapping("test", null));
-                put("cl6", new AutoMapping("test", null));
-                put("cl7", new AutoMapping("test", null));
-                put("cl8", new AutoMapping("test", null));
-                put("cl9", new AutoMapping("test", null));
-                put("cr1", new AutoMapping("test", null));
-                put("cr2", new AutoMapping("test", null));
-                put("cr3", new AutoMapping("test", null));
-                put("cr4", new AutoMapping("test", null));
-                put("cr5", new AutoMapping("StationSouth", () -> new Test("Pickup", "picked up cR5")));
-                put("cr6", new AutoMapping("test", null));
-                put("cr7", new AutoMapping("test", null));
-                put("cr8", new AutoMapping("test", null));
-                put("cr9", new AutoMapping("test", null));
-                put("a1" , new AutoMapping("test", null));
-                put("a2" , new AutoMapping("test", null));                
-                put("a3" , new AutoMapping("test", null));                
-                put("a4" , new AutoMapping("test", null));                
-                put("a5" , new AutoMapping("test", null));                
-                put("a6" , new AutoMapping("test", null));
-                put("sc1", new AutoMapping("test", null));
-                put("sc2", new AutoMapping("test", null));
-                put("sc3", new AutoMapping("test", null));
-                put("sa1", new AutoMapping("test", null));
-                put("sa2", new AutoMapping("test", null));
-                put("sa3", new AutoMapping("test", null));
-                put("b1" , new AutoMapping("test", null));
-                put("b2" , new AutoMapping("test", null));
-                put("b3" , new AutoMapping("test", null));
-                put("p"  , new AutoMapping("test", null));                
+                put("ra" , new AutoMapping("ra" , null));
+                put("rb" , new AutoMapping("rb" , null));
+                put("rc" , new AutoMapping("rc" , null));
+                put("rd" , new AutoMapping("rd" , null));
+                put("re" , new AutoMapping("re" , null));
+                put("rf" , new AutoMapping("rf" , null));
+                put("rg" , new AutoMapping("rg" , null));
+                put("rh" , new AutoMapping("rh" , null));
+                put("ri" , new AutoMapping("ri" , null));
+                put("rj" , new AutoMapping("rj" , null));
+                put("rk" , new AutoMapping("rk" , null));
+                put("rl" , new AutoMapping("rl" , null));
+                put("cl1", new AutoMapping("cl1", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl2", new AutoMapping("cl2", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl3", new AutoMapping("cl3", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl4", new AutoMapping("cl4", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl5", new AutoMapping("cl5", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl6", new AutoMapping("cl6", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl7", new AutoMapping("cl7", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl8", new AutoMapping("cl8", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl9", new AutoMapping("cl9", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr1", new AutoMapping("cr1", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr2", new AutoMapping("cr2", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr3", new AutoMapping("cr3", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr4", new AutoMapping("cr4", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr5", new AutoMapping("cr5", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr6", new AutoMapping("cr6", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr7", new AutoMapping("cr7", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr8", new AutoMapping("cr8", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr9", new AutoMapping("cr9", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("a1" , new AutoMapping("a1" , () -> new IntakeAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+                put("a2" , new AutoMapping("a2" , () -> new IntakeAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+                put("a3" , new AutoMapping("a3" , () -> new IntakeAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+                put("a4" , new AutoMapping("a4" , () -> new IntakeAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+                put("a5" , new AutoMapping("a5" , () -> new IntakeAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+                put("a6" , new AutoMapping("a6" , () -> new IntakeAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+                put("b1" , new AutoMapping("b1" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+                put("b2" , new AutoMapping("b2" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+                put("b3" , new AutoMapping("b3" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+                put("p"  , new AutoMapping("p"  , () -> new ScoreAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
             }
         };
 
@@ -177,14 +172,15 @@ public final class Constants
 
         /** 
          * Number of chain mm moved for one motor degree. 
-         * Sprocket rotations per motor rotation * mm of chain moved per sprocket rotation (pitch diam. * pi), 
-         * all divided by 360 to convert rotations to degrees 
+         * Sprocket rotations per motor rotation * m of chain moved per sprocket rotation (pitch diam. * pi), 
+         * divided by 360 to convert rotations to degrees
+         * divided by 2 to give the contribution of a single motor
          */
-        public static final double travelRatio = ((gearboxRatio * sprocketPitchDiameter * Math.PI) / 360) / 2;
+        public static final double travelRatio = ((gearboxRatio * (sprocketPitchDiameter / 1000) * Math.PI) / 360) / 2;
         /** 
          * Number of arm degrees moved for one motor degree of a single motor 
          * Output sprocket rotations per motor rotation * output sprocket to arm sprocket ratio,
-         * halved to account for the dynamics of a sprocket with only one moving chain
+         * divided by 2 to give the contribution of a single motor
          */
         public static final double rotationRatio = gearboxRatio * sprocketRatio / 2;
 
@@ -194,7 +190,50 @@ public final class Constants
         public static final double maxAbsPos = maxRotation * 360;
         public static final double turnBackThreshold = 135;
         public static final double returnPos = 0;
-        public static final double stowThreshold = 1;
+        public static final double climbAngle = 90;
+        
+        /**
+         * How many degrees off 0 
+         */
+        public static final double angleTolerance = 1;
+
+        /** Elevation height tolerance, mm */
+        public static final double elevationTolerance = 1;
+
+        /* Preset arm angles */
+        public static final double netAngle = 0;
+        public static final double processorAngle = 0;
+        public static final double reef4Angle = 0;
+        public static final double reef3Angle = 0;
+        public static final double reef2Angle = 0;
+        public static final double reef1Angle = 0;
+        public static final double coralTransferAngle = 0;
+        public static final double algaeTransferAngle = 0;
+        public static final double coralStationAngle = 0;
+        public static final double algae1Angel = 0;
+        public static final double algae2Angel = 0;
+
+        /* Preset elevator heights */
+        public static final double netElevation = 0;
+        public static final double processorElevation = 0; 
+        public static final double reef4Elevation = 0;
+        public static final double reef3Elevation = 0;
+        public static final double reef2Elevation = 0;
+        public static final double reef1Elevation = 0;
+        public static final double coralTransferElevation = 0;
+        public static final double algaeTransferElevation = 0;
+        public static final double coralStationElevation = 0;
+        public static final double algae1Elevation = 0;
+        public static final double algae2Elevation = 0;
+        public static final double climbElevation = 0;
+        public static final double startingElevation = 0;
+
+        /* Manipulator arm geometry */
+        public static final double algaeArmLength = 0;
+        public static final double coralArmLength = 0;
+        public static final double algaeArmWidth = 0;
+        public static final double coralArmWidth = 0;
+        public static final double algaeProtrusion = 0;
     }
 
     public static final class GamePiecesManipulator 
@@ -236,8 +275,8 @@ public final class Constants
         public static final double stowedMotorSpeed = 0;
 
         /* Top intake arm positions 
-            * TODO: Put in Degrees for the arm top and bottom position in this comment
-        */
+         * TODO: Put in Degrees for the arm top and bottom position in this comment
+         */
         public static final double topCoralIntakeArmTarget = 0;
         public static final double topAlgaeIntakeArmTarget = 0;
         public static final double topClimbingArmTarget = 0;
@@ -258,29 +297,50 @@ public final class Constants
         public static final double coralStowedThreshold = 10;
         public static final double algaeStowedThreshold = 10;
 
-        public static final double armSpringKP = 0;
-        public static final double armSpringKI = 0;
-        public static final double armSpringKD = 0;
-        public static final double armStopKP = 0;
-        public static final double armStopKI = 0;
-        public static final double armStopKD = 0;
+        /* Top arm PID + FeedForward values */
+        public static final double topArmSpringKP = 1;
+        public static final double topArmSpringKI = 0;
+        public static final double topArmSpringKD = 0;
+        public static final double topArmStopKP = 12.5;
+        public static final double topArmStopKI = 0;
+        public static final double topArmStopKD = 0;
+        
+        public static final double topArmKS = 0.15;
+        public static final double topArmKG = 0.15;
+
+        /* Bottom arm PID values */
+        public static final double bottomArmKP = 1;
+        public static final double bottomArmKI = 0;
+        public static final double bottomArmKD = 0.25;
+
+        /* Arm MotionMagic values */
+        public static final double intakeArmMotionMagicCruise = 0.25;
+        public static final double intakeArmMotionMagicAccel = 0.25;
+
+        /* Arm ratios */
+        public static final double topArmRatio = 16.7;
+        public static final double bottomArmRatio = 1;
     }
 
     public static final class Climber
     {
-        public static final int clawID = IDConstants.climberClawMotorID;
         public static final int winchID = IDConstants.climberWinchMotorID;
 
         public static final double initSpeed = 0;
         public static final double deploySpeed = 0.8;
         public static final double climbSpeed = 0.8;
 
-        public static final double initClawPos = 0;
         public static final double initWinchPos = 0;
-        public static final double deployClawPos = 90;
         public static final double deployWinchPos = 0;
-        public static final double climbClawPos = 0;
         public static final double climbWinchPos = 0;
+
+        public static final double winchKP = 0;
+        public static final double winchKI = 0;
+        public static final double winchKD = 0;
+
+        public static final double winchMotionMagicCruise = 0;
+        public static final double winchMotionMagicAccel = 0;
+
         public static final double initWinchThreshold = 10;
     }
 }

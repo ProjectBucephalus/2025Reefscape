@@ -8,6 +8,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
@@ -25,21 +26,23 @@ public class Intake extends SubsystemBase {
   private TalonFX m_CoralIntake;
   private TalonFX m_AlgaeArm;
   private TalonFX m_CoralArm;
+  private IntakeStatus status;
+  boolean touchedAlgae;
+
+  private DigitalInput coralLimitSwitch1;
+  private DigitalInput coralLimitSwitch2;
+  private DigitalInput algaeBeamBreak;
 
   /* Declarations of all the motion magic variables */
   private final MotionMagicVoltage motionMagic;
-  private double AlgaeArmTarget;
-  private double CoralArmTarget;
-  private final double AlgaeArmRatio;
-  private final double CoralArmRatio;
-  private double[] armTargets = new double[2];
+  private double algaeArmTarget;
+  private double coralArmTarget;
   
   /* Enum representing the status the intake is in
    * (Spinning inwards for a coral, spinning inwards for an algae, position for when the robot is climbing,
    * Position for before the robot intakes, stowing the coral or algae, transferring the coral to the robot's scorer,
    * Transferring the algae to the robot's scorer)
    */
-
   public enum IntakeStatus 
   {
     INTAKE_CORAL,
@@ -59,13 +62,22 @@ public class Intake extends SubsystemBase {
     m_CoralArm = new TalonFX(Constants.Intake.coralArmID);
 
     m_AlgaeArm.getConfigurator().apply(CTREConfigs.intakeTopArmFXConfig);
+    m_CoralArm.getConfigurator().apply(CTREConfigs.intakeBottomArmFXConfig);
 
-    AlgaeArmTarget = 0;
-    CoralArmTarget = 0;
+    algaeArmTarget = 0;
+    coralArmTarget = 0;
 
     motionMagic = new MotionMagicVoltage(0);
-    AlgaeArmRatio = 0;
-    CoralArmRatio = 0;
+  }
+
+  public double getTopArmAngle()
+  {
+    return m_AlgaeArm.getPosition().getValueAsDouble() * 360;
+  }
+
+  public double getBottomArmAngle()
+  {
+    return m_CoralArm.getPosition().getValueAsDouble() * 360;
   }
 
   /** 
@@ -95,9 +107,8 @@ public class Intake extends SubsystemBase {
    */
    public void setAlgaeArmTarget(double newAlgaeTarget)
    {
-     AlgaeArmTarget = newAlgaeTarget;
+     algaeArmTarget = newAlgaeTarget;
    }
-    
 
   /**
    * Set the angle of the Coral arm 
@@ -106,21 +117,17 @@ public class Intake extends SubsystemBase {
    */
   public void setCoralArmTarget(double newCoralTarget)
   {
-    CoralArmTarget = newCoralTarget;
+    coralArmTarget = newCoralTarget;
   }
 
-  /**
-   * Calculates the arms target angles
-   * 
-   * @param newAlgaeTarget Algae arm's target angle
-   * @param newCoralTarget Coral arms target angle
-   */
-  private void calculateArmTargets(double newAlgaeTarget, double newCoralTarget)
-  {
-    armTargets[0] = newAlgaeTarget / AlgaeArmRatio;
-    armTargets[1] = newCoralTarget / CoralArmRatio;
-  }
+  public boolean getCoralSwitch1State()
+    {return coralLimitSwitch1.get();}
 
+  public boolean getCoralSwitch2State()
+    {return coralLimitSwitch2.get();}
+
+  public boolean getAlgaeBeamBreakState()
+    {return algaeBeamBreak.get();}
 
   /**
    * Sets the speeds to the intake and position to the arms
@@ -128,11 +135,10 @@ public class Intake extends SubsystemBase {
    * @param Status Enum corresponds to the intake motor speeds and
    * arms position
    */
-  public void setIntakeStatus(IntakeStatus Status)
+  public void setIntakeStatus(IntakeStatus status)
   {
-    switch (Status)
+    switch (status)
     {
-
       case INTAKE_CORAL:
       setAlgaeIntakeSpeed(Constants.Intake.coralIntakeMotorSpeed);
       setCoralIntakeSpeed(Constants.Intake.coralIntakeMotorSpeed);
@@ -191,7 +197,7 @@ public class Intake extends SubsystemBase {
    */
   public double getAlgaeArmTarget()
   {
-    return AlgaeArmTarget;
+    return algaeArmTarget;
   }
 
   /**
@@ -201,7 +207,7 @@ public class Intake extends SubsystemBase {
    */
   public double getCoralArmTarget()
   {
-    return CoralArmTarget;
+    return coralArmTarget;
   }
 
   public boolean isCoralStowed()
@@ -217,9 +223,31 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic()  
   {
-    calculateArmTargets(AlgaeArmTarget, CoralArmTarget);
-    m_AlgaeArm.setControl(motionMagic.withPosition(armTargets[0]));
-    m_CoralArm.setControl(motionMagic.withPosition(armTargets[1]));
+    if (getCoralSwitch1State() || getCoralSwitch2State() && status == IntakeStatus.INTAKE_CORAL)
+    {setIntakeStatus(IntakeStatus.TRANSFER_CORAL);}
+
+    if (!getAlgaeBeamBreakState() && status == IntakeStatus.INTAKE_ALGAE)
+    {
+      touchedAlgae = true;
+    }
+    if (getAlgaeBeamBreakState() && touchedAlgae)
+    {
+      setIntakeStatus(IntakeStatus.TRANSFER_ALGAE);
+      touchedAlgae = false;
+    }
+
+    if (getTopArmAngle() >= algaeArmTarget) 
+    {
+      // Runs arm with PID slot for spring behaviour
+      m_AlgaeArm.setControl(motionMagic.withPosition(algaeArmTarget / 360).withSlot(0));
+    }
+    else
+    {
+      // Runs arm with PID slot for hardstop behaviour
+      m_AlgaeArm.setControl(motionMagic.withPosition(algaeArmTarget / 360).withSlot(1));
+    }
+
+    m_CoralArm.setControl(motionMagic.withPosition(coralArmTarget / 360));
   }
 }
 

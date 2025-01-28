@@ -55,7 +55,7 @@ public class CoralManipulator extends SubsystemBase {
    * 
    * @param Speed Coral manipulator motor speed, positive to eject [-1..1]
    */
-  private void setCoralManipulatorSpeed(double Speed)
+  public void setCoralManipulatorSpeed(double Speed)
   {
     coralMotor.set(Speed);
   }
@@ -65,7 +65,7 @@ public class CoralManipulator extends SubsystemBase {
    * 
    * @return 1st CoralBeamBreak current state, false when object present?
    */
-  private boolean getCoralBeamBreak1State()
+  public boolean getCoralBeamBreak1State()
   {
     return coralBeamBreak1.get();
   }
@@ -75,7 +75,7 @@ public class CoralManipulator extends SubsystemBase {
    * 
    * @return 2nd CoralBeamBreak current state, false when object present?
    */
-  private boolean getCoralBeamBreak2State()
+  public boolean getCoralBeamBreak2State()
   {
     return coralBeamBreak2.get();
   }
@@ -108,13 +108,16 @@ public class CoralManipulator extends SubsystemBase {
         if (getCoralBeamBreak1State() && getCoralBeamBreak2State())
         {
           setCoralManipulatorSpeed(0);
-        } else if (getCoralBeamBreak1State() && !getCoralBeamBreak2State())
+        } 
+        else if (getCoralBeamBreak1State() && !getCoralBeamBreak2State())
         {
           setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
-        } else if (!getCoralBeamBreak1State() && getCoralBeamBreak2State()) 
+        } 
+        else if (!getCoralBeamBreak1State() && getCoralBeamBreak2State()) 
         {
           setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
-        } else if (!getCoralBeamBreak1State() && !getCoralBeamBreak1State()) 
+        } 
+        else if (!getCoralBeamBreak1State() && !getCoralBeamBreak1State()) 
         {
           setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);
         }
