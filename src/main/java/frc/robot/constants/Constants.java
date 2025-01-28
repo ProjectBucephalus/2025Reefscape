@@ -1,9 +1,12 @@
 package frc.robot.constants;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import com.pathplanner.lib.path.PathConstraints;
+
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.commands.AlgaeManipulator.IntakeAlgae;
@@ -72,6 +75,18 @@ public final class Constants
         public static final PathConstraints defaultConstraints = new PathConstraints
             (pathplannerMaxSpeed, pathplannerMaxAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
         
+        public static final Map<Translation2d, Integer> reefMidPointMap = new HashMap<>(6)
+        {
+            {
+                put(new Translation2d(3.658, 4.026), 1);
+                put(new Translation2d(4.073, 3.306), 2);
+                put(new Translation2d(4.905, 3.306), 3);
+                put(new Translation2d(5.321, 4.026), 4);
+                put(new Translation2d(4.905, 4.746), 5);
+                put(new Translation2d(4.073, 4.746), 6);
+            }
+        };
+
         public static class AutoMapping
         {
             public final String pathName;
@@ -123,13 +138,15 @@ public final class Constants
                 put("a3" , new AutoMapping("a3" , () -> new IntakeAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
                 put("a4" , new AutoMapping("a4" , () -> new IntakeAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
                 put("a5" , new AutoMapping("a5" , () -> new IntakeAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
-                put("a6" , new AutoMapping("a6" , () -> new IntakeAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+                put("a6" , new AutoMapping("a0" , () -> new IntakeAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
                 put("b1" , new AutoMapping("b1" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
                 put("b2" , new AutoMapping("b2" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
                 put("b3" , new AutoMapping("b3" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
                 put("p"  , new AutoMapping("p"  , () -> new ScoreAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
             }
         };
+
+        public static final ArrayList<Translation2d> reefMidPoints = FieldConstants.GeoFencing.reefBlue.getMidPoints();
 
         public static final String defaultAuto = "t5,cR5,w3.5,cR5";
     }

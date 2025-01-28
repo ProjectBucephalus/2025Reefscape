@@ -255,6 +255,23 @@ public class GeoFenceObject
     }
 
     /**
+     * If the object is a polygon, the centrepoints of each face are returned as a list
+     * The centre of the object (polygon or otherwise) is added to the end of the list
+     * @return ArrayList with the Translation2d of the centre of each line/object
+     */
+    public ArrayList<Translation2d> getMidPoints()
+    {
+        ArrayList<Translation2d> centresList = new ArrayList<Translation2d>();
+        if (objectType == ObjectTypes.polygon) 
+        {
+            for(int i = 0; i < edgeLines.size(); i++)
+                {centresList.add(edgeLines.get(i).centre);}
+        }
+        centresList.add(centre);
+        return centresList;
+    }
+
+    /**
      * Damps the motion of the robot in the direction of a Geofence object to prevent collision
      * @param robotXY Coordinates of the robot, metres
      * @param motionXY Control input to be damped, must be aligned to field coordinates

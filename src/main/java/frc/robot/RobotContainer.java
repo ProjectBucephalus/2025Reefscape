@@ -13,9 +13,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.commands.Auto.PathfindToAndFollow;
+import frc.robot.commands.Auto.PathfindToReef;
 import frc.robot.commands.Auto.PathfindToStation;
 import frc.robot.commands.Auto.RunAutoCommandList;
 import frc.robot.commands.Auto.TargetHeading;
+import frc.robot.commands.Auto.PathfindToReef.DpadOptions;
 import frc.robot.commands.Intake.SetIntakeStatus;
 import frc.robot.commands.Util.Test;
 import frc.robot.constants.Constants;
@@ -138,9 +140,9 @@ public class RobotContainer
         driver.b().and(driver.povRight()).onTrue(new PathfindToAndFollow("p"));
 
         /* driveToReef */
-        driver.a().and(driver.povUp()).onTrue(new Test("autoDrive", "drive centre reef"));
-        driver.a().and(driver.povLeft()).onTrue(new Test("autoDrive", "drive left reef"));
-        driver.a().and(driver.povRight()).onTrue(new Test("autoDrive", "drive right reef"));
+        driver.a().and(driver.povUp()).onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> s_Swerve.getState().Pose.getTranslation()));
+        driver.a().and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, () -> s_Swerve.getState().Pose.getTranslation()));
+        driver.a().and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> s_Swerve.getState().Pose.getTranslation()));
 
         driver.rightStick().whileTrue(new Test("targetObj", "Target Obj"));
 
