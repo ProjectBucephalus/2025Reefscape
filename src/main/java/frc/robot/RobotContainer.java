@@ -125,7 +125,7 @@ public class RobotContainer
         driver.leftBumper().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_ALGAE)));
 
         /*!TODO drop piece */
-        driver.rightBumper().whileTrue(new Test("dropPiece", "dropPiece"));
+        driver.rightBumper().whileTrue(new DropGamePiece(s_AlgaeManipulator, s_CoralManipulator));
 
         /* driveToCage */
         driver.y().and(driver.povUp()).onTrue(new PathfindToAndFollow("cage2"));

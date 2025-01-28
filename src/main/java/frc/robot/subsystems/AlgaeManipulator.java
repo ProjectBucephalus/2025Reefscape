@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -75,6 +76,10 @@ public class AlgaeManipulator extends SubsystemBase {
     algaeStatus = status;
   }
 
+  public AlgaeManipulatorStatus getStatus()
+  {
+    return algaeStatus;
+  }
 
   @Override
   public void periodic() 
