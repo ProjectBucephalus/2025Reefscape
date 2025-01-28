@@ -64,6 +64,10 @@ public class Intake extends SubsystemBase {
     m_TopArm.getConfigurator().apply(CTREConfigs.intakeTopArmFXConfig);
     m_BottomArm.getConfigurator().apply(CTREConfigs.intakeBottomArmFXConfig);
 
+    coralLimitSwitch1 = new DigitalInput(Constants.Intake.coralLimitSwitch1DigitalInput);
+    coralLimitSwitch2 = new DigitalInput(Constants.Intake.coralLimitSwitch2DigitalInput);
+    algaeBeamBreak = new DigitalInput(Constants.Intake.intakeAlgaeBeamBreakDigitalInput);
+
     topArmTarget = 0;
     bottomArmTarget = 0;
 

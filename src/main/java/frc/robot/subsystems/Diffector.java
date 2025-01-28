@@ -40,7 +40,7 @@ public class Diffector extends SubsystemBase
   private double offset;
   private double altOffset;
   private double armPos;
-  private DutyCycleEncoder encoder = new DutyCycleEncoder(0);
+  private DutyCycleEncoder encoder = new DutyCycleEncoder(6);
   
   
   /** Creates a new Diffector. */

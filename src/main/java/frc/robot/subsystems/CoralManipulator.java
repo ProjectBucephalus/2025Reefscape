@@ -48,6 +48,7 @@ public class CoralManipulator extends SubsystemBase {
     coralMotor = new TalonFX(Constants.GamePiecesManipulator.coralMotorID);
     coralBeamBreak1 = new DigitalInput(Constants.GamePiecesManipulator.coralBeamBreak1DigitalInput);
     coralBeamBreak2 = new DigitalInput(Constants.GamePiecesManipulator.coralBeamBreak2DigitalInput);
+    coralStatus = CoralManipulatorStatus.INTAKE;
   }
 
   /**

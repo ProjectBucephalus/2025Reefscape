@@ -8,6 +8,7 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
 //import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,9 +41,10 @@ public class Limelight extends SubsystemBase
   }
   
   public Pose2d getPose() 
-  {
-    return mt2.pose;
-  }
+  {return mt2.pose;}
+
+  public Pose3d getObjectPose()
+  {return LimelightHelpers.getTargetPose3d_RobotSpace("limelight");}
   
   @Override
   public void periodic() 
@@ -61,17 +63,13 @@ public class Limelight extends SubsystemBase
     doRejectUpdate = false;
     
     if (mt2 == null || mt2.tagCount == 0 || omegaRps > 2.0) 
-    {
-      doRejectUpdate = true;
-    }
+    {doRejectUpdate = true;}
 
     if (SmartDashboard.getBoolean("Use Limelight", true)) 
     {
       LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
       if (!doRejectUpdate) 
-      {
-        s_Swerve.addVisionMeasurement(mt2.pose, Utils.fpgaToCurrentTime(mt2.timestampSeconds));
-      }
+      {s_Swerve.addVisionMeasurement(mt2.pose, Utils.fpgaToCurrentTime(mt2.timestampSeconds));}
     }
     
     if(mt2 != null)
@@ -81,5 +79,6 @@ public class Limelight extends SubsystemBase
     }
 
     SmartDashboard.putBoolean("Reject LL Update", doRejectUpdate);
+    SmartDashboard.putString("Limelight Object", getObjectPose().toString());
   }
 }
