@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 
@@ -98,7 +99,7 @@ public class Intake extends SubsystemBase {
   private void setCoralIntakeSpeed(double speed)
   {
     m_CoralIntake.set(speed);
-  };
+  }
 
   /**
    * Set the angle of the Algae arm 
@@ -118,6 +119,7 @@ public class Intake extends SubsystemBase {
   public void setCoralArmTarget(double newCoralTarget)
   {
     coralArmTarget = newCoralTarget;
+    
   }
 
   public boolean getCoralSwitch1State()
@@ -212,12 +214,12 @@ public class Intake extends SubsystemBase {
 
   public boolean isCoralStowed()
   {
-    return m_CoralIntake.getPosition().getValueAsDouble() <= Constants.Intake.coralStowedThreshold;
+    return Constants.Intake.coralStowedLowThreshold < getBottomArmAngle() && getBottomArmAngle() < Constants.Intake.coralStowedHighThreshold;
   } 
 
   public boolean isAlgaeStowed()
   {
-    return m_AlgaeIntake.getPosition().getValueAsDouble() <= Constants.Intake.algaeStowedThreshold;
+    return Constants.Intake.algaeStowedLowThreshold < getTopArmAngle() && getTopArmAngle() < Constants.Intake.algaeStowedHighThreshold;
   }
 
   @Override
@@ -243,11 +245,18 @@ public class Intake extends SubsystemBase {
     }
     else
     {
+      if (RobotContainer.s_Diffector.safeToMoveAlgae())
+     {
       // Runs arm with PID slot for hardstop behaviour
       m_AlgaeArm.setControl(motionMagic.withPosition(algaeArmTarget / 360).withSlot(1));
+     }
+      
     }
 
-    m_CoralArm.setControl(motionMagic.withPosition(coralArmTarget / 360));
+    if (RobotContainer.s_Climber.isStowed() && RobotContainer.s_Diffector.safeToMoveCoral())
+    {
+      m_CoralArm.setControl(motionMagic.withPosition(coralArmTarget / 360));
+    }  
   }
 }
 

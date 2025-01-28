@@ -261,6 +261,21 @@ public class Diffector extends SubsystemBase
     updateCargoState();
   }
 
+  public boolean safeToMoveCoral()
+  {
+    return Constants.Diffector.coralElevatorLowTheshold < getElevatorPos() && getElevatorPos() < Constants.Diffector.coralElevatorHighThreshold;
+  }
+
+  public boolean safeToMoveAlgae()
+  {
+    return Constants.Diffector.algaeElevatorLowTheshold < getElevatorPos() && getElevatorPos() < Constants.Diffector.algaeElevatorHighThreshold;
+  }
+
+  public boolean safeToMoveClimber()
+  {
+    return Constants.Diffector.climberElevatorLowTheshold < getElevatorPos() && getElevatorPos() < Constants.Diffector.climberElevatorHighThreshold;
+  }
+
   private void updateCargoState()
   {
     if(coral && algae)

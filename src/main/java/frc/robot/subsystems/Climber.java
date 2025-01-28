@@ -50,7 +50,7 @@ private void setClimbTargets(double newWinchTarget)
       break;
 
       case DEPLOY_CONFIG: 
-      if (RobotContainer.s_Intake.isCoralStowed())
+      if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
       {
         setClimberSpeed(Constants.Climber.deploySpeed);
         setClimbTargets(Constants.Climber.deployWinchPos);
@@ -58,7 +58,7 @@ private void setClimbTargets(double newWinchTarget)
       break;
 
       case CLIMB_CONFIG:
-      if (RobotContainer.s_Intake.isCoralStowed())
+      if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
       {
         setClimberSpeed(Constants.Climber.climbSpeed);
         setClimbTargets(Constants.Climber.climbWinchPos);
