@@ -43,8 +43,7 @@ public final class IDConstants
 
     /* Climber */
     /* _______ */
-    public static final int climberClawMotorID = 0; //23
-    public static final int climberWinchMotorID = 0; //24
+    public static final int climberWinchMotorID = 0; //23
 
     /* Manipulator */
     /* ___________ */

@@ -49,7 +49,7 @@ public class RobotContainer
     public static final Intake s_Intake = new Intake();
     public static final CoralManipulator s_CoralManipulator = new CoralManipulator();
     public static final AlgaeManipulator s_AlgaeManipulator = new AlgaeManipulator();
-    private Rumbler s_Rumbler = new Rumbler(driver, copilot);
+    public Rumbler s_Rumbler = new Rumbler(driver, copilot);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 

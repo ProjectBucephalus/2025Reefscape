@@ -260,10 +260,10 @@ public final class Constants
 
     public static final class Intake // TODO: Speeds and Angles must be tuned to the specific robot
     {
-        public static final int topIntakeID = IDConstants.mTopIntakeID;
-        public static final int bottomIntakeID = IDConstants.mBottomIntakeID;
-        public static final int topArmID = IDConstants.mTopArmID;
-        public static final int bottomArmID = IDConstants.mBottomArmID;
+        public static final int algaeIntakeID = IDConstants.mTopIntakeID;
+        public static final int coralIntakeID = IDConstants.mBottomIntakeID;
+        public static final int algaeArmID = IDConstants.mTopArmID;
+        public static final int coralArmID = IDConstants.mBottomArmID;
 
         /* Intake motors speeds */
         public static final double coralIntakeMotorSpeed = 0.8;
@@ -294,6 +294,9 @@ public final class Constants
         public static final double bottomCoralTransferArmTarget = 0;
         public static final double bottomAlgaeTransferArmTarget = 0;
 
+        public static final double coralStowedThreshold = 10;
+        public static final double algaeStowedThreshold = 10;
+
         /* Top arm PID + FeedForward values */
         public static final double topArmSpringKP = 1;
         public static final double topArmSpringKI = 0;
@@ -321,32 +324,23 @@ public final class Constants
 
     public static final class Climber
     {
-        public static final int clawID = IDConstants.climberClawMotorID;
         public static final int winchID = IDConstants.climberWinchMotorID;
 
         public static final double initSpeed = 0;
         public static final double deploySpeed = 0.8;
         public static final double climbSpeed = 0.8;
 
-        public static final double initClawPos = 0;
         public static final double initWinchPos = 0;
-        public static final double deployClawPos = 90;
         public static final double deployWinchPos = 0;
-        public static final double climbClawPos = 0;
         public static final double climbWinchPos = 0;
-
-        public static final double clawKP = 0;
-        public static final double clawKI = 0;
-        public static final double clawKD = 0;
 
         public static final double winchKP = 0;
         public static final double winchKI = 0;
         public static final double winchKD = 0;
 
-        public static final double clawMotionMagicCruise = 0;
-        public static final double clawMotionMagicAccel = 0;
-
         public static final double winchMotionMagicCruise = 0;
         public static final double winchMotionMagicAccel = 0;
+
+        public static final double initWinchThreshold = 10;
     }
 }
