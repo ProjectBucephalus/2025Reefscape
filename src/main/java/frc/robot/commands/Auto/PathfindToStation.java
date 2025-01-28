@@ -4,14 +4,13 @@
 
 package frc.robot.commands.Auto;
 
-import java.util.function.DoubleSupplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -25,9 +24,9 @@ public class PathfindToStation extends Command
   private double robotY;
  
   /** Creates a new PathfindToStation. */
-  public PathfindToStation(int stationPosition, DoubleSupplier robotY) 
+  public PathfindToStation(int stationPosition, double robotY) 
   {
-    this.robotY = robotY.getAsDouble();
+    this.robotY = robotY;
 
     if (this.robotY >= 4.026) 
     {
@@ -50,21 +49,26 @@ public class PathfindToStation extends Command
     }
   }
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
     pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, constraints);
+    pathfindingCommand.andThen
+    (
+      new TargetHeading
+      (
+        RobotContainer.s_Swerve, 
+        path.getGoalEndState().rotation(), 
+        () -> -RobotContainer.driver.getRawAxis(RobotContainer.translationAxis), 
+        () -> -RobotContainer.driver.getRawAxis(RobotContainer.strafeAxis), 
+        () -> -RobotContainer.driver.getRawAxis(RobotContainer.rotationAxis), 
+        () -> RobotContainer.driver.getRawAxis(RobotContainer.brakeAxis),
+        () -> !RobotContainer.driver.leftStick().getAsBoolean()
+      )
+    );
     pathfindingCommand.schedule();
   }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

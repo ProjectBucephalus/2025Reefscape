@@ -11,19 +11,20 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import frc.robot.commands.*;
-import frc.robot.commands.Auto.PathfindToAndFollow;
-import frc.robot.commands.Auto.PathfindToReef;
-import frc.robot.commands.Auto.PathfindToStation;
-import frc.robot.commands.Auto.RunAutoCommandList;
-import frc.robot.commands.Auto.TargetHeading;
+import frc.robot.commands.AlgaeManipulator.*;
+import frc.robot.commands.Auto.*;
 import frc.robot.commands.Auto.PathfindToReef.DpadOptions;
-import frc.robot.commands.Util.Test;
-import frc.robot.constants.Constants;
-import frc.robot.constants.TunerConstants;
+import frc.robot.commands.CoralManipulator.*;
+import frc.robot.commands.Diffector.*;
+import frc.robot.commands.Intake.*;
+import frc.robot.commands.Rumble.*;
+import frc.robot.commands.Util.*;
+import frc.robot.constants.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake.IntakeStatus;
-import frc.robot.util.DynamicAuto;
+import frc.robot.util.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -34,14 +35,15 @@ import frc.robot.util.DynamicAuto;
 public class RobotContainer 
 {
     /* Controllers */
-    private final CommandXboxController driver = new CommandXboxController(0);
-    private final CommandXboxController copilot = new CommandXboxController(1);
+    public static final CommandXboxController driver = new CommandXboxController(0);
+    public static final CommandXboxController copilot = new CommandXboxController(1);
 
     /* Drive Controls */
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
-    private final int brakeAxis = XboxController.Axis.kRightTrigger.value;
+    public static final int translationAxis = XboxController.Axis.kLeftY.value;
+    public static final int strafeAxis = XboxController.Axis.kLeftX.value;
+    public static final int rotationAxis = XboxController.Axis.kRightX.value;
+    public static final int brakeAxis = XboxController.Axis.kRightTrigger.value;
+    private static final Trigger cancelAutoTrigger = new Trigger(() -> Math.abs(driver.getRightX()) > Constants.Control.stickDeadband);
 
     /* Subsystems */
     public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
@@ -51,7 +53,7 @@ public class RobotContainer
     public static final Intake s_Intake = new Intake();
     public static final CoralManipulator s_CoralManipulator = new CoralManipulator();
     public static final AlgaeManipulator s_AlgaeManipulator = new AlgaeManipulator();
-    public Rumbler s_Rumbler = new Rumbler(driver, copilot);
+    public static Rumbler s_Rumbler = new Rumbler(driver, copilot);
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
@@ -117,7 +119,7 @@ public class RobotContainer
     {
         /* Driver Buttons */
         driver.start().onTrue(Commands.runOnce(() -> s_Swerve.seedFieldCentric()));
-        driver.back().onTrue(Commands.runOnce(() -> s_Swerve.tareEverything()));
+        driver.back().onTrue(new Test("AutoScore", "Auto scored"));
 
         driver.leftTrigger().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_CORAL)));
         driver.leftBumper().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_ALGAE)));
@@ -131,21 +133,53 @@ public class RobotContainer
         driver.y().and(driver.povRight()).onTrue(new PathfindToAndFollow("cage1"));
 
         /* driveToStation */
-        driver.x().and(driver.povUp()).onTrue(new PathfindToStation(5, () -> s_Swerve.getState().Pose.getY()));
-        driver.x().and(driver.povLeft()).onTrue(new PathfindToStation(2, () -> s_Swerve.getState().Pose.getY()));
-        driver.x().and(driver.povRight()).onTrue(new PathfindToStation(8, () -> s_Swerve.getState().Pose.getY()));
+        driver.x().and(driver.povUp()).onTrue(new PathfindToStation(5, s_Swerve.getState().Pose.getY()));
+        driver.x().and(driver.povLeft()).onTrue(new PathfindToStation(2, s_Swerve.getState().Pose.getY()));
+        driver.x().and(driver.povRight()).onTrue(new PathfindToStation(8, s_Swerve.getState().Pose.getY()));
 
         /* driveToProcessor */
         driver.b().and(driver.povRight()).onTrue(new PathfindToAndFollow("p"));
 
         /* driveToReef */
-        driver.a().and(driver.povUp()).onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> s_Swerve.getState().Pose.getTranslation()));
-        driver.a().and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, () -> s_Swerve.getState().Pose.getTranslation()));
-        driver.a().and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> s_Swerve.getState().Pose.getTranslation()));
+        driver.a().and(driver.povUp()).onTrue(new PathfindToReef(DpadOptions.CENTRE, s_Swerve.getState().Pose.getTranslation()));
+        driver.a().and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, s_Swerve.getState().Pose.getTranslation()));
+        driver.a().and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, s_Swerve.getState().Pose.getTranslation()));
 
         driver.rightStick().whileTrue(new Test("targetObj", "Target Obj"));
 
-        driver.a().and(new Trigger(() -> Math.abs(driver.getRightX()) < Constants.Control.stickDeadband))
+        cancelAutoTrigger.and(new Trigger(() -> s_Swerve.getCurrentCommand().getName() == "PathFindThenFollowPath")).onTrue(Commands.runOnce(() -> s_Swerve.getCurrentCommand().cancel()));
+
+        driver.y().and(new Trigger(() -> Math.abs(driver.getRightX()) < Constants.Control.stickDeadband)).and(driver.povCenter())
+            .onTrue
+            (
+                new TargetHeading
+                (
+                    s_Swerve, 
+                    Rotation2d.kZero,
+                    () -> -driver.getRawAxis(translationAxis), 
+                    () -> -driver.getRawAxis(strafeAxis), 
+                    () -> -driver.getRawAxis(rotationAxis), 
+                    () -> driver.getRawAxis(brakeAxis),
+                    () -> !driver.leftStick().getAsBoolean()
+                )
+            );
+
+        driver.x().and(new Trigger(() -> Math.abs(driver.getRightX()) < Constants.Control.stickDeadband)).and(driver.povCenter())
+            .onTrue
+            (
+                new TargetHeadingStation
+                (
+                    s_Swerve, 
+                    s_Swerve.getState().Pose.getY(),
+                    () -> -driver.getRawAxis(translationAxis), 
+                    () -> -driver.getRawAxis(strafeAxis), 
+                    () -> -driver.getRawAxis(rotationAxis), 
+                    () -> driver.getRawAxis(brakeAxis),
+                    () -> !driver.leftStick().getAsBoolean()
+                )
+            );
+
+        driver.b().and(new Trigger(() -> Math.abs(driver.getRightX()) < Constants.Control.stickDeadband)).and(driver.povCenter())
             .onTrue
             (
                 new TargetHeading
@@ -159,15 +193,25 @@ public class RobotContainer
                     () -> !driver.leftStick().getAsBoolean()
                 )
             );
-
-        driver.y().onTrue(new PathfindToAndFollow("ReefTag"));
-        driver.x().onTrue(new PathfindToAndFollow("ReefLeft"));
-        driver.b().onTrue(new PathfindToAndFollow("ReefRight"));
+        
+        driver.a().and(new Trigger(() -> Math.abs(driver.getRightX()) < Constants.Control.stickDeadband)).and(driver.povCenter())
+            .onTrue
+            (
+                new TargetHeadingReef
+                (
+                    s_Swerve, 
+                    s_Swerve.getState().Pose.getTranslation(),
+                    () -> -driver.getRawAxis(translationAxis), 
+                    () -> -driver.getRawAxis(strafeAxis), 
+                    () -> -driver.getRawAxis(rotationAxis), 
+                    () -> driver.getRawAxis(brakeAxis),
+                    () -> !driver.leftStick().getAsBoolean()
+                )
+            );
 
         /* Copilot Buttons */
         copilot.start().onTrue(new Test("climber", "activate"));
         copilot.back().onTrue(new Test("climber", "deploy"));
-
 
         /* scoringCoral */
         copilot.a().and(copilot.rightBumper().negate()).onTrue(new Test("coralScoring", "coral to lvl 1"));

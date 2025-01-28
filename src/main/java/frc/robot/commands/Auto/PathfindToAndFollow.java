@@ -10,6 +10,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 
 public class PathfindToAndFollow extends Command 
@@ -35,6 +36,19 @@ public class PathfindToAndFollow extends Command
   public void execute() 
   {
     pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, constraints);
+    pathfindingCommand.andThen
+    (
+      new TargetHeading
+      (
+        RobotContainer.s_Swerve, 
+        path.getGoalEndState().rotation(), 
+        () -> -RobotContainer.driver.getRawAxis(RobotContainer.translationAxis), 
+        () -> -RobotContainer.driver.getRawAxis(RobotContainer.strafeAxis), 
+        () -> -RobotContainer.driver.getRawAxis(RobotContainer.rotationAxis), 
+        () -> RobotContainer.driver.getRawAxis(RobotContainer.brakeAxis),
+        () -> !RobotContainer.driver.leftStick().getAsBoolean()
+      )
+    );
     pathfindingCommand.schedule();
   }
 
