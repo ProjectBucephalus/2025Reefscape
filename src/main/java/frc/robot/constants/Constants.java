@@ -9,9 +9,9 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.commands.AlgaeManipulator.IntakeAlgae;
+import frc.robot.commands.AlgaeManipulator.IntakeAlgaeSequence;
 import frc.robot.commands.AlgaeManipulator.ScoreAlgae;
-import frc.robot.commands.CoralManipulator.IntakeCoral;
+import frc.robot.commands.CoralManipulator.IntakeCoralSequence;
 import frc.robot.subsystems.Diffector.CargoStates;
 
 public final class Constants 
@@ -115,30 +115,30 @@ public final class Constants
                 put("rj" , new AutoMapping("rj" , null));
                 put("rk" , new AutoMapping("rk" , null));
                 put("rl" , new AutoMapping("rl" , null));
-                put("cl1", new AutoMapping("cl1", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl2", new AutoMapping("cl2", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl3", new AutoMapping("cl3", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl4", new AutoMapping("cl4", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl5", new AutoMapping("cl5", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl6", new AutoMapping("cl6", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl7", new AutoMapping("cl7", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl8", new AutoMapping("cl8", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl9", new AutoMapping("cl9", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr1", new AutoMapping("cr1", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr2", new AutoMapping("cr2", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr3", new AutoMapping("cr3", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr4", new AutoMapping("cr4", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr5", new AutoMapping("cr5", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr6", new AutoMapping("cr6", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr7", new AutoMapping("cr7", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr8", new AutoMapping("cr8", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr9", new AutoMapping("cr9", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("a1" , new AutoMapping("a1" , () -> new IntakeAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-                put("a2" , new AutoMapping("a2" , () -> new IntakeAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
-                put("a3" , new AutoMapping("a3" , () -> new IntakeAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
-                put("a4" , new AutoMapping("a4" , () -> new IntakeAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
-                put("a5" , new AutoMapping("a5" , () -> new IntakeAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
-                put("a6" , new AutoMapping("a0" , () -> new IntakeAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+                put("cl1", new AutoMapping("cl1", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl2", new AutoMapping("cl2", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl3", new AutoMapping("cl3", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl4", new AutoMapping("cl4", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl5", new AutoMapping("cl5", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl6", new AutoMapping("cl6", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl7", new AutoMapping("cl7", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl8", new AutoMapping("cl8", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl9", new AutoMapping("cl9", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr1", new AutoMapping("cr1", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr2", new AutoMapping("cr2", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr3", new AutoMapping("cr3", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr4", new AutoMapping("cr4", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr5", new AutoMapping("cr5", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr6", new AutoMapping("cr6", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr7", new AutoMapping("cr7", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr8", new AutoMapping("cr8", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr9", new AutoMapping("cr9", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("a1" , new AutoMapping("a1" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+                put("a2" , new AutoMapping("a2" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+                put("a3" , new AutoMapping("a3" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+                put("a4" , new AutoMapping("a4" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+                put("a5" , new AutoMapping("a5" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+                put("a6" , new AutoMapping("a0" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
                 put("b1" , new AutoMapping("b1" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
                 put("b2" , new AutoMapping("b2" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
                 put("b3" , new AutoMapping("b3" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
@@ -201,7 +201,7 @@ public final class Constants
          */
         public static final double rotationRatio = gearboxRatio * sprocketRatio / 2;
 
-        public static final CargoStates startingCargoState = CargoStates.empty;
+        public static final CargoStates startingCargoState = CargoStates.EMPTY;
 
         public static final double maxRotation = 3;
         public static final double maxAbsPos = maxRotation * 360;

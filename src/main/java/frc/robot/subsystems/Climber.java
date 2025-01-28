@@ -34,11 +34,11 @@ public class Climber extends SubsystemBase {
     m_Winch.set(speed);
   }
 
-private void setClimbTargets(double newWinchTarget)
-{
-  climbTarget = newWinchTarget;
-  //Use for auto-positoning
-}
+  private void setClimbTargets(double newWinchTarget)
+  {
+    climbTarget = newWinchTarget;
+    //Use for auto-positoning
+  }
 
   public void setClimberStatus(ClimberStatus Status)
   {

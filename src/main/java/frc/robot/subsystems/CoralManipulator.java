@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -49,6 +50,11 @@ public class CoralManipulator extends SubsystemBase {
     coralMotor = new TalonFX(Constants.GamePiecesManipulator.coralMotorID);
     coralBeamBreak1 = new DigitalInput(Constants.GamePiecesManipulator.coralManipulatorDIO1);
     coralBeamBreak2 = new DigitalInput(Constants.GamePiecesManipulator.coralManipulatorDIO2);
+  }
+
+  public CoralManipulatorStatus getStatus()
+  {
+    return coralStatus;
   }
 
   /**
@@ -96,7 +102,7 @@ public class CoralManipulator extends SubsystemBase {
         break;
 
       case DELIVERY:
-        if (Diffector.getArmPos() % 360 <= 180)
+        if (RobotContainer.s_Diffector.getArmPos() % 360 <= 180)
         {
           setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed);
         } else

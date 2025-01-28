@@ -2,23 +2,24 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.CoralManipulator;
+package frc.robot.commands.AlgaeManipulator;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralManipulator;
-import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.AlgaeManipulator;
+import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class CoralManipulatorIntake extends Command 
+public class EjectAlgae extends Command 
 {
-  CoralManipulator s_CoralManipulator;
+  AlgaeManipulator s_AlgaeManipulator;
   private boolean isFinished;
 
-  public CoralManipulatorIntake(CoralManipulator s_CoralManipulator) 
+  public EjectAlgae(AlgaeManipulator s_AlgaeManipulator) 
   {
-    this.s_CoralManipulator = s_CoralManipulator;
+    this.s_AlgaeManipulator = s_AlgaeManipulator;
 
-    addRequirements(s_CoralManipulator);
+    addRequirements(s_AlgaeManipulator);
   }
 
     // Called when the command is initially scheduled.
@@ -32,14 +33,21 @@ public class CoralManipulatorIntake extends Command
   @Override
   public void execute() 
   {
-    if (!s_CoralManipulator.getCoralBeamBreak1State() || !s_CoralManipulator.getCoralBeamBreak2State())
+    if (Math.abs(RobotContainer.s_Diffector.getArmPos()) < 60) 
     {
-      s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.HOLDING);
       isFinished = true;
     }
     else
     {
-      s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.INTAKE);
+      if (s_AlgaeManipulator.getAlgaeBeamBreakState())
+      {
+        s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY);
+        isFinished = true;
+      }
+      else
+      {
+        s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET);
+      }
     }
   }
 

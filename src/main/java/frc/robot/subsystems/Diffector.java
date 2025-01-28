@@ -17,7 +17,7 @@ import frc.robot.constants.Constants;
 
 public class Diffector extends SubsystemBase 
 {
-  public enum CargoStates{empty, oneItem, twoItem}
+  public enum CargoStates{EMPTY, ONE_ITEM, TWO_ITEM}
   /* Name is effect of motor when running clockwise/positive (e.g. elevator Up, arm Clockwise) */
   /** motor L in kirby's docs */
   private static TalonFX m_diffectorUC;
@@ -68,7 +68,7 @@ public class Diffector extends SubsystemBase
    * Calculates arm rotation based on motor positions
    * @return Arm rotation, degrees clockwise, 0 = coral at top
    */
-  public static double getArmPos()
+  public double getArmPos()
   {
     return (m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorDC.getPosition().getValueAsDouble()) * rotationRatio;
   }
@@ -254,15 +254,15 @@ public class Diffector extends SubsystemBase
   {
     if(coral && algae)
     {
-      setCargoState(CargoStates.twoItem);
+      setCargoState(CargoStates.TWO_ITEM);
     }
     else if(coral ^ algae)
     {
-      setCargoState(CargoStates.oneItem);
+      setCargoState(CargoStates.ONE_ITEM);
     }
     else if(!coral && !algae)
     {
-      setCargoState(CargoStates.empty);
+      setCargoState(CargoStates.EMPTY);
     }
   }
 
@@ -270,9 +270,9 @@ public class Diffector extends SubsystemBase
   {
     switch (cargoState) 
     {
-      case empty: return 0;
-      case oneItem: return 1;
-      case twoItem: return 2;
+      case EMPTY: return 0;
+      case ONE_ITEM: return 1;
+      case TWO_ITEM: return 2;
       default: return 0;
     }
   }
