@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.commands.Auto.PathfindToAndFollow;
+import frc.robot.commands.Auto.PathfindToStation;
 import frc.robot.commands.Auto.RunAutoCommandList;
 import frc.robot.commands.Auto.TargetHeading;
 import frc.robot.commands.Intake.SetIntakeStatus;
@@ -124,22 +125,22 @@ public class RobotContainer
         driver.rightBumper().whileTrue(new Test("dropPiece", "dropPiece"));
 
         /* driveToCage */
-        driver.y().and(driver.povUp()).whileTrue(new PathfindToAndFollow("cage2"));
-        driver.y().and(driver.povLeft()).whileTrue(new PathfindToAndFollow("cage3"));
-        driver.y().and(driver.povRight()).whileTrue(new PathfindToAndFollow("cage1"));
+        driver.y().and(driver.povUp()).onTrue(new PathfindToAndFollow("cage2"));
+        driver.y().and(driver.povLeft()).onTrue(new PathfindToAndFollow("cage3"));
+        driver.y().and(driver.povRight()).onTrue(new PathfindToAndFollow("cage1"));
 
         /* driveToStation */
-        driver.x().and(driver.povUp()).whileTrue(new Test("autoDrive", "drive centre station"));
-        driver.x().and(driver.povLeft()).whileTrue(new Test("autoDrive", "drive left station"));
-        driver.x().and(driver.povRight()).whileTrue(new Test("autoDrive", "drive right station"));
+        driver.x().and(driver.povUp()).onTrue(new PathfindToStation(5, () -> s_Swerve.getState().Pose.getY()));
+        driver.x().and(driver.povLeft()).onTrue(new PathfindToStation(2, () -> s_Swerve.getState().Pose.getY()));
+        driver.x().and(driver.povRight()).onTrue(new PathfindToStation(8, () -> s_Swerve.getState().Pose.getY()));
 
         /* driveToProcessor */
-        driver.b().and(driver.povRight()).onTrue(new Test("autoDrive", "drive right processor"));
+        driver.b().and(driver.povRight()).onTrue(new PathfindToAndFollow("p"));
 
         /* driveToReef */
-        driver.a().and(driver.povUp()).whileTrue(new Test("autoDrive", "drive centre reef"));
-        driver.a().and(driver.povLeft()).whileTrue(new Test("autoDrive", "drive left reef"));
-        driver.a().and(driver.povRight()).whileTrue(new Test("autoDrive", "drive right reef"));
+        driver.a().and(driver.povUp()).onTrue(new Test("autoDrive", "drive centre reef"));
+        driver.a().and(driver.povLeft()).onTrue(new Test("autoDrive", "drive left reef"));
+        driver.a().and(driver.povRight()).onTrue(new Test("autoDrive", "drive right reef"));
 
         driver.rightStick().whileTrue(new Test("targetObj", "Target Obj"));
 
@@ -213,7 +214,6 @@ public class RobotContainer
 
         // copilot.leftStick().and(copilot.rightTrigger()).onTrue(new Test("manualIntake/Winch", null));
         // copilot.rightStick().and(copilot.rightTrigger()).onTrue(new Test("manualDiffector", null));
-
     }
 
     public CommandSwerveDrivetrain getSwerve()

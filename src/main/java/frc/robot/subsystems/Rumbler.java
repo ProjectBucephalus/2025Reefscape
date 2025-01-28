@@ -20,11 +20,11 @@ public class Rumbler extends SubsystemBase
     private ArrayList<String> crRequest = new ArrayList<String>();
     private ArrayList<String> clRequest = new ArrayList<String>();
     // Enum used to specify queue in add and remove methods
-    public enum Sides{DriverRight, DriverLeft, CoDriverRight, CoDriverLeft}
+    public enum Sides{DRIVER_RIGHT, DRIVER_LEFT, CODRIVER_RIGHT, CODRIVER_LEFT}
     private double driverStrength;
     private double coDriverStrength;
 
-    public Rumbler (CommandXboxController driver, CommandXboxController coDriver)
+    public Rumbler(CommandXboxController driver, CommandXboxController coDriver)
     {
         // could drop the getHID method as setrumble has been added to the CommandXBoxController class in 2025, but this still works.
         rumbleDriver = driver;
@@ -40,21 +40,21 @@ public class Rumbler extends SubsystemBase
     {
         // requestID is a unique string to identify the rumble request
         // this request will stay active until a matching removeRequest is received.
-        switch(queue)
+        switch (queue)
         {
-            case DriverRight:
+            case DRIVER_RIGHT:
                 if(!(drRequest.contains(requestID)))
                     {return drRequest.add(requestID);}
                 break;
-            case DriverLeft:
+            case DRIVER_LEFT:
                 if(!(dlRequest.contains(requestID)))
                     {return dlRequest.add(requestID);}
                 break;
-            case CoDriverRight:
+            case CODRIVER_RIGHT:
                 if(!(crRequest.contains(requestID)))
                     {return crRequest.add(requestID);}
                 break;
-            case CoDriverLeft:
+            case CODRIVER_LEFT:
                 if(!(clRequest.contains(requestID)))
                     {return clRequest.add(requestID);}
                 break;
@@ -66,15 +66,15 @@ public class Rumbler extends SubsystemBase
 
     public boolean removeRequest(Sides queue, String requestID)
     {
-        switch(queue)
+        switch (queue)
         {
-            case DriverRight:
+            case DRIVER_RIGHT:
                 return drRequest.remove(requestID);
-            case DriverLeft:
+            case DRIVER_LEFT:
                 return dlRequest.remove(requestID);
-            case CoDriverRight:
+            case CODRIVER_RIGHT:
                 return crRequest.remove(requestID);
-            case CoDriverLeft:
+            case CODRIVER_LEFT:
                 return clRequest.remove(requestID);
             default:
                 return false;
