@@ -130,12 +130,10 @@ public class RobotContainer
 
         /* driveToStation */
         driver.x().and(driver.povUp()).whileTrue(new Test("autoDrive", "drive centre station"));
-        driver.x().and(driver.povLeft().negate()).whileTrue(new Test("autoDrive", "drive left station"));
+        driver.x().and(driver.povLeft()).whileTrue(new Test("autoDrive", "drive left station"));
         driver.x().and(driver.povRight()).whileTrue(new Test("autoDrive", "drive right station"));
 
         /* driveToProcessor */
-        driver.b().and(driver.povUp()).onTrue(new Test("autoDrive", "drive centre processor"));
-        driver.b().and(driver.povLeft()).onTrue(new Test("autoDrive", "drive left processor"));
         driver.b().and(driver.povRight()).onTrue(new Test("autoDrive", "drive right processor"));
 
         /* driveToReef */
