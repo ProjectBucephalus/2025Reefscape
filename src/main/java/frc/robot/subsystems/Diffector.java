@@ -10,7 +10,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CTREConfigs;
@@ -130,8 +129,8 @@ public class Diffector extends SubsystemBase
    */
   public boolean unwind()
   {
-      targetAngle = Constants.Diffector.returnPos;
-      return (Math.abs(armPos) < stowThreshold);
+    targetAngle = Constants.Diffector.returnPos;
+    return (Math.abs(armPos) < stowThreshold);
   }
 
   /**
@@ -140,18 +139,18 @@ public class Diffector extends SubsystemBase
    */
   public void goShortest(double targetAngle)
   {
-      targetAngle %= 360;
-      offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
+    targetAngle %= 360;
+    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
 
 
-      if (armPos + offset > maxAbsPos)
-          {targetAngle = (armPos + offset - 360);}
+    if (armPos + offset > maxAbsPos)
+        {targetAngle = (armPos + offset - 360);}
 
-      else if (armPos + offset < -maxAbsPos)
-          {targetAngle = (armPos + offset + 360);}
+    else if (armPos + offset < -maxAbsPos)
+        {targetAngle = (armPos + offset + 360);}
 
-      else
-          {targetAngle = (armPos + offset);}
+    else
+        {targetAngle = (armPos + offset);}
   }
 
   /**
@@ -160,18 +159,18 @@ public class Diffector extends SubsystemBase
    */
   public void goClockwise(double targetAngle)
   {
-      targetAngle %= 360;
-      offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -360, 0);
+    targetAngle %= 360;
+    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -360, 0);
 
 
-      if (armPos + offset > maxAbsPos)
-          {targetAngle = (armPos + offset - 360);}
+    if (armPos + offset > maxAbsPos)
+        {targetAngle = (armPos + offset - 360);}
 
-      else if (armPos + offset < -maxAbsPos)
-          {targetAngle = (armPos + offset + 360);}
+    else if (armPos + offset < -maxAbsPos)
+        {targetAngle = (armPos + offset + 360);}
 
-      else
-          {targetAngle = (armPos + offset);}
+    else
+        {targetAngle = (armPos + offset);}
   }
 
   /**
@@ -180,18 +179,18 @@ public class Diffector extends SubsystemBase
    */
   public void goAntiClockwise(double targetAngle)
   {
-      targetAngle %= 360;
-      offset = MathUtil.inputModulus(targetAngle - (armPos % 360), 0, 360);
+    targetAngle %= 360;
+    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), 0, 360);
 
 
-      if (armPos + offset > maxAbsPos)
-          {targetAngle = (armPos + offset - 360);}
+    if (armPos + offset > maxAbsPos)
+        {targetAngle = (armPos + offset - 360);}
 
-      else if (armPos + offset < -maxAbsPos)
-          {targetAngle = (armPos + offset + 360);}
+    else if (armPos + offset < -maxAbsPos)
+        {targetAngle = (armPos + offset + 360);}
 
-      else
-          {targetAngle = (armPos + offset);}
+    else
+        {targetAngle = (armPos + offset);}
   }
 
     /**
@@ -201,18 +200,18 @@ public class Diffector extends SubsystemBase
      */
     public void goToAngle(double targetAngle)
     {
-        targetAngle %= 360;
-        offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
+      targetAngle %= 360;
+      offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
 
       if (Math.abs(offset) >= turnBackThreshold)
       {
-          altOffset = offset - Math.copySign(360, offset);
+        altOffset = offset - Math.copySign(360, offset);
 
-          if (Math.abs(armPos + offset) > Math.abs(armPos + altOffset))
-              {targetAngle = (armPos + altOffset);}
-          
-          else 
-              {targetAngle = (armPos + offset);}
+        if (Math.abs(armPos + offset) > Math.abs(armPos + altOffset))
+            {targetAngle = (armPos + altOffset);}
+        
+        else 
+            {targetAngle = (armPos + offset);}
       }
       else if (armPos + offset > maxAbsPos)
           {targetAngle = (armPos + offset - 360);}
@@ -225,29 +224,19 @@ public class Diffector extends SubsystemBase
   }
 
   public double getArmTarget()
-  {
-    return targetAngle;
-  }
+    {return targetAngle;}
 
   public void setElevatorTarget(double newTarget)
-  {
-    targetElevation = newTarget;
-  }
+    {targetElevation = newTarget;}
 
   public double getElevatorTarget()
-  {
-    return targetElevation;
-  }
+    {return targetElevation;}
 
   public void setCargoState(CargoStates newCargoState)
-  {
-    cargoState = newCargoState;
-  }
+    {cargoState = newCargoState;}
 
   public CargoStates getCargoState()
-  {
-    return cargoState;
-  }
+    {return cargoState;}
 
   public void setCoral(boolean coralState)
   {
