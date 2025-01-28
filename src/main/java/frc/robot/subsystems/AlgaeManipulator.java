@@ -46,8 +46,9 @@ public class AlgaeManipulator extends SubsystemBase {
 
   public AlgaeManipulator() 
   {
+    algaeStatus = AlgaeManipulatorStatus.EMPTY;
     algaeMotor = new TalonFX(Constants.GamePiecesManipulator.algaeMotorID);
-    algaeBeamBreak = new DigitalInput(Constants.GamePiecesManipulator.algaeBeamBreakDigitalInput);
+    algaeBeamBreak = new DigitalInput(Constants.GamePiecesManipulator.algaeManipulatorDIO);
   }
 
   /**

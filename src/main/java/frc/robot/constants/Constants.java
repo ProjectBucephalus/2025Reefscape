@@ -258,9 +258,9 @@ public final class Constants
         public static final int coralMotorID = IDConstants.coralMotorID;
         public static final int algaeMotorID = IDConstants.algaeMotorID;
 
-        public static final int coralBeamBreak1DigitalInput = 0;
-        public static final int coralBeamBreak2DigitalInput = 1;
-        public static final int algaeBeamBreakDigitalInput = 2;
+        public static final int coralManipulatorDIO1 = IDConstants.coralManipulatorDIO1;
+        public static final int coralManipulatorDIO2 = IDConstants.coralManipulatorDIO2;
+        public static final int algaeManipulatorDIO  = IDConstants.algaeManipulatorDIO;
 
         /* Coral manipulator speeds */
         public static final double coralManipulatorIntakeSpeed = 0;
@@ -281,6 +281,10 @@ public final class Constants
         public static final int coralIntakeID = IDConstants.mBottomIntakeID;
         public static final int algaeArmID = IDConstants.mTopArmID;
         public static final int coralArmID = IDConstants.mBottomArmID;
+
+        public static final int coralIntakeDIO1 = IDConstants.coralIntakeDIO1;
+        public static final int coralIntakeDIO2 = IDConstants.coralIntakeDIO2;
+        public static final int algaeIntakeDIO  = IDConstants.algaeIntakeDIO;
 
         /* Intake motors speeds */
         public static final double coralIntakeMotorSpeed = 0.8;

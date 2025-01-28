@@ -68,6 +68,10 @@ public class Intake extends SubsystemBase {
     coralArmTarget = 0;
 
     motionMagic = new MotionMagicVoltage(0);
+
+    coralLimitSwitch1 = new DigitalInput(Constants.Intake.coralIntakeDIO1);
+    coralLimitSwitch2 = new DigitalInput(Constants.Intake.coralIntakeDIO2);
+    algaeBeamBreak    = new DigitalInput(Constants.Intake.algaeIntakeDIO);
   }
 
   public double getTopArmAngle()
