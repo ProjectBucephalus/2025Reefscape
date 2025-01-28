@@ -170,15 +170,15 @@ public class RobotContainer
 
 
         /* scoringCoral */
-        copilot.a().and(copilot.rightBumper().negate()).onTrue(new Test("coralScoring", "coral to lvl 1"));
-        copilot.b().and(copilot.rightBumper().negate()).onTrue(new Test("coralScoring", "coral to lvl 2"));
-        copilot.x().and(copilot.rightBumper().negate()).onTrue(new Test("coralScoring", "coral to lvl 3"));
-        copilot.y().and(copilot.rightBumper().negate()).onTrue(new Test("coralScoring", "coral to lvl 4"));
+        copilot.a().and(copilot.rightTrigger().negate()).onTrue(new Test("coralScoring", "coral to lvl 1"));
+        copilot.b().and(copilot.rightTrigger().negate()).onTrue(new Test("coralScoring", "coral to lvl 2"));
+        copilot.x().and(copilot.rightTrigger().negate()).onTrue(new Test("coralScoring", "coral to lvl 3"));
+        copilot.y().and(copilot.rightTrigger().negate()).onTrue(new Test("coralScoring", "coral to lvl 4"));
         /* scoringAlgae */
-        copilot.a().and(copilot.rightBumper()).onTrue(new Test("algaeScoring", "algae to Processor"));
-        copilot.b().and(copilot.rightBumper()).onTrue(new Test("algaeScoring", "algae from lvl 2"));
-        copilot.x().and(copilot.rightBumper()).onTrue(new Test("algaeScoring", "algae from lvl 3"));
-        copilot.y().and(copilot.rightBumper()).onTrue(new Test("algaeScoring", "algae to Net"));
+        copilot.a().and(copilot.rightTrigger()).onTrue(new Test("algaeScoring", "algae to Processor"));
+        copilot.b().and(copilot.rightTrigger()).onTrue(new Test("algaeScoring", "algae from lvl 2"));
+        copilot.x().and(copilot.rightTrigger()).onTrue(new Test("algaeScoring", "algae from lvl 3"));
+        copilot.y().and(copilot.rightTrigger()).onTrue(new Test("algaeScoring", "algae to Net"));
 
 
         /* transferPosition */
@@ -188,10 +188,10 @@ public class RobotContainer
         copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new Test("transferPosition", "coral manipulator to handover position"));
 
         /* deploy/TransferGamePieces */
-        copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new Test("deploy/Transfer", "algae deploy intake"));
-        copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new Test("deploy/Transfer", "algae handover"));
-        copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new Test("deploy/Transfer", "coral deploy intake"));
-        copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new Test("deploy/Transfer", "coral handover"));
+        copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new Test("deployAndTransfer", "algae deploy intake"));
+        copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new Test("deployAndTransfer", "algae handover"));
+        copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new Test("deployAndTransfer", "coral deploy intake"));
+        copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new Test("deployAndTransfer", "coral handover"));
 
         /* stowGamePieces */
         copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new Test("stowPosition", "stow intake with algae active"));
@@ -200,21 +200,21 @@ public class RobotContainer
         copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new Test("stowPosition", "stow arm with coral active"));
 
         /* intakeFromCoralStation */
-        copilot.povLeft().and(copilot.rightBumper().negate()).whileTrue(new Test("coralStation", "Intake"));
+        copilot.povLeft().and(copilot.rightTrigger().negate()).whileTrue(new Test("coralStation", "intake")).whileFalse(new Test("coralStation", "not intaking"));
 
 
 
         /* arm/IntakeGrab */
-        copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new Test("Arm/Intake", "algae intake grab"));
-        copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new Test("Arm/Intake", "algae arm grab"));
-        copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new Test("Arm/Intake", "coral intake grab"));
-        copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new Test("Arm/Intake", "coral arm grab"));
+        copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new Test("armAndIntakeGrab", "algae intake grab"));
+        copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new Test("armAndIntakeGrab", "algae arm grab"));
+        copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new Test("armAndIntakeGrab", "coral intake grab"));
+        copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new Test("armAndIntakeGrab", "coral arm grab"));
 
         /* arm/IntakeRelease */
-        copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new Test("Arm/Intake", "algae intake release"));
-        copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new Test("Arm/Intake", "algae arm release"));
-        copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new Test("Arm/Intake", "coral intake release"));
-        copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new Test("Arm/Intake", "coral arm release"));
+        copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new Test("armAndIntakeRelease", "algae intake release"));
+        copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new Test("armAndIntakeRelease", "algae arm release"));
+        copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new Test("armAndIntakeRelease", "coral intake release"));
+        copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new Test("armAndIntakeRelease", "coral arm release"));
 
         /* robotModifiers */
         copilot.rightTrigger().onTrue(new Test("algaeModifier", "on")).onFalse(new Test("algaeModifier", "off"));
