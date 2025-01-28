@@ -25,7 +25,7 @@ public class Robot extends TimedRobot
 {
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
-  private Command m_autonomousCommand;
+  private Command autonomousCommand;
 
   private RobotContainer robotContainer;
 
@@ -76,10 +76,10 @@ public class Robot extends TimedRobot
       robotContainer.getSwerve().resetRotation(robotContainer.getSwerve().getState().Pose.getRotation());
     }
     
-    m_autonomousCommand = robotContainer.getAutoCommand();
+    autonomousCommand = robotContainer.getAutoCommand();
 
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    if (autonomousCommand != null) {
+      autonomousCommand.schedule();
     }
   }
 
@@ -89,9 +89,9 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit() 
   {
-    if (m_autonomousCommand != null) 
+    if (autonomousCommand != null) 
     {
-      m_autonomousCommand.cancel();
+      autonomousCommand.cancel();
     }
   }
 

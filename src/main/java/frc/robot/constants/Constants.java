@@ -15,8 +15,8 @@ public final class Constants
 {
     public static final class Rumbler 
     {
-        public static final double driver_Default = 1;
-        public static final double coDriver_Default = 1;  
+        public static final double driverDefault = 1;
+        public static final double coDriverDefault = 1;  
     }
 
     public static final class Control
