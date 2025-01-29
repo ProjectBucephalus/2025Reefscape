@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 
 public class GeoFenceObject
 {
@@ -152,10 +153,10 @@ public class GeoFenceObject
         // The start of the first line and end of the last line are separate enteries to simplify construction
         Translation2d[] polygonPoints = new Translation2d[2*sides+1];
 
-        polygonPoints[0] = new Translation2d(X,Y + radius).rotateAround(centre, new Rotation2d(Math.toRadians(theta)));
+        polygonPoints[0] = new Translation2d(X,Y + radius).rotateAround(centre, new Rotation2d(Units.degreesToRadians(theta)));
 
         // Line endpoints and reference points are equidistant around a circle
-        Rotation2d rotationBetweenPoints = new Rotation2d(Math.toRadians(360/(2*sides)));
+        Rotation2d rotationBetweenPoints = new Rotation2d(Units.degreesToRadians(360/(2*sides)));
         for (int i = 1; i < polygonPoints.length; i++)
         {
             polygonPoints[i] = polygonPoints[i-1].rotateAround(centre, rotationBetweenPoints);

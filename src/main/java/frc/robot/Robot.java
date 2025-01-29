@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.commands.PathfindingCommand;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -55,6 +56,14 @@ public class Robot extends TimedRobot
   public void robotPeriodic() 
   {
     CommandScheduler.getInstance().run();
+
+    if (RobotContainer.s_Swerve.getState().Pose.getX() < 0.75 && RobotContainer.s_Swerve.getState().Pose.getY() < 0.75) 
+    {
+      RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, 1, RobotContainer.s_Swerve.getState().Pose.getRotation()));
+    }
+
+    SmartDashboard.putBoolean("Unlock Heading Trigger", RobotContainer.unlockHeadingTrigger.getAsBoolean());
+    SmartDashboard.putString("Heading State", RobotContainer.headingState.toString());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

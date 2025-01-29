@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class PathfindToAndFollow extends Command 
 {
@@ -19,8 +20,10 @@ public class PathfindToAndFollow extends Command
   private final PathConstraints constraints = Constants.Auto.defaultConstraints;
   private Command pathfindingCommand;
   
-  public PathfindToAndFollow(String pathName) 
+  public PathfindToAndFollow(String pathName, CommandSwerveDrivetrain s_Swerve) 
   {
+    addRequirements(s_Swerve);
+
     try
     {
       path = PathPlannerPath.fromPathFile(pathName);
@@ -36,20 +39,7 @@ public class PathfindToAndFollow extends Command
   public void execute() 
   {
     pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, constraints);
-    pathfindingCommand.andThen
-    (
-      new TargetHeading
-      (
-        RobotContainer.s_Swerve, 
-        path.getGoalEndState().rotation(), 
-        () -> -RobotContainer.driver.getRawAxis(RobotContainer.translationAxis), 
-        () -> -RobotContainer.driver.getRawAxis(RobotContainer.strafeAxis), 
-        () -> -RobotContainer.driver.getRawAxis(RobotContainer.rotationAxis), 
-        () -> RobotContainer.driver.getRawAxis(RobotContainer.brakeAxis),
-        () -> !RobotContainer.driver.leftStick().getAsBoolean()
-      )
-    );
-    pathfindingCommand.schedule();
+    pathfindingCommand.until(RobotContainer.driver.povCenter()).schedule();
   }
 
   // Returns true when the command should end.

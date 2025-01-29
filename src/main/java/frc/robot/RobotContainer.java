@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -34,16 +35,13 @@ import frc.robot.util.*;
  */
 public class RobotContainer 
 {
+    public enum HeadingStates{UNLOCKED, REEF_LOCK, PROCESSOR_LOCK, STATION_LOCK, CAGE_LOCK}
+
+    public static HeadingStates headingState = HeadingStates.UNLOCKED;
+
     /* Controllers */
     public static final CommandXboxController driver = new CommandXboxController(0);
     public static final CommandXboxController copilot = new CommandXboxController(1);
-
-    /* Drive Controls */
-    public static final int translationAxis = XboxController.Axis.kLeftY.value;
-    public static final int strafeAxis = XboxController.Axis.kLeftX.value;
-    public static final int rotationAxis = XboxController.Axis.kRightX.value;
-    public static final int brakeAxis = XboxController.Axis.kRightTrigger.value;
-    private static final Trigger cancelAutoTrigger = new Trigger(() -> Math.abs(driver.getRightX()) > Constants.Control.stickDeadband);
 
     /* Subsystems */
     public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
@@ -55,11 +53,22 @@ public class RobotContainer
     public static final AlgaeManipulator s_AlgaeManipulator = new AlgaeManipulator();
     public static Rumbler s_Rumbler = new Rumbler(driver, copilot);
 
+    /* Drive Controls */
+    public static final int translationAxis = XboxController.Axis.kLeftY.value;
+    public static final int strafeAxis = XboxController.Axis.kLeftX.value;
+    public static final int rotationAxis = XboxController.Axis.kRightX.value;
+    public static final int brakeAxis = XboxController.Axis.kRightTrigger.value;
+
+    /* Triggers */
+    public static final Trigger unlockHeadingTrigger = new Trigger(() -> Math.abs(driver.getRawAxis(rotationAxis)) > Constants.Control.stickDeadband);
+    private final Trigger cageDriveTrigger = new Trigger(() -> headingState == HeadingStates.CAGE_LOCK);
+    private final Trigger reefDriveTrigger = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
+    private final Trigger stationDriveTrigger = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
+    private final Trigger processorDriveTrigger = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
+
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
     {
-        SmartDashboard.putString("Auto Input", Constants.Auto.defaultAuto);
-
         s_Swerve.setDefaultCommand
         (
             new TeleopSwerve
@@ -74,13 +83,13 @@ public class RobotContainer
             )
         );
 
-        SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
-
-        s_Swerve.resetRotation(new Rotation2d(Math.toRadians(Constants.Swerve.initialHeading)));
+        s_Swerve.resetRotation(new Rotation2d(Units.degreesToRadians(Constants.Swerve.initialHeading)));
 
         // Configure the button bindings
         configureButtonBindings();
-
+    
+        SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
+        SmartDashboard.putString("Auto Input", Constants.Auto.defaultAuto);
         SmartDashboard.putData
         (
             "Swerve Drive", 
@@ -124,33 +133,41 @@ public class RobotContainer
         driver.leftTrigger().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_CORAL)));
         driver.leftBumper().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_ALGAE)));
 
-        /*!TODO drop piece */
         driver.rightBumper().whileTrue(new DropGamePiece(s_AlgaeManipulator, s_CoralManipulator));
 
-        /* driveToCage */
-        driver.y().and(driver.povUp()).onTrue(new PathfindToAndFollow("cage2"));
-        driver.y().and(driver.povLeft()).onTrue(new PathfindToAndFollow("cage3"));
-        driver.y().and(driver.povRight()).onTrue(new PathfindToAndFollow("cage1"));
+        //driver.rightStick().whileTrue(new Test("targetObj", "Target Obj")); Leave commented until we decide on object tracking
 
-        /* driveToStation */
-        driver.x().and(driver.povUp()).onTrue(new PathfindToStation(5, s_Swerve.getState().Pose.getY()));
-        driver.x().and(driver.povLeft()).onTrue(new PathfindToStation(2, s_Swerve.getState().Pose.getY()));
-        driver.x().and(driver.povRight()).onTrue(new PathfindToStation(8, s_Swerve.getState().Pose.getY()));
+        /* Binds the buttons and triggers that set the heading state */
+        unlockHeadingTrigger.onTrue(Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED));
+        driver.y().onTrue(Commands.runOnce(() -> headingState = HeadingStates.CAGE_LOCK));
+        driver.a().onTrue(Commands.runOnce(() -> headingState = HeadingStates.STATION_LOCK));
+        driver.b().onTrue(Commands.runOnce(() -> headingState = HeadingStates.PROCESSOR_LOCK));
+        driver.x().onTrue(Commands.runOnce(() -> headingState = HeadingStates.REEF_LOCK));
 
-        /* driveToProcessor */
-        driver.b().and(driver.povRight()).onTrue(new PathfindToAndFollow("p"));
+        /* Binds the Pathfinding command to run for the cage when the cage trigger is active and a corresponding dpad direction is pressed */
+        cageDriveTrigger.and(driver.povUp()).onTrue(new PathfindToAndFollow("cage2", s_Swerve));
+        cageDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToAndFollow("cage3", s_Swerve));
+        cageDriveTrigger.and(driver.povRight()).onTrue(new PathfindToAndFollow("cage1", s_Swerve));
 
-        /* driveToReef */
-        driver.a().and(driver.povUp()).onTrue(new PathfindToReef(DpadOptions.CENTRE, s_Swerve.getState().Pose.getTranslation()));
-        driver.a().and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, s_Swerve.getState().Pose.getTranslation()));
-        driver.a().and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, s_Swerve.getState().Pose.getTranslation()));
+        /* Binds the Coral Station Pathfinding command to run when the station trigger is active and a corresponding dpad direction is pressed */
+        stationDriveTrigger.and(driver.povUp()).onTrue(new PathfindToStation(5, () -> s_Swerve.getState().Pose.getY(), s_Swerve));
+        stationDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToStation(2, () -> s_Swerve.getState().Pose.getY(), s_Swerve));
+        stationDriveTrigger.and(driver.povRight()).onTrue(new PathfindToStation(8, () -> s_Swerve.getState().Pose.getY(), s_Swerve));
 
-        driver.rightStick().whileTrue(new Test("targetObj", "Target Obj"));
+        /* Binds the Pathfinding command to run for the processor when the processor trigger is active and right is pressed on the dpad */
+        processorDriveTrigger.and(driver.povRight()).onTrue(new PathfindToAndFollow("p", s_Swerve));
 
-        cancelAutoTrigger.and(new Trigger(() -> s_Swerve.getCurrentCommand().getName() == "PathFindThenFollowPath")).onTrue(Commands.runOnce(() -> s_Swerve.getCurrentCommand().cancel()));
+        /* Binds the Reef Pathfinding command to run when the reef trigger is active and a corresponding dpad direction is pressed */
+        reefDriveTrigger.and(driver.povUp()).onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
+        reefDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
+        reefDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
 
-        driver.y().and(new Trigger(() -> Math.abs(driver.getRightX()) < Constants.Control.stickDeadband)).and(driver.povCenter())
-            .onTrue
+        /* 
+         * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed
+         * Does not need to check the rotation stick, as soon at the rotation stick is moved all drive triggers become false (see line 141)
+         */
+        cageDriveTrigger.and(driver.povCenter())
+            .whileTrue
             (
                 new TargetHeading
                 (
@@ -158,29 +175,27 @@ public class RobotContainer
                     Rotation2d.kZero,
                     () -> -driver.getRawAxis(translationAxis), 
                     () -> -driver.getRawAxis(strafeAxis), 
-                    () -> -driver.getRawAxis(rotationAxis), 
                     () -> driver.getRawAxis(brakeAxis),
                     () -> !driver.leftStick().getAsBoolean()
                 )
             );
 
-        driver.x().and(new Trigger(() -> Math.abs(driver.getRightX()) < Constants.Control.stickDeadband)).and(driver.povCenter())
-            .onTrue
+        stationDriveTrigger.and(driver.povCenter())
+            .whileTrue
             (
                 new TargetHeadingStation
                 (
                     s_Swerve, 
-                    s_Swerve.getState().Pose.getY(),
+                    () -> s_Swerve.getState().Pose.getY(),
                     () -> -driver.getRawAxis(translationAxis), 
                     () -> -driver.getRawAxis(strafeAxis), 
-                    () -> -driver.getRawAxis(rotationAxis), 
                     () -> driver.getRawAxis(brakeAxis),
                     () -> !driver.leftStick().getAsBoolean()
                 )
             );
-
-        driver.b().and(new Trigger(() -> Math.abs(driver.getRightX()) < Constants.Control.stickDeadband)).and(driver.povCenter())
-            .onTrue
+        
+        processorDriveTrigger.and(driver.povCenter())
+            .whileTrue
             (
                 new TargetHeading
                 (
@@ -188,22 +203,20 @@ public class RobotContainer
                     Rotation2d.kCW_90deg,
                     () -> -driver.getRawAxis(translationAxis), 
                     () -> -driver.getRawAxis(strafeAxis), 
-                    () -> -driver.getRawAxis(rotationAxis), 
                     () -> driver.getRawAxis(brakeAxis),
                     () -> !driver.leftStick().getAsBoolean()
                 )
             );
-        
-        driver.a().and(new Trigger(() -> Math.abs(driver.getRightX()) < Constants.Control.stickDeadband)).and(driver.povCenter())
-            .onTrue
+
+        reefDriveTrigger.and(driver.povCenter())
+            .whileTrue
             (
                 new TargetHeadingReef
                 (
                     s_Swerve, 
-                    s_Swerve.getState().Pose.getTranslation(),
+                    () -> s_Swerve.getState().Pose.getTranslation(),
                     () -> -driver.getRawAxis(translationAxis), 
                     () -> -driver.getRawAxis(strafeAxis), 
-                    () -> -driver.getRawAxis(rotationAxis), 
                     () -> driver.getRawAxis(brakeAxis),
                     () -> !driver.leftStick().getAsBoolean()
                 )
@@ -223,7 +236,6 @@ public class RobotContainer
         copilot.b().and(copilot.rightTrigger()).onTrue(new IntakeAlgaeSequence(true, s_Diffector, s_AlgaeManipulator));
         copilot.x().and(copilot.rightTrigger()).onTrue(new IntakeAlgaeSequence(false, s_Diffector, s_AlgaeManipulator));
         copilot.y().and(copilot.rightTrigger()).onTrue(new ScoreAlgae(true, s_Diffector, s_AlgaeManipulator));
-
 
         /* transferPosition */
         copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new Test("transferPosition", "algae intake to handover position"));
@@ -245,8 +257,6 @@ public class RobotContainer
 
         /* intakeFromCoralStation */
         copilot.povLeft().and(copilot.rightTrigger().negate()).whileTrue(new Test("coralStation", "intake")).whileFalse(new Test("coralStation", "not intaking"));
-
-
 
         /* arm/IntakeGrab */
         copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, null));

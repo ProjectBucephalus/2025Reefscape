@@ -30,7 +30,6 @@ public class TargetHeading extends Command
   private CommandSwerveDrivetrain s_Swerve;    
   private DoubleSupplier translationSup;
   private DoubleSupplier strafeSup;
-  private DoubleSupplier rotationSup;
   private DoubleSupplier brakeSup;
   private BooleanSupplier fencedSup;
   private Translation2d motionXY;
@@ -44,7 +43,7 @@ public class TargetHeading extends Command
   
   private Rotation2d targetHeading;
 
-  public TargetHeading(CommandSwerveDrivetrain s_Swerve, Rotation2d targetHeading, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  public TargetHeading(CommandSwerveDrivetrain s_Swerve, Rotation2d targetHeading, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
     this.s_Swerve = s_Swerve;
     addRequirements(s_Swerve);
@@ -54,7 +53,6 @@ public class TargetHeading extends Command
     this.brakeSup = brakeSup;
     this.fencedSup = fencedSup;
     this.targetHeading = targetHeading;
-    this.rotationSup = rotationSup;
 
     driveRequest.HeadingController.setPID(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
   }
@@ -114,6 +112,6 @@ public class TargetHeading extends Command
   @Override
   public boolean isFinished() 
   {
-    return Math.abs(rotationSup.getAsDouble()) > Constants.Control.stickDeadband;
+    return false;
   }
 }

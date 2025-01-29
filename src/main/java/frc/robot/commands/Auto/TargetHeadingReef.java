@@ -6,12 +6,15 @@ package frc.robot.commands.Auto;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
@@ -30,9 +33,9 @@ public class TargetHeadingReef extends Command
   private CommandSwerveDrivetrain s_Swerve;    
   private DoubleSupplier translationSup;
   private DoubleSupplier strafeSup;
-  private DoubleSupplier rotationSup;
   private DoubleSupplier brakeSup;
   private BooleanSupplier fencedSup;
+  private Supplier<Translation2d> posSup;
   private Translation2d motionXY;
   private final GeoFenceObject[] fieldGeoFence = FieldConstants.GeoFencing.fieldGeoFence;
   private double robotRadius;
@@ -46,8 +49,10 @@ public class TargetHeadingReef extends Command
   private Translation2d robotPos;
   private Rotation2d targetHeading;
 
-  public TargetHeadingReef(CommandSwerveDrivetrain s_Swerve, Translation2d robotPos, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  public TargetHeadingReef(CommandSwerveDrivetrain s_Swerve, Supplier<Translation2d> posSup, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
+    SmartDashboard.putBoolean("Reef Snap Updating", true);
+
     this.s_Swerve = s_Swerve;
     addRequirements(s_Swerve);
 
@@ -55,41 +60,15 @@ public class TargetHeadingReef extends Command
     this.strafeSup = strafeSup;
     this.brakeSup = brakeSup;
     this.fencedSup = fencedSup;
-    this.robotPos = robotPos;
-    this.rotationSup = rotationSup;
+    this.posSup = posSup;
 
     driveRequest.HeadingController.setPID(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
-    
-    nearestReefFace = Constants.Auto.reefMidPoints.indexOf(this.robotPos.nearest(Constants.Auto.reefMidPoints));
+  }
 
-    switch (nearestReefFace) 
-    {
-      case 1:
-        targetHeading = new Rotation2d(0);
-        break;
-
-      case 2:
-        targetHeading = new Rotation2d(60);
-        break;
-
-      case 3:
-        targetHeading = new Rotation2d(120);
-        break;
-
-      case 4:
-        targetHeading = new Rotation2d(180);
-        break;
-
-      case 5:
-        targetHeading = new Rotation2d(-120);
-        break;
-
-      case 0:
-        targetHeading = new Rotation2d(-60);
-        break;
-      default:
-        break;
-    }
+  @Override 
+  public void initialize()
+  {
+    updateTargetHeading();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -100,6 +79,11 @@ public class TargetHeadingReef extends Command
     strafeSpeed = strafeSup.getAsDouble() * Constants.Swerve.maxSpeed;
     brakeVal = brakeSup.getAsDouble();
     motionXY = new Translation2d(translationSpeed, strafeSpeed);
+
+    if (SmartDashboard.getBoolean("Reef Snap Updating", true)) 
+    {
+      updateTargetHeading();
+    }
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     
@@ -147,6 +131,44 @@ public class TargetHeadingReef extends Command
   @Override
   public boolean isFinished() 
   {
-    return Math.abs(rotationSup.getAsDouble()) > Constants.Control.stickDeadband;
+    return false;
+  }
+
+  private void updateTargetHeading()
+  {
+    robotPos = posSup.get();
+
+    nearestReefFace = Constants.Auto.reefMidPoints.indexOf(robotPos.nearest(Constants.Auto.reefMidPoints));
+    nearestReefFace = (int)MathUtil.inputModulus(nearestReefFace, 1, 6);
+    SmartDashboard.putNumber("nearest face", nearestReefFace);
+
+    switch (nearestReefFace) 
+    {
+      case 1:
+        targetHeading = new Rotation2d(Units.degreesToRadians(0));
+        break;
+
+      case 2:
+        targetHeading = new Rotation2d(Units.degreesToRadians(60));
+        break;
+
+      case 3:
+        targetHeading = new Rotation2d(Units.degreesToRadians(120));
+        break;
+
+      case 4:
+        targetHeading = new Rotation2d(Units.degreesToRadians(180));
+        break;
+
+      case 5:
+        targetHeading = new Rotation2d(Units.degreesToRadians(-120));
+        break;
+
+      case 6:
+        targetHeading = new Rotation2d(Units.degreesToRadians(-60));
+        break;
+      default:
+        break;
+    }
   }
 }

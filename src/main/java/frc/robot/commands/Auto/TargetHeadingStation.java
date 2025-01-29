@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
@@ -30,10 +31,10 @@ public class TargetHeadingStation extends Command
   private CommandSwerveDrivetrain s_Swerve;    
   private DoubleSupplier translationSup;
   private DoubleSupplier strafeSup;
-  private DoubleSupplier rotationSup;
   private DoubleSupplier brakeSup;
   private BooleanSupplier fencedSup;
   private Translation2d motionXY;
+  private DoubleSupplier ySup;
   private final GeoFenceObject[] fieldGeoFence = FieldConstants.GeoFencing.fieldGeoFence;
   private double robotRadius;
   private double robotSpeed;
@@ -45,8 +46,10 @@ public class TargetHeadingStation extends Command
   private double robotY;
   private Rotation2d targetHeading;
 
-  public TargetHeadingStation(CommandSwerveDrivetrain s_Swerve, double robotY, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  public TargetHeadingStation(CommandSwerveDrivetrain s_Swerve, DoubleSupplier ySup, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
+    SmartDashboard.putBoolean("Station Snap Updating", true);
+
     this.s_Swerve = s_Swerve;
     addRequirements(s_Swerve);
 
@@ -54,19 +57,15 @@ public class TargetHeadingStation extends Command
     this.strafeSup = strafeSup;
     this.brakeSup = brakeSup;
     this.fencedSup = fencedSup;
-    this.robotY = robotY;
-    this.rotationSup = rotationSup;
+    this.ySup = ySup;
 
     driveRequest.HeadingController.setPID(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
-  
-    if (this.robotY >= 4.026) 
-    {
-      targetHeading = new Rotation2d(126);
-    }
-    else 
-    {
-      targetHeading = new Rotation2d(-126);
-    }
+  }
+
+  @Override 
+  public void initialize()
+  {
+    updateTargetHeading();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -77,6 +76,11 @@ public class TargetHeadingStation extends Command
     strafeSpeed = strafeSup.getAsDouble() * Constants.Swerve.maxSpeed;
     brakeVal = brakeSup.getAsDouble();
     motionXY = new Translation2d(translationSpeed, strafeSpeed);
+
+    if (SmartDashboard.getBoolean("Station Snap Updating", true))
+    {
+      updateTargetHeading();
+    }
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     
@@ -124,6 +128,20 @@ public class TargetHeadingStation extends Command
   @Override
   public boolean isFinished() 
   {
-    return Math.abs(rotationSup.getAsDouble()) > Constants.Control.stickDeadband;
+    return false;
+  }
+
+  private void updateTargetHeading()
+  {
+    robotY = ySup.getAsDouble();
+
+    if (robotY >= 4.026) 
+    {
+      targetHeading = new Rotation2d(Units.degreesToRadians(126));
+    } 
+    else 
+    {
+      targetHeading = new Rotation2d(Units.degreesToRadians(-126));
+    }
   }
 }

@@ -4,6 +4,8 @@
 
 package frc.robot.commands.Auto;
 
+import java.util.function.DoubleSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -12,21 +14,38 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PathfindToStation extends Command 
 {
-  private PathPlannerPath path;
-  private String pathName;
-  private char stationSide;
   private final PathConstraints constraints = Constants.Auto.defaultConstraints;
-  private Command pathfindingCommand;
+  
+  private DoubleSupplier ySup;
+  private int stationPosition;
+
   private double robotY;
+
+  private char stationSide;
+  private String pathName;
+
+  private PathPlannerPath path;
+  private Command pathfindingCommand;
+
  
   /** Creates a new PathfindToStation. */
-  public PathfindToStation(int stationPosition, double robotY) 
+  public PathfindToStation(int stationPosition, DoubleSupplier ySup, CommandSwerveDrivetrain s_Swerve) 
   {
-    this.robotY = robotY;
+    this.ySup = ySup;
+    this.stationPosition = stationPosition;
+    addRequirements(s_Swerve);
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() 
+  {
+    robotY = ySup.getAsDouble();
 
     if (this.robotY >= 4.026) 
     {
@@ -47,27 +66,9 @@ public class PathfindToStation extends Command
     {
         DriverStation.reportError("Path error: " + e.getMessage(), e.getStackTrace());
     }
-  }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() 
-  {
     pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, constraints);
-    pathfindingCommand.andThen
-    (
-      new TargetHeading
-      (
-        RobotContainer.s_Swerve, 
-        path.getGoalEndState().rotation(), 
-        () -> -RobotContainer.driver.getRawAxis(RobotContainer.translationAxis), 
-        () -> -RobotContainer.driver.getRawAxis(RobotContainer.strafeAxis), 
-        () -> -RobotContainer.driver.getRawAxis(RobotContainer.rotationAxis), 
-        () -> RobotContainer.driver.getRawAxis(RobotContainer.brakeAxis),
-        () -> !RobotContainer.driver.leftStick().getAsBoolean()
-      )
-    );
-    pathfindingCommand.schedule();
+    pathfindingCommand.until(RobotContainer.driver.povCenter()).schedule();
   }
 
   // Returns true when the command should end.
