@@ -44,6 +44,7 @@ public class Diffector extends SubsystemBase
   /** Creates a new Diffector. */
   public Diffector() 
   {
+    armConstructor();
     motorConfig = CTREConfigs.diffectorFXConfig;
 
     m_diffectorUC = new TalonFX(Constants.Diffector.ucMotorID);
@@ -115,51 +116,204 @@ public class Diffector extends SubsystemBase
    */
   private double[] pathfindIK(double elevationTarget, double angleTarget, double elevationCurrent, double angleCurrent)
   {
-    /*
-      Note: if height constantly above rail+algaeL+harpoonL, don't worry
-      Note adendum: dealing with field objects may change this...
     
-      Min height: 0.444 -> used for climb
-      Max height: 1.709 -> used for net scoring
-      Stow height: 0.574
-
-      Coral manip:
-        64 degree arc, centred on 0
-        0.5m radius
-        
-        Lateral:
-          Keep lower point above rail
-      
-        Medial:
-          Keep lower point above deck
-          If points are either side of mast, keep above deck+coralL  
-      
-      Algae manip:
-        60 degree arc, centred on 180
-        0.6m radius
-
-        107 degree arc, centred on 180
-        0.3m radius, then projected paralel to arm
-
-        Lateral:
-          90:
-            keep inner above rail
-          intercept beyond rail:
-            keep intercept above rail
-          outer point beyond rail:
-            keep midpoint above rail
-          outer within rail:
-            keep outer point above rail
-          
-        Medial: (outer point within inner rail)
-          Keep distance to inner rail above algaeL
-          Keep lower point above deck
-          If points either side of mast, keep above deck+algaeL
-          If algae held:
-            17 degrees either side of mast, increase deck height by 0.1
-    */
 
     return new Double[2] = {elevationTarget, angleTarget};
+  }
+
+  private Translation2d railPortMedial;
+  private Translation2d railPortLateral;
+  private Translation2d railStbdMedial;
+  private Translation2d railStbdLateral;
+  private double deckHeight;
+  private double harpoonHeight;
+  private double harpoonAngle;
+
+  private Translation2d coralA, coralC;
+  private Translation2d algaeOuterA, algaeOuterC;
+  private Translation2d algaeInnerA, algaeInnerC;
+  private Translation2d algaeIntersectA, algaeIntersectC;
+  private Translation2d algaeWheelA, algaeWheelC;
+
+  private Translation2d[] armGeometry, armGeometryRotated;
+
+  private void armConstructor()
+  {
+    railStbdMedial  = new Translation2d(0.27,0.23);
+    railStbdLateral = new Translation2d(0.38,0.23);
+    railPortMedial  = new Translation2d(-0.27,0.23);
+    railPortLateral = new Translation2d(-0.38,0.23);
+    deckHeight = 0.18;
+    harpoonHeight = 0.1;
+    harpoonAngle = 17;
+
+    coralA = new Translation2d(0,0.5).rotateBy(Units.radiansFromDegrees(32));
+    coralC = new Translation2d(0,).rotateBy(Units.radiansFromDegrees(-32));
+    algaeOuterA = new Translation2d(0,0.6).rotateBy(Units.radiansFromDegrees(180+30));
+    algaeOuterC = new Translation2d(0,0.6).rotateBy(Units.radiansFromDegrees(180-30));
+    algaeInnerA = new Translation2d(0,0.3).rotateBy(Units.radiansFromDegrees(180+54));
+    algaeInnerC = new Translation2d(0,0.3).rotateBy(Units.radiansFromDegrees(180-54));
+    algaeIntersectA = new Translation2d(0,0.48).rotateBy(Units.radiansFromDegrees(180+30));
+    algaeIntersectC = new Translation2d(0,0.48).rotateBy(Units.radiansFromDegrees(180-30));
+    algaeWheelA = new Translation2d(0,0.54).rotateBy(Units.radiansFromDegrees(180+30));
+    algaeWheelC = new Translation2d(0,0.54).rotateBy(Units.radiansFromDegrees(180-30));
+
+    armGeometry =
+    {
+      coralA,
+      coralC,
+      algaeOuterA,
+      algaeOuterC,
+      algaeInnerA,
+      algaeInnerC,
+      algaeIntersectA,
+      algaeIntersectC,
+      algaeWheelA,
+      algaeWheelC
+    }
+
+    armGeometryRotated = armGeometry;
+  }
+
+  /**
+   * Returns the minimum safe arm height for a given angle
+   */
+  private double checkPosition(double rotation)
+  {
+    rotation %= 360;
+    for(int i = 0; i < armGeometry.size; i++)
+    {
+      armGeometryRotated[i] = armGeometry[i].rotateBy(Units.radiansFromDegrees(rotation));
+    }
+
+    //
+    //  Note: if height constantly above rail+algaeL+harpoonL, don't worry
+    //  Note adendum: dealing with field objects may change this...
+    //
+    //  Min height: 0.444 -> used for climb
+    //  Max height: 1.709 -> used for net scoring
+    //  Stow height: 0.574
+    //
+    //  Coral manip:
+    //    64 degree arc, centred on 0
+    //    0.5m radius
+    if(angle > 90 || angle < 270) // Coral arm down
+    {
+    //    Lateral:
+    //      Keep lower point above rail
+    //  
+    //    Medial:
+    //      Keep lower point above deck
+    //      If points are either side of mast, keep above deck+coralL  
+      if (armGeometryRotated[0].getX() >= 0 && armGeometryRotated[1].getX() <= 0) 
+        {return armGeometryRotated[0].getNorm() + deckHeight;}
+
+      if (armGeometryRotated[0].getX() < 0)
+      {
+        if (armGeometryRotated[0].getX() <= railStbdMedial.getX()) 
+          {return (-armGeometryRotated[0].getY()) + railStbdMedial.getY();}
+        else 
+        {
+          return Math.max
+          (
+            (-armGeometryRotated[0].getY()) + deckHeight,
+            Math.sqrt(Math.pow(armGeometryRotated[0].getNorm(),2) - Math.pow(railStbdMedial.getX(),2)) + railStbdMedial.getY()
+          );
+        }
+      }
+      else 
+      {
+        if (armGeometryRotated[1].getX() >= railPortMedial.getX()) 
+          {return (-armGeometryRotated[1].getY()) + railPortMedial.getY();}
+        else 
+        {
+          return Math.max
+          (
+            (-armGeometryRotated[1].getY()) + deckHeight,
+            Math.sqrt(Math.pow(armGeometryRotated[1].getNorm(),2) - Math.pow(railPortMedial.getX(),2)) + railPortMedial.getY()
+          );
+        }
+      }
+    }
+    //  Algae manip:
+    //    60 degree arc, centred on 180
+    //    0.6m radius
+    //
+    //    107 degree arc, centred on 180
+    //    0.3m radius, then projected paralel to arm
+    else // Algae arm down
+    {
+    //    Lateral:
+    //      90:
+    //        keep inner above rail
+    //      intercept beyond rail:
+    //        keep intercept above rail
+    //      outer point beyond rail:
+    //        keep midpoint above rail
+    //      outer within rail:
+    //        keep outer point above rail
+    //      
+    //    Medial: (outer point within inner rail)
+    //      Keep distance to inner rail above algaeL
+    //      Keep lower point above deck
+    //      If points either side of mast, keep above deck+algaeL
+    //      If algae held:
+    //        17 degrees either side of mast, increase deck height by 0.1
+    //
+      if ((angle <= harpoonAngle || angle >= 360 - harpoonAngle) && algae)
+        {return armGeometryRotated[2].getNorm() + deckHeight + harpoonHeight;}
+      
+      if (armGeometryRotated[2].getX() >= 0 && armGeometryRotated[3].getX() <= 0)
+        {return armGeometryRotated[2].getNorm() + deckHeight;}
+      
+      if (armGeometryRotated[2].getX() < 0)
+      {
+        if (armGeometryRotated[2].getX() >= railStbdMedial.getX())
+        {
+          {
+            return Math.max
+            (
+              (-armGeometryRotated[2].getY()) + deckHeight,
+              Math.sqrt(Math.pow(armGeometryRotated[2].getNorm(),2) - Math.pow(railStbdMedial.getX(),2)) + railStbdMedial.getY()
+            );
+          }
+        }
+        else if (armGeometryRotated[6].getX() <= railStbdLateral.getX())
+        {
+          return 
+            Math.max(-armGeometryRotated[6].getY(), -armGeometryRotated[4].getY()) 
+            + railStbdLateral.getY();
+        }
+        else if (armGeometryRotated[2].getX() <= railStbdLateral.getX())
+          {return -armGeometryRotated[8].getY() + railStbdLateral.getY();}
+        else 
+          {return -armGeometryRotated[2].getY() + railStbdLateral.getY();}
+      }
+      
+      else
+      {
+        if (armGeometryRotated[3].getX() <= railPortMedial.getX())
+        {
+          {
+            return Math.max
+            (
+              (-armGeometryRotated[3].getY()) + deckHeight,
+              Math.sqrt(Math.pow(armGeometryRotated[3].getNorm(),2) - Math.pow(railPortMedial.getX(),2)) + railPortMedial.getY()
+            );
+          }
+        }
+        else if (armGeometryRotated[7].getX() >= railPortLateral.getX())
+        {
+          return 
+            Math.max(-armGeometryRotated[7].getY(), -armGeometryRotated[5].getY()) 
+            + railPortLateral.getY();
+        }
+        else if (armGeometryRotated[3].getX() >= railPortLateral.getX())
+          {return -armGeometryRotated[9].getY() + railPortLateral.getY();}
+        else 
+          {return -armGeometryRotated[3].getY() + railPortLateral.getY();}
+      }
+    }
   }
 
   public boolean armAtAngle()
