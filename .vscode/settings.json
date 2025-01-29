@@ -18,9 +18,11 @@
     {
       "name": "WPIlibUnitTests",
       "workingDirectory": "${workspaceFolder}/build/jni/release",
-      "vmargs": [ "-Djava.library.path=${workspaceFolder}/build/jni/release" ],
+      "vmargs": [
+        "-Djava.library.path=${workspaceFolder}/build/jni/release"
+      ],
       "env": {
-        "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release" ,
+        "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release",
         "DYLD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release"
       }
     },
@@ -57,5 +59,22 @@
     "edu.wpi.first.math.**.proto.*",
     "edu.wpi.first.math.**.struct.*",
   ],
-  "java.project.explorer.showNonJavaResources": true
+  "java.project.explorer.showNonJavaResources": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "java.settings.url": ".vscode/settings.prefs",
+  "java.format.settings.url": ".vscode/formatter-settings.xml",
+  "java.format.settings.profile": "PBFormatter",
+  "editor.defaultFormatter": "redhat.java",
+  "java.cleanup.actions": [
+    "renameFileToType",
+    "qualifyMembers",
+    "qualifyStaticMembers",
+    "addOverride"
+  ],
+  "[java]": {
+    "editor.insertSpaces": false,
+    "editor.detectIndentation": false,
+    "editor.tabSize": 3
+  },
 }
