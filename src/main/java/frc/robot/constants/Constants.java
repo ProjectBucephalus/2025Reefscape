@@ -227,13 +227,27 @@ public final class Constants
         public static final double algae2Elevation = 0;
         public static final double climbElevation = 0;
         public static final double startingElevation = 0;
+        
+        public static final class IKGeometry
+        {
+            /* Manipulator arm geometry */
+            public static final double coralArmLength   = 0.5;
+            public static final double coralArmAngle    = 64/2;
+            public static final double algaeArmLength   = 0.6;
+            public static final double algaeArmAngle    = 60/2;
+            public static final double algaeWheelLength = 0.54;
+            public static final double algaeClawLength  = 0.48;
+            public static final double algaeInnerLength = 0.3;
+            public static final double algaeInnerAngle  = 108/2;
 
-        /* Manipulator arm geometry */
-        public static final double algaeArmLength = 0;
-        public static final double coralArmLength = 0;
-        public static final double algaeArmWidth = 0;
-        public static final double coralArmWidth = 0;
-        public static final double algaeProtrusion = 0;
+            /* Deck obstruction geometry */
+            public static final double railHeight    = 0.23;
+            public static final double railLateral   = 0.38;
+            public static final double railMedial    = 0.27;
+            public static final double deckHeight    = 0.18;
+            public static final double harpoonHeight = 0.1;
+            public static final double harpoonAngle  = 17;
+        }
     }
 
     public static final class GamePiecesManipulator 
