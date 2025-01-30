@@ -3,6 +3,7 @@ import java.util.Optional;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -34,6 +35,16 @@ public class FieldConstants
 
         // Blue or we don't know; return the original pose
         return pose;
+    }
+
+    public static int getNearestReefFace(Translation2d robotPos)
+    {
+        int nearestReefFace;
+        
+        nearestReefFace = Constants.Auto.reefMidPoints.indexOf(robotPos.nearest(Constants.Auto.reefMidPoints));
+        nearestReefFace = (int)MathUtil.inputModulus(nearestReefFace, 1, 6);
+        
+        return nearestReefFace;
     }
 
     public static Translation2d flipTranslation(Translation2d position) 

@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -138,8 +137,7 @@ public class TargetHeadingReef extends Command
   {
     robotPos = posSup.get();
 
-    nearestReefFace = Constants.Auto.reefMidPoints.indexOf(robotPos.nearest(Constants.Auto.reefMidPoints));
-    //nearestReefFace = (int)MathUtil.inputModulus(nearestReefFace, 1, 6);
+    nearestReefFace = FieldConstants.getNearestReefFace(robotPos);
     SmartDashboard.putNumber("nearest face", nearestReefFace);
 
     switch (nearestReefFace) 
@@ -164,7 +162,7 @@ public class TargetHeadingReef extends Command
         targetHeading = new Rotation2d(Units.degreesToRadians(-120));
         break;
 
-      case 0:
+      case 6:
         targetHeading = new Rotation2d(Units.degreesToRadians(-60));
         break;
       default:

@@ -34,9 +34,8 @@ public class PathfindToAndFollow extends Command
     }
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() 
+  public void initialize()
   {
     pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, constraints);
     pathfindingCommand.until(RobotContainer.driver.povCenter()).schedule();
@@ -46,6 +45,6 @@ public class PathfindToAndFollow extends Command
   @Override
   public boolean isFinished() 
   {
-    return true;
+    return pathfindingCommand.isFinished();
   }
 }

@@ -41,9 +41,8 @@ public class PathfindToStation extends Command
     addRequirements(s_Swerve);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() 
+  public void initialize()
   {
     robotY = ySup.getAsDouble();
 
@@ -75,6 +74,6 @@ public class PathfindToStation extends Command
   @Override
   public boolean isFinished() 
   {
-    return true;
+    return pathfindingCommand.isFinished();
   }
 }
