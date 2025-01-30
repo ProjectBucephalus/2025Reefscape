@@ -15,8 +15,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
-import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
 
 public class TargetHeading extends Command 
@@ -33,7 +33,7 @@ public class TargetHeading extends Command
   private DoubleSupplier brakeSup;
   private BooleanSupplier fencedSup;
   private Translation2d motionXY;
-  private final GeoFenceObject[] fieldGeoFence = FieldConstants.GeoFencing.fieldGeoFence;
+  private final GeoFenceObject[] fieldGeoFence = FieldUtils.GeoFencing.fieldGeoFence;
   private double robotRadius;
   private double robotSpeed;
 
@@ -72,13 +72,13 @@ public class TargetHeading extends Command
     {
       robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
       SmartDashboard.putString("Drive State", "Fenced");
-      if (robotSpeed >= FieldConstants.GeoFencing.robotSpeedThreshold)
+      if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
       {
-          robotRadius = FieldConstants.GeoFencing.robotRadiusCircumscribed;
+          robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;
       }
       else
       {
-          robotRadius = FieldConstants.GeoFencing.robotRadiusInscribed;
+          robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;
       }
       // Read down the list of geofence objects
       // Outer wall is index 0, so has highest authority by being processed last
