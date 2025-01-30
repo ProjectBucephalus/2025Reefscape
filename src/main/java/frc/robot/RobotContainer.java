@@ -25,6 +25,7 @@ import frc.robot.commands.Util.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Intake.IntakeStatus;
+import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
 
 /**
@@ -68,6 +69,8 @@ public class RobotContainer
     private final Trigger reefDriveTrigger = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
     private final Trigger stationDriveTrigger = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
     private final Trigger processorDriveTrigger = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
+    private final Trigger driverLeftRumbleTrigger = new Trigger(() -> s_Intake.getCoralSwitch1State() || s_Intake.getCoralSwitch2State() || !s_Intake.getAlgaeBeamBreakState() );
+    
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
@@ -165,6 +168,8 @@ public class RobotContainer
         reefDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
         reefDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
 
+
+        driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_LEFT, "Intake Full"));
         /* 
          * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed
          * Does not need to check the rotation stick, as soon at the rotation stick is moved all drive triggers become false (see line 141)
