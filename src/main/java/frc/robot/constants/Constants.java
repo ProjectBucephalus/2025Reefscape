@@ -13,6 +13,7 @@ import frc.robot.commands.AlgaeManipulator.IntakeAlgaeSequence;
 import frc.robot.commands.AlgaeManipulator.ScoreAlgae;
 import frc.robot.commands.CoralManipulator.IntakeCoralSequence;
 import frc.robot.subsystems.Diffector.CargoStates;
+import frc.robot.util.FieldUtils;
 
 public final class Constants 
 {
@@ -146,7 +147,7 @@ public final class Constants
             }
         };
 
-        public static final ArrayList<Translation2d> reefMidPoints = FieldConstants.GeoFencing.reefBlue.getMidPoints();
+        public static final ArrayList<Translation2d> reefMidPoints = FieldUtils.GeoFencing.reefBlue.getMidPoints();
 
         public static final String defaultAuto = "t5,cR5,w3.5,cR5";
     }

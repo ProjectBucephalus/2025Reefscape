@@ -15,13 +15,13 @@ import frc.robot.commands.Auto.PathfindToReef.DpadOptions;
 import frc.robot.commands.CoralManipulator.ArmToCoralScorePos;
 import frc.robot.commands.CoralManipulator.SetCoralStatus;
 import frc.robot.commands.Diffector.MoveTo;
-import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.Diffector;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
+import frc.robot.util.FieldUtils;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -42,7 +42,7 @@ public class AutoScoreSequence extends SequentialCommandGroup
     coral = s_CoralManipulator.getStatus() == CoralManipulatorStatus.DEFAULT;
     algae = s_AlgaeManipulator.getStatus() == AlgaeManipulatorStatus.HOLDING;
     robotPos = posSup.get();
-    nearestReefFace = FieldConstants.getNearestReefFace(robotPos);
+    nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
 
     if (RobotContainer.driver.povLeft().getAsBoolean()) 
     {

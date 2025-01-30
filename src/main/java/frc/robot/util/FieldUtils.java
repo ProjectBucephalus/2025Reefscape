@@ -1,4 +1,4 @@
-package frc.robot.constants;
+package frc.robot.util;
 import java.util.Optional;
 
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -10,10 +10,10 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.util.GeoFenceObject;
+import frc.robot.constants.Constants;
 import frc.robot.util.GeoFenceObject.ObjectTypes;
 
-public class FieldConstants 
+public class FieldUtils 
 {
     public static final double fieldLength = 17.548;
     public static final double fieldWidth = 8.051;
