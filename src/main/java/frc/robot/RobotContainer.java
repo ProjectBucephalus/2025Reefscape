@@ -241,9 +241,9 @@ public class RobotContainer
         copilot.y().and(copilot.rightTrigger()).onTrue(new ScoreAlgae(true, s_Diffector, s_AlgaeManipulator));
 
         /* transferPosition */
-        copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new Test("transferPosition", "algae intake to handover position"));
+        copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE));
         copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new GoToAlgaeHandoverConfig(s_Diffector));
-        copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new Test("transferPosition", "coral intake to handover position"));
+        copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE));
         copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new GoToCoralHandoverConfig(s_Diffector));
 
         /* deploy/TransferGamePieces */
