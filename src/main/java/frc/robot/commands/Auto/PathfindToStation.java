@@ -4,6 +4,8 @@
 
 package frc.robot.commands.Auto;
 
+import java.util.function.DoubleSupplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -14,15 +16,46 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
-public class PathfindToAndFollow extends Command 
+/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+public class PathfindToStation extends Command 
 {
-  private PathPlannerPath path;
   private final PathConstraints constraints = Constants.Auto.defaultConstraints;
-  private Command pathfindingCommand;
   
-  public PathfindToAndFollow(String pathName, CommandSwerveDrivetrain s_Swerve) 
+  private DoubleSupplier ySup;
+  private int stationPosition;
+
+  private double robotY;
+
+  private char stationSide;
+  private String pathName;
+
+  private PathPlannerPath path;
+  private Command pathfindingCommand;
+
+ 
+  /** Creates a new PathfindToStation. */
+  public PathfindToStation(int stationPosition, DoubleSupplier ySup, CommandSwerveDrivetrain s_Swerve) 
   {
+    this.ySup = ySup;
+    this.stationPosition = stationPosition;
     addRequirements(s_Swerve);
+  }
+
+  @Override
+  public void initialize()
+  {
+    robotY = ySup.getAsDouble();
+
+    if (this.robotY >= 4.026) 
+    {
+      stationSide = 'l';
+    }
+    else 
+    {
+      stationSide = 'r';
+    }
+
+    pathName = "c" + stationSide + stationPosition;
 
     try
     {
@@ -32,11 +65,7 @@ public class PathfindToAndFollow extends Command
     {
         DriverStation.reportError("Path error: " + e.getMessage(), e.getStackTrace());
     }
-  }
 
-  @Override
-  public void initialize()
-  {
     pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, constraints);
     pathfindingCommand.until(RobotContainer.driver.povCenter()).schedule();
   }

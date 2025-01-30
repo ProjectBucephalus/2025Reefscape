@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
-import frc.robot.commands.CoralManipulator.ScoreCoral;
+import frc.robot.commands.CoralManipulator.ScoreCoralSequence;
 import frc.robot.commands.Util.WaitUntilAutoTime;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Auto.AutoMapping;
@@ -68,7 +68,7 @@ public class DynamicAuto
           commandList.add(AutoBuilder.pathfindThenFollowPath(nextPath, constraints));
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();
 
-          commandList.add(new ScoreCoral(Integer.parseInt(splitCommands[i].substring(2)), RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator));
+          commandList.add(new ScoreCoralSequence(Integer.parseInt(splitCommands[i].substring(2)), RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator));
         }
         else
         {

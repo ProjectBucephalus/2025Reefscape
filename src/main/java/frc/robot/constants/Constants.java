@@ -1,22 +1,25 @@
 package frc.robot.constants;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import com.pathplanner.lib.path.PathConstraints;
+
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.commands.AlgaeManipulator.IntakeAlgae;
+import frc.robot.commands.AlgaeManipulator.IntakeAlgaeSequence;
 import frc.robot.commands.AlgaeManipulator.ScoreAlgae;
-import frc.robot.commands.CoralManipulator.IntakeCoral;
+import frc.robot.commands.CoralManipulator.IntakeCoralSequence;
 import frc.robot.subsystems.Diffector.CargoStates;
 
 public final class Constants 
 {
     public static final class Rumbler 
     {
-        public static final double driver_Default = 1;
-        public static final double coDriver_Default = 1;  
+        public static final double driverDefault = 1;
+        public static final double coDriverDefault = 1;  
     }
 
     public static final class Control
@@ -34,7 +37,7 @@ public final class Constants
 
     public static final class Vision
     {
-        public static final int[] validIDs = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
+        public static final int[] validIDs = {17, 18, 19, 20, 21, 22};
         public static final String limeLightName = "limelight";
     }
 
@@ -72,6 +75,18 @@ public final class Constants
         public static final PathConstraints defaultConstraints = new PathConstraints
             (pathplannerMaxSpeed, pathplannerMaxAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
         
+        public static final Map<Translation2d, Integer> reefMidPointMap = new HashMap<>(6)
+        {
+            {
+                put(new Translation2d(3.658, 4.026), 1);
+                put(new Translation2d(4.073, 3.306), 2);
+                put(new Translation2d(4.905, 3.306), 3);
+                put(new Translation2d(5.321, 4.026), 4);
+                put(new Translation2d(4.905, 4.746), 5);
+                put(new Translation2d(4.073, 4.746), 6);
+            }
+        };
+
         public static class AutoMapping
         {
             public final String pathName;
@@ -100,36 +115,38 @@ public final class Constants
                 put("rj" , new AutoMapping("rj" , null));
                 put("rk" , new AutoMapping("rk" , null));
                 put("rl" , new AutoMapping("rl" , null));
-                put("cl1", new AutoMapping("cl1", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl2", new AutoMapping("cl2", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl3", new AutoMapping("cl3", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl4", new AutoMapping("cl4", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl5", new AutoMapping("cl5", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl6", new AutoMapping("cl6", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl7", new AutoMapping("cl7", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl8", new AutoMapping("cl8", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cl9", new AutoMapping("cl9", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr1", new AutoMapping("cr1", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr2", new AutoMapping("cr2", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr3", new AutoMapping("cr3", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr4", new AutoMapping("cr4", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr5", new AutoMapping("cr5", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr6", new AutoMapping("cr6", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr7", new AutoMapping("cr7", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr8", new AutoMapping("cr8", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("cr9", new AutoMapping("cr9", () -> new IntakeCoral(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-                put("a1" , new AutoMapping("a1" , () -> new IntakeAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-                put("a2" , new AutoMapping("a2" , () -> new IntakeAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
-                put("a3" , new AutoMapping("a3" , () -> new IntakeAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
-                put("a4" , new AutoMapping("a4" , () -> new IntakeAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
-                put("a5" , new AutoMapping("a5" , () -> new IntakeAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
-                put("a6" , new AutoMapping("a6" , () -> new IntakeAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+                put("cl1", new AutoMapping("cl1", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl2", new AutoMapping("cl2", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl3", new AutoMapping("cl3", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl4", new AutoMapping("cl4", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl5", new AutoMapping("cl5", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl6", new AutoMapping("cl6", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl7", new AutoMapping("cl7", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl8", new AutoMapping("cl8", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cl9", new AutoMapping("cl9", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr1", new AutoMapping("cr1", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr2", new AutoMapping("cr2", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr3", new AutoMapping("cr3", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr4", new AutoMapping("cr4", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr5", new AutoMapping("cr5", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr6", new AutoMapping("cr6", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr7", new AutoMapping("cr7", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr8", new AutoMapping("cr8", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("cr9", new AutoMapping("cr9", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
+                put("a1" , new AutoMapping("a1" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+                put("a2" , new AutoMapping("a2" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+                put("a3" , new AutoMapping("a3" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+                put("a4" , new AutoMapping("a4" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+                put("a5" , new AutoMapping("a5" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+                put("a6" , new AutoMapping("a6" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
                 put("b1" , new AutoMapping("b1" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
                 put("b2" , new AutoMapping("b2" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
                 put("b3" , new AutoMapping("b3" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
                 put("p"  , new AutoMapping("p"  , () -> new ScoreAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
             }
         };
+
+        public static final ArrayList<Translation2d> reefMidPoints = FieldConstants.GeoFencing.reefBlue.getMidPoints();
 
         public static final String defaultAuto = "t5,cR5,w3.5,cR5";
     }
@@ -184,7 +201,7 @@ public final class Constants
          */
         public static final double rotationRatio = gearboxRatio * sprocketRatio / 2;
 
-        public static final CargoStates startingCargoState = CargoStates.empty;
+        public static final CargoStates startingCargoState = CargoStates.EMPTY;
 
         public static final double maxRotation = 3;
         public static final double maxAbsPos = maxRotation * 360;
@@ -241,14 +258,14 @@ public final class Constants
         public static final int coralMotorID = IDConstants.coralMotorID;
         public static final int algaeMotorID = IDConstants.algaeMotorID;
 
-        public static final int coralBeamBreak1DigitalInput = 0;
-        public static final int coralBeamBreak2DigitalInput = 1;
-        public static final int algaeBeamBreakDigitalInput = 2;
+        public static final int coralManipulatorDIO1 = IDConstants.coralManipulatorDIO1;
+        public static final int coralManipulatorDIO2 = IDConstants.coralManipulatorDIO2;
+        public static final int algaeManipulatorDIO  = IDConstants.algaeManipulatorDIO;
 
         /* Coral manipulator speeds */
         public static final double coralManipulatorIntakeSpeed = 0;
         public static final double coralManipulatorDeliverySpeed = 0.9;
-        public static final double coralManipulatorHoldingSpeed = 0.2;
+        public static final double coralManipulatorHoldingVoltage = 0.2;
 
         /* Algae manipulator speeds */
         public static final double algaeManipulatorIntakeSpeed = -0.7;
@@ -260,10 +277,14 @@ public final class Constants
 
     public static final class Intake // TODO: Speeds and Angles must be tuned to the specific robot
     {
-        public static final int topIntakeID = IDConstants.mTopIntakeID;
-        public static final int bottomIntakeID = IDConstants.mBottomIntakeID;
-        public static final int topArmID = IDConstants.mTopArmID;
-        public static final int bottomArmID = IDConstants.mBottomArmID;
+        public static final int algaeIntakeID = IDConstants.mTopIntakeID;
+        public static final int coralIntakeID = IDConstants.mBottomIntakeID;
+        public static final int algaeArmID = IDConstants.mTopArmID;
+        public static final int coralArmID = IDConstants.mBottomArmID;
+
+        public static final int coralIntakeDIO1 = IDConstants.coralIntakeDIO1;
+        public static final int coralIntakeDIO2 = IDConstants.coralIntakeDIO2;
+        public static final int algaeIntakeDIO  = IDConstants.algaeIntakeDIO;
 
         /* Intake motors speeds */
         public static final double coralIntakeMotorSpeed = 0.8;
@@ -294,6 +315,9 @@ public final class Constants
         public static final double bottomCoralTransferArmTarget = 0;
         public static final double bottomAlgaeTransferArmTarget = 0;
 
+        public static final double coralStowedThreshold = 10;
+        public static final double algaeStowedThreshold = 10;
+
         /* Top arm PID + FeedForward values */
         public static final double topArmSpringKP = 1;
         public static final double topArmSpringKI = 0;
@@ -321,32 +345,23 @@ public final class Constants
 
     public static final class Climber
     {
-        public static final int clawID = IDConstants.climberClawMotorID;
         public static final int winchID = IDConstants.climberWinchMotorID;
 
         public static final double initSpeed = 0;
         public static final double deploySpeed = 0.8;
         public static final double climbSpeed = 0.8;
 
-        public static final double initClawPos = 0;
         public static final double initWinchPos = 0;
-        public static final double deployClawPos = 90;
         public static final double deployWinchPos = 0;
-        public static final double climbClawPos = 0;
         public static final double climbWinchPos = 0;
-
-        public static final double clawKP = 0;
-        public static final double clawKI = 0;
-        public static final double clawKD = 0;
 
         public static final double winchKP = 0;
         public static final double winchKI = 0;
         public static final double winchKD = 0;
 
-        public static final double clawMotionMagicCruise = 0;
-        public static final double clawMotionMagicAccel = 0;
-
         public static final double winchMotionMagicCruise = 0;
         public static final double winchMotionMagicAccel = 0;
+
+        public static final double initWinchThreshold = 10;
     }
 }

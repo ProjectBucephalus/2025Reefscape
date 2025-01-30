@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.commands.PathfindingCommand;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -25,7 +26,7 @@ public class Robot extends TimedRobot
 {
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
-  private Command m_autonomousCommand;
+  private Command autonomousCommand;
 
   private RobotContainer robotContainer;
 
@@ -55,6 +56,14 @@ public class Robot extends TimedRobot
   public void robotPeriodic() 
   {
     CommandScheduler.getInstance().run();
+
+    if (RobotContainer.s_Swerve.getState().Pose.getX() < 0.75 && RobotContainer.s_Swerve.getState().Pose.getY() < 0.75) 
+    {
+      RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, 1, RobotContainer.s_Swerve.getState().Pose.getRotation()));
+    }
+
+    SmartDashboard.putBoolean("Unlock Heading Trigger", RobotContainer.unlockHeadingTrigger.getAsBoolean());
+    SmartDashboard.putString("Heading State", RobotContainer.headingState.toString());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -76,10 +85,10 @@ public class Robot extends TimedRobot
       robotContainer.getSwerve().resetRotation(robotContainer.getSwerve().getState().Pose.getRotation());
     }
     
-    m_autonomousCommand = robotContainer.getAutoCommand();
+    autonomousCommand = robotContainer.getAutoCommand();
 
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    if (autonomousCommand != null) {
+      autonomousCommand.schedule();
     }
   }
 
@@ -89,9 +98,9 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit() 
   {
-    if (m_autonomousCommand != null) 
+    if (autonomousCommand != null) 
     {
-      m_autonomousCommand.cancel();
+      autonomousCommand.cancel();
     }
   }
 
