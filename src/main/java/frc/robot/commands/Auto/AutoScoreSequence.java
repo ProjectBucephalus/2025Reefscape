@@ -122,7 +122,7 @@ public class AutoScoreSequence extends SequentialCommandGroup
         new PathfindToReef(postSide, posSup, s_Swerve)
         .alongWith(new ArmToCoralScorePos(coralLevel, s_Diffector)),
 
-        new SetCoralStatus(s_CoralManipulator),
+        new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY),
 
         new MoveTo(s_Diffector, 0, 0) //replace with stow once IK done
       );
