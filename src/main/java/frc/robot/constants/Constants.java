@@ -290,17 +290,21 @@ public final class Constants
         /* Intake motors speeds */
         public static final double coralIntakeMotorSpeed = 0.8;
         public static final double algaeIntakeMotorSpeed = 0.8;
-        public static final double coralTransferMotorSpeed = 0;
-        public static final double algaeTransferMotorSpeed = 0;
+        public static final double coralEjectMotorSpeed = -0.8;
+        public static final double algaeEjectMotorSpeed = -0.8;
         public static final double climbingIntakeMotorSpeed = 0;
         public static final double standByMotorSpeed = 0;
         public static final double stowedMotorSpeed = 0;
+        public static final double coralTransferMotorSpeed = 0;
+        public static final double algaeTransferMotorSpeed = 0;
 
         /* Top intake arm positions 
          * TODO: Put in Degrees for the arm top and bottom position in this comment
          */
         public static final double topCoralIntakeArmTarget = 0;
         public static final double topAlgaeIntakeArmTarget = 0;
+        public static final double topCoralEjectArmTarget = 0;
+        public static final double topAlgaeEjectArmTarget = 0;
         public static final double topClimbingArmTarget = 0;
         public static final double topStandByArmTarget = 0;
         public static final double topStowedArmTarget = 0;
@@ -310,6 +314,8 @@ public final class Constants
         /* Bottom intake arm positions */
         public static final double bottomCoralIntakeArmTarget = 0;
         public static final double bottomAlgaeIntakeArmTarget = 0;
+        public static final double bottomCoralEjectArmTarget = 0;
+        public static final double bottomAlgaeEjectArmTarget = 0;
         public static final double bottomClimbingArmTarget = 0;
         public static final double bottomStandByArmTarget = 0;
         public static final double bottomStowedArmTarget = 0;
