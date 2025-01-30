@@ -10,6 +10,7 @@ import frc.robot.commands.Diffector.MoveTo;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
+import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -38,6 +39,6 @@ public class ScoreCoral extends SequentialCommandGroup
       diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.reef1Elevation, Constants.Diffector.reef1Angle);
       break;
     }
-    addCommands(diffectorPosCommand, new SetCoralStatus(s_CoralManipulator));
+    addCommands(diffectorPosCommand, new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY));
   }
 }
