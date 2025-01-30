@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
@@ -19,7 +20,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
 
-public class TargetHeading extends Command 
+public class TargetHeadingStation extends Command 
 {
   private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
     .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
@@ -33,6 +34,7 @@ public class TargetHeading extends Command
   private DoubleSupplier brakeSup;
   private BooleanSupplier fencedSup;
   private Translation2d motionXY;
+  private DoubleSupplier ySup;
   private final GeoFenceObject[] fieldGeoFence = FieldUtils.GeoFencing.fieldGeoFence;
   private double robotRadius;
   private double robotSpeed;
@@ -41,10 +43,13 @@ public class TargetHeading extends Command
   private double strafeSpeed;
   private double brakeVal;
   
+  private double robotY;
   private Rotation2d targetHeading;
 
-  public TargetHeading(CommandSwerveDrivetrain s_Swerve, Rotation2d targetHeading, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  public TargetHeadingStation(CommandSwerveDrivetrain s_Swerve, DoubleSupplier ySup, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
+    SmartDashboard.putBoolean("Station Snap Updating", true);
+
     this.s_Swerve = s_Swerve;
     addRequirements(s_Swerve);
 
@@ -52,9 +57,15 @@ public class TargetHeading extends Command
     this.strafeSup = strafeSup;
     this.brakeSup = brakeSup;
     this.fencedSup = fencedSup;
-    this.targetHeading = targetHeading;
+    this.ySup = ySup;
 
     driveRequest.HeadingController.setPID(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
+  }
+
+  @Override 
+  public void initialize()
+  {
+    updateTargetHeading();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -65,6 +76,11 @@ public class TargetHeading extends Command
     strafeSpeed = strafeSup.getAsDouble() * Constants.Swerve.maxSpeed;
     brakeVal = brakeSup.getAsDouble();
     motionXY = new Translation2d(translationSpeed, strafeSpeed);
+
+    if (SmartDashboard.getBoolean("Station Snap Updating", true))
+    {
+      updateTargetHeading();
+    }
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     
@@ -113,5 +129,19 @@ public class TargetHeading extends Command
   public boolean isFinished() 
   {
     return false;
+  }
+
+  private void updateTargetHeading()
+  {
+    robotY = ySup.getAsDouble();
+
+    if (robotY >= 4.026) 
+    {
+      targetHeading = new Rotation2d(Units.degreesToRadians(126));
+    } 
+    else 
+    {
+      targetHeading = new Rotation2d(Units.degreesToRadians(-126));
+    }
   }
 }

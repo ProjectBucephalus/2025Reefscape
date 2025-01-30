@@ -5,25 +5,49 @@
 package frc.robot.commands.CoralManipulator;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.Diffector.MoveTo;
-import frc.robot.constants.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.CoralManipulator;
-import frc.robot.subsystems.Diffector;
+import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class IntakeCoral extends SequentialCommandGroup 
+/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+public class IntakeCoral extends Command 
 {
-  Command diffectorPosCommand;
-  Diffector s_Diffector;
   CoralManipulator s_CoralManipulator;
-  public IntakeCoral(Diffector s_Diffector, CoralManipulator s_CoralManipulator) 
+  private boolean isFinished;
+
+  public IntakeCoral(CoralManipulator s_CoralManipulator) 
   {
-    this.s_Diffector = s_Diffector;
     this.s_CoralManipulator = s_CoralManipulator;
 
-    addCommands(new MoveTo(s_Diffector, Constants.Diffector.coralStationElevation, Constants.Diffector.coralStationAngle), new CoralManipulatorIntake(s_CoralManipulator));
+    addRequirements(s_CoralManipulator);
+  }
+
+    // Called when the command is initially scheduled.
+  @Override
+  public void initialize() 
+  {
+    isFinished = false;
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() 
+  {
+    if (RobotContainer.coral)
+    {
+      s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT);
+      isFinished = true;
+    }
+    else
+    {
+      s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.INTAKE);
+    }
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() 
+  {
+    return isFinished;
   }
 }

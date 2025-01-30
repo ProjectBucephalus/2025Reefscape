@@ -19,14 +19,9 @@ public class ScoreAlgae extends SequentialCommandGroup
 {
   Command diffectorPosCommand;
   Command algaeManipulatorCommand;
-  Diffector s_Diffector;
-  AlgaeManipulator s_AlgaeManipulator;
 
   public ScoreAlgae(boolean toNet, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator) 
   {
-    this.s_Diffector = s_Diffector;
-    this.s_AlgaeManipulator = s_AlgaeManipulator;
-
     if (toNet)
     {
       diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.netElevation, Constants.Diffector.netAngle);

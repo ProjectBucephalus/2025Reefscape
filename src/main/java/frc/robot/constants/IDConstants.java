@@ -41,13 +41,20 @@ public final class IDConstants
     public static final int mTopArmID = 21; //18
     public static final int mBottomArmID = 22; //19
 
+    public static final int coralIntakeDIO1 = 1;
+    public static final int coralIntakeDIO2 = 2;
+    public static final int algaeIntakeDIO  = 3;
+
     /* Climber */
     /* _______ */
-    public static final int climberClawMotorID = 0; //23
-    public static final int climberWinchMotorID = 0; //24
+    public static final int climberWinchMotorID = 0; //23
 
     /* Manipulator */
     /* ___________ */
     public static final int coralMotorID = 0;
     public static final int algaeMotorID = 0;
+    
+    public static final int coralManipulatorDIO1 = 4;
+    public static final int coralManipulatorDIO2 = 5;
+    public static final int algaeManipulatorDIO  = 6;
 }
