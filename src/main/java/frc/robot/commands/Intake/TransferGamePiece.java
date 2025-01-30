@@ -20,16 +20,8 @@ public class TransferGamePiece extends SequentialCommandGroup
   Command diffectorPosCommand;
   Command intakeCommand;
 
-  Diffector s_Diffector;
-  Intake s_Intake;
-  boolean isCoral;
-
   public TransferGamePiece(Diffector s_Diffector, Intake s_Intake, boolean isCoral) 
   {
-    this.isCoral = isCoral;
-    this.s_Intake = s_Intake;
-    this.s_Diffector = s_Diffector;
-
     if (isCoral)
     {
       diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.coralTransferElevation, Constants.Diffector.coralTransferAngle);
