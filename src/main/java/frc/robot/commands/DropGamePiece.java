@@ -33,7 +33,7 @@ public class DropGamePiece extends Command
   @Override
   public void execute() 
   {
-    coral = s_CoralManipulator.getStatus() == CoralManipulatorStatus.HOLDING;
+    coral = s_CoralManipulator.getStatus() == CoralManipulatorStatus.DEFAULT;
     algae = s_AlgaeManipulator.getStatus() == AlgaeManipulatorStatus.HOLDING;
 
     if (coral && algae)

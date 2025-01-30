@@ -5,6 +5,7 @@
 package frc.robot.commands.CoralManipulator;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 
@@ -32,9 +33,9 @@ public class IntakeCoral extends Command
   @Override
   public void execute() 
   {
-    if (!s_CoralManipulator.getCoralBeamBreak1State() || !s_CoralManipulator.getCoralBeamBreak2State())
+    if (RobotContainer.coral)
     {
-      s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.HOLDING);
+      s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT);
       isFinished = true;
     }
     else

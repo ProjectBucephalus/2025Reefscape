@@ -10,14 +10,13 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.util.FieldUtils;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PathfindToReef extends Command 
@@ -43,14 +42,12 @@ public class PathfindToReef extends Command
     addRequirements(s_Swerve);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() 
+  public void initialize() 
   {
     robotPos = posSup.get();
 
-    nearestReefFace = Constants.Auto.reefMidPoints.indexOf(robotPos.nearest(Constants.Auto.reefMidPoints));
-    nearestReefFace = (int)MathUtil.inputModulus(nearestReefFace, 1, 6);
+    nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
     SmartDashboard.putNumber("nearest face", nearestReefFace);
 
     switch (dpadValue) 
@@ -86,14 +83,7 @@ public class PathfindToReef extends Command
 
     SmartDashboard.putString("pathname", pathName.toLowerCase());
 
-    try
-    {
-      path = PathPlannerPath.fromPathFile(pathName);
-    } 
-    catch (Exception e) 
-    {
-      DriverStation.reportError("Path error: " + e.getMessage(), e.getStackTrace());
-    }
+    path = FieldUtils.loadPath(pathName);
     
     pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, constraints);
     pathfindingCommand.until(RobotContainer.driver.povCenter()).schedule();
@@ -103,6 +93,11 @@ public class PathfindToReef extends Command
   @Override
   public boolean isFinished() 
   {
-    return true;
+    return pathfindingCommand.isFinished();
+  }
+
+  public int getNearestReefFace()
+  {
+    return nearestReefFace;
   }
 }

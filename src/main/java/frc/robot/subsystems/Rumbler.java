@@ -43,19 +43,19 @@ public class Rumbler extends SubsystemBase
         switch (queue)
         {
             case DRIVER_RIGHT:
-                if(!(drRequest.contains(requestID)))
+                if(!drRequest.contains(requestID))
                     {return drRequest.add(requestID);}
                 break;
             case DRIVER_LEFT:
-                if(!(dlRequest.contains(requestID)))
+                if(!dlRequest.contains(requestID))
                     {return dlRequest.add(requestID);}
                 break;
             case CODRIVER_RIGHT:
-                if(!(crRequest.contains(requestID)))
+                if(!crRequest.contains(requestID))
                     {return crRequest.add(requestID);}
                 break;
             case CODRIVER_LEFT:
-                if(!(clRequest.contains(requestID)))
+                if(!clRequest.contains(requestID))
                     {return clRequest.add(requestID);}
                 break;
             default:

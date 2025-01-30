@@ -39,6 +39,9 @@ public class RobotContainer
 
     public static HeadingStates headingState = HeadingStates.UNLOCKED;
 
+    public static boolean coral;
+    public static boolean algae;
+
     /* Controllers */
     public static final CommandXboxController driver = new CommandXboxController(0);
     public static final CommandXboxController copilot = new CommandXboxController(1);
@@ -128,7 +131,7 @@ public class RobotContainer
     {
         /* Driver Buttons */
         driver.start().onTrue(Commands.runOnce(() -> s_Swerve.seedFieldCentric()));
-        driver.back().onTrue(new Test("AutoScore", "Auto scored"));
+        driver.back().onTrue(new AutoScoreSequence(s_Diffector, s_AlgaeManipulator, s_CoralManipulator, s_Swerve, () -> s_Swerve.getState().Pose.getTranslation()));
 
         driver.leftTrigger().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_CORAL)));
         driver.leftBumper().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_ALGAE)));
@@ -227,10 +230,10 @@ public class RobotContainer
         copilot.back().onTrue(new Test("climber", "deploy"));
 
         /* scoringCoral */
-        copilot.a().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoral(1, s_Diffector, s_CoralManipulator));
-        copilot.b().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoral(2, s_Diffector, s_CoralManipulator));
-        copilot.x().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoral(3, s_Diffector, s_CoralManipulator));
-        copilot.y().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoral(4, s_Diffector, s_CoralManipulator));
+        copilot.a().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(1, s_Diffector, s_CoralManipulator));
+        copilot.b().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(2, s_Diffector, s_CoralManipulator));
+        copilot.x().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(3, s_Diffector, s_CoralManipulator));
+        copilot.y().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(4, s_Diffector, s_CoralManipulator));
         /* scoringAlgae */
         copilot.a().and(copilot.rightTrigger()).onTrue(new ScoreAlgae(false, s_Diffector, s_AlgaeManipulator));
         copilot.b().and(copilot.rightTrigger()).onTrue(new IntakeAlgaeSequence(true, s_Diffector, s_AlgaeManipulator));

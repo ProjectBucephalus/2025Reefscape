@@ -5,6 +5,7 @@
 package frc.robot.commands.AlgaeManipulator;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 
@@ -12,7 +13,6 @@ import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 public class IntakeAlgae extends Command 
 {
   AlgaeManipulator s_AlgaeManipulator;
-  private boolean isFinished;
 
   public IntakeAlgae(AlgaeManipulator s_AlgaeManipulator) 
   {
@@ -21,32 +21,17 @@ public class IntakeAlgae extends Command
     addRequirements(s_AlgaeManipulator);
   }
 
-    // Called when the command is initially scheduled.
-  @Override
-  public void initialize() 
-  {
-    isFinished = false;
-  }
-
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    if (!s_AlgaeManipulator.getAlgaeBeamBreakState())
-    {
-      s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.HOLDING);
-      isFinished = true;
-    }
-    else
-    {
-      s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE);
-    }
+    s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
   {
-    return isFinished;
+    return RobotContainer.algae;
   }
 }

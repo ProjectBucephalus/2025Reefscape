@@ -9,20 +9,20 @@ public class SetRumble extends Command
     // command framework to call the AddRequest method in the rumbler subsystem.
     
     private Rumbler s_Rumbler;
-    private Sides aside;
+    private Sides side;
     private String request;
 
-    public SetRumble(Rumbler s_Rumbler,Sides aside, String requestID)
+    public SetRumble(Rumbler s_Rumbler, Sides side, String requestID)
     {
         this.s_Rumbler = s_Rumbler;
-        this.aside = aside;
+        this.side = side;
         request = requestID;
     }
 
     @Override
     public void execute()
     {
-        s_Rumbler.addRequest(aside,request);
+        s_Rumbler.addRequest(side, request);
     }
 
     public boolean isFinished()

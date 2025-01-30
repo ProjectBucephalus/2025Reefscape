@@ -8,19 +8,20 @@ public class CancelRumble extends Command
 {
     // command framework to call the remove request method in the rumbler subsystem
     private Rumbler s_Rumbler;
-    private Sides Aside;
+    private Sides side;
     private String Request;
 
-    public CancelRumble(Rumbler s_Rumbler,Sides Aside, String RequestID){
+    public CancelRumble(Rumbler s_Rumbler, Sides side, String RequestID)
+    {
         this.s_Rumbler = s_Rumbler;
-        this.Aside = Aside;
+        this.side = side;
         Request = RequestID;
     }
 
     @Override
     public void execute()
     {
-        s_Rumbler.removeRequest(Aside,Request);
+        s_Rumbler.removeRequest(side, Request);
     }
 
     public boolean isFinished()

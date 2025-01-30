@@ -10,11 +10,11 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.util.FieldUtils;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PathfindToStation extends Command 
@@ -41,9 +41,8 @@ public class PathfindToStation extends Command
     addRequirements(s_Swerve);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() 
+  public void initialize()
   {
     robotY = ySup.getAsDouble();
 
@@ -58,14 +57,7 @@ public class PathfindToStation extends Command
 
     pathName = "c" + stationSide + stationPosition;
 
-    try
-    {
-      path = PathPlannerPath.fromPathFile(pathName);
-    } 
-    catch (Exception e) 
-    {
-        DriverStation.reportError("Path error: " + e.getMessage(), e.getStackTrace());
-    }
+    path = FieldUtils.loadPath(pathName);
 
     pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, constraints);
     pathfindingCommand.until(RobotContainer.driver.povCenter()).schedule();
@@ -75,6 +67,6 @@ public class PathfindToStation extends Command
   @Override
   public boolean isFinished() 
   {
-    return true;
+    return pathfindingCommand.isFinished();
   }
 }

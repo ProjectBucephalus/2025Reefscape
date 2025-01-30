@@ -13,7 +13,7 @@ import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 public class EjectAlgae extends Command 
 {
   AlgaeManipulator s_AlgaeManipulator;
-  private boolean isFinished;
+  private boolean cancel;
 
   public EjectAlgae(AlgaeManipulator s_AlgaeManipulator) 
   {
@@ -26,7 +26,7 @@ public class EjectAlgae extends Command
   @Override
   public void initialize() 
   {
-    isFinished = false;
+    cancel = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -35,19 +35,11 @@ public class EjectAlgae extends Command
   {
     if (Math.abs(RobotContainer.s_Diffector.getArmPos()) < 60) 
     {
-      isFinished = true;
+      cancel = true;
     }
     else
     {
-      if (s_AlgaeManipulator.getAlgaeBeamBreakState())
-      {
-        s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY);
-        isFinished = true;
-      }
-      else
-      {
-        s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET);
-      }
+      s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET);
     }
   }
 
@@ -55,6 +47,6 @@ public class EjectAlgae extends Command
   @Override
   public boolean isFinished() 
   {
-    return isFinished;
+    return RobotContainer.algae || cancel;
   }
 }

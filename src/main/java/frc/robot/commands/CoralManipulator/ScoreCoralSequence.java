@@ -5,18 +5,17 @@
 package frc.robot.commands.CoralManipulator;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.Diffector.MoveTo;
-import frc.robot.constants.Constants;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
+import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class IntakeCoralSequence extends SequentialCommandGroup 
+public class ScoreCoralSequence extends SequentialCommandGroup 
 {
-  public IntakeCoralSequence(Diffector s_Diffector, CoralManipulator s_CoralManipulator) 
+  public ScoreCoralSequence(int level, Diffector s_Diffector, CoralManipulator s_CoralManipulator) 
   {
-    addCommands(new MoveTo(s_Diffector, Constants.Diffector.coralStationElevation, Constants.Diffector.coralStationAngle), new IntakeCoral(s_CoralManipulator));
+    addCommands(new ArmToCoralScorePos(level, s_Diffector), new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY));
   }
 }
