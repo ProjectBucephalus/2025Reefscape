@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -40,15 +41,22 @@ public class CoralManipulator extends SubsystemBase {
   {
     INTAKE,
     DELIVERY,
-    HOLDING
+    DEFAULT
   }
 
   public CoralManipulator() 
   {
+    coralStatus = CoralManipulatorStatus.DEFAULT;
     coralMotor = new TalonFX(Constants.GamePiecesManipulator.coralMotorID);
-    coralBeamBreak1 = new DigitalInput(Constants.GamePiecesManipulator.coralBeamBreak1DigitalInput);
-    coralBeamBreak2 = new DigitalInput(Constants.GamePiecesManipulator.coralBeamBreak2DigitalInput);
+    coralBeamBreak1 = new DigitalInput(Constants.GamePiecesManipulator.coralManipulatorDIO1);
+    coralBeamBreak2 = new DigitalInput(Constants.GamePiecesManipulator.coralManipulatorDIO2);
+    
     coralStatus = CoralManipulatorStatus.INTAKE;
+  }
+
+  public CoralManipulatorStatus getStatus()
+  {
+    return coralStatus;
   }
 
   /**
@@ -61,26 +69,6 @@ public class CoralManipulator extends SubsystemBase {
     coralMotor.set(Speed);
   }
 
-  /**
-   * Gets the 1st beam break current state
-   * 
-   * @return 1st CoralBeamBreak current state, false when object present?
-   */
-  public boolean getCoralBeamBreak1State()
-  {
-    return coralBeamBreak1.get();
-  }
-
-  /**
-   * Gets the 2nd beam break current state
-   * 
-   * @return 2nd CoralBeamBreak current state, false when object present?
-   */
-  public boolean getCoralBeamBreak2State()
-  {
-    return coralBeamBreak2.get();
-  }
-
   public void setCoralManipulatorStatus(CoralManipulatorStatus Status)
   {
     coralStatus = Status;
@@ -89,38 +77,49 @@ public class CoralManipulator extends SubsystemBase {
   @Override
   public void periodic() 
   {
+    RobotContainer.coral = !coralBeamBreak2.get() || !coralBeamBreak1.get();
+
     switch(coralStatus)
     {
       case INTAKE:
         setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);
-        break;
-
-      case DELIVERY:
-        if (Diffector.getArmPos() % 360 <= 180)
+        if (RobotContainer.coral) 
         {
-          setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed);
-        } else
-        {
-          setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed);
+          coralStatus = CoralManipulatorStatus.DEFAULT;
         }
         break;
 
-      case HOLDING:
-        if (getCoralBeamBreak1State() && getCoralBeamBreak2State())
+      case DELIVERY:
+        if (RobotContainer.s_Diffector.getArmPos() % 360 <= 180)
+        {
+          setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed);
+        } 
+        else
+        {
+          setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed);
+        }
+        if (!RobotContainer.coral) 
+        {
+          coralStatus = CoralManipulatorStatus.DEFAULT;
+        }
+        break;
+
+      case DEFAULT:
+        if (coralBeamBreak1.get() && coralBeamBreak2.get())
         {
           setCoralManipulatorSpeed(0);
         } 
-        else if (getCoralBeamBreak1State() && !getCoralBeamBreak2State())
-        {
-          setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
-        } 
-        else if (!getCoralBeamBreak1State() && getCoralBeamBreak2State()) 
-        {
-          setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
-        } 
-        else if (!getCoralBeamBreak1State() && !getCoralBeamBreak1State()) 
+        else if (coralBeamBreak1.get() && !coralBeamBreak2.get())
         {
           setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);
+        } 
+        else if (!coralBeamBreak1.get() && coralBeamBreak2.get()) 
+        {
+          setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);
+        } 
+        else if (!coralBeamBreak1.get() && !coralBeamBreak2.get()) 
+        {
+          coralMotor.setVoltage(Constants.GamePiecesManipulator.coralManipulatorHoldingVoltage);
         }
         break;
     }

@@ -4,7 +4,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 
 public final class CTREConfigs 
 {
-    public static final TalonFXConfiguration climberClawFXConfiguration = new TalonFXConfiguration();
     public static final TalonFXConfiguration climberWinchFXConfiguration = new TalonFXConfiguration();
     public static final TalonFXConfiguration intakeTopArmFXConfig = new TalonFXConfiguration();
     public static final TalonFXConfiguration intakeBottomArmFXConfig = new TalonFXConfiguration();
@@ -68,19 +67,12 @@ public final class CTREConfigs
         /* Intake Arm Ratios */
         intakeTopArmFXConfig.Feedback.SensorToMechanismRatio = Constants.Intake.topArmRatio;
         intakeBottomArmFXConfig.Feedback.SensorToMechanismRatio = Constants.Intake.bottomArmRatio;
-
-        /* Climber Claw Values */
-        climberClawFXConfiguration.Slot0.kP = Constants.Climber.clawKP;
-        climberClawFXConfiguration.Slot0.kI = Constants.Climber.clawKI;
-        climberClawFXConfiguration.Slot0.kD = Constants.Climber.clawKD;
-        climberClawFXConfiguration.MotionMagic.MotionMagicCruiseVelocity = Constants.Climber.clawMotionMagicCruise;
-        climberClawFXConfiguration.MotionMagic.MotionMagicAcceleration = Constants.Climber.clawMotionMagicAccel;
         
         /* Climber Winch Values */
-        climberClawFXConfiguration.Slot0.kP = Constants.Climber.clawKP;
-        climberClawFXConfiguration.Slot0.kI = Constants.Climber.clawKI;
-        climberClawFXConfiguration.Slot0.kD = Constants.Climber.clawKD;
-        climberClawFXConfiguration.MotionMagic.MotionMagicCruiseVelocity = Constants.Climber.clawMotionMagicCruise;
-        climberClawFXConfiguration.MotionMagic.MotionMagicAcceleration = Constants.Climber.clawMotionMagicAccel; 
+        climberWinchFXConfiguration.Slot0.kP = Constants.Climber.winchKP;
+        climberWinchFXConfiguration.Slot0.kI = Constants.Climber.winchKI;
+        climberWinchFXConfiguration.Slot0.kD = Constants.Climber.winchKD;
+        climberWinchFXConfiguration.MotionMagic.MotionMagicCruiseVelocity = Constants.Climber.winchMotionMagicCruise;
+        climberWinchFXConfiguration.MotionMagic.MotionMagicAcceleration = Constants.Climber.winchMotionMagicAccel; 
     }
 }

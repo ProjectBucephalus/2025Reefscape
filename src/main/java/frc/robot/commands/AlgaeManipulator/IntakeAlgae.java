@@ -5,39 +5,33 @@
 package frc.robot.commands.AlgaeManipulator;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.Diffector.MoveTo;
-import frc.robot.constants.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.AlgaeManipulator;
-import frc.robot.subsystems.Diffector;
+import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 
-// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
-// information, see:
-// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class IntakeAlgae extends SequentialCommandGroup 
+/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+public class IntakeAlgae extends Command 
 {
-  Command diffectorPosCommand;
-  Diffector s_Diffector;
   AlgaeManipulator s_AlgaeManipulator;
-  double elevation;
-  double angle;
-  
-  public IntakeAlgae(boolean level2, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator) 
+
+  public IntakeAlgae(AlgaeManipulator s_AlgaeManipulator) 
   {
-    this.s_Diffector = s_Diffector;
     this.s_AlgaeManipulator = s_AlgaeManipulator;
 
-    if (level2)
-    {
-      elevation = Constants.Diffector.algae2Elevation;
-      angle = Constants.Diffector.algae2Angel;
-    }
-    else
-    {
-      elevation = Constants.Diffector.algae1Elevation;
-      angle = Constants.Diffector.algae1Angel;
-    }
+    addRequirements(s_AlgaeManipulator);
+  }
 
-    addCommands(new MoveTo(s_Diffector, elevation, angle), new AlgaeManipulatorIntake(s_AlgaeManipulator));
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() 
+  {
+    s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE);
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() 
+  {
+    return RobotContainer.algae;
   }
 }

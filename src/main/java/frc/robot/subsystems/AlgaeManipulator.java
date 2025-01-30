@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -23,11 +24,10 @@ public class AlgaeManipulator extends SubsystemBase {
   private TalonFX algaeMotor;
 
   /* Declaration of the beam break sensor */
-  private DigitalInput algaeBeamBreak;
+  private DigitalInput algaeManipBeamBreak;
 
   /* Declaration of the enum variable */
   private AlgaeManipulatorStatus algaeStatus;
-
 
   /**
    * Enum representing the status this manipulator is in
@@ -46,8 +46,9 @@ public class AlgaeManipulator extends SubsystemBase {
 
   public AlgaeManipulator() 
   {
+    algaeStatus = AlgaeManipulatorStatus.EMPTY;
     algaeMotor = new TalonFX(Constants.GamePiecesManipulator.algaeMotorID);
-    algaeBeamBreak = new DigitalInput(Constants.GamePiecesManipulator.algaeBeamBreakDigitalInput);
+    algaeManipBeamBreak = new DigitalInput(Constants.GamePiecesManipulator.algaeManipulatorDIO);
     algaeStatus = AlgaeManipulatorStatus.EMPTY;
   }
 
@@ -61,54 +62,64 @@ public class AlgaeManipulator extends SubsystemBase {
     algaeMotor.set(Speed);
   }
 
-  /**
-   * Gets the beam break current state
-   * 
-   * @return AlgaeBeamBreak current state, false when object present
-   */
-  public boolean getAlgaeBeamBreakState()
-  {
-    return algaeBeamBreak.get();
-  }
-  
   public void setAlgaeManipulatorStatus(AlgaeManipulatorStatus status)
   {
     algaeStatus = status;
   }
 
+  public AlgaeManipulatorStatus getStatus()
+  {
+    return algaeStatus;
+  }
 
   @Override
   public void periodic() 
   {
+    RobotContainer.algae = !algaeManipBeamBreak.get();
+
     switch(algaeStatus)
     {
       case INTAKE:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorIntakeSpeed);
-        if (getAlgaeBeamBreakState()) {
+        if (RobotContainer.algae) 
+        {
           algaeStatus = AlgaeManipulatorStatus.HOLDING;
         }
         break;
 
       case HOLDING:
-        if (getAlgaeBeamBreakState()) 
+        if (RobotContainer.algae) 
         {
           algaeMotor.setVoltage(Constants.GamePiecesManipulator.algaeManipulatorHoldingVoltage);      
-        } else
+        } 
+        else
         {
-          setAlgaeManipulatorSpeed(0);
+          algaeStatus = AlgaeManipulatorStatus.EMPTY;
         }
         break;
 
       case NET:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);
+        if (!RobotContainer.algae) 
+        {
+          algaeStatus = AlgaeManipulatorStatus.EMPTY;
+        }
         break;
 
       case PROCESSOR:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorProcessorSpeed);
+        if (!RobotContainer.algae) 
+        {
+          algaeStatus = AlgaeManipulatorStatus.EMPTY;
+        }
         break;
 
       case EMPTY:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorEmptySpeed);
+        if (RobotContainer.algae) 
+        {
+          algaeStatus = AlgaeManipulatorStatus.HOLDING;
+        }
         break;
     }
   }
