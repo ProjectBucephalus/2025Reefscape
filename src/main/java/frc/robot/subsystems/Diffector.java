@@ -125,9 +125,21 @@ public class Diffector extends SubsystemBase
   private Translation2d railPortLateral;
   private Translation2d railStbdMedial;
   private Translation2d railStbdLateral;
+  private double railHeight;
+  private double railLateral;
+  private double railMedial;
   private double deckHeight;
   private double harpoonHeight;
   private double harpoonAngle;
+  
+  private double coralArmLength;
+  private double coralArmAngle;
+  private double algaeArmLength;
+  private double algaeArmAngle;
+  private double algaeWheelLength;
+  private double algaeClawLength;
+  private double algaeInnerLength;
+  private double algaeInnerAngle;
 
   private Translation2d coralA, coralC;
   private Translation2d algaeOuterA, algaeOuterC;
@@ -139,24 +151,37 @@ public class Diffector extends SubsystemBase
 
   private void armConstructor()
   {
-    railStbdMedial  = new Translation2d(0.27,0.23);
-    railStbdLateral = new Translation2d(0.38,0.23);
-    railPortMedial  = new Translation2d(-0.27,0.23);
-    railPortLateral = new Translation2d(-0.38,0.23);
-    deckHeight = 0.18;
+    railHeight    = 0.23;
+    railLateral   = 0.38;
+    railMedial    = 0.27;
+    deckHeight    = 0.18;
     harpoonHeight = 0.1;
-    harpoonAngle = 17;
+    harpoonAngle  = 17;
 
-    coralA = new Translation2d(0,0.5).rotateBy(Units.radiansFromDegrees(32));
-    coralC = new Translation2d(0,).rotateBy(Units.radiansFromDegrees(-32));
-    algaeOuterA = new Translation2d(0,0.6).rotateBy(Units.radiansFromDegrees(180+30));
-    algaeOuterC = new Translation2d(0,0.6).rotateBy(Units.radiansFromDegrees(180-30));
-    algaeInnerA = new Translation2d(0,0.3).rotateBy(Units.radiansFromDegrees(180+54));
-    algaeInnerC = new Translation2d(0,0.3).rotateBy(Units.radiansFromDegrees(180-54));
-    algaeIntersectA = new Translation2d(0,0.48).rotateBy(Units.radiansFromDegrees(180+30));
-    algaeIntersectC = new Translation2d(0,0.48).rotateBy(Units.radiansFromDegrees(180-30));
-    algaeWheelA = new Translation2d(0,0.54).rotateBy(Units.radiansFromDegrees(180+30));
-    algaeWheelC = new Translation2d(0,0.54).rotateBy(Units.radiansFromDegrees(180-30));
+    railStbdMedial  = new Translation2d(railMedial,railHeight);
+    railStbdLateral = new Translation2d(railLateral,railHeight);
+    railPortMedial  = new Translation2d(-railMedial,railHeight);
+    railPortLateral = new Translation2d(-railLateral,railHeight);
+
+    coralArmLength   = 0.5;
+    coralArmAngle    = 64/2;
+    algaeArmLength   = 0.6;
+    algaeArmAngle    = 60/2;
+    algaeWheelLength = 0.54;
+    algaeClawLength  = 0.48;
+    algaeInnerLength = 0.3;
+    algaeInnerAngle  = 108/2;
+
+    coralA      = new Translation2d(0,coralArmLength)  .rotateBy(Units.radiansFromDegrees(coralArmAngle));
+    coralC      = new Translation2d(0,coralArmLength)  .rotateBy(Units.radiansFromDegrees(-coralArmAngle));
+    algaeOuterA = new Translation2d(0,algaeArmLength)  .rotateBy(Units.radiansFromDegrees(180+algaeArmAngle));
+    algaeOuterC = new Translation2d(0,algaeArmLength)  .rotateBy(Units.radiansFromDegrees(180-algaeArmAngle));
+    algaeInnerA = new Translation2d(0,algaeInnerLength).rotateBy(Units.radiansFromDegrees(180+algaeInnerAngle));
+    algaeInnerC = new Translation2d(0,algaeInnerLength).rotateBy(Units.radiansFromDegrees(180-algaeInnerAngle));
+    algaeClawA  = new Translation2d(0,algaeClawLength) .rotateBy(Units.radiansFromDegrees(180+algaeArmAngle));
+    algaeClawC  = new Translation2d(0,algaeClawLength) .rotateBy(Units.radiansFromDegrees(180-algaeArmAngle));
+    algaeWheelA = new Translation2d(0,algaeWheelLength).rotateBy(Units.radiansFromDegrees(180+algaeArmAngle));
+    algaeWheelC = new Translation2d(0,algaeWheelLength).rotateBy(Units.radiansFromDegrees(180-algaeArmAngle));
 
     armGeometry =
     {
@@ -166,8 +191,8 @@ public class Diffector extends SubsystemBase
       algaeOuterC,
       algaeInnerA,
       algaeInnerC,
-      algaeIntersectA,
-      algaeIntersectC,
+      algaeClawA,
+      algaeClawC,
       algaeWheelA,
       algaeWheelC
     }
@@ -185,133 +210,122 @@ public class Diffector extends SubsystemBase
     {
       armGeometryRotated[i] = armGeometry[i].rotateBy(Units.radiansFromDegrees(rotation));
     }
-
-    //
-    //  Note: if height constantly above rail+algaeL+harpoonL, don't worry
-    //  Note adendum: dealing with field objects may change this...
-    //
     //  Min height: 0.444 -> used for climb
     //  Max height: 1.709 -> used for net scoring
     //  Stow height: 0.574
-    //
-    //  Coral manip:
+
+    if(angle > 90 && angle < 270) // Coral arm down:
+    { 
+    //  Coral manipulator:
     //    64 degree arc, centred on 0
     //    0.5m radius
-    if(angle > 90 || angle < 270) // Coral arm down
-    {
-    //    Lateral:
-    //      Keep lower point above rail
-    //  
-    //    Medial:
-    //      Keep lower point above deck
-    //      If points are either side of mast, keep above deck+coralL  
-      if (armGeometryRotated[0].getX() >= 0 && armGeometryRotated[1].getX() <= 0) 
-        {return armGeometryRotated[0].getNorm() + deckHeight;}
 
-      if (armGeometryRotated[0].getX() < 0)
+      if (armGeometryRotated[0].getX() >= 0 && armGeometryRotated[1].getX() <= 0) // Coral arm extends to either side of the mast:
+        {return coralArmLength + deckHeight;} // Keep carriage above the deck by the length of the arm
+
+      if (armGeometryRotated[0].getX() < 0) // Anticlockwise Coral limit is Starbord/Clockwise of the mast:
       {
-        if (armGeometryRotated[0].getX() <= railStbdMedial.getX()) 
-          {return (-armGeometryRotated[0].getY()) + railStbdMedial.getY();}
-        else 
+        if (armGeometryRotated[0].getX() <= -railMedial) // Anticlockwise Coral limit is beyond the Medial rail limit:
+          {return (-armGeometryRotated[0].getY()) + railHeight;} // Keep the Anticlockwise Coral limit above the rail
+        else // Antilockwise Coral limit is within the Medial rail limit:
         {
           return Math.max
           (
+            // Keep the Anticlockwise Coral limit above the deck
             (-armGeometryRotated[0].getY()) + deckHeight,
-            Math.sqrt(Math.pow(armGeometryRotated[0].getNorm(),2) - Math.pow(railStbdMedial.getX(),2)) + railStbdMedial.getY()
+            // and keep the carriage away from the rail by the length of the arm
+            Math.sqrt(Math.pow(coralArmLength,2) - Math.pow(railStbdMedial,2)) + railHeight 
           );
         }
       }
-      else 
+      else // Clockwise Coral limit is Port/Anticlockwise of the mast:
       {
-        if (armGeometryRotated[1].getX() >= railPortMedial.getX()) 
-          {return (-armGeometryRotated[1].getY()) + railPortMedial.getY();}
-        else 
+        if (armGeometryRotated[1].getX() >= railMedial) // Clockwise Coral limit is beyond the Medial rail limit:
+          {return (-armGeometryRotated[1].getY()) + railHeight;} // Keep the Clockwise Coral limit above the rail
+        else // Clockwise Coral limit is within the Medial rail limit:
         {
           return Math.max
           (
+            // Keep the Clockwise Coral limit above the deck
             (-armGeometryRotated[1].getY()) + deckHeight,
-            Math.sqrt(Math.pow(armGeometryRotated[1].getNorm(),2) - Math.pow(railPortMedial.getX(),2)) + railPortMedial.getY()
+            // and keep the carriage away from the rail by the length of the arm
+            Math.sqrt(Math.pow(coralArmLength,2) - Math.pow(railStbdMedial,2)) + railHeight 
           );
         }
       }
     }
-    //  Algae manip:
-    //    60 degree arc, centred on 180
-    //    0.6m radius
-    //
-    //    107 degree arc, centred on 180
-    //    0.3m radius, then projected paralel to arm
-    else // Algae arm down
+
+    else // Algae arm down:
     {
-    //    Lateral:
-    //      90:
-    //        keep inner above rail
-    //      intercept beyond rail:
-    //        keep intercept above rail
-    //      outer point beyond rail:
-    //        keep midpoint above rail
-    //      outer within rail:
-    //        keep outer point above rail
-    //      
-    //    Medial: (outer point within inner rail)
-    //      Keep distance to inner rail above algaeL
-    //      Keep lower point above deck
-    //      If points either side of mast, keep above deck+algaeL
-    //      If algae held:
-    //        17 degrees either side of mast, increase deck height by 0.1
-    //
-      if ((angle <= harpoonAngle || angle >= 360 - harpoonAngle) && algae)
-        {return armGeometryRotated[2].getNorm() + deckHeight + harpoonHeight;}
+    //  Algae manipulator:
+    //    Primary span:
+    //      60 degree arc, centred on 180
+    //      0.6m radius
+    //    Claw:
+    //      Inner span:
+    //        107 degree arc, centred on 180
+    //        0.3m radius, then projected paralel to arm
+    //      Outerpoint of wheels halfway between the limits of the primary span, and the point where the Claw meets the primary span
+    //  Harpoon:
+    //    Extends from the deck behind the plane of rotation, such that if algae is held,
+    //    the minimum safe height 17 degrees either side of mast is increased by 0.1m
+
+      if ((angle <= harpoonAngle || angle >= 360 - harpoonAngle) && RobotContainer.algae) // Holding algae & angle is within range of the harpoon:
+        {return algaeArmLength + deckHeight + harpoonHeight;} // Keep algae above the harpoon
       
-      if (armGeometryRotated[2].getX() >= 0 && armGeometryRotated[3].getX() <= 0)
-        {return armGeometryRotated[2].getNorm() + deckHeight;}
+      if (armGeometryRotated[2].getX() >= 0 && armGeometryRotated[3].getX() <= 0) // Algae arm extends to either side of the mast:
+        {return algaeArmLength + deckHeight;} // Keep carriage above the deck by the length of the arm
       
-      if (armGeometryRotated[2].getX() < 0)
+      if (armGeometryRotated[2].getX() < 0) // Anticlockwise Algae limit is Starbord/Clockwise of the mast:
       {
-        if (armGeometryRotated[2].getX() >= railStbdMedial.getX())
+        if (armGeometryRotated[2].getX() >= railMedial) // Anticlockwise Algae limit is within the rail:
         {
           {
             return Math.max
             (
+              // Keep the Anticlockwise Algae limit above the deck
               (-armGeometryRotated[2].getY()) + deckHeight,
-              Math.sqrt(Math.pow(armGeometryRotated[2].getNorm(),2) - Math.pow(railStbdMedial.getX(),2)) + railStbdMedial.getY()
+              // and keep the carriage away from the rail by the length of the arm
+              Math.sqrt(Math.pow(algaeArmLength,2) - Math.pow(railMedial,2)) + railHeight
             );
           }
         }
-        else if (armGeometryRotated[6].getX() <= railStbdLateral.getX())
+        else if (armGeometryRotated[6].getX() <= -railLateral) // The Anticlockwise wheel is beyond the rail
         {
           return 
             Math.max(-armGeometryRotated[6].getY(), -armGeometryRotated[4].getY()) 
-            + railStbdLateral.getY();
+            + railHeight; // Keep inner and outer ends of the claw above the rail
         }
-        else if (armGeometryRotated[2].getX() <= railStbdLateral.getX())
-          {return -armGeometryRotated[8].getY() + railStbdLateral.getY();}
-        else 
-          {return -armGeometryRotated[2].getY() + railStbdLateral.getY();}
+        else if (armGeometryRotated[2].getX() <= -railLateral) // Anticlockwise limit is beyond the rail:
+          {return -armGeometryRotated[8].getY() + railHeight;} // Keep the Anticlockwise wheel above the rail
+        else                                                   // Anticlockwise limit is within the rail:
+          {return -armGeometryRotated[2].getY() + railHeight;} // Keep the Anticlockwise limit above the rail
       }
       
-      else
+      else // Clockwise Algae limit is Port/Anticlockwise of the mast:
       {
-        if (armGeometryRotated[3].getX() <= railPortMedial.getX())
+        if (armGeometryRotated[3].getX() <= railMedial) // Clockwise Algae limit is within the rail:
         {
           {
             return Math.max
             (
+              // Keep the Clockwise Algae limit above the deck
               (-armGeometryRotated[3].getY()) + deckHeight,
-              Math.sqrt(Math.pow(armGeometryRotated[3].getNorm(),2) - Math.pow(railPortMedial.getX(),2)) + railPortMedial.getY()
+              // and keep the carriage away from the rail by the length of the arm
+              Math.sqrt(Math.pow(algaeArmLength,2) - Math.pow(railMedial,2)) + railHeight
             );
           }
         }
-        else if (armGeometryRotated[7].getX() >= railPortLateral.getX())
+        else if (armGeometryRotated[7].getX() >= railLateral) // The Clockwise wheel is beyond the rail:
         {
           return 
             Math.max(-armGeometryRotated[7].getY(), -armGeometryRotated[5].getY()) 
-            + railPortLateral.getY();
+            + railHeight; // Keep inner and outer ends of the claw above the rail
         }
-        else if (armGeometryRotated[3].getX() >= railPortLateral.getX())
-          {return -armGeometryRotated[9].getY() + railPortLateral.getY();}
-        else 
-          {return -armGeometryRotated[3].getY() + railPortLateral.getY();}
+        else if (armGeometryRotated[3].getX() >= railLateral)  // Clockwise limit is beyond the rail:
+          {return -armGeometryRotated[9].getY() + railHeight;} // Keep the Clockwise wheel above the rail
+        else                                                   // Clockwise limit is within the rail:
+          {return -armGeometryRotated[3].getY() + railHeight;} // Keep the Clockwise limit above the rail
       }
     }
   }
