@@ -18,13 +18,9 @@ import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 public class ScoreCoral extends SequentialCommandGroup 
 {
   Command diffectorPosCommand;
-  Diffector s_Diffector;
-  CoralManipulator s_CoralManipulator;
+
   public ScoreCoral(int level, Diffector s_Diffector, CoralManipulator s_CoralManipulator) 
   {
-    this.s_Diffector = s_Diffector;
-    this.s_CoralManipulator = s_CoralManipulator;
-
     switch(level)
     {
       case 1:

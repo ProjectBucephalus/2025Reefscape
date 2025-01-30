@@ -17,16 +17,11 @@ import frc.robot.subsystems.Diffector;
 public class IntakeAlgaeSequence extends SequentialCommandGroup 
 {
   Command diffectorPosCommand;
-  Diffector s_Diffector;
-  AlgaeManipulator s_AlgaeManipulator;
   double elevation;
   double angle;
   
   public IntakeAlgaeSequence(boolean level2, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator) 
   {
-    this.s_Diffector = s_Diffector;
-    this.s_AlgaeManipulator = s_AlgaeManipulator;
-
     if (level2)
     {
       elevation = Constants.Diffector.algae2Elevation;

@@ -139,7 +139,7 @@ public class TargetHeadingReef extends Command
     robotPos = posSup.get();
 
     nearestReefFace = Constants.Auto.reefMidPoints.indexOf(robotPos.nearest(Constants.Auto.reefMidPoints));
-    nearestReefFace = (int)MathUtil.inputModulus(nearestReefFace, 1, 6);
+    //nearestReefFace = (int)MathUtil.inputModulus(nearestReefFace, 1, 6);
     SmartDashboard.putNumber("nearest face", nearestReefFace);
 
     switch (nearestReefFace) 
@@ -164,7 +164,7 @@ public class TargetHeadingReef extends Command
         targetHeading = new Rotation2d(Units.degreesToRadians(-120));
         break;
 
-      case 6:
+      case 0:
         targetHeading = new Rotation2d(Units.degreesToRadians(-60));
         break;
       default:
