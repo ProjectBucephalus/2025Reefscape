@@ -5,16 +5,17 @@
 package frc.robot.commands.CoralManipulator;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class CoralManipulatorIntake extends Command 
+public class EjectCoral extends Command 
 {
   CoralManipulator s_CoralManipulator;
   private boolean isFinished;
 
-  public CoralManipulatorIntake(CoralManipulator s_CoralManipulator) 
+  public EjectCoral(CoralManipulator s_CoralManipulator) 
   {
     this.s_CoralManipulator = s_CoralManipulator;
 
@@ -32,14 +33,14 @@ public class CoralManipulatorIntake extends Command
   @Override
   public void execute() 
   {
-    if (!s_CoralManipulator.getCoralBeamBreak1State() || !s_CoralManipulator.getCoralBeamBreak2State())
+    if (!RobotContainer.coral)
     {
-      s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.HOLDING);
+      s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT);
       isFinished = true;
     }
     else
     {
-      s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.INTAKE);
+      s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DELIVERY);
     }
   }
 

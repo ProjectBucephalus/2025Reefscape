@@ -5,6 +5,7 @@ import java.util.List;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 
 public class GeoFenceObject
 {
@@ -152,10 +153,10 @@ public class GeoFenceObject
         // The start of the first line and end of the last line are separate enteries to simplify construction
         Translation2d[] polygonPoints = new Translation2d[2*sides+1];
 
-        polygonPoints[0] = new Translation2d(X,Y + radius).rotateAround(centre, new Rotation2d(Math.toRadians(theta)));
+        polygonPoints[0] = new Translation2d(X,Y + radius).rotateAround(centre, new Rotation2d(Units.degreesToRadians(theta)));
 
         // Line endpoints and reference points are equidistant around a circle
-        Rotation2d rotationBetweenPoints = new Rotation2d(Math.toRadians(360/(2*sides)));
+        Rotation2d rotationBetweenPoints = new Rotation2d(Units.degreesToRadians(360/(2*sides)));
         for (int i = 1; i < polygonPoints.length; i++)
         {
             polygonPoints[i] = polygonPoints[i-1].rotateAround(centre, rotationBetweenPoints);
@@ -252,6 +253,23 @@ public class GeoFenceObject
         double motionY   = ((motionN * distanceY) + (motionT * distanceX)) / distanceN;
 
         return new Translation2d(motionX, motionY);
+    }
+
+    /**
+     * If the object is a polygon, the centrepoints of each face are returned as a list
+     * The centre of the object (polygon or otherwise) is added to the end of the list
+     * @return ArrayList with the Translation2d of the centre of each line/object
+     */
+    public ArrayList<Translation2d> getMidPoints()
+    {
+        ArrayList<Translation2d> centresList = new ArrayList<Translation2d>();
+        if (objectType == ObjectTypes.polygon) 
+        {
+            for(int i = 0; i < edgeLines.size(); i++)
+                {centresList.add(edgeLines.get(i).centre);}
+        }
+        centresList.add(centre);
+        return centresList;
     }
 
     /**

@@ -5,16 +5,17 @@
 package frc.robot.commands.AlgaeManipulator;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AlgaeManipulatorIntake extends Command 
+public class EjectAlgae extends Command 
 {
   AlgaeManipulator s_AlgaeManipulator;
-  private boolean isFinished;
+  private boolean cancel;
 
-  public AlgaeManipulatorIntake(AlgaeManipulator s_AlgaeManipulator) 
+  public EjectAlgae(AlgaeManipulator s_AlgaeManipulator) 
   {
     this.s_AlgaeManipulator = s_AlgaeManipulator;
 
@@ -25,21 +26,20 @@ public class AlgaeManipulatorIntake extends Command
   @Override
   public void initialize() 
   {
-    isFinished = false;
+    cancel = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    if (!s_AlgaeManipulator.getAlgaeBeamBreakState())
+    if (Math.abs(RobotContainer.s_Diffector.getArmPos()) < 60) 
     {
-      s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.HOLDING);
-      isFinished = true;
+      cancel = true;
     }
     else
     {
-      s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE);
+      s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET);
     }
   }
 
@@ -47,6 +47,6 @@ public class AlgaeManipulatorIntake extends Command
   @Override
   public boolean isFinished() 
   {
-    return isFinished;
+    return RobotContainer.algae || cancel;
   }
 }
