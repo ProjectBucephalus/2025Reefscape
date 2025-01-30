@@ -12,35 +12,38 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 
 public class Diffector extends SubsystemBase 
 {
   public enum CargoStates{EMPTY, ONE_ITEM, TWO_ITEM}
+  private CargoStates cargoState;
+
+  private final MotionMagicVoltage motionMagicRequester;
+  private final double rotationRatio;
+  private final double travelRatio;
+  private final TalonFXConfiguration motorConfig;
+  private final double maxAbsPos = Constants.Diffector.maxAbsPos;
+  private final double turnBackThreshold = Constants.Diffector.turnBackThreshold;
+  private final double stowThreshold = Constants.Diffector.angleTolerance;
+  
   /* Name is effect of motor when running clockwise/positive (e.g. elevator Up, arm Clockwise) */
   /** motor L in kirby's docs */
-  private static TalonFX m_diffectorUC;
+  private TalonFX m_diffectorUC;
   /** motor R in kirby's docs */
-  private static TalonFX m_diffectorDC;
-  private final MotionMagicVoltage motionMagicRequester;
+  private TalonFX m_diffectorDC;
+
+  private double[] motorTargets = new double[2];
+
   private double targetElevation;
   private double targetAngle;
-  private static double rotationRatio;
-  private static double travelRatio;
-  private double[] motorTargets = new double[2];
-  private TalonFXConfiguration motorConfig;
-  private CargoStates cargoState;
-  private boolean coral;
-  private boolean algae;
-  private double maxAbsPos = Constants.Diffector.maxAbsPos;
-  private double turnBackThreshold = Constants.Diffector.turnBackThreshold;
-  private double stowThreshold = Constants.Diffector.angleTolerance;
+
   private double offset;
   private double altOffset;
   private double armPos;
   private DutyCycleEncoder encoder = new DutyCycleEncoder(0);
-  
   
   /** Creates a new Diffector. */
   public Diffector() 
@@ -87,7 +90,7 @@ public class Diffector extends SubsystemBase
    * Calculates elevator height based on motor positions
    * @return Elevator height in m
    */
-  public static double getElevatorPos()
+  public double getElevatorPos()
   {
     return ((m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorDC.getPosition().getValueAsDouble()) * travelRatio);
   }
@@ -142,7 +145,6 @@ public class Diffector extends SubsystemBase
     targetAngle %= 360;
     offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
 
-
     if (armPos + offset > maxAbsPos)
         {targetAngle = (armPos + offset - 360);}
 
@@ -161,7 +163,6 @@ public class Diffector extends SubsystemBase
   {
     targetAngle %= 360;
     offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -360, 0);
-
 
     if (armPos + offset > maxAbsPos)
         {targetAngle = (armPos + offset - 360);}
@@ -182,7 +183,6 @@ public class Diffector extends SubsystemBase
     targetAngle %= 360;
     offset = MathUtil.inputModulus(targetAngle - (armPos % 360), 0, 360);
 
-
     if (armPos + offset > maxAbsPos)
         {targetAngle = (armPos + offset - 360);}
 
@@ -193,34 +193,34 @@ public class Diffector extends SubsystemBase
         {targetAngle = (armPos + offset);}
   }
 
-    /**
-     * Sets the Diffector arm to rotate the safest path to the target angle, with protection against over-rotation. 
-     * Below a threshold will go shortest path, otherwise will minimise total rotations
-     * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
-     */
-    public void goToAngle(double targetAngle)
+  /**
+   * Sets the Diffector arm to rotate the safest path to the target angle, with protection against over-rotation. 
+   * Below a threshold will go shortest path, otherwise will minimise total rotations
+   * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
+   */
+  public void goToAngle(double targetAngle)
+  {
+    targetAngle %= 360;
+    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
+
+    if (Math.abs(offset) >= turnBackThreshold)
     {
-      targetAngle %= 360;
-      offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
+      altOffset = offset - Math.copySign(360, offset);
 
-      if (Math.abs(offset) >= turnBackThreshold)
-      {
-        altOffset = offset - Math.copySign(360, offset);
-
-        if (Math.abs(armPos + offset) > Math.abs(armPos + altOffset))
-            {targetAngle = (armPos + altOffset);}
-        
-        else 
-            {targetAngle = (armPos + offset);}
-      }
-      else if (armPos + offset > maxAbsPos)
-          {targetAngle = (armPos + offset - 360);}
-
-      else if (armPos + offset < -maxAbsPos)
-          {targetAngle = (armPos + offset + 360);}
-
-      else
+      if (Math.abs(armPos + offset) > Math.abs(armPos + altOffset))
+          {targetAngle = (armPos + altOffset);}
+      
+      else 
           {targetAngle = (armPos + offset);}
+    }
+    else if (armPos + offset > maxAbsPos)
+        {targetAngle = (armPos + offset - 360);}
+
+    else if (armPos + offset < -maxAbsPos)
+        {targetAngle = (armPos + offset + 360);}
+
+    else
+        {targetAngle = (armPos + offset);}
   }
 
   public double getArmTarget()
@@ -231,40 +231,6 @@ public class Diffector extends SubsystemBase
 
   public double getElevatorTarget()
     {return targetElevation;}
-
-  public void setCargoState(CargoStates newCargoState)
-    {cargoState = newCargoState;}
-
-  public CargoStates getCargoState()
-    {return cargoState;}
-
-  public void setCoral(boolean coralState)
-  {
-    coral = coralState;
-    updateCargoState();
-  }
-
-  public void setAlgae(boolean algaeState)
-  {
-    algae = algaeState;
-    updateCargoState();
-  }
-
-  private void updateCargoState()
-  {
-    if(coral && algae)
-    {
-      setCargoState(CargoStates.TWO_ITEM);
-    }
-    else if(coral ^ algae)
-    {
-      setCargoState(CargoStates.ONE_ITEM);
-    }
-    else if(!coral && !algae)
-    {
-      setCargoState(CargoStates.EMPTY);
-    }
-  }
 
   private int getSlot()
   {
@@ -280,6 +246,19 @@ public class Diffector extends SubsystemBase
   @Override
   public void periodic() 
   { 
+    if(RobotContainer.coral && RobotContainer.algae)
+    {
+      cargoState= CargoStates.TWO_ITEM;
+    }
+    else if(RobotContainer.coral ^ RobotContainer.algae)
+    {
+      cargoState= CargoStates.ONE_ITEM;
+    }
+    else if(!RobotContainer.coral && !RobotContainer.algae)
+    {
+      cargoState= CargoStates.EMPTY;
+    }
+
     calculateMotorTargets();
 
     m_diffectorUC.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(getSlot()));

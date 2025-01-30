@@ -31,7 +31,7 @@ public class Intake extends SubsystemBase {
 
   private DigitalInput coralLimitSwitch1;
   private DigitalInput coralLimitSwitch2;
-  private DigitalInput algaeBeamBreak;
+  private DigitalInput algaeIntakeBeamBreak;
 
   /* Declarations of all the motion magic variables */
   private final MotionMagicVoltage motionMagic;
@@ -71,7 +71,7 @@ public class Intake extends SubsystemBase {
 
     coralLimitSwitch1 = new DigitalInput(Constants.Intake.coralIntakeDIO1);
     coralLimitSwitch2 = new DigitalInput(Constants.Intake.coralIntakeDIO2);
-    algaeBeamBreak    = new DigitalInput(Constants.Intake.algaeIntakeDIO);
+    algaeIntakeBeamBreak    = new DigitalInput(Constants.Intake.algaeIntakeDIO);
   }
 
   public double getTopArmAngle()
@@ -131,7 +131,7 @@ public class Intake extends SubsystemBase {
     {return coralLimitSwitch2.get();}
 
   public boolean getAlgaeBeamBreakState()
-    {return algaeBeamBreak.get();}
+    {return algaeIntakeBeamBreak.get();}
 
   /**
    * Sets the speeds to the intake and position to the arms
