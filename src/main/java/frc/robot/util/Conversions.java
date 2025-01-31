@@ -1,7 +1,27 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.MathUtil;
+
+/**
+ * Wraps int value over [min..max]
+ */
 public class Conversions 
 {
+    public static int wrap(int value, int min, int max)
+    {
+        if(value < min)
+        {
+            value += ((max-min) + 1);
+            value = wrap(value, min, max);
+        }
+        else if(value > max)
+        {
+            value -= ((max-min) + 1);
+            value = wrap(value,min,max);
+        }
+        return  value;
+    }
+
     /**
      * Clamps value [-1..1]
      * @param value Value to clamp

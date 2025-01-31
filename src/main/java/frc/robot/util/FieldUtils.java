@@ -3,7 +3,6 @@ import java.util.Optional;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -42,7 +41,7 @@ public class FieldUtils
         int nearestReefFace;
         
         nearestReefFace = Constants.Auto.reefMidPoints.indexOf(robotPos.nearest(Constants.Auto.reefMidPoints));
-        nearestReefFace = (int)MathUtil.inputModulus(nearestReefFace, 1, 6);
+        nearestReefFace = Conversions.wrap(nearestReefFace, 1, 6);
         
         return nearestReefFace;
     }
