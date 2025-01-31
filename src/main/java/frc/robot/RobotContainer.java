@@ -232,7 +232,7 @@ public class RobotContainer
             );
 
         /* Copilot Buttons */
-        copilot.start().and(copilot.back()).onTrue(new GoToClimbConfig(s_Diffector));
+        copilot.start().and(copilot.back()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.coralTransferElevation, Constants.Diffector.coralTransferAngle));
         copilot.back().onTrue(new Test("climber", "deploy"));
 
         /* scoringCoral */
@@ -248,9 +248,9 @@ public class RobotContainer
 
         /* transferPosition */
         copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE));
-        copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new GoToAlgaeHandoverConfig(s_Diffector));
+        copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.algaeTransferElevation, Constants.Diffector.algaeTransferAngle));
         copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE));
-        copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new GoToCoralHandoverConfig(s_Diffector));
+        copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.coralTransferElevation, Constants.Diffector.coralTransferAngle));
 
         /* deploy/TransferGamePieces */
         copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new IntakeAndStow(6, s_Intake));
