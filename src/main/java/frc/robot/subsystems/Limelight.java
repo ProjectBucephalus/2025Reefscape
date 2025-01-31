@@ -9,8 +9,9 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
-//import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
+import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
@@ -26,6 +27,8 @@ public class Limelight extends SubsystemBase
   private SwerveDriveState driveState;
   private double headingDeg;
   private double omegaRps;
+  private double objectX;
+  private double objectY;
 
   private final String limelightName;
   
@@ -39,6 +42,9 @@ public class Limelight extends SubsystemBase
     /* FieldObject2d test = (s_Swerve.field.getObject("Box"));
     test.setPoses(new Pose2d(2.65,4.15,new Rotation2d()), new Pose2d(8.25,4.15,new Rotation2d(0)), new Pose2d(1,4.15,new Rotation2d()), new Pose2d(2,2,new Rotation2d())); 
     SmartDashboard.putString("Test Box", test.toString()); */
+
+    FieldObject2d objectTest = (s_Swerve.field.getObject("Test"));
+    objectTest.setPose(objectX, objectY, null);
     
     SmartDashboard.putBoolean("Use Limelight", true);
   }
@@ -59,6 +65,8 @@ public class Limelight extends SubsystemBase
     driveState = s_Swerve.getState();
     headingDeg = driveState.Pose.getRotation().getDegrees();
     omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
+    objectX = getObjectPose().getX();
+    objectY = getObjectPose().getY();
     
     if (SmartDashboard.getBoolean("Use Limelight", true)) 
     {
@@ -76,6 +84,7 @@ public class Limelight extends SubsystemBase
     {
       SmartDashboard.putString(limelightName + " mt2 Pose", mt2.pose.toString());
       SmartDashboard.putNumber(limelightName + " Tag Count", mt2.tagCount);
+      SmartDashboard.putString(limelightName + "GetObject Output", getObjectPose().toString());
     }
     SmartDashboard.putNumber(limelightName + "RPS", omegaRps);
   }
