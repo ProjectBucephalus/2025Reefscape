@@ -253,30 +253,30 @@ public class RobotContainer
         copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.coralTransferElevation, Constants.Diffector.coralTransferAngle));
 
         /* deploy/TransferGamePieces */
-        copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new IntakeAndStow(6, s_Intake));
+        copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STAND_BY));
         copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new TransferGamePiece(s_Diffector, s_Intake, false));
-        copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new IntakeAndStow(6, s_Intake));
+        copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STAND_BY));
         copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new TransferGamePiece(s_Diffector, s_Intake, true));
 
         /* stowGamePieces */
-        copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new IntakeAndStow(5, s_Intake));
+        copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));
         copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new IntakeAlgae(s_AlgaeManipulator));
-        copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new IntakeAndStow( 5, s_Intake));
+        copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));
         copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new IntakeCoral(s_CoralManipulator));
 
         /* intakeFromCoralStation */
         copilot.povLeft().and(copilot.rightTrigger().negate()).whileTrue(new IntakeCoralSequence(s_Diffector, s_CoralManipulator));
 
         /* arm/IntakeGrab */
-        copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new IntakeAndStow( 1, s_Intake));
+        copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_ALGAE));
         copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new IntakeAlgae(s_AlgaeManipulator));
-        copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new IntakeAndStow( 2, s_Intake));
+        copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_CORAL));
         copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new IntakeCoral(s_CoralManipulator));
 
         /* arm/IntakeRelease */
-        copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new IntakeAndStow(3, s_Intake));
+        copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.EJECT_ALGAE));
         copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new EjectAlgae(s_AlgaeManipulator));
-        copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new IntakeAndStow(4, s_Intake));
+        copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.EJECT_CORAL));
         copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new EjectCoral(s_CoralManipulator));
 
         /* robotModifiers */
