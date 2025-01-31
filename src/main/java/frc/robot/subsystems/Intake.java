@@ -68,7 +68,7 @@ public class Intake extends SubsystemBase {
 
     m_AlgaeArm.getConfigurator().apply(CTREConfigs.intakeTopArmFXConfig);
     m_CoralArm.getConfigurator().apply(CTREConfigs.intakeBottomArmFXConfig);
-
+    
     algaeArmTarget = 0;
     coralArmTarget = 0;
 
