@@ -43,7 +43,7 @@ public class Diffector extends SubsystemBase
   private double offset;
   private double altOffset;
   private double armPos;
-  private DutyCycleEncoder encoder = new DutyCycleEncoder(6);
+  private DutyCycleEncoder encoder;
   
   /** Creates a new Diffector. */
   public Diffector() 
@@ -52,6 +52,7 @@ public class Diffector extends SubsystemBase
 
     m_diffectorUC = new TalonFX(Constants.Diffector.ucMotorID);
     m_diffectorDC = new TalonFX(Constants.Diffector.uaMotorID);
+    encoder = new DutyCycleEncoder(6);
 
     targetElevation = 0;
     targetAngle = 0;

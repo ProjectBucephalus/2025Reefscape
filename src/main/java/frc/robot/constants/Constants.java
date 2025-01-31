@@ -156,6 +156,7 @@ public final class Constants
     {
         public static final int ucMotorID = IDConstants.ucMotorID;
         public static final int uaMotorID = IDConstants.uaMotorID;
+        public static final int encoderPWMID = IDConstants.encoderPWMID;
 
         public static final double diffectorMotorKSEmpty = 0;
         public static final double diffectorMotorKVEmpty = 0;
