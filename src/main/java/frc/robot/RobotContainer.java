@@ -81,9 +81,9 @@ public class RobotContainer
             new TeleopSwerve
             (
                 s_Swerve, 
-                () -> -driver.getRawAxis(translationAxis), 
-                () -> -driver.getRawAxis(strafeAxis), 
-                () -> -driver.getRawAxis(rotationAxis), 
+                () -> driver.getRawAxis(translationAxis), 
+                () -> driver.getRawAxis(strafeAxis), 
+                () -> driver.getRawAxis(rotationAxis), 
                 () -> driver.getRawAxis(brakeAxis),
                 () -> true,
                 () -> !driver.leftStick().getAsBoolean()
