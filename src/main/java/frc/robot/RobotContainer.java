@@ -48,7 +48,8 @@ public class RobotContainer
 
     /* Subsystems */
     public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
-    public static final Limelight s_Limelight = new Limelight(s_Swerve);
+    public static final Limelight s_LimelightPort = new Limelight(s_Swerve, "limelight-port");
+    public static final Limelight s_LimelightStbd = new Limelight(s_Swerve, "limelight-stbd");
     public static final Diffector s_Diffector = new Diffector();
     public static final Climber s_Climber = new Climber();
     public static final Intake s_Intake = new Intake();
@@ -286,10 +287,11 @@ public class RobotContainer
         return s_Swerve;
     }
 
-    public Limelight getLimelight()
-    {
-        return s_Limelight;
-    }
+    public Limelight getLimelightPort()
+    {return s_LimelightPort;}
+
+    public Limelight getLimelightStbd()
+    {return s_LimelightStbd;}
 
     public Command getAutoCommand()
     {

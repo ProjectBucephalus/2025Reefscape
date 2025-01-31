@@ -351,6 +351,10 @@ public final class Constants
         /* Arm ratios */
         public static final double topArmRatio = 16.7;
         public static final double bottomArmRatio = 1;
+
+        public static final int coralLimitSwitch1DigitalInput = 3;
+        public static final int coralLimitSwitch2DigitalInput = 4;
+        public static final int intakeAlgaeBeamBreakDigitalInput = 5;
     }
 
     public static final class Climber
