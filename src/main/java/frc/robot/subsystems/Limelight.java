@@ -57,7 +57,7 @@ public class Limelight extends SubsystemBase
     //LimelightHelpers.SetRobotOrientation(limelightName, s_Swerve.getPigeon2().getYaw().getValueAsDouble(), 0.0, 0.0, 0.0, 0.0, 0.0);
     
     driveState = s_Swerve.getState();
-    headingDeg = driveState.Pose.getRotation().getDegrees();
+    headingDeg = driveState.RawHeading.getDegrees();
     omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
     
     if (SmartDashboard.getBoolean("Use Limelight", true)) 
