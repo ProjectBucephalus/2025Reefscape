@@ -26,14 +26,15 @@ public class Rumbler extends SubsystemBase
 
     public Rumbler(CommandXboxController driver, CommandXboxController coDriver)
     {
+        SmartDashboard.putNumber("Driver Rumble", Constants.Rumbler.driverDefault);
+        SmartDashboard.putNumber("Copilot Rumble", Constants.Rumbler.coDriverDefault);
+
         // could drop the getHID method as setrumble has been added to the CommandXBoxController class in 2025, but this still works.
         rumbleDriver = driver;
         rumbleCodriver = coDriver;  
         // Check if smartdashboard has existing settings for driver and codriver rumble strength, and put defaults if not.
-        driverStrength = SmartDashboard.getNumber("Driver Max Rumble", Constants.Rumbler.driverDefault);
-        coDriverStrength = SmartDashboard.getNumber("CoDriver Max Rumble", Constants.Rumbler.coDriverDefault);
-        SmartDashboard.putNumber("Driver Rumble", driverStrength);
-        SmartDashboard.putNumber("CoDriver Rumble", coDriverStrength);
+        driverStrength = SmartDashboard.getNumber("Driver Rumble", Constants.Rumbler.driverDefault);
+        coDriverStrength = SmartDashboard.getNumber("Copilot Rumble", Constants.Rumbler.coDriverDefault);
     } 
 
     public boolean addRequest(Sides queue, String requestID)
@@ -43,19 +44,19 @@ public class Rumbler extends SubsystemBase
         switch (queue)
         {
             case DRIVER_RIGHT:
-                if(!(drRequest.contains(requestID)))
+                if(!drRequest.contains(requestID))
                     {return drRequest.add(requestID);}
                 break;
             case DRIVER_LEFT:
-                if(!(dlRequest.contains(requestID)))
+                if(!dlRequest.contains(requestID))
                     {return dlRequest.add(requestID);}
                 break;
             case CODRIVER_RIGHT:
-                if(!(crRequest.contains(requestID)))
+                if(!crRequest.contains(requestID))
                     {return crRequest.add(requestID);}
                 break;
             case CODRIVER_LEFT:
-                if(!(clRequest.contains(requestID)))
+                if(!clRequest.contains(requestID))
                     {return clRequest.add(requestID);}
                 break;
             default:
@@ -85,8 +86,8 @@ public class Rumbler extends SubsystemBase
     public void periodic()
     {
         // check for chages to rumble stregnths in smartdashboard, and update.
-        driverStrength = SmartDashboard.getNumber("Driver Max Rumble",0);
-        coDriverStrength = SmartDashboard.getNumber("CoDriver Max Rumble",0);
+        driverStrength = SmartDashboard.getNumber("Driver Rumble", Constants.Rumbler.driverDefault);
+        coDriverStrength = SmartDashboard.getNumber("Copilot Rumble", Constants.Rumbler.coDriverDefault);
         // if there are any active requests in the queue for a rumble motor, rumble, otherwise stop.
         if (drRequest.size() > 0)
             {rumbleDriver.setRumble(GenericHID.RumbleType.kRightRumble, driverStrength);}
