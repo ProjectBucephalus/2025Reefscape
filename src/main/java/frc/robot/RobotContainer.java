@@ -90,7 +90,7 @@ public class RobotContainer
             )
         );
 
-        s_Swerve.resetRotation(new Rotation2d(Units.degreesToRadians(Constants.Swerve.initialHeading)));
+        s_Swerve.resetRotation(new Rotation2d(Math.toRadians(Constants.Swerve.initialHeading)));
 
         // Configure the button bindings
         configureButtonBindings();
