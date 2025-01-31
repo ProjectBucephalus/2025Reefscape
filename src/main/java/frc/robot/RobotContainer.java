@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
@@ -69,8 +71,8 @@ public class RobotContainer
     private final Trigger reefDriveTrigger = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
     private final Trigger stationDriveTrigger = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
     private final Trigger processorDriveTrigger = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
-    private final Trigger driverLeftRumbleTrigger = new Trigger(() -> s_Intake.getCoralSwitch1State() || s_Intake.getCoralSwitch2State() || !s_Intake.getAlgaeBeamBreakState() );
-    
+    private final Trigger driverLeftRumbleTrigger = new Trigger(() -> s_Intake.getCoralState() || s_Intake.getAlgaeState());
+    private final Trigger copilotLeftRumbleTrigger = new Trigger(() -> );
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
