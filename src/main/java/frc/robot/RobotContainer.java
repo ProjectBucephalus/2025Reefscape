@@ -241,7 +241,7 @@ public class RobotContainer
             );
 
         /* Copilot Buttons */
-        copilot.start().and(copilot.back()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.coralTransferElevation, Constants.Diffector.coralTransferAngle));
+        copilot.start().and(copilot.back()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.climbElevation, Constants.Diffector.climbAngle));
         copilot.back().onTrue(new Test("climber", "deploy"));
 
         /* scoringCoral */
@@ -289,13 +289,25 @@ public class RobotContainer
         copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new EjectCoral(s_CoralManipulator));
 
         /* robotModifiers */
+        // For testing uses only
         copilot.rightTrigger().onTrue(new Test("algaeModifier", "on")).onFalse(new Test("algaeModifier", "off"));
         copilot.rightBumper().onTrue(new Test("intakeModifier", "on")).onFalse(new Test("intakeModifier", "off"));
 
-        // copilot.leftStick().and(copilot.rightTrigger()).onTrue(new Test("manualIntake/Winch", null));
-        // copilot.rightStick().and(copilot.rightTrigger()).onTrue(new Test("manualDiffector", null));
+        /* manualIntakeControl */
+        copilot.axisLessThan(1, 0.3).and(copilot.axisGreaterThan(1, -0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualIntake", "intake up"));
+        copilot.axisLessThan(1, -0.3).and(copilot.axisGreaterThan(1, 0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualIntake", "intake down"));
 
-        copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides. CODRIVER_LEFT, "transfer ready"));
+        /* manualWinchControl */
+        copilot.axisLessThan(2, 0.3).and(copilot.axisGreaterThan(2, -0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualWinch", "spool winch"));
+        copilot.axisLessThan(2, -0.3).and(copilot.axisGreaterThan(2, 0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualWinch", "unspool winch"));
+
+        /* manualElevatorControl */
+        copilot.axisLessThan(3, 0.3).and(copilot.axisGreaterThan(3, -0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualElevator", "elevator up"));
+        copilot.axisLessThan(3, -0.3).and(copilot.axisGreaterThan(3, 0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualElevator", "elevator down"));
+
+        /* manualArmControl */
+        copilot.axisLessThan(4, 0.3).and(copilot.axisGreaterThan(4, -0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualArm", "arm clockwise"));
+        copilot.axisLessThan(4, -0.3).and(copilot.axisGreaterThan(4, 0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualArm", "arm anticlockwise"));
 
     }
 
