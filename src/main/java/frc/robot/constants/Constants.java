@@ -306,7 +306,7 @@ public final class Constants
         public static final double topAlgaeIntakeArmTarget = 0;
         public static final double topCoralEjectArmTarget = 0;
         public static final double topAlgaeEjectArmTarget = 0;
-        public static final double topClimbingArmTarget = 0;
+        public static final double algaeClimbingArmTarget = 0;
         public static final double topStandByArmTarget = 0;
         public static final double topStowedArmTarget = 0;
         public static final double topCoralTransferArmTarget = 0;
@@ -317,7 +317,7 @@ public final class Constants
         public static final double bottomAlgaeIntakeArmTarget = 0;
         public static final double bottomCoralEjectArmTarget = 0;
         public static final double bottomAlgaeEjectArmTarget = 0;
-        public static final double bottomClimbingArmTarget = 0;
+        public static final double coralClimbingArmTarget = 0;
         public static final double bottomStandByArmTarget = 0;
         public static final double bottomStowedArmTarget = 0;
         public static final double bottomCoralTransferArmTarget = 0;

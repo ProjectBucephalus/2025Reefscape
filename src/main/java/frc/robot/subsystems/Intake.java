@@ -188,6 +188,13 @@ public class Intake extends SubsystemBase {
   {
     return coral;
   }
+
+
+  public boolean intakeClimbReady()
+  {
+    return (m_AlgaeArm.getPosition()).getValueAsDouble() > Constants.Intake.algaeClimbingArmTarget && m_CoralArm.getPosition().getValueAsDouble() > Constants.Intake.coralClimbingArmTarget;
+  }
+  
     
   
 
@@ -241,8 +248,8 @@ public class Intake extends SubsystemBase {
       case CLIMBING:
       setAlgaeIntakeSpeed(Constants.Intake.climbingIntakeMotorSpeed);
       setCoralIntakeSpeed(Constants.Intake.climbingIntakeMotorSpeed);
-      setAlgaeArmTarget(Constants.Intake.topClimbingArmTarget);
-      setCoralArmTarget(Constants.Intake.bottomClimbingArmTarget);
+      setAlgaeArmTarget(Constants.Intake.algaeClimbingArmTarget);
+      setCoralArmTarget(Constants.Intake.coralClimbingArmTarget);
       break;
 
       case STAND_BY:

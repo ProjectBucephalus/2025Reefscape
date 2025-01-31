@@ -73,7 +73,13 @@ public class RobotContainer
     private final Trigger stationDriveTrigger = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
     private final Trigger processorDriveTrigger = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
     private final Trigger driverLeftRumbleTrigger = new Trigger(() -> s_Intake.getCoralState() || s_Intake.getAlgaeState());
-    private final Trigger copilotLeftRumbleTrigger = new Trigger(() -> );
+    private final Trigger copilotLeftRumbleTrigger = new Trigger(
+                () -> s_Intake.isCoralStowed() ||s_Intake.getCoralState() ||s_Intake.getAlgaeState() 
+                || s_Intake.getCoralState() && (s_Diffector.getEncoderPos() > 45 && s_Diffector.getEncoderPos() < 315) ||
+                s_Intake.getAlgaeState() && (s_Diffector.getEncoderPos() > 135 && s_Diffector.getEncoderPos() < 225));
+    //private final Trigger driverRightRumblTrigger = new Trigger(() -> )
+    // TODO: Ready to score rumble
+    private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.intakeClimbReady() && s_Climber.climbReady() &&  );
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
@@ -173,6 +179,7 @@ public class RobotContainer
 
 
         driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_LEFT, "Intake Full"));
+
         /* 
          * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed
          * Does not need to check the rotation stick, as soon at the rotation stick is moved all drive triggers become false (see line 141)
@@ -287,6 +294,9 @@ public class RobotContainer
 
         // copilot.leftStick().and(copilot.rightTrigger()).onTrue(new Test("manualIntake/Winch", null));
         // copilot.rightStick().and(copilot.rightTrigger()).onTrue(new Test("manualDiffector", null));
+
+        copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides. CODRIVER_LEFT, "transfer ready"));
+
     }
 
     public CommandSwerveDrivetrain getSwerve()
