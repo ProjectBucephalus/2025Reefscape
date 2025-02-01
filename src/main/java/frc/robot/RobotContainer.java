@@ -292,22 +292,22 @@ public class RobotContainer
         // For testing uses only
         copilot.rightTrigger().onTrue(new Test("algaeModifier", "on")).onFalse(new Test("algaeModifier", "off"));
         copilot.rightBumper().onTrue(new Test("intakeModifier", "on")).onFalse(new Test("intakeModifier", "off"));
-
-        /* manualIntakeControl */
-        copilot.axisLessThan(1, 0.3).and(copilot.axisGreaterThan(1, -0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualIntake", "intake up"));
-        copilot.axisLessThan(1, -0.3).and(copilot.axisGreaterThan(1, 0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualIntake", "intake down"));
-
+        
         /* manualWinchControl */
-        copilot.axisLessThan(2, 0.3).and(copilot.axisGreaterThan(2, -0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualWinch", "spool winch"));
-        copilot.axisLessThan(2, -0.3).and(copilot.axisGreaterThan(2, 0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualWinch", "unspool winch"));
-
-        /* manualElevatorControl */
-        copilot.axisLessThan(3, 0.3).and(copilot.axisGreaterThan(3, -0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualElevator", "elevator up"));
-        copilot.axisLessThan(3, -0.3).and(copilot.axisGreaterThan(3, 0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualElevator", "elevator down"));
+        copilot.axisGreaterThan(0, 0.85).and(copilot.back()).whileTrue(new Test("manualWinch", "spool winch"));
+        copilot.axisLessThan(0, -0.85).and(copilot.back()).whileTrue(new Test("manualWinch", "unspool winch"));
+        
+        /* manualIntakeControl */
+        copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger()).onTrue(new Test("manualIntake", "intake up"));
+        copilot.axisGreaterThan(1, 0.85).and(copilot.rightTrigger()).onTrue(new Test("manualIntake", "intake down"));
 
         /* manualArmControl */
-        copilot.axisLessThan(4, 0.3).and(copilot.axisGreaterThan(4, -0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualArm", "arm clockwise"));
-        copilot.axisLessThan(4, -0.3).and(copilot.axisGreaterThan(4, 0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualArm", "arm anticlockwise"));
+        copilot.axisGreaterThan(4, 0.85).onTrue(new Test("manualArm", "arm clockwise"));
+        copilot.axisLessThan(4, -0.85).onTrue(new Test("manualArm", "arm anticlockwise"));
+      
+        /* manualElevatorControl */
+        copilot.axisLessThan(5, -0.85).whileTrue(new Test("manualElevator", "elevator up"));
+        copilot.axisGreaterThan(5, 0.85).whileTrue(new Test("manualElevator", "elevator down"));
 
         /* driver rumble bindings */
         driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_LEFT, "Intake Full"));
