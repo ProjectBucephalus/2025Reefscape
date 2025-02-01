@@ -277,6 +277,9 @@ public final class Constants
             public static final double deckHeight    = 0.18;
             public static final double harpoonHeight = 0.1;
             public static final double harpoonAngle  = 17;
+
+            /** For IK, angle the arm is projected to test for immediate collisions */
+            public static final double projectionAngle = 5;
         }
     }
 
