@@ -141,9 +141,9 @@ public class Intake extends SubsystemBase {
    * @param Status Enum corresponds to the intake motor speeds and
    * arms position
    */
-  public void setIntakeStatus(IntakeStatus status)
+  public void setIntakeStatus(IntakeStatus Status)
   {
-    switch (status)
+    switch (Status)
     {
       case INTAKE_CORAL:
       setAlgaeIntakeSpeed(Constants.Intake.coralIntakeMotorSpeed);
