@@ -183,6 +183,13 @@ public final class Constants
         public static final double diffectorMotionMagicCruise = 0;
         public static final double diffectorMotionMagicAccel = 0;
 
+        public static final double coralElevatorLowTheshold = 0;
+        public static final double coralElevatorHighThreshold = 0;
+        public static final double algaeElevatorLowTheshold = 0;
+        public static final double algaeElevatorHighThreshold = 0;
+        public static final double climberElevatorLowTheshold = 0;
+        public static final double climberElevatorHighThreshold = 0;
+
         /** Output sprocket rotations per motor rotation */
         public static final double gearboxRatio = 8/60;
         /** Pitch Diameter of the sprocket, in mm */
@@ -341,8 +348,10 @@ public final class Constants
         public static final double bottomCoralTransferArmTarget = 0;
         public static final double bottomAlgaeTransferArmTarget = 0;
 
-        public static final double coralStowedThreshold = 10;
-        public static final double algaeStowedThreshold = 10;
+        public static final double coralStowedLowThreshold = 10;  
+        public static final double coralStowedHighThreshold = 10;
+        public static final double algaeStowedLowThreshold = 10;
+        public static final double algaeStowedHighThreshold = 10;
 
         /* Top arm PID + FeedForward values */
         public static final double topArmSpringKP = 1;
