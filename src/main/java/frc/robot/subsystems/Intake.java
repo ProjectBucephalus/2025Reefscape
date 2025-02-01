@@ -190,7 +190,7 @@ public class Intake extends SubsystemBase {
   }
 
 
-  public boolean intakeClimbReady()
+  public boolean climbReady()
   {
     return (m_AlgaeArm.getPosition()).getValueAsDouble() > Constants.Intake.algaeClimbingArmTarget && m_CoralArm.getPosition().getValueAsDouble() > Constants.Intake.coralClimbingArmTarget;
   }

@@ -127,6 +127,15 @@ public class Diffector extends SubsystemBase
     return Math.abs(getElevatorPos() - targetElevation) < Constants.Diffector.elevationTolerance;
   }
 
+  public boolean climbReady()
+  {
+    return true;
+  }
+
+  /*  
+   * TODO: return true when difector is in position to climb
+   */
+
   /** 
    * Sets the Diffector arm to unwind to starting position 
    * @return Safe to stow

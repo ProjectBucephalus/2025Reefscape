@@ -78,8 +78,8 @@ public class RobotContainer
                 || s_Intake.getCoralState() && (s_Diffector.getEncoderPos() > 45 && s_Diffector.getEncoderPos() < 315) ||
                 s_Intake.getAlgaeState() && (s_Diffector.getEncoderPos() > 135 && s_Diffector.getEncoderPos() < 225));
     //private final Trigger driverRightRumblTrigger = new Trigger(() -> )
-    // TODO: Ready to score rumble
-    private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.intakeClimbReady() && s_Climber.climbReady() &&  );
+    // TODO: Read y to score rumble
+    private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.climbReady() && s_Climber.climbReady() && s_Diffector.climbReady() );
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
@@ -177,8 +177,8 @@ public class RobotContainer
         reefDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
         reefDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
 
-
-        driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_LEFT, "Intake Full"));
+        
+        
 
         /* 
          * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed
@@ -309,6 +309,13 @@ public class RobotContainer
         copilot.axisLessThan(4, 0.3).and(copilot.axisGreaterThan(4, -0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualArm", "arm clockwise"));
         copilot.axisLessThan(4, -0.3).and(copilot.axisGreaterThan(4, 0.3)).and(copilot.rightTrigger()).whileTrue(new Test("manualArm", "arm anticlockwise"));
 
+        /* driver rumble bindings */
+        driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_LEFT, "Intake Full"));
+        
+
+        /* codriver rumble bindings */
+        copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.CODRIVER_LEFT, "Transfer Ready"));
+        copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.CODRIVER_RIGHT, "Climb Ready"));
     }
 
     public CommandSwerveDrivetrain getSwerve()
