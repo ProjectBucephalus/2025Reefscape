@@ -141,10 +141,10 @@ public class Intake extends SubsystemBase {
   /**
    * Sets the speeds to the intake and position to the arms
    * 
-   * @param Status Enum corresponds to the intake motor speeds and
+   * @param status Enum corresponds to the intake motor speeds and
    * arms position
    */
-  public void setIntakeStatus(IntakeStatus Status)
+  public void setIntakeStatus(IntakeStatus status)
   {
     this.status = status;
   }
@@ -189,15 +189,10 @@ public class Intake extends SubsystemBase {
     return coral;
   }
 
-
   public boolean climbReady()
   {
     return (m_AlgaeArm.getPosition()).getValueAsDouble() > Constants.Intake.algaeClimbingArmTarget && m_CoralArm.getPosition().getValueAsDouble() > Constants.Intake.coralClimbingArmTarget;
   }
-  
-    
-  
-
 
   @Override
   public void periodic()  
