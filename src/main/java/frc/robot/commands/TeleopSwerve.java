@@ -1,8 +1,8 @@
 package frc.robot.commands;
 
 import frc.robot.constants.Constants;
-import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
 
 import java.util.function.BooleanSupplier;
@@ -36,7 +36,7 @@ public class TeleopSwerve extends Command
     private BooleanSupplier fieldCentricSup;
     private BooleanSupplier fencedSup;
     private Translation2d motionXY;
-    private final GeoFenceObject[] fieldGeoFence = FieldConstants.GeoFencing.fieldGeoFence;
+    private final GeoFenceObject[] fieldGeoFence = FieldUtils.GeoFencing.fieldGeoFence;
     private double robotRadius;
     private double robotSpeed;
 
@@ -77,13 +77,13 @@ public class TeleopSwerve extends Command
             {
                 robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
                 SmartDashboard.putString("Drive State", "Fenced");
-                if (robotSpeed >= FieldConstants.GeoFencing.robotSpeedThreshold)
+                if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
                 {
-                    robotRadius = FieldConstants.GeoFencing.robotRadiusCircumscribed;
+                    robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;
                 }
                 else
                 {
-                    robotRadius = FieldConstants.GeoFencing.robotRadiusInscribed;
+                    robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;
                 }
                 // Read down the list of geofence objects
                 // Outer wall is index 0, so has highest authority by being processed last

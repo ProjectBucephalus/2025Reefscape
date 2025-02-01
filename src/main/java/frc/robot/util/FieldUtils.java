@@ -1,19 +1,18 @@
-package frc.robot.constants;
+package frc.robot.util;
 import java.util.Optional;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.util.GeoFenceObject;
+import frc.robot.constants.Constants;
 import frc.robot.util.GeoFenceObject.ObjectTypes;
 
-public class FieldConstants 
+public class FieldUtils 
 {
     public static final double fieldLength = 17.548;
     public static final double fieldWidth = 8.051;
@@ -42,7 +41,7 @@ public class FieldConstants
         int nearestReefFace;
         
         nearestReefFace = Constants.Auto.reefMidPoints.indexOf(robotPos.nearest(Constants.Auto.reefMidPoints));
-        nearestReefFace = (int)MathUtil.inputModulus(nearestReefFace, 1, 6);
+        nearestReefFace = Conversions.wrap(nearestReefFace, 1, 6);
         
         return nearestReefFace;
     }

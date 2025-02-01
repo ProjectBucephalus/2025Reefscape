@@ -9,19 +9,19 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
-import frc.robot.commands.AlgaeManipulator.ArmToAlgaeIntakePos;
+import frc.robot.commands.Diffector.GoToAlgaeIntakePos;
 import frc.robot.commands.AlgaeManipulator.IntakeAlgae;
 import frc.robot.commands.Auto.PathfindToReef.DpadOptions;
-import frc.robot.commands.CoralManipulator.ArmToCoralScorePos;
+import frc.robot.commands.Diffector.GoToCoralScorePos;
 import frc.robot.commands.CoralManipulator.SetCoralStatus;
 import frc.robot.commands.Diffector.MoveTo;
-import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.Diffector;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
+import frc.robot.util.FieldUtils;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -42,7 +42,7 @@ public class AutoScoreSequence extends SequentialCommandGroup
     coral = s_CoralManipulator.getStatus() == CoralManipulatorStatus.DEFAULT;
     algae = s_AlgaeManipulator.getStatus() == AlgaeManipulatorStatus.HOLDING;
     robotPos = posSup.get();
-    nearestReefFace = FieldConstants.getNearestReefFace(robotPos);
+    nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
 
     if (RobotContainer.driver.povLeft().getAsBoolean()) 
     {
@@ -115,12 +115,12 @@ public class AutoScoreSequence extends SequentialCommandGroup
       addCommands
       (
         new PathfindToReef(DpadOptions.CENTRE, posSup, s_Swerve)
-        .alongWith(new ArmToAlgaeIntakePos(algaeLevel2, s_Diffector)),
+        .alongWith(new GoToAlgaeIntakePos(algaeLevel2, s_Diffector)),
         
         new IntakeAlgae(s_AlgaeManipulator),
         
         new PathfindToReef(postSide, posSup, s_Swerve)
-        .alongWith(new ArmToCoralScorePos(coralLevel, s_Diffector)),
+        .alongWith(new GoToCoralScorePos(coralLevel, s_Diffector)),
 
         new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY),
 

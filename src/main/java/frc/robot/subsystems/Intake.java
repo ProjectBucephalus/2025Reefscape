@@ -47,6 +47,8 @@ public class Intake extends SubsystemBase {
   {
     INTAKE_CORAL,
     INTAKE_ALGAE,
+    EJECT_CORAL,
+    EJECT_ALGAE,
     CLIMBING,
     STAND_BY,
     STOWED,
@@ -63,7 +65,7 @@ public class Intake extends SubsystemBase {
 
     m_AlgaeArm.getConfigurator().apply(CTREConfigs.intakeTopArmFXConfig);
     m_CoralArm.getConfigurator().apply(CTREConfigs.intakeBottomArmFXConfig);
-
+    
     algaeArmTarget = 0;
     coralArmTarget = 0;
 
@@ -155,6 +157,20 @@ public class Intake extends SubsystemBase {
       setCoralIntakeSpeed(Constants.Intake.algaeIntakeMotorSpeed);
       setAlgaeArmTarget(Constants.Intake.topAlgaeIntakeArmTarget);
       setCoralArmTarget(Constants.Intake.bottomAlgaeIntakeArmTarget);
+      break;
+
+      case EJECT_CORAL:
+      setAlgaeIntakeSpeed(Constants.Intake.algaeEjectMotorSpeed);
+      setCoralIntakeSpeed(Constants.Intake.algaeEjectMotorSpeed);
+      setAlgaeArmTarget(Constants.Intake.topAlgaeEjectArmTarget);
+      setCoralArmTarget(Constants.Intake.bottomAlgaeEjectArmTarget);
+      break;
+
+      case EJECT_ALGAE:
+      setAlgaeIntakeSpeed(Constants.Intake.coralEjectMotorSpeed);
+      setCoralIntakeSpeed(Constants.Intake.coralEjectMotorSpeed);
+      setAlgaeArmTarget(Constants.Intake.topCoralEjectArmTarget);
+      setCoralArmTarget(Constants.Intake.bottomCoralEjectArmTarget);
       break;
 
       case CLIMBING:

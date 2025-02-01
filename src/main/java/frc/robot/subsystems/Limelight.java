@@ -5,9 +5,10 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
 //import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,19 +18,21 @@ import frc.robot.util.LimelightHelpers;
 
 public class Limelight extends SubsystemBase 
 {  
-  private boolean doRejectUpdate;
+  private boolean useUpdate;
   public CommandSwerveDrivetrain s_Swerve;
   private LimelightHelpers.PoseEstimate mt2;
   private int[] validIDs = Constants.Vision.validIDs;
 
-  private SwerveDriveState driveState;
   private double headingDeg;
   private double omegaRps;
+
+  private final String limelightName;
   
   /** Creates a new Limelight. */
-  public Limelight(CommandSwerveDrivetrain s_Swerve) 
+  public Limelight(CommandSwerveDrivetrain s_Swerve, String name) 
   {
     this.s_Swerve = s_Swerve;
+    limelightName = name;
 
     //FieldObject2d algaeTest = (s_Swerve.field.getObject("Algae"));
     /* FieldObject2d test = (s_Swerve.field.getObject("Box"));
@@ -40,46 +43,48 @@ public class Limelight extends SubsystemBase
   }
   
   public Pose2d getPose() 
+  {return mt2.pose;}
+
+  public Pose3d getObjectPose()
+  {return LimelightHelpers.getTargetPose3d_RobotSpace(limelightName);}
+
+  public void setIMUMode(int mode)
   {
-    return mt2.pose;
+    LimelightHelpers.SetIMUMode(limelightName, mode);
   }
-  
+   
   @Override
   public void periodic() 
   {
-    // This method will be called once per scheduler run
-    LimelightHelpers.SetFiducialIDFiltersOverride(Constants.Vision.limeLightName, validIDs);
-    
-    LimelightHelpers.SetRobotOrientation(Constants.Vision.limeLightName, s_Swerve.getPigeon2().getYaw().getValueAsDouble(), 0.0, 0.0, 0.0, 0.0, 0.0);
-    
-    mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Constants.Vision.limeLightName);
+    // This method will be called once per scheduler run  
 
-    driveState = s_Swerve.getState();
-    headingDeg = driveState.Pose.getRotation().getDegrees();
-    omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
-    
-    doRejectUpdate = false;
-    
-    if (mt2 == null || mt2.tagCount == 0 || omegaRps > 2.0) 
-    {
-      doRejectUpdate = true;
-    }
+    headingDeg = s_Swerve.getPigeon2().getYaw().getValueAsDouble();
+    omegaRps = Units.radiansToRotations(s_Swerve.getState().Speeds.omegaRadiansPerSecond);
 
+    SmartDashboard.putNumber("Gyro yaw", headingDeg);
+    
     if (SmartDashboard.getBoolean("Use Limelight", true)) 
     {
-      LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
-      if (!doRejectUpdate) 
+      LimelightHelpers.SetRobotOrientation(limelightName, headingDeg, 0, 0, 0, 0, 0);
+      LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, validIDs);
+
+      mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
+
+      useUpdate = !(mt2 == null || mt2.tagCount == 0 || omegaRps > 2.0);
+      SmartDashboard.putBoolean("Use " + limelightName + " update", useUpdate);
+
+      if (useUpdate) 
       {
+        s_Swerve.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
         s_Swerve.addVisionMeasurement(mt2.pose, Utils.fpgaToCurrentTime(mt2.timestampSeconds));
       }
     }
     
     if(mt2 != null)
     {
-      SmartDashboard.putString("mt2 Pose", mt2.pose.toString());
-      SmartDashboard.putNumber("Tags", mt2.tagCount);
+      SmartDashboard.putString(limelightName + " mt2 Pose", mt2.pose.toString());
+      SmartDashboard.putNumber(limelightName + " Tag Count", mt2.tagCount);
     }
-
-    SmartDashboard.putBoolean("Reject LL Update", doRejectUpdate);
+    SmartDashboard.putNumber(limelightName + "RPS", omegaRps);
   }
 }

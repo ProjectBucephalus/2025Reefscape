@@ -7,8 +7,8 @@ package frc.robot.commands.Auto;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.util.FieldUtils;
 
 public class FollowPath extends Command 
 {
@@ -16,14 +16,7 @@ public class FollowPath extends Command
 
   public FollowPath(String pathName) 
   {
-    try
-    {
-      path = PathPlannerPath.fromPathFile(pathName);
-    } 
-    catch (Exception e) 
-    {
-        DriverStation.reportError("Path error: " + e.getMessage(), e.getStackTrace());
-    }
+    path = FieldUtils.loadPath(pathName);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
