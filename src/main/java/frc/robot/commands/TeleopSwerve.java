@@ -87,10 +87,10 @@ public class TeleopSwerve extends Command
                 }
                 // Read down the list of geofence objects
                 // Outer wall is index 0, so has highest authority by being processed last
-                for (int i = fieldGeoFence.length - 1; i >= 0; i--)
+                for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
                 {
-                    Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
-                    motionXY = inputDamping;
+                    Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY.unaryMinus(), robotRadius);
+                    motionXY = inputDamping.unaryMinus();
                 }
                 s_Swerve.setControl
                 (

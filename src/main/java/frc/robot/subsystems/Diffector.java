@@ -70,7 +70,7 @@ public class Diffector extends SubsystemBase
     rotationRatio = Constants.Diffector.rotationRatio;
     travelRatio = Constants.Diffector.travelRatio;
 
-    cargoState = Constants.Diffector.startingCargoState;
+    cargoState = updateCargoState();
 
     motionMagicRequester = new MotionMagicVoltage(0);
   }
@@ -136,6 +136,15 @@ public class Diffector extends SubsystemBase
   {
     return Math.abs(getElevatorPos() - targetElevation) < Constants.Diffector.elevationTolerance;
   }
+
+  public boolean climbReady()
+  {
+    return true;
+  }
+
+  /*  
+   * TODO: return true when difector is in position to climb
+   */
 
   /** 
    * Sets the Diffector arm to unwind to starting position 
@@ -243,6 +252,21 @@ public class Diffector extends SubsystemBase
   public double getElevatorTarget()
     {return targetElevation;}
 
+  public boolean safeToMoveCoral()
+  {
+    return Constants.Diffector.coralElevatorLowTheshold < getElevatorPos() && getElevatorPos() < Constants.Diffector.coralElevatorHighThreshold;
+  }
+
+  public boolean safeToMoveAlgae()
+  {
+    return Constants.Diffector.algaeElevatorLowTheshold < getElevatorPos() && getElevatorPos() < Constants.Diffector.algaeElevatorHighThreshold;
+  }
+
+  public boolean safeToMoveClimber()
+  {
+    return Constants.Diffector.climberElevatorLowTheshold < getElevatorPos() && getElevatorPos() < Constants.Diffector.climberElevatorHighThreshold;
+  }
+
   private int getSlot()
   {
     switch (cargoState) 
@@ -254,21 +278,30 @@ public class Diffector extends SubsystemBase
     }
   }
 
+  private CargoStates updateCargoState()
+  {
+    if(RobotContainer.coral && RobotContainer.algae) // Both game pieces
+    {
+      return CargoStates.TWO_ITEM;
+    }
+    else if(RobotContainer.coral ^ RobotContainer.algae) // One game piece
+    {
+      return CargoStates.ONE_ITEM;
+    }
+    else if(!RobotContainer.coral && !RobotContainer.algae) // No game piece
+    {
+      return CargoStates.EMPTY;
+    }
+    else // Default state, should never be reached
+    {
+      return CargoStates.EMPTY;
+    }
+  }
+
   @Override
   public void periodic() 
   { 
-    if(RobotContainer.coral && RobotContainer.algae)
-    {
-      cargoState= CargoStates.TWO_ITEM;
-    }
-    else if(RobotContainer.coral ^ RobotContainer.algae)
-    {
-      cargoState= CargoStates.ONE_ITEM;
-    }
-    else if(!RobotContainer.coral && !RobotContainer.algae)
-    {
-      cargoState= CargoStates.EMPTY;
-    }
+    cargoState = updateCargoState();
 
     calculateMotorTargets();
 

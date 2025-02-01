@@ -20,7 +20,7 @@ public final class Constants
     public static final class Rumbler 
     {
         public static final double driverDefault = 1;
-        public static final double coDriverDefault = 1;  
+        public static final double copilotDefault = 1;  
     }
 
     public static final class Control
@@ -147,7 +147,8 @@ public final class Constants
             }
         };
 
-        public static final ArrayList<Translation2d> reefMidPoints = FieldUtils.GeoFencing.reefBlue.getMidPoints();
+        public static final ArrayList<Translation2d> reefBlueMidPoints = FieldUtils.GeoFencing.reefBlue.getMidPoints();
+        public static final ArrayList<Translation2d> reefRedMidPoints = FieldUtils.GeoFencing.reefRed.getMidPoints();
 
         public static final String defaultAuto = "t5,cR5,w3.5,cR5";
     }
@@ -182,6 +183,13 @@ public final class Constants
         public static final double diffectorMotionMagicCruise = 0;
         public static final double diffectorMotionMagicAccel = 0;
 
+        public static final double coralElevatorLowTheshold = 0;
+        public static final double coralElevatorHighThreshold = 0;
+        public static final double algaeElevatorLowTheshold = 0;
+        public static final double algaeElevatorHighThreshold = 0;
+        public static final double climberElevatorLowTheshold = 0;
+        public static final double climberElevatorHighThreshold = 0;
+
         /** Output sprocket rotations per motor rotation */
         public static final double gearboxRatio = 8/60;
         /** Pitch Diameter of the sprocket, in mm */
@@ -203,7 +211,8 @@ public final class Constants
          */
         public static final double rotationRatio = gearboxRatio * sprocketRatio / 2;
 
-        public static final CargoStates startingCargoState = CargoStates.EMPTY;
+        public static final boolean startingCoralState = true;
+        public static final boolean startingAlgaeState = false;
 
         public static final double maxRotation = 3;
         public static final double maxAbsPos = maxRotation * 360;
@@ -325,7 +334,7 @@ public final class Constants
         public static final double topAlgaeIntakeArmTarget = 0;
         public static final double topCoralEjectArmTarget = 0;
         public static final double topAlgaeEjectArmTarget = 0;
-        public static final double topClimbingArmTarget = 0;
+        public static final double algaeClimbingArmTarget = 0;
         public static final double topStandByArmTarget = 0;
         public static final double topStowedArmTarget = 0;
         public static final double topCoralTransferArmTarget = 0;
@@ -336,14 +345,16 @@ public final class Constants
         public static final double bottomAlgaeIntakeArmTarget = 0;
         public static final double bottomCoralEjectArmTarget = 0;
         public static final double bottomAlgaeEjectArmTarget = 0;
-        public static final double bottomClimbingArmTarget = 0;
+        public static final double coralClimbingArmTarget = 0;
         public static final double bottomStandByArmTarget = 0;
         public static final double bottomStowedArmTarget = 0;
         public static final double bottomCoralTransferArmTarget = 0;
         public static final double bottomAlgaeTransferArmTarget = 0;
 
-        public static final double coralStowedThreshold = 10;
-        public static final double algaeStowedThreshold = 10;
+        public static final double coralStowedLowThreshold = 10;  
+        public static final double coralStowedHighThreshold = 10;
+        public static final double algaeStowedLowThreshold = 10;
+        public static final double algaeStowedHighThreshold = 10;
 
         /* Top arm PID + FeedForward values */
         public static final double topArmSpringKP = 1;

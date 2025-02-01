@@ -1,5 +1,9 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+
 /**
  * Wraps int value over [min..max]
  */
@@ -92,5 +96,29 @@ public class Conversions
     public static double metersToRotations(double wheelMeters, double circumference){
         double wheelRotations = wheelMeters / circumference;
         return wheelRotations;
+    }
+
+    public static Translation2d flipTranslation(Translation2d position) 
+    {
+        // flip when red
+        if (FieldUtils.isRedAlliance()) {
+            // reflect the pose over center line, flip both the X
+            return new Translation2d(FieldUtils.fieldLength - position.getX(), position.getY());
+        }
+
+        // Blue or we don't know; return the original position
+        return position;
+    }
+
+    public static Pose2d transformToPose2d(Transform2d position) 
+    {
+        // Converts a Transform2d to a pose.
+        return new Pose2d(position.getTranslation(), position.getRotation());
+    }
+
+    public static Pose2d translationToPose2d(Translation2d position) 
+    {
+        // Converts a Transform2d to a pose.
+        return new Pose2d(position.getX(), position.getY(), position.getAngle());
     }
 }

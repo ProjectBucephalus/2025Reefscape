@@ -50,7 +50,7 @@ public class Climber extends SubsystemBase {
       break;
 
       case DEPLOY_CONFIG: 
-      if (RobotContainer.s_Intake.isCoralStowed())
+      if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
       {
         setClimberSpeed(Constants.Climber.deploySpeed);
         setClimbTargets(Constants.Climber.deployWinchPos);
@@ -58,7 +58,7 @@ public class Climber extends SubsystemBase {
       break;
 
       case CLIMB_CONFIG:
-      if (RobotContainer.s_Intake.isCoralStowed())
+      if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
       {
         setClimberSpeed(Constants.Climber.climbSpeed);
         setClimbTargets(Constants.Climber.climbWinchPos);
@@ -70,6 +70,11 @@ public class Climber extends SubsystemBase {
   public boolean isStowed()
   {
     return (m_Winch.getPosition()).getValueAsDouble() <= Constants.Climber.initWinchThreshold;
+  }
+
+  public boolean climbReady()
+  {
+    return (m_Winch.getPosition()).getValueAsDouble() >= Constants.Climber.deployWinchPos;
   }
 
   @Override
