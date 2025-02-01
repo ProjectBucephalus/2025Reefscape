@@ -248,6 +248,8 @@ public final class Constants
         public static final class IKGeometry
         {
             /* Manipulator arm geometry */
+            public static final double minElevation   = 0.444;
+            public static final double maxElevation   = 1.709;
             public static final double coralArmLength   = 0.5;
             public static final double coralArmAngle    = 64/2;
             public static final double algaeArmLength   = 0.6;

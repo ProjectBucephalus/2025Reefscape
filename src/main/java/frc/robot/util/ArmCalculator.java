@@ -13,6 +13,10 @@ import frc.robot.constants.Constants.Diffector.IKGeometry;
 /** Add your docs here. */
 public class ArmCalculator 
 {
+  private double minElevation;
+  private double maxElevation;
+  private double safeElevation;
+
   private double railHeight;
   private double railLateral;
   private double railMedial;
@@ -45,7 +49,7 @@ public class ArmCalculator
     deckHeight    = IKGeometry.deckHeight;
     harpoonHeight = IKGeometry.harpoonHeight;
     harpoonAngle  = IKGeometry.harpoonAngle;
-
+    
     coralArmLength   = IKGeometry.coralArmLength;
     coralArmAngle    = IKGeometry.coralArmAngle;
     algaeArmLength   = IKGeometry.algaeArmLength;
@@ -54,7 +58,7 @@ public class ArmCalculator
     algaeClawLength  = IKGeometry.algaeClawLength;
     algaeInnerLength = IKGeometry.algaeInnerLength;
     algaeInnerAngle  = IKGeometry.algaeInnerAngle;
-
+    
     coralA      = new Translation2d(0,coralArmLength)  .rotateBy(new Rotation2d(Units.degreesToRadians(coralArmAngle)));
     coralC      = new Translation2d(0,coralArmLength)  .rotateBy(new Rotation2d(Units.degreesToRadians(-coralArmAngle)));
     algaeOuterA = new Translation2d(0,algaeArmLength)  .rotateBy(new Rotation2d(Units.degreesToRadians(180+algaeArmAngle)));
@@ -65,7 +69,7 @@ public class ArmCalculator
     algaeClawC  = new Translation2d(0,algaeClawLength) .rotateBy(new Rotation2d(Units.degreesToRadians(180-algaeArmAngle)));
     algaeWheelA = new Translation2d(0,algaeWheelLength).rotateBy(new Rotation2d(Units.degreesToRadians(180+algaeArmAngle)));
     algaeWheelC = new Translation2d(0,algaeWheelLength).rotateBy(new Rotation2d(Units.degreesToRadians(180-algaeArmAngle)));
-
+    
     armGeometry = new Translation2d[]
     {
       coralA,
@@ -79,8 +83,12 @@ public class ArmCalculator
       algaeWheelA,
       algaeWheelC
     };
-
+    
     armGeometryRotated = armGeometry;
+
+    minElevation  = IKGeometry.minElevation;
+    maxElevation  = IKGeometry.maxElevation;
+    safeElevation = deckHeight + Math.max(coralArmLength, algaeArmLength);
   }
 
   /**
@@ -88,14 +96,23 @@ public class ArmCalculator
    * @param elevationTarget target height of elevator carriage, metres above deck
    * @param angleTarget target angle of the arm, degrees anticlockwise, 0 = unwound with coral at top
    * @param elevationCurrent current height of the elevator carriage, metres above deck
-   * @param angleCurrent current angle of the arm, degrees
+   * @param angleCurrent current angle of the arm, degrees anticlockwise, 0 = unwound with coral at top
    * @return double array containing the projected path, elevation/angle pairs
    */
   public double[] pathfindIK(double elevationTarget, double angleTarget, double elevationCurrent, double angleCurrent)
   {
-    
+    elevationCurrent = Conversions.clamp(elevationCurrent,minElevation,maxElevation);
+    elevationTarget  = Conversions.clamp(elevationTarget,minElevation,maxElevation);
+    if (elevationCurrent >= safeElevation && elevationTarget >= safeElevation)
+      {return new double[] {elevationTarget, angleTarget};}
+    /*
+     * if elevation path is over min-safe-height, return target directly
+     * if angle path is greater than 360*, min height for most of path is above the longer arm
+     * if angle path crosses centre, keep above that arm
+     * divide path up ?? and check height of points...
+     */
 
-    return new double[] {elevationTarget, angleTarget};
+    return new double[] {Math.max(elevationCurrent, checkPosition(angleCurrent)), angleCurrent};
   }
 
   /**
