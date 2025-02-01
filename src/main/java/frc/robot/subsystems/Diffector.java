@@ -38,7 +38,7 @@ public class Diffector extends SubsystemBase
   private static TalonFX m_diffectorUC;
   /** portside motor(?), forward direction drives carriage down and clockwise */
   private static TalonFX m_diffectorDC;
-  private DutyCycleEncoder encoder = new DutyCycleEncoder(0);
+  private DutyCycleEncoder encoder;
 
   private double[] motorTargets = new double[2];
 
@@ -50,8 +50,7 @@ public class Diffector extends SubsystemBase
   private double armPos;
   private double elevatorPos;
   private static ArmCalculator arm;
-  private DutyCycleEncoder encoder;
-  
+
   /** Creates a new Diffector. */
   public Diffector() 
   {
