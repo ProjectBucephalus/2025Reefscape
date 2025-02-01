@@ -16,6 +16,7 @@ public class ArmCalculator
   private double minElevation;
   private double maxElevation;
   private double safeElevation;
+  private double projectionAngle;
 
   private double railHeight;
   private double railLateral;
@@ -47,6 +48,7 @@ public class ArmCalculator
     minElevation  = IKGeometry.minElevation;
     maxElevation  = IKGeometry.maxElevation;
     safeElevation = deckHeight + Math.max(coralArmLength, algaeArmLength);
+    projectionAngle = IKGeometry.projectionAngle;
 
     railHeight    = IKGeometry.railHeight;
     railLateral   = IKGeometry.railLateral;
@@ -112,10 +114,12 @@ public class ArmCalculator
     double angleChange = angleTarget - angleCurrent;
     double angleRelative = angleCurrent % 360;
 
+    double[] waypoints = new double[]{};
+
     // Elevation change only
     if (angleChange == 0)
       {return new double[] {checkPosition(elevationTarget, angleTarget), angleTarget};}
-    
+
     // Anticlockwise rotation past both verticals:
     if 
     (
@@ -138,7 +142,7 @@ public class ArmCalculator
     }
 
     // Clockwise rotation past both verticals:
-    if 
+    else if 
     (
       // Angle change greater than one rotation
       angleChange <= -360 ||
@@ -159,7 +163,7 @@ public class ArmCalculator
     }
 
     // Anticlockwise rotation taking the arm past vertical:
-    if 
+    else if 
     ( // Relative angle change goes past upright
       angleRelative + angleChange >= 360 || 
       // Or relative angle change goes past upside-down
@@ -179,7 +183,7 @@ public class ArmCalculator
     }
     
     // Clockwise rotation taking the arm past vertical:
-    if 
+    else if 
     ( // Relative angle change goes past upright
       angleRelative + angleChange <= 360 || 
       // Or relative angle change goes past upside-down
@@ -200,7 +204,25 @@ public class ArmCalculator
 
     // Angle change does not take arm past vertical, so the change in safe height is strictly monotonic
     // Or safe height decreases then increases
-    return new double[] {checkPosition(elevationTarget, angleTarget), angleTarget};
+    else 
+      {}//return new double[] {checkPosition(elevationTarget, angleTarget), angleTarget};}
+
+    // Need to add immediate projection to protect against dangerous elevation/rotation sequencing
+    if (Math.abs(angleChange) > projectionAngle)
+    {
+      // Immediate rotation would cause collision
+      if (checkAngle(angleCurrent + Math.copySign(projectionAngle, angleChange)) > elevationCurrent)
+      { // Set initial waypoint halfway between initial and first waypoint elevations without rotating
+        waypoints[0] = (elevationCurrent + waypoints[2]) / 2;
+        waypoints[1] = angleCurrent;
+      }
+      // Immediate drop in elevation would cause collision
+      else if (checkAngle(angleCurrent + Math.copySign(projectionAngle, angleChange)) > waypoints[2])
+      { // Set initial waypoint halfway between initial and first waypoint rotations without elevating
+        waypoints[0] = elevationCurrent;
+        waypoints[1] = (angleCurrent + waypoints[3]) / 2;
+      }
+    }
   }
 
   /**
