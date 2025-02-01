@@ -70,7 +70,7 @@ public class Diffector extends SubsystemBase
     rotationRatio = Constants.Diffector.rotationRatio;
     travelRatio = Constants.Diffector.travelRatio;
 
-    cargoState = Constants.Diffector.startingCargoState;
+    cargoState = updateCargoState();
 
     motionMagicRequester = new MotionMagicVoltage(0);
   }
@@ -263,21 +263,30 @@ public class Diffector extends SubsystemBase
     }
   }
 
+  private CargoStates updateCargoState()
+  {
+    if(RobotContainer.coral && RobotContainer.algae) // Both game pieces
+    {
+      return CargoStates.TWO_ITEM;
+    }
+    else if(RobotContainer.coral ^ RobotContainer.algae) // One game piece
+    {
+      return CargoStates.ONE_ITEM;
+    }
+    else if(!RobotContainer.coral && !RobotContainer.algae) // No game piece
+    {
+      return CargoStates.EMPTY;
+    }
+    else // Default state, should never be reached
+    {
+      return CargoStates.EMPTY;
+    }
+  }
+
   @Override
   public void periodic() 
   { 
-    if(RobotContainer.coral && RobotContainer.algae)
-    {
-      cargoState= CargoStates.TWO_ITEM;
-    }
-    else if(RobotContainer.coral ^ RobotContainer.algae)
-    {
-      cargoState= CargoStates.ONE_ITEM;
-    }
-    else if(!RobotContainer.coral && !RobotContainer.algae)
-    {
-      cargoState= CargoStates.EMPTY;
-    }
+    cargoState = updateCargoState();
 
     calculateMotorTargets();
 

@@ -20,7 +20,7 @@ public final class Constants
     public static final class Rumbler 
     {
         public static final double driverDefault = 1;
-        public static final double coDriverDefault = 1;  
+        public static final double copilotDefault = 1;  
     }
 
     public static final class Control
@@ -204,7 +204,8 @@ public final class Constants
          */
         public static final double rotationRatio = gearboxRatio * sprocketRatio / 2;
 
-        public static final CargoStates startingCargoState = CargoStates.EMPTY;
+        public static final boolean startingCoralState = true;
+        public static final boolean startingAlgaeState = false;
 
         public static final double maxRotation = 3;
         public static final double maxAbsPos = maxRotation * 360;
