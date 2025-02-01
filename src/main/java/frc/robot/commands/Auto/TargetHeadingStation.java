@@ -135,13 +135,27 @@ public class TargetHeadingStation extends Command
   {
     robotY = ySup.getAsDouble();
 
-    if (robotY >= 4.026) 
+    if (FieldUtils.isRedAlliance()) 
     {
-      targetHeading = new Rotation2d(Units.degreesToRadians(126));
-    } 
-    else 
+      if (robotY >= 4.026) 
+      {
+        targetHeading = new Rotation2d(Units.degreesToRadians(-126));
+      } 
+      else 
+      {
+        targetHeading = new Rotation2d(Units.degreesToRadians(126));
+      }
+    }
+    else
     {
-      targetHeading = new Rotation2d(Units.degreesToRadians(-126));
+      if (robotY >= 4.026) 
+      {
+        targetHeading = new Rotation2d(Units.degreesToRadians(126));
+      } 
+      else 
+      {
+        targetHeading = new Rotation2d(Units.degreesToRadians(-126));
+      }
     }
   }
 }

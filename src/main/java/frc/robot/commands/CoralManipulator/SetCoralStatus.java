@@ -12,12 +12,12 @@ import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 public class SetCoralStatus extends Command 
 {
   CoralManipulator s_CoralManipulator;
-  CoralManipulatorStatus coralManipulatorStatus;
+  CoralManipulatorStatus s_CoralManipulatorStatus;
 
-  public SetCoralStatus(CoralManipulator s_CoralManipulator, CoralManipulatorStatus coralManipulatorStatus) 
+  public SetCoralStatus(CoralManipulator s_CoralManipulator, CoralManipulatorStatus s_CoralManipulatorStatus) 
   {
     this.s_CoralManipulator = s_CoralManipulator;
-    this.coralManipulatorStatus = coralManipulatorStatus;
+    this.s_CoralManipulatorStatus = s_CoralManipulatorStatus;
 
     addRequirements(s_CoralManipulator);
   }
@@ -26,7 +26,7 @@ public class SetCoralStatus extends Command
   @Override
   public void execute() 
   {
-    s_CoralManipulator.setCoralManipulatorStatus(coralManipulatorStatus);
+    s_CoralManipulator.setCoralManipulatorStatus(s_CoralManipulatorStatus);
   }
 
   // Returns true when the command should end.

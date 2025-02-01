@@ -31,7 +31,6 @@ public class PathfindToStation extends Command
 
   private PathPlannerPath path;
   private Command pathfindingCommand;
-
  
   /** Creates a new PathfindToStation. */
   public PathfindToStation(int stationPosition, DoubleSupplier ySup, CommandSwerveDrivetrain s_Swerve) 

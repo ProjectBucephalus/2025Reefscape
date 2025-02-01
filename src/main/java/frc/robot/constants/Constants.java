@@ -20,7 +20,7 @@ public final class Constants
     public static final class Rumbler 
     {
         public static final double driverDefault = 1;
-        public static final double coDriverDefault = 1;  
+        public static final double copilotDefault = 1;  
     }
 
     public static final class Control
@@ -147,7 +147,8 @@ public final class Constants
             }
         };
 
-        public static final ArrayList<Translation2d> reefMidPoints = FieldUtils.GeoFencing.reefBlue.getMidPoints();
+        public static final ArrayList<Translation2d> reefBlueMidPoints = FieldUtils.GeoFencing.reefBlue.getMidPoints();
+        public static final ArrayList<Translation2d> reefRedMidPoints = FieldUtils.GeoFencing.reefRed.getMidPoints();
 
         public static final String defaultAuto = "t5,cR5,w3.5,cR5";
     }
@@ -156,6 +157,7 @@ public final class Constants
     {
         public static final int ucMotorID = IDConstants.ucMotorID;
         public static final int uaMotorID = IDConstants.uaMotorID;
+        public static final int encoderPWMID = IDConstants.encoderPWMID;
 
         public static final double diffectorMotorKSEmpty = 0;
         public static final double diffectorMotorKVEmpty = 0;
@@ -209,7 +211,8 @@ public final class Constants
          */
         public static final double rotationRatio = gearboxRatio * sprocketRatio / 2;
 
-        public static final CargoStates startingCargoState = CargoStates.EMPTY;
+        public static final boolean startingCoralState = true;
+        public static final boolean startingAlgaeState = false;
 
         public static final double maxRotation = 3;
         public static final double maxAbsPos = maxRotation * 360;
@@ -222,8 +225,8 @@ public final class Constants
          */
         public static final double angleTolerance = 1;
 
-        /** Elevation height tolerance, mm */
-        public static final double elevationTolerance = 1;
+        /** Elevation height tolerance, m */
+        public static final double elevationTolerance = 0.05;
 
         /* Preset arm angles */
         public static final double netAngle = 0;
@@ -252,13 +255,29 @@ public final class Constants
         public static final double algae2Elevation = 0;
         public static final double climbElevation = 0;
         public static final double startingElevation = 0;
+        
+        public static final class IKGeometry
+        {
+            /* Manipulator arm geometry */
+            public static final double minElevation   = 0.444;
+            public static final double maxElevation   = 1.709;
+            public static final double coralArmLength   = 0.5;
+            public static final double coralArmAngle    = 64/2;
+            public static final double algaeArmLength   = 0.6;
+            public static final double algaeArmAngle    = 60/2;
+            public static final double algaeWheelLength = 0.54;
+            public static final double algaeClawLength  = 0.48;
+            public static final double algaeInnerLength = 0.3;
+            public static final double algaeInnerAngle  = 108/2;
 
-        /* Manipulator arm geometry */
-        public static final double algaeArmLength = 0;
-        public static final double coralArmLength = 0;
-        public static final double algaeArmWidth = 0;
-        public static final double coralArmWidth = 0;
-        public static final double algaeProtrusion = 0;
+            /* Deck obstruction geometry */
+            public static final double railHeight    = 0.23;
+            public static final double railLateral   = 0.38;
+            public static final double railMedial    = 0.27;
+            public static final double deckHeight    = 0.18;
+            public static final double harpoonHeight = 0.1;
+            public static final double harpoonAngle  = 17;
+        }
     }
 
     public static final class GamePiecesManipulator 
@@ -297,18 +316,22 @@ public final class Constants
         /* Intake motors speeds */
         public static final double coralIntakeMotorSpeed = 0.8;
         public static final double algaeIntakeMotorSpeed = 0.8;
-        public static final double coralTransferMotorSpeed = 0;
-        public static final double algaeTransferMotorSpeed = 0;
+        public static final double coralEjectMotorSpeed = -0.8;
+        public static final double algaeEjectMotorSpeed = -0.8;
         public static final double climbingIntakeMotorSpeed = 0;
         public static final double standByMotorSpeed = 0;
         public static final double stowedMotorSpeed = 0;
+        public static final double coralTransferMotorSpeed = 0;
+        public static final double algaeTransferMotorSpeed = 0;
 
         /* Top intake arm positions 
          * TODO: Put in Degrees for the arm top and bottom position in this comment
          */
         public static final double topCoralIntakeArmTarget = 0;
         public static final double topAlgaeIntakeArmTarget = 0;
-        public static final double topClimbingArmTarget = 0;
+        public static final double topCoralEjectArmTarget = 0;
+        public static final double topAlgaeEjectArmTarget = 0;
+        public static final double algaeClimbingArmTarget = 0;
         public static final double topStandByArmTarget = 0;
         public static final double topStowedArmTarget = 0;
         public static final double topCoralTransferArmTarget = 0;
@@ -317,7 +340,9 @@ public final class Constants
         /* Bottom intake arm positions */
         public static final double bottomCoralIntakeArmTarget = 0;
         public static final double bottomAlgaeIntakeArmTarget = 0;
-        public static final double bottomClimbingArmTarget = 0;
+        public static final double bottomCoralEjectArmTarget = 0;
+        public static final double bottomAlgaeEjectArmTarget = 0;
+        public static final double coralClimbingArmTarget = 0;
         public static final double bottomStandByArmTarget = 0;
         public static final double bottomStowedArmTarget = 0;
         public static final double bottomCoralTransferArmTarget = 0;
@@ -351,10 +376,6 @@ public final class Constants
         /* Arm ratios */
         public static final double topArmRatio = 16.7;
         public static final double bottomArmRatio = 1;
-
-        public static final int coralLimitSwitch1DigitalInput = 3;
-        public static final int coralLimitSwitch2DigitalInput = 4;
-        public static final int intakeAlgaeBeamBreakDigitalInput = 5;
     }
 
     public static final class Climber

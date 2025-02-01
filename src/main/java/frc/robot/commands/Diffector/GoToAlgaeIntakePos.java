@@ -9,45 +9,42 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.Diffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class GoToStartConfig extends Command 
-{
-  /** Creates a new GoToClimbConfig. */
+public class GoToAlgaeIntakePos extends Command {
+  double elevation;
+  double angle;
+  boolean level2;
   Diffector s_Diffector;
-  private boolean isFinished;
-  public GoToStartConfig(Diffector s_Diffector) 
+  Command moveCommand;
+
+  public GoToAlgaeIntakePos(boolean level2, Diffector s_Diffector) 
   {
     this.s_Diffector = s_Diffector;
-
-    addRequirements(s_Diffector);
+    this.level2 = level2;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() 
   {
-    s_Diffector.goToAngle(Constants.Diffector.climbAngle);
-    isFinished = false;
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() 
-  {
-    if (s_Diffector.armAtAngle())
+    if (level2)
     {
-      s_Diffector.setElevatorTarget(Constants.Diffector.startingElevation);
-      isFinished = true;
+      elevation = Constants.Diffector.algae2Elevation;
+      angle = Constants.Diffector.algae2Angel;
     }
-  }
+    else
+    {
+      elevation = Constants.Diffector.algae1Elevation;
+      angle = Constants.Diffector.algae1Angel;
+    }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
+    moveCommand = new MoveTo(s_Diffector, elevation, angle);
+    moveCommand.schedule();
+  }
 
   // Returns true when the command should end.
   @Override
-  public boolean isFinished() 
+  public boolean isFinished()
   {
-    return isFinished;
+    return moveCommand.isFinished();
   }
 }
