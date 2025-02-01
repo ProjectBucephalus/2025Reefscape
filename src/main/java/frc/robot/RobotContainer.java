@@ -1,7 +1,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -90,7 +89,7 @@ public class RobotContainer
             )
         );
 
-        s_Swerve.resetRotation(new Rotation2d(Units.degreesToRadians(Constants.Swerve.initialHeading)));
+        s_Swerve.resetRotation(new Rotation2d(Math.toRadians(s_Swerve.getPigeon2().getYaw().getValueAsDouble())));
 
         // Configure the button bindings
         configureButtonBindings();
