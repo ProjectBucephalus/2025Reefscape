@@ -68,25 +68,25 @@ public class Limelight extends SubsystemBase
 
     headingDeg = s_Swerve.getPigeon2().getYaw().getValueAsDouble();
     omegaRps = Units.radiansToRotations(s_Swerve.getState().Speeds.omegaRadiansPerSecond);
-    objectX = (getObjectPose().getX() + mt2.pose.getX());
-    objectY = (getObjectPose().getY() + mt2.pose.getY());
     objectRota = s_Swerve.getState().Pose.getRotation();
-
-    SmartDashboard.putNumber("Gyro yaw", headingDeg);
+    
     
     objectTest.setPose(objectX, objectY, objectRota);
-
+    
     
     if (SmartDashboard.getBoolean("Use Limelight", true))
     {
       LimelightHelpers.SetRobotOrientation(limelightName, headingDeg, 0, 0, 0, 0, 0);
       LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, validIDs);
-
+      
       mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
-
+      
+      objectX = (getObjectPose().getX() + mt2.pose.getX());
+      objectY = (getObjectPose().getY() + mt2.pose.getY());
+      
       useUpdate = !(mt2 == null || mt2.tagCount == 0 || omegaRps > 2.0);
       SmartDashboard.putBoolean("Use " + limelightName + " update", useUpdate);
-
+      
       if (useUpdate) 
       {
         s_Swerve.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
@@ -101,5 +101,6 @@ public class Limelight extends SubsystemBase
       SmartDashboard.putString(limelightName + "GetObject Output", getObjectPose().toString());
     }
     SmartDashboard.putNumber(limelightName + "RPS", omegaRps);
+    SmartDashboard.putNumber("Gyro yaw", headingDeg);
   }
 }
