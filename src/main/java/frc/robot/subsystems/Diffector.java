@@ -111,7 +111,7 @@ public class Diffector extends SubsystemBase
   public double[] calculateMotorTargets(double elevatorTarget, double armTarget)
   {
     // IK projection and object avoidance
-    double[] projectedTargets = arm.pathfindIK(elevatorTarget, armTarget, elevatorPos, armPos);
+    double[] projectedTargets = arm.pathfindArm(elevatorTarget, armTarget, elevatorPos, armPos);
 
     double[] calculatedTargets = new double[2];
 

@@ -39,10 +39,15 @@ public class ArmCalculator
   private Translation2d algaeClawA, algaeClawC;
   private Translation2d algaeWheelA, algaeWheelC;
 
-  private Translation2d[] armGeometry, armGeometryRotated;
+  private final Translation2d[] armGeometry;
+  private Translation2d[] armGeometryRotated;
 
   public ArmCalculator()
   {
+    minElevation  = IKGeometry.minElevation;
+    maxElevation  = IKGeometry.maxElevation;
+    safeElevation = deckHeight + Math.max(coralArmLength, algaeArmLength);
+
     railHeight    = IKGeometry.railHeight;
     railLateral   = IKGeometry.railLateral;
     railMedial    = IKGeometry.railMedial;
@@ -72,23 +77,19 @@ public class ArmCalculator
     
     armGeometry = new Translation2d[]
     {
-      coralA,
-      coralC,
-      algaeOuterA,
-      algaeOuterC,
-      algaeInnerA,
-      algaeInnerC,
-      algaeClawA,
-      algaeClawC,
-      algaeWheelA,
-      algaeWheelC
+      coralA,      // [0] // Anticlockwise limit of Coral arm
+      coralC,      // [1] // Clockwise limit of Coral arm
+      algaeOuterA, // [2] // Anticlockwise limit of Algae arm
+      algaeOuterC, // [3] // Clockwise limit of Algae arm
+      algaeInnerA, // [4] // Anticlockwise, innermost point of Algae claw
+      algaeInnerC, // [5] // Clockwise, innermost point of Algae claw
+      algaeClawA,  // [6] // Anticlockwise, outermost point of Algae claw
+      algaeClawC,  // [7] // Clockwise, outermost point of Algae claw
+      algaeWheelA, // [8] // Anticlockwise limit of Algae wheel
+      algaeWheelC  // [9] // Clockwise limit of Algae wheel
     };
     
     armGeometryRotated = armGeometry;
-
-    minElevation  = IKGeometry.minElevation;
-    maxElevation  = IKGeometry.maxElevation;
-    safeElevation = deckHeight + Math.max(coralArmLength, algaeArmLength);
   }
 
   /**
@@ -99,26 +100,125 @@ public class ArmCalculator
    * @param angleCurrent current angle of the arm, degrees anticlockwise, 0 = unwound with coral at top
    * @return double array containing the projected path, elevation/angle pairs
    */
-  public double[] pathfindIK(double elevationTarget, double angleTarget, double elevationCurrent, double angleCurrent)
+  public double[] pathfindArm(double elevationTarget, double angleTarget, double elevationCurrent, double angleCurrent)
   {
     elevationCurrent = Conversions.clamp(elevationCurrent,minElevation,maxElevation);
     elevationTarget  = Conversions.clamp(elevationTarget,minElevation,maxElevation);
+
+    // Full intended path of arm is above safe limits, path is safe as given
     if (elevationCurrent >= safeElevation && elevationTarget >= safeElevation)
       {return new double[] {elevationTarget, angleTarget};}
-    /*
-     * if elevation path is over min-safe-height, return target directly
-     * if angle path is greater than 360*, min height for most of path is above the longer arm
-     * if angle path crosses centre, keep above that arm
-     * divide path up ?? and check height of points...
-     */
 
-    return new double[] {Math.max(elevationCurrent, checkPosition(angleCurrent)), angleCurrent};
+    double angleChange = angleTarget - angleCurrent;
+    double angleRelative = angleCurrent % 360;
+
+    // Elevation change only
+    if (angleChange == 0)
+      {return new double[] {checkPosition(elevationTarget, angleTarget), angleTarget};}
+    
+    // Anticlockwise rotation past both verticals:
+    if 
+    (
+      // Angle change greater than one rotation
+      angleChange >= 360 ||
+      // Or relative angle change goes past both verticals
+      (angleRelative < 180 && angleRelative + angleChange >= 360)
+    )
+    {
+      return new double[]
+      {
+        // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
+        safeElevation,
+        angleTarget - (angleTarget % 180),
+        
+        // Target waypoint:
+        checkPosition(elevationTarget, angleTarget),
+        angleTarget
+      };
+    }
+
+    // Clockwise rotation past both verticals:
+    if 
+    (
+      // Angle change greater than one rotation
+      angleChange <= -360 ||
+      // Or relative angle change goes past both verticals
+      (angleRelative > 180 && angleRelative + angleChange <= 0)
+    )
+    {
+      return new double[]
+      {
+        // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
+        safeElevation,
+        angleTarget + (-angleTarget % 180),
+        
+        // Target waypoint:
+        checkPosition(elevationTarget, angleTarget),
+        angleTarget
+      };
+    }
+
+    // Anticlockwise rotation taking the arm past vertical:
+    if 
+    ( // Relative angle change goes past upright
+      angleRelative + angleChange >= 360 || 
+      // Or relative angle change goes past upside-down
+      (angleRelative < 180 && angleRelative + angleChange >= 180)
+    )
+    {
+      return new double[]
+      {
+        // Intermediate waypoint: Safe elevation for the last vertical point before the target
+        checkPosition(elevationTarget, angleTarget - (angleTarget % 180)),
+        angleTarget - (angleTarget % 180),
+        
+        // Target waypoint:
+        checkPosition(elevationTarget, angleTarget),
+        angleTarget
+      };
+    }
+    
+    // Clockwise rotation taking the arm past vertical:
+    if 
+    ( // Relative angle change goes past upright
+      angleRelative + angleChange <= 360 || 
+      // Or relative angle change goes past upside-down
+      (angleRelative > 180 && angleRelative + angleChange <= 180)
+    )
+    {
+      return new double[]
+      {
+        // Intermediate waypoint: Safe elevation for the last vertical point before the target
+        checkPosition(elevationTarget, angleTarget + (-angleTarget % 180)),
+        angleTarget + (-angleTarget % 180),
+        
+        // Target waypoint:
+        checkPosition(elevationTarget, angleTarget),
+        angleTarget
+      };
+    }
+
+    // Angle change does not take arm past vertical, so the change in safe height is strictly monotonic
+    // Or safe height decreases then increases
+    return new double[] {checkPosition(elevationTarget, angleTarget), angleTarget};
+  }
+
+  /**
+   * Adjusts the elevation of a given position to keep above safe limits
+   * @param elevation the intended elevation
+   * @param angle the angle of the arm to check
+   * @return maximum of the intended elevation and the safe elevation for the given angle
+   */
+  public double checkPosition(double elevation, double angle)
+  {
+    return Math.max(elevation, checkAngle(angle));
   }
 
   /**
    * Returns the minimum safe arm height for a given angle
+   * @param angle the angle of the arm to check
    */
-  public double checkPosition(double angle)
+  public double checkAngle(double angle)
   {
     angle %= 360;
     Rotation2d rotation = new Rotation2d(Units.degreesToRadians(angle));
