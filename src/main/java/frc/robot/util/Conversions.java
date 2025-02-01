@@ -1,7 +1,5 @@
 package frc.robot.util;
 
-import edu.wpi.first.math.MathUtil;
-
 /**
  * Wraps int value over [min..max]
  */
