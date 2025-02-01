@@ -147,7 +147,8 @@ public final class Constants
             }
         };
 
-        public static final ArrayList<Translation2d> reefMidPoints = FieldUtils.GeoFencing.reefBlue.getMidPoints();
+        public static final ArrayList<Translation2d> reefBlueMidPoints = FieldUtils.GeoFencing.reefBlue.getMidPoints();
+        public static final ArrayList<Translation2d> reefRedMidPoints = FieldUtils.GeoFencing.reefRed.getMidPoints();
 
         public static final String defaultAuto = "t5,cR5,w3.5,cR5";
     }
