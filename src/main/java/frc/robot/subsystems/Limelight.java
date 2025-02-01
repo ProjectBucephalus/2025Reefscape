@@ -5,8 +5,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.Utils;
-import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
@@ -23,7 +23,6 @@ public class Limelight extends SubsystemBase
   private LimelightHelpers.PoseEstimate mt2;
   private int[] validIDs = Constants.Vision.validIDs;
 
-  private SwerveDriveState driveState;
   private double headingDeg;
   private double omegaRps;
 
@@ -48,28 +47,37 @@ public class Limelight extends SubsystemBase
 
   public Pose3d getObjectPose()
   {return LimelightHelpers.getTargetPose3d_RobotSpace(limelightName);}
+
+  public void setIMUMode(int mode)
+  {
+    LimelightHelpers.SetIMUMode(limelightName, mode);
+  }
    
   @Override
   public void periodic() 
   {
-    // This method will be called once per scheduler run
-    
-    //LimelightHelpers.SetRobotOrientation(limelightName, s_Swerve.getPigeon2().getYaw().getValueAsDouble(), 0.0, 0.0, 0.0, 0.0, 0.0);
-    
-    driveState = s_Swerve.getState();
-    headingDeg = driveState.Pose.getRotation().getDegrees();
-    omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
+    // This method will be called once per scheduler run  
+
+    headingDeg = s_Swerve.getPigeon2().getYaw().getValueAsDouble();
+    omegaRps = Units.radiansToRotations(s_Swerve.getState().Speeds.omegaRadiansPerSecond);
+
+    SmartDashboard.putNumber("Gyro yaw", headingDeg);
     
     if (SmartDashboard.getBoolean("Use Limelight", true)) 
     {
       LimelightHelpers.SetRobotOrientation(limelightName, headingDeg, 0, 0, 0, 0, 0);
-      mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
       LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, validIDs);
+
+      mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
+
       useUpdate = !(mt2 == null || mt2.tagCount == 0 || omegaRps > 2.0);
       SmartDashboard.putBoolean("Use " + limelightName + " update", useUpdate);
-      
+
       if (useUpdate) 
-        {s_Swerve.addVisionMeasurement(mt2.pose, Utils.fpgaToCurrentTime(mt2.timestampSeconds));}
+      {
+        s_Swerve.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+        s_Swerve.addVisionMeasurement(mt2.pose, Utils.fpgaToCurrentTime(mt2.timestampSeconds));
+      }
     }
     
     if(mt2 != null)

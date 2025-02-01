@@ -3,7 +3,6 @@ package frc.robot;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -89,16 +88,16 @@ public class RobotContainer
             new TeleopSwerve
             (
                 s_Swerve, 
-                () -> driver.getRawAxis(translationAxis), 
-                () -> driver.getRawAxis(strafeAxis), 
-                () -> driver.getRawAxis(rotationAxis), 
+                () -> -driver.getRawAxis(translationAxis), 
+                () -> -driver.getRawAxis(strafeAxis), 
+                () -> -driver.getRawAxis(rotationAxis), 
                 () -> driver.getRawAxis(brakeAxis),
                 () -> true,
                 () -> !driver.leftStick().getAsBoolean()
             )
         );
 
-        s_Swerve.resetRotation(new Rotation2d(Units.degreesToRadians(Constants.Swerve.initialHeading)));
+        s_Swerve.resetRotation(new Rotation2d(Math.toRadians(s_Swerve.getPigeon2().getYaw().getValueAsDouble())));
 
         // Configure the button bindings
         configureButtonBindings();

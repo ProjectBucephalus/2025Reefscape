@@ -1,12 +1,11 @@
 package frc.robot.util;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -40,35 +39,22 @@ public class FieldUtils
     public static int getNearestReefFace(Translation2d robotPos)
     {
         int nearestReefFace;
-        
-        nearestReefFace = Constants.Auto.reefMidPoints.indexOf(robotPos.nearest(Constants.Auto.reefMidPoints));
-        nearestReefFace = (int)MathUtil.inputModulus(nearestReefFace, 1, 6);
-        
-        return nearestReefFace;
-    }
+        ArrayList<Translation2d> localList;
 
-    public static Translation2d flipTranslation(Translation2d position) 
-    {
-        // flip when red
-        if (isRedAlliance()) {
-            // reflect the pose over center line, flip both the X
-            return new Translation2d(fieldLength - position.getX(), position.getY());
+        if (isRedAlliance()) 
+        {   
+            localList = Constants.Auto.reefRedMidPoints;
+        }
+        else
+        {
+            localList = Constants.Auto.reefBlueMidPoints;
         }
 
-        // Blue or we don't know; return the original position
-        return position;
-    }
+        nearestReefFace = localList.indexOf(robotPos.nearest(localList)); 
 
-    public static Pose2d transformToPose2d(Transform2d position) 
-    {
-        // Converts a Transform2d to a pose.
-        return new Pose2d(position.getTranslation(), position.getRotation());
-    }
-
-    public static Pose2d translationToPose2d(Translation2d position) 
-    {
-        // Converts a Transform2d to a pose.
-        return new Pose2d(position.getX(), position.getY(), position.getAngle());
+        nearestReefFace = Conversions.wrap(nearestReefFace, 1, 6);
+        
+        return nearestReefFace;
     }
 
     public static PathPlannerPath loadPath(String pathName) 
@@ -130,8 +116,8 @@ public class FieldUtils
             ObjectTypes.walls
         );
 
-        public static final GeoFenceObject reefBlue = new GeoFenceObject(4.489, 4.026, reefBuffer, circumscribedReefZoneDiameter / 2, 0, 6); // TODO: set as reef zone for testing
-        public static final GeoFenceObject reefRed = new GeoFenceObject(13.059, 4.026, reefBuffer, circumscribedReefZoneDiameter / 2, 0, 6);
+        public static final GeoFenceObject reefBlue = new GeoFenceObject(4.489, 4.026, reefBuffer, circumscribedReefDiameter / 2, 0, 6); // TODO: set as reef zone for testing
+        public static final GeoFenceObject reefRed = new GeoFenceObject(13.059, 4.026, reefBuffer, circumscribedReefDiameter / 2, 180, 6);
         public static final GeoFenceObject bargeColumn = new GeoFenceObject(8.774, 4.026, 0.25, 0.15);
         public static final GeoFenceObject bargeZoneBlue = new GeoFenceObject(8.190, 3.721, 9.358, 0, bargeBuffer, 0, ObjectTypes.box);
         public static final GeoFenceObject bargeZoneRed = new GeoFenceObject(8.190, 4.331, 9.358, fieldWidth, bargeBuffer, 0, ObjectTypes.box);

@@ -9,12 +9,16 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
+import frc.robot.util.ArmCalculator;
 
 public class Diffector extends SubsystemBase 
 {
@@ -30,10 +34,11 @@ public class Diffector extends SubsystemBase
   private final double stowThreshold = Constants.Diffector.angleTolerance;
   
   /* Name is effect of motor when running clockwise/positive (e.g. elevator Up, arm Clockwise) */
-  /** motor L in kirby's docs */
-  private TalonFX m_diffectorUC;
-  /** motor R in kirby's docs */
-  private TalonFX m_diffectorDC;
+  /** starboardside motor(?), forward direction drives carriage up and clockwise */
+  private static TalonFX m_diffectorUC;
+  /** portside motor(?), forward direction drives carriage down and clockwise */
+  private static TalonFX m_diffectorDC;
+  private DutyCycleEncoder encoder;
 
   private double[] motorTargets = new double[2];
 
@@ -43,18 +48,20 @@ public class Diffector extends SubsystemBase
   private double offset;
   private double altOffset;
   private double armPos;
-  private DutyCycleEncoder encoder;
-  
+  private double elevatorPos;
+  private static ArmCalculator arm;
+
   /** Creates a new Diffector. */
   public Diffector() 
   {
+    arm = new ArmCalculator();
     motorConfig = CTREConfigs.diffectorFXConfig;
 
     m_diffectorUC = new TalonFX(Constants.Diffector.ucMotorID);
     m_diffectorDC = new TalonFX(Constants.Diffector.uaMotorID);
     encoder = new DutyCycleEncoder(Constants.Diffector.encoderPWMID);
 
-    targetElevation = 0;
+    targetElevation = Constants.Diffector.startingElevation;
     targetAngle = 0;
 
     m_diffectorUC.getConfigurator().apply(motorConfig);
@@ -70,14 +77,14 @@ public class Diffector extends SubsystemBase
 
   /**
    * Calculates arm rotation based on motor positions
-   * @return Arm rotation, degrees clockwise, 0 = coral at top
+   * @return Arm rotation, degrees clockwise, 0 = algae at top
    */
   public double getArmPos()
   {
     return (m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorDC.getPosition().getValueAsDouble()) * rotationRatio;
   }
 
-  /**
+    /**
    * Arm Rotation as measured from encoder
    * @return Arm rotation, degrees clockwise, 0 = coral at top
    */
@@ -104,10 +111,13 @@ public class Diffector extends SubsystemBase
    */
   public double[] calculateMotorTargets(double elevatorTarget, double armTarget)
   {
+    // IK projection and object avoidance
+    double[] projectedTargets = arm.pathfindArm(elevatorTarget, armTarget, elevatorPos, armPos);
+
     double[] calculatedTargets = new double[2];
 
-    calculatedTargets[0] = (armTarget / rotationRatio) + (elevatorTarget / travelRatio);
-    calculatedTargets[1] = (armTarget / rotationRatio) - (elevatorTarget / travelRatio);
+    calculatedTargets[0] = (projectedTargets[1] / rotationRatio) + (projectedTargets[0] / travelRatio);
+    calculatedTargets[1] = (projectedTargets[1] / rotationRatio) - (projectedTargets[0] / travelRatio);
 
     return calculatedTargets;
   }
@@ -188,7 +198,7 @@ public class Diffector extends SubsystemBase
    * Sets the Diffector arm to rotate Anticlockwise (viewed from bow) to the target angle, with protection against over-rotation
    * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public void goAntiClockwise(double targetAngle)
+  public void goAnticlockwise(double targetAngle)
   {
     targetAngle %= 360;
     offset = MathUtil.inputModulus(targetAngle - (armPos % 360), 0, 360);
@@ -275,6 +285,7 @@ public class Diffector extends SubsystemBase
     m_diffectorDC.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
 
     armPos = getArmPos();
+    elevatorPos = getElevatorPos();
 
     SmartDashboard.putNumber("Elevator Height", getElevatorPos());
     SmartDashboard.putNumber("Arm Rotation", getArmPos());
