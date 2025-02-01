@@ -137,9 +137,12 @@ public class Diffector extends SubsystemBase
     return Math.abs(getElevatorPos() - targetElevation) < Constants.Diffector.elevationTolerance;
   }
 
+  /**
+   * Returns true if the diffector is safely in climb position
+   */
   public boolean climbReady()
   {
-    return true;
+    return (targetElevation == Constants.Diffector.climbElevation && elevatorAtElevation());
   }
 
   /*  
