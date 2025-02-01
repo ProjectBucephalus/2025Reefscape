@@ -32,6 +32,9 @@ public class Intake extends SubsystemBase {
   private DigitalInput coralLimitSwitch1;
   private DigitalInput coralLimitSwitch2;
   private DigitalInput algaeIntakeBeamBreak;
+  private boolean coral;
+  private boolean algae;
+
 
   /* Declarations of all the motion magic variables */
   private final MotionMagicVoltage motionMagic;
@@ -138,12 +141,76 @@ public class Intake extends SubsystemBase {
   /**
    * Sets the speeds to the intake and position to the arms
    * 
-   * @param Status Enum corresponds to the intake motor speeds and
+   * @param status Enum corresponds to the intake motor speeds and
    * arms position
    */
-  public void setIntakeStatus(IntakeStatus Status)
+  public void setIntakeStatus(IntakeStatus status)
   {
-    switch (Status)
+    this.status = status;
+  }
+
+  /**
+   * Gets the target the Algae arm wants to go to
+   * 
+   * @return AlgaeArmTarget current value
+   */
+  public double getAlgaeArmTarget()
+  {
+    return algaeArmTarget;
+  }
+
+  /**
+   * Gets the target the Coral arm want to go to
+   * 
+   * @return CoralArmTarget current value
+   */
+  public double getCoralArmTarget()
+  {
+    return coralArmTarget;
+  }
+
+  public boolean isCoralStowed()
+  {
+    return m_CoralIntake.getPosition().getValueAsDouble() <= Constants.Intake.coralStowedThreshold;
+  } 
+
+  public boolean isAlgaeStowed()
+  {
+    return m_AlgaeIntake.getPosition().getValueAsDouble() <= Constants.Intake.algaeStowedThreshold;
+  }
+  
+  public boolean getAlgaeState()
+  {
+    return algae;
+  }
+
+  public boolean getCoralState()
+  {
+    return coral;
+  }
+
+  public boolean climbReady()
+  {
+    return (m_AlgaeArm.getPosition()).getValueAsDouble() > Constants.Intake.algaeClimbingArmTarget && m_CoralArm.getPosition().getValueAsDouble() > Constants.Intake.coralClimbingArmTarget;
+  }
+
+  @Override
+  public void periodic()  
+  {
+    if (getCoralSwitch1State() || getCoralSwitch2State() && status == IntakeStatus.INTAKE_CORAL)
+    {setIntakeStatus(IntakeStatus.TRANSFER_CORAL);}
+
+    if (!getAlgaeBeamBreakState() && status == IntakeStatus.INTAKE_ALGAE)
+    {
+      touchedAlgae = true;
+    }
+    if (getAlgaeBeamBreakState() && touchedAlgae)
+    {
+      setIntakeStatus(IntakeStatus.TRANSFER_ALGAE);
+      touchedAlgae = false;
+    }
+
+    switch (status)
     {
       case INTAKE_CORAL:
       setAlgaeIntakeSpeed(Constants.Intake.coralIntakeMotorSpeed);
@@ -176,8 +243,8 @@ public class Intake extends SubsystemBase {
       case CLIMBING:
       setAlgaeIntakeSpeed(Constants.Intake.climbingIntakeMotorSpeed);
       setCoralIntakeSpeed(Constants.Intake.climbingIntakeMotorSpeed);
-      setAlgaeArmTarget(Constants.Intake.topClimbingArmTarget);
-      setCoralArmTarget(Constants.Intake.bottomClimbingArmTarget);
+      setAlgaeArmTarget(Constants.Intake.algaeClimbingArmTarget);
+      setCoralArmTarget(Constants.Intake.coralClimbingArmTarget);
       break;
 
       case STAND_BY:
@@ -207,53 +274,6 @@ public class Intake extends SubsystemBase {
       setAlgaeArmTarget(Constants.Intake.topAlgaeTransferArmTarget);
       setCoralArmTarget(Constants.Intake.bottomAlgaeTransferArmTarget);
       break;
-    }
-  }
-
-  /**
-   * Gets the target the Algae arm wants to go to
-   * 
-   * @return AlgaeArmTarget current value
-   */
-  public double getAlgaeArmTarget()
-  {
-    return algaeArmTarget;
-  }
-
-  /**
-   * Gets the target the Coral arm want to go to
-   * 
-   * @return CoralArmTarget current value
-   */
-  public double getCoralArmTarget()
-  {
-    return coralArmTarget;
-  }
-
-  public boolean isCoralStowed()
-  {
-    return m_CoralIntake.getPosition().getValueAsDouble() <= Constants.Intake.coralStowedThreshold;
-  } 
-
-  public boolean isAlgaeStowed()
-  {
-    return m_AlgaeIntake.getPosition().getValueAsDouble() <= Constants.Intake.algaeStowedThreshold;
-  }
-
-  @Override
-  public void periodic()  
-  {
-    if (getCoralSwitch1State() || getCoralSwitch2State() && status == IntakeStatus.INTAKE_CORAL)
-    {setIntakeStatus(IntakeStatus.TRANSFER_CORAL);}
-
-    if (!getAlgaeBeamBreakState() && status == IntakeStatus.INTAKE_ALGAE)
-    {
-      touchedAlgae = true;
-    }
-    if (getAlgaeBeamBreakState() && touchedAlgae)
-    {
-      setIntakeStatus(IntakeStatus.TRANSFER_ALGAE);
-      touchedAlgae = false;
     }
 
     if (getTopArmAngle() >= algaeArmTarget) 

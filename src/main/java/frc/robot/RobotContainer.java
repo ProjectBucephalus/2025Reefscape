@@ -69,8 +69,14 @@ public class RobotContainer
     private final Trigger reefDriveTrigger = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
     private final Trigger stationDriveTrigger = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
     private final Trigger processorDriveTrigger = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
-    private final Trigger driverLeftRumbleTrigger = new Trigger(() -> s_Intake.getCoralSwitch1State() || s_Intake.getCoralSwitch2State() || !s_Intake.getAlgaeBeamBreakState() );
-    
+    private final Trigger driverLeftRumbleTrigger = new Trigger(() -> s_Intake.getCoralState() || s_Intake.getAlgaeState());
+    private final Trigger copilotLeftRumbleTrigger = new Trigger(
+                () -> s_Intake.isCoralStowed() ||s_Intake.getCoralState() ||s_Intake.getAlgaeState() 
+                || s_Intake.getCoralState() && (s_Diffector.getEncoderPos() > 45 && s_Diffector.getEncoderPos() < 315) ||
+                s_Intake.getAlgaeState() && (s_Diffector.getEncoderPos() > 135 && s_Diffector.getEncoderPos() < 225));
+    //private final Trigger driverRightRumblTrigger = new Trigger(() -> )
+    // TODO: Read y to score rumble
+    private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.climbReady() && s_Climber.climbReady() && s_Diffector.climbReady() );
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
@@ -168,8 +174,9 @@ public class RobotContainer
         reefDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
         reefDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
 
+        
+        
 
-        driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_LEFT, "Intake Full"));
         /* 
          * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed
          * Does not need to check the rotation stick, as soon at the rotation stick is moved all drive triggers become false (see line 141)
@@ -231,7 +238,7 @@ public class RobotContainer
             );
 
         /* Copilot Buttons */
-        copilot.start().and(copilot.back()).onTrue(new GoToClimbConfig(s_Diffector));
+        copilot.start().and(copilot.back()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.climbElevation, Constants.Diffector.climbAngle));
         copilot.back().onTrue(new Test("climber", "deploy"));
 
         /* scoringCoral */
@@ -247,43 +254,65 @@ public class RobotContainer
 
         /* transferPosition */
         copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE));
-        copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new GoToAlgaeHandoverConfig(s_Diffector));
+        copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.algaeTransferElevation, Constants.Diffector.algaeTransferAngle));
         copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE));
-        copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new GoToCoralHandoverConfig(s_Diffector));
+        copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.coralTransferElevation, Constants.Diffector.coralTransferAngle));
 
         /* deploy/TransferGamePieces */
-        copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new IntakeAndStow(6, s_Intake));
+        copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STAND_BY));
         copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new TransferGamePiece(s_Diffector, s_Intake, false));
-        copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new IntakeAndStow(6, s_Intake));
+        copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STAND_BY));
         copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new TransferGamePiece(s_Diffector, s_Intake, true));
 
         /* stowGamePieces */
-        copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new IntakeAndStow(5, s_Intake));
+        copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));
         copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new IntakeAlgae(s_AlgaeManipulator));
-        copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new IntakeAndStow( 5, s_Intake));
+        copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));
         copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new IntakeCoral(s_CoralManipulator));
 
         /* intakeFromCoralStation */
         copilot.povLeft().and(copilot.rightTrigger().negate()).whileTrue(new IntakeCoralSequence(s_Diffector, s_CoralManipulator));
 
         /* arm/IntakeGrab */
-        copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new IntakeAndStow( 1, s_Intake));
+        copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_ALGAE));
         copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new IntakeAlgae(s_AlgaeManipulator));
-        copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new IntakeAndStow( 2, s_Intake));
+        copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_CORAL));
         copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new IntakeCoral(s_CoralManipulator));
 
         /* arm/IntakeRelease */
-        copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new IntakeAndStow(3, s_Intake));
+        copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.EJECT_ALGAE));
         copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new EjectAlgae(s_AlgaeManipulator));
-        copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new IntakeAndStow(4, s_Intake));
+        copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.EJECT_CORAL));
         copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new EjectCoral(s_CoralManipulator));
 
         /* robotModifiers */
+        // For testing uses only
         copilot.rightTrigger().onTrue(new Test("algaeModifier", "on")).onFalse(new Test("algaeModifier", "off"));
         copilot.rightBumper().onTrue(new Test("intakeModifier", "on")).onFalse(new Test("intakeModifier", "off"));
+        
+        /* manualWinchControl */
+        copilot.axisGreaterThan(0, 0.85).and(copilot.back()).whileTrue(new Test("manualWinch", "spool winch"));
+        copilot.axisLessThan(0, -0.85).and(copilot.back()).whileTrue(new Test("manualWinch", "unspool winch"));
+        
+        /* manualIntakeControl */
+        copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger()).onTrue(new Test("manualIntake", "intake up"));
+        copilot.axisGreaterThan(1, 0.85).and(copilot.rightTrigger()).onTrue(new Test("manualIntake", "intake down"));
 
-        // copilot.leftStick().and(copilot.rightTrigger()).onTrue(new Test("manualIntake/Winch", null));
-        // copilot.rightStick().and(copilot.rightTrigger()).onTrue(new Test("manualDiffector", null));
+        /* manualArmControl */
+        copilot.axisGreaterThan(4, 0.85).onTrue(new Test("manualArm", "arm clockwise"));
+        copilot.axisLessThan(4, -0.85).onTrue(new Test("manualArm", "arm anticlockwise"));
+      
+        /* manualElevatorControl */
+        copilot.axisLessThan(5, -0.85).whileTrue(new Test("manualElevator", "elevator up"));
+        copilot.axisGreaterThan(5, 0.85).whileTrue(new Test("manualElevator", "elevator down"));
+
+        /* driver rumble bindings */
+        driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_LEFT, "Intake Full"));
+        
+
+        /* codriver rumble bindings */
+        copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.CODRIVER_LEFT, "Transfer Ready"));
+        copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.CODRIVER_RIGHT, "Climb Ready"));
     }
 
     public CommandSwerveDrivetrain getSwerve()

@@ -72,6 +72,11 @@ public class Climber extends SubsystemBase {
     return (m_Winch.getPosition()).getValueAsDouble() <= Constants.Climber.initWinchThreshold;
   }
 
+  public boolean climbReady()
+  {
+    return (m_Winch.getPosition()).getValueAsDouble() >= Constants.Climber.deployWinchPos;
+  }
+
   @Override
   public void periodic()
   {
