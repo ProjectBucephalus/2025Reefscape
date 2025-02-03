@@ -36,7 +36,8 @@ public class TargetHeadingReef extends Command
   private BooleanSupplier fencedSup;
   private Supplier<Translation2d> posSup;
   private Translation2d motionXY;
-  private final GeoFenceObject[] fieldGeoFence = FieldUtils.GeoFencing.fieldGeoFence;
+  private GeoFenceObject[] fieldGeoFence;
+  private boolean redAlliance;
   private double robotRadius;
   private double robotSpeed;
 
@@ -68,6 +69,12 @@ public class TargetHeadingReef extends Command
   public void initialize()
   {
     updateTargetHeading();
+    redAlliance = FieldUtils.isRedAlliance();
+    SmartDashboard.putBoolean("redAlliance", redAlliance);
+    if (redAlliance)
+      {fieldGeoFence = FieldUtils.GeoFencing.fieldRedGeoFence;}
+    else
+      {fieldGeoFence = FieldUtils.GeoFencing.fieldBlueGeoFence;}
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -98,13 +105,23 @@ public class TargetHeadingReef extends Command
       {
           robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;
       }
+
+      // Invert processing input when on red alliance
+      if (redAlliance)
+        {motionXY = motionXY.unaryMinus();}
+
       // Read down the list of geofence objects
       // Outer wall is index 0, so has highest authority by being processed last
-      for (int i = fieldGeoFence.length - 1; i >= 0; i--)
+      for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
       {
-          Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
-          motionXY = inputDamping;
+        Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
+        motionXY = inputDamping;
       }
+
+      // Uninvert processing output when on red alliance
+      if (redAlliance)
+        {motionXY = motionXY.unaryMinus();}
+        
       s_Swerve.setControl
       (
           driveRequest
