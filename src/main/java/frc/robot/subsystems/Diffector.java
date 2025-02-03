@@ -56,6 +56,8 @@ public class Diffector extends SubsystemBase
   {
     arm = new ArmCalculator();
     motorConfig = CTREConfigs.diffectorFXConfig;
+    rotationRatio = Constants.Diffector.rotationRatio;
+    travelRatio = Constants.Diffector.travelRatio;
 
     m_diffectorUC = new TalonFX(Constants.Diffector.ucMotorID);
     m_diffectorDC = new TalonFX(Constants.Diffector.uaMotorID);
@@ -67,8 +69,8 @@ public class Diffector extends SubsystemBase
     m_diffectorUC.getConfigurator().apply(motorConfig);
     m_diffectorDC.getConfigurator().apply(motorConfig);
 
-    rotationRatio = Constants.Diffector.rotationRatio;
-    travelRatio = Constants.Diffector.travelRatio;
+    m_diffectorUC.setPosition((Constants.Diffector.startAngle / rotationRatio) + (Constants.Diffector.startElevation / travelRatio));
+    m_diffectorDC.setPosition((Constants.Diffector.startAngle / rotationRatio) - (Constants.Diffector.startElevation / travelRatio));
 
     cargoState = updateCargoState();
 

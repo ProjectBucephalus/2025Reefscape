@@ -219,50 +219,51 @@ public final class Constants
         public static final double maxAbsPos = maxRotation * 360;
         /** Above this angle, the arm can turn towards centre even if it's a longer path */
         public static final double turnBackThreshold = 135;
-        public static final double startAngle = 0;
-        
-        /**
-         * How many degrees off 0 
-         */
-        public static final double angleTolerance = 1;
 
-        /** Elevation height tolerance, m */
+        /** Physical upper limit of the elevator, metres above the ground */
+        public static final double maxElevation = 1.709;
+        /** Physical lower limit of the elevator, metres above the ground */
+        public static final double minElevation = 0.444;
+        
+        /** Arm rotation check tollerance, degrees */
+        public static final double angleTolerance = 1;
+        
+        /** Elevation height check tolerance, m */
         public static final double elevationTolerance = 0.05;
         
-        /* Preset arm angles, degrees anticlockwise, 0 = coral at top */
-        public static final double netAngle = 0;
-        public static final double processorAngle = 0;
-        public static final double reef4Angle = 0;
-        public static final double reef3Angle = 0;
-        public static final double reef2Angle = 0;
-        public static final double reef1Angle = 0;
+        /* Preset arm angles, degrees anticlockwise for Port-side usecase, 0 = coral at top */
+        public static final double startAngle         =   0;
+        public static final double climbAngle         =  90;
+        public static final double netAngle           = 150;
+        public static final double processorAngle     =  45;
+        public static final double reef4Angle         = 340;
+        public static final double reef3Angle         = 330;
+        public static final double reef2Angle         = 320;
+        public static final double reef1Angle         = 300;
         public static final double coralTransferAngle = 180;
-        public static final double algaeTransferAngle = 0;
-        public static final double coralStationAngle = 0;
-        public static final double algae1Angle = 0;
-        public static final double algae2Angle = 0;
-        public static final double climbAngle = 90;
+        public static final double algaeTransferAngle =   0;
+        public static final double coralStationAngle  = 240;
+        public static final double algae2Angle        = 110;
+        public static final double algae1Angle        = 100;
         
         /* Preset elevator heights, height of centre of rotation above the ground, metres */
-        public static final double netElevation = 0;
-        public static final double processorElevation = 0; 
-        public static final double reef4Elevation = 0;
-        public static final double reef3Elevation = 0;
-        public static final double reef2Elevation = 0;
-        public static final double reef1Elevation = 0;
-        public static final double coralTransferElevation = 0;
-        public static final double algaeTransferElevation = 0;
-        public static final double coralStationElevation = 0;
-        public static final double algae1Elevation = 0;
-        public static final double algae2Elevation = 0;
-        public static final double climbElevation = 0.444;
-        public static final double startElevation = 0.574;
+        public static final double startElevation         = 0.574;
+        public static final double climbElevation         = minElevation;
+        public static final double netElevation           = maxElevation;
+        public static final double processorElevation     = 0.5; 
+        public static final double reef4Elevation         = 1.6;
+        public static final double reef3Elevation         = 1.4;
+        public static final double reef2Elevation         = 1.2;
+        public static final double reef1Elevation         = 1.0;
+        public static final double coralTransferElevation = 1.0;
+        public static final double algaeTransferElevation = 1.5;
+        public static final double coralStationElevation  = 1.0;
+        public static final double algae2Elevation        = 1.5;
+        public static final double algae1Elevation        = 1.3;
         
         public static final class IKGeometry
         {
             /* Manipulator arm geometry */
-            public static final double minElevation   = 0.444;
-            public static final double maxElevation   = 1.709;
             public static final double coralArmLength   = 0.5;
             public static final double coralArmAngle    = 64/2;
             public static final double algaeArmLength   = 0.6;

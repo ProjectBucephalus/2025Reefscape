@@ -43,16 +43,17 @@ public class ArmCalculator
   private Translation2d algaeClawA, algaeClawC;
   private Translation2d algaeWheelA, algaeWheelC;
 
+  /** Unrotated virtual arm */
   private final Translation2d[] armGeometry;
+  /** Rotatable virtual arm */
   private Translation2d[] armGeometryRotated;
 
   public ArmCalculator()
   {
-    minElevation  = IKGeometry.minElevation;
-    maxElevation  = IKGeometry.maxElevation;
-    safeElevation = deckHeight + Math.max(coralArmLength, algaeArmLength);
+    maxElevation  = Constants.Diffector.maxElevation;
+    minElevation  = Constants.Diffector.minElevation;
     projectionAngle = IKGeometry.projectionAngle;
-
+    
     railHeight    = IKGeometry.railHeight;
     railLateral   = IKGeometry.railLateral;
     railMedial    = IKGeometry.railMedial;
@@ -68,6 +69,8 @@ public class ArmCalculator
     algaeClawLength  = IKGeometry.algaeClawLength;
     algaeInnerLength = IKGeometry.algaeInnerLength;
     algaeInnerAngle  = IKGeometry.algaeInnerAngle;
+
+    safeElevation = deckHeight + Math.max(coralArmLength, algaeArmLength + harpoonHeight);
     
     coralA      = new Translation2d(0,coralArmLength)  .rotateBy(new Rotation2d(Units.degreesToRadians(coralArmAngle)));
     coralC      = new Translation2d(0,coralArmLength)  .rotateBy(new Rotation2d(Units.degreesToRadians(-coralArmAngle)));
@@ -227,31 +230,38 @@ public class ArmCalculator
    */
   public double checkAngle(double angle)
   {
-    //  NOTE:
-    //    Right-handed rotation on the +Y (forwards) robot axis, +Rotation called Anticlockwise
-    //      Arm-relative geometry uses X/Y, mapping to Robot-relative X/Z
-    //    +X = Port (robot Left), -X = Starboard (robot Right)
-    //    Topside of electronics = Deck, Obstructing mechanisms/bumbers = Rail
-    //    Centreline = Mast, Near = Medial, Far = Lateral
+    /*
+     *  NOTE:
+     *    Right-handed rotation on the +Y (forwards) robot axis, +Rotation called Anticlockwise
+     *    Arm-relative geometry uses X/Y, mapping to Robot-relative X/Z
+     *    +X = Port (robot Left), -X = Starboard (robot Right)
+     *    Topside of electronics = Deck, Obstructing mechanisms/bumbers = Rail
+     *    Centreline = Mast, Near = Medial, Far = Lateral
+     */
 
     // Starting stow position puts the Algae arm below deck
     if (angle == Constants.Diffector.startAngle && !RobotContainer.algae)
       {return Constants.Diffector.startElevation;}
 
     angle %= 360;
-    //  Rotating the virtual arm reference points to allow for position calculations
-    //    Some conditions are based on the angle
-    //    Some on the relative height of certain reference points
-    //    Some on the relative translation of certain reference points
+
+    /*  
+     *  Rotating the virtual arm reference points to allow for position calculations
+     *    Some conditions are based on the angle
+     *    Some on the relative height of certain reference points
+     *    Some on the relative translation of certain reference points
+     */
     Rotation2d rotation = new Rotation2d(Units.degreesToRadians(angle));
     for(int i = 0; i < armGeometry.length; i++)
       {armGeometryRotated[i] = armGeometry[i].rotateBy(rotation);}
 
     if(angle > 90 && angle < 270) // Coral arm down:
     { 
-    //  Coral manipulator:
-    //    64 degree arc, centred on 0
-    //    0.5m radius
+    /*
+     *  Coral manipulator:
+     *    64 degree arc, centred on 0
+     *    0.5m radius
+     */
 
       if (armGeometryRotated[0].getX() >= 0 && armGeometryRotated[1].getX() <= 0) // Coral arm extends to either side of the mast:
         {return coralArmLength + deckHeight;} // Keep carriage above the deck by the length of the arm
@@ -290,18 +300,20 @@ public class ArmCalculator
 
     else if (angle < 90 || angle < 270) // Algae arm down:
     {
-    //  Algae manipulator:
-    //    Primary span:
-    //      60 degree arc, centred on 180
-    //      0.6m radius
-    //    Claw:
-    //      Inner span:
-    //        108 degree arc, centred on 180
-    //        0.3m radius, then projected paralel to arm
-    //      Outerpoint of wheels halfway between the limits of the primary span, and the point where the Claw meets the primary span
-    //  Harpoon:
-    //    Extends from the deck behind the plane of rotation, such that if algae is held,
-    //    the minimum safe height is increased by 0.1m, 17 degrees either side of mast
+    /*
+     *  Algae manipulator:
+     *    Primary span:
+     *      60 degree arc, centred on 180
+     *      0.6m radius
+     *    Claw:
+     *      Inner span:
+     *        108 degree arc, centred on 180
+     *        0.3m radius, then projected paralel to arm
+     *      Outerpoint of wheels halfway between the limits of the primary span, and the point where the Claw meets the primary span
+     *  Harpoon:
+     *    Extends from the deck behind the plane of rotation, such that if algae is held,
+     *    the minimum safe height is increased by 0.1m, 17 degrees either side of mast
+     */
 
       if ((angle <= harpoonAngle || angle >= 360 - harpoonAngle) && RobotContainer.algae) // Holding algae & angle is within range of the harpoon:
         {return algaeArmLength + deckHeight + harpoonHeight;} // Keep algae above the harpoon
