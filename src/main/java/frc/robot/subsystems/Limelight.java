@@ -10,7 +10,6 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-//import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -40,11 +39,6 @@ public class Limelight extends SubsystemBase
     this.s_Swerve = s_Swerve;
     limelightName = name;
 
-    //FieldObject2d algaeTest = (s_Swerve.field.getObject("Algae"));
-    /* FieldObject2d test = (s_Swerve.field.getObject("Box"));
-    test.setPoses(new Pose2d(2.65,4.15,new Rotation2d()), new Pose2d(8.25,4.15,new Rotation2d(0)), new Pose2d(1,4.15,new Rotation2d()), new Pose2d(2,2,new Rotation2d())); 
-    SmartDashboard.putString("Test Box", test.toString()); */
-    
     objectTest = (s_Swerve.field.getObject("Test"));
     
     SmartDashboard.putBoolean("Use Limelight", true);
@@ -57,14 +51,11 @@ public class Limelight extends SubsystemBase
   {return LimelightHelpers.getTargetPose3d_RobotSpace(limelightName);}
 
   public void setIMUMode(int mode)
-  {
-    LimelightHelpers.SetIMUMode(limelightName, mode);
-  }
+  {LimelightHelpers.SetIMUMode(limelightName, mode);}
    
   @Override
   public void periodic() 
-  {
-    // This method will be called once per scheduler run  
+  { 
 
     headingDeg = s_Swerve.getPigeon2().getYaw().getValueAsDouble();
     omegaRps = Units.radiansToRotations(s_Swerve.getState().Speeds.omegaRadiansPerSecond);
@@ -84,6 +75,7 @@ public class Limelight extends SubsystemBase
       objectX = (getObjectPose().getX() + mt2.pose.getX());
       objectY = (getObjectPose().getY() + mt2.pose.getY());
       
+      
       useUpdate = !(mt2 == null || mt2.tagCount == 0 || omegaRps > 2.0);
       SmartDashboard.putBoolean("Use " + limelightName + " update", useUpdate);
       
@@ -97,8 +89,6 @@ public class Limelight extends SubsystemBase
     if(mt2 != null)
     {
       SmartDashboard.putString(limelightName + " mt2 Pose", mt2.pose.toString());
-      SmartDashboard.putNumber(limelightName + " Tag Count", mt2.tagCount);
-      SmartDashboard.putString(limelightName + "GetObject Output", getObjectPose().toString());
     }
     SmartDashboard.putNumber(limelightName + "RPS", omegaRps);
     SmartDashboard.putNumber("Gyro yaw", headingDeg);
