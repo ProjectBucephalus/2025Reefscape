@@ -17,12 +17,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class TeleopSwerve extends Command 
 {    
-    private final SwerveRequest.FieldCentric driveRequest = new SwerveRequest.FieldCentric()
+    private final SwerveRequest.FieldCentric driveRequest = new SwerveRequest
+        .FieldCentric()
         .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
         .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
         .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
         .withSteerRequestType(SteerRequestType.MotionMagicExpo);
-    private final SwerveRequest.RobotCentric driveRequestRoboCentric = new SwerveRequest.RobotCentric()
+
+    private final SwerveRequest.RobotCentric driveRequestRoboCentric = new SwerveRequest
+        .RobotCentric()
         .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
         .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
         .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
@@ -75,23 +78,23 @@ public class TeleopSwerve extends Command
         {
             if (fencedSup.getAsBoolean())
             {
-                robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
                 SmartDashboard.putString("Drive State", "Fenced");
+                SmartDashboard.putString("XY in:", motionXY.toString());
+
+                robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
                 if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
-                {
-                    robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;
-                }
+                    {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
                 else
-                {
-                    robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;
-                }
+                    {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
+                
                 // Read down the list of geofence objects
                 // Outer wall is index 0, so has highest authority by being processed last
                 for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
                 {
-                    Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY.unaryMinus(), robotRadius);
-                    motionXY = inputDamping.unaryMinus();
+                    Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
+                    motionXY = inputDamping;
                 }
+                SmartDashboard.putString("XY out:", motionXY.toString());
                 s_Swerve.setControl
                 (
                     driveRequest
@@ -114,7 +117,7 @@ public class TeleopSwerve extends Command
         }
         else
         {
-            SmartDashboard.putString("Drive State", "Robot-Rel");
+            SmartDashboard.putString("Drive State", "Robot-Relative");
             s_Swerve.setControl
             (
                 driveRequestRoboCentric
