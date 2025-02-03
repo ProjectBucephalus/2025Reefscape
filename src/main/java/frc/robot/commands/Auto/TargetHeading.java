@@ -99,8 +99,6 @@ public class TargetHeading extends Command
       {
         Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
         motionXY = inputDamping;
-        Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
-        motionXY = inputDamping;
       }
 
       // Uninvert processing output when on red alliance

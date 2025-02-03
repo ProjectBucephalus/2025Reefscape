@@ -147,7 +147,7 @@ public class TeleopSwerve extends Command
                 .withRotationalRate(rotationVal * Constants.Swerve.maxAngularVelocity)
             );
         }
-    }
+    
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     rotationVal *= (Constants.Control.maxRotThrottle - ((Constants.Control.maxRotThrottle - Constants.Control.minRotThrottle) * brakeVal));
     
