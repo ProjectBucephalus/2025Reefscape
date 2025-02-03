@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) FIRST and other WPILib 
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -64,9 +64,7 @@ public class TargetHeadingStation extends Command
 
   @Override 
   public void initialize()
-  {
-    updateTargetHeading();
-  }
+    {updateTargetHeading();}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -78,9 +76,7 @@ public class TargetHeadingStation extends Command
     motionXY = new Translation2d(translationSpeed, strafeSpeed);
 
     if (SmartDashboard.getBoolean("Station Snap Updating", true))
-    {
-      updateTargetHeading();
-    }
+      {updateTargetHeading();}
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     
@@ -89,26 +85,22 @@ public class TargetHeadingStation extends Command
       robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
       SmartDashboard.putString("Drive State", "Fenced");
       if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
-      {
-          robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;
-      }
+        {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
       else
-      {
-          robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;
-      }
+        {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
       // Read down the list of geofence objects
       // Outer wall is index 0, so has highest authority by being processed last
       for (int i = fieldGeoFence.length - 1; i >= 0; i--)
       {
-          Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
-          motionXY = inputDamping;
+        Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
+        motionXY = inputDamping;
       }
       s_Swerve.setControl
       (
-          driveRequest
-          .withVelocityX(motionXY.getX())
-          .withVelocityY(motionXY.getY())
-          .withTargetDirection(targetHeading)
+        driveRequest
+        .withVelocityX(motionXY.getX())
+        .withVelocityY(motionXY.getY())
+        .withTargetDirection(targetHeading)
       );
     }
     else
@@ -116,10 +108,10 @@ public class TargetHeadingStation extends Command
       SmartDashboard.putString("Drive State", "Non-Fenced");
       s_Swerve.setControl
       (
-          driveRequest
-          .withVelocityX(motionXY.getX())
-          .withVelocityY(motionXY.getY())
-          .withTargetDirection(targetHeading)
+        driveRequest
+        .withVelocityX(motionXY.getX())
+        .withVelocityY(motionXY.getY())
+        .withTargetDirection(targetHeading)
       );
     }
   }
@@ -127,9 +119,7 @@ public class TargetHeadingStation extends Command
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
-  {
-    return false;
-  }
+    {return false;}
 
   private void updateTargetHeading()
   {
@@ -138,24 +128,16 @@ public class TargetHeadingStation extends Command
     if (FieldUtils.isRedAlliance()) 
     {
       if (robotY >= 4.026) 
-      {
-        targetHeading = new Rotation2d(Units.degreesToRadians(-126));
-      } 
+        {targetHeading = new Rotation2d(Units.degreesToRadians(-126));} 
       else 
-      {
-        targetHeading = new Rotation2d(Units.degreesToRadians(126));
-      }
+        {targetHeading = new Rotation2d(Units.degreesToRadians(126));}
     }
     else
     {
       if (robotY >= 4.026) 
-      {
-        targetHeading = new Rotation2d(Units.degreesToRadians(126));
-      } 
+        {targetHeading = new Rotation2d(Units.degreesToRadians(126));} 
       else 
-      {
-        targetHeading = new Rotation2d(Units.degreesToRadians(-126));
-      }
+        {targetHeading = new Rotation2d(Units.degreesToRadians(-126));}
     }
   }
 }

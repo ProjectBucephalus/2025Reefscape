@@ -13,19 +13,15 @@ public class CancelRumble extends Command
 
     public CancelRumble(Rumbler s_Rumbler, Sides side, String RequestID)
     {
-        this.s_Rumbler = s_Rumbler;
-        this.side = side;
-        Request = RequestID;
+      this.s_Rumbler = s_Rumbler;
+      this.side = side;
+      Request = RequestID;
     }
 
     @Override
     public void execute()
-    {
-        s_Rumbler.removeRequest(side, Request);
-    }
+      {s_Rumbler.removeRequest(side, Request);}
 
     public boolean isFinished()
-    {
-        return true;
-    }
+      {return true;}
 }

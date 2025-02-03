@@ -15,21 +15,15 @@ public class FollowPath extends Command
   private PathPlannerPath path;
 
   public FollowPath(String pathName) 
-  {
-    path = FieldUtils.loadPath(pathName);
-  }
+    {path = FieldUtils.loadPath(pathName);}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
-  {
-    AutoBuilder.followPath(path).schedule();
-  }
+    {AutoBuilder.followPath(path).schedule();}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
-  {
-    return true;
-  }
+    {return true;}
 }

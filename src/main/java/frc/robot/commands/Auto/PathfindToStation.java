@@ -46,13 +46,9 @@ public class PathfindToStation extends Command
     robotY = ySup.getAsDouble();
 
     if (this.robotY >= 4.026) 
-    {
-      stationSide = 'l';
-    }
+      {stationSide = 'l';}
     else 
-    {
-      stationSide = 'r';
-    }
+      {stationSide = 'r';}
 
     pathName = "c" + stationSide + stationPosition;
 
@@ -65,7 +61,5 @@ public class PathfindToStation extends Command
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
-  {
-    return pathfindingCommand.isFinished();
-  }
+    {return pathfindingCommand.isFinished();}
 }

@@ -24,14 +24,10 @@ public class IntakeAlgae extends Command
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
-  {
-    s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE);
-  }
+    {s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE);}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
-  {
-    return RobotContainer.algae;
-  }
+    {return RobotContainer.algae;}
 }

@@ -45,13 +45,9 @@ public class AutoScoreSequence extends SequentialCommandGroup
     nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
 
     if (RobotContainer.driver.povLeft().getAsBoolean()) 
-    {
-      postSide = DpadOptions.LEFT;
-    }
+      {postSide = DpadOptions.LEFT;}
     else if (RobotContainer.driver.povRight().getAsBoolean())
-    {
-      postSide = DpadOptions.RIGHT;
-    }
+      {postSide = DpadOptions.RIGHT;}
     else 
     {
       switch (nearestReefFace) 
@@ -71,29 +67,17 @@ public class AutoScoreSequence extends SequentialCommandGroup
     }
 
     if (RobotContainer.copilot.a().getAsBoolean()) 
-    {
-      coralLevel = 1;
-    }
+      {coralLevel = 1;}
     else if (RobotContainer.copilot.b().getAsBoolean())
-    {
-      coralLevel = 2;
-    }
+      {coralLevel = 2;}
     else if (RobotContainer.copilot.x().getAsBoolean())
-    {
-      coralLevel = 3;
-    }
+      {coralLevel = 3;}
     else if (RobotContainer.copilot.y().getAsBoolean())
-    {
-      coralLevel = 4;
-    }
+      {coralLevel = 4;}
     else if (algaeLevel2) 
-    {
-      coralLevel = 3;
-    }
+      {coralLevel = 3;}
     else if (!algaeLevel2) 
-    {
-      coralLevel = 2;
-    }
+      {coralLevel = 2;}
 
     switch (nearestReefFace) 
     {
