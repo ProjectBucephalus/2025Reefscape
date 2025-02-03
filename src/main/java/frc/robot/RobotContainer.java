@@ -74,7 +74,7 @@ public class RobotContainer
                 || s_Intake.getCoralState() && (s_Diffector.getEncoderPos() > 45 && s_Diffector.getEncoderPos() < 315) ||
                 s_Intake.getAlgaeState() && (s_Diffector.getEncoderPos() > 135 && s_Diffector.getEncoderPos() < 225));
     //private final Trigger driverRightRumblTrigger = new Trigger(() -> )
-    // TODO: Read y to score rumble
+    // TODO: Ready to score rumble
     private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.climbReady() && s_Climber.climbReady() && s_Diffector.climbReady() );
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */

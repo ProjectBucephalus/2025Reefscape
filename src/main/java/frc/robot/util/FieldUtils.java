@@ -84,7 +84,7 @@ public class FieldUtils
         public static final double fieldEast = fieldLength;
 
         /** Metres the robot can travel back */
-        public static final double fieldWest = 1;
+        public static final double fieldWest = 0;
 
         /** Buffer zone for the field walls in metres */
         public static final double wallBuffer = 0.5;
@@ -97,18 +97,18 @@ public class FieldUtils
         public static final double circumscribedReefZoneDiameter = 2.742;
         
         /** Buffer zone for the reef in metres */
-        public static final double reefBuffer = 0.25;
+        public static final double reefBuffer = 0.5;
 
         /** Buffer zone for the barge zone in metres */
-        public static final double bargeBuffer = 0.25;
+        public static final double bargeBuffer = 0.5;
 
         public static final double cornerWidth  = 1.276;
         public static final double cornerLength = 1.758;
 
         public static final GeoFenceObject field = new GeoFenceObject
         (
-            -fieldWest, 
-            -fieldSouth, 
+            fieldWest, 
+            fieldSouth, 
             fieldEast, 
             fieldNorth, 
             wallBuffer,
@@ -116,24 +116,38 @@ public class FieldUtils
             ObjectTypes.walls
         );
 
-        public static final GeoFenceObject reefBlue = new GeoFenceObject(4.489, 4.026, reefBuffer, circumscribedReefDiameter / 2, 0, 6); // TODO: set as reef zone for testing
-        public static final GeoFenceObject reefRed = new GeoFenceObject(13.059, 4.026, reefBuffer, circumscribedReefDiameter / 2, 180, 6);
-        public static final GeoFenceObject bargeColumn = new GeoFenceObject(8.774, 4.026, 0.25, 0.15);
-        public static final GeoFenceObject bargeZoneBlue = new GeoFenceObject(8.190, 3.721, 9.358, 0, bargeBuffer, 0, ObjectTypes.box);
-        public static final GeoFenceObject bargeZoneRed = new GeoFenceObject(8.190, 4.331, 9.358, fieldWidth, bargeBuffer, 0, ObjectTypes.box);
-        public static final GeoFenceObject cornerSBlue = new GeoFenceObject(fieldWest, fieldSouth + cornerWidth, fieldWest + cornerLength, fieldSouth, wallBuffer);
-        public static final GeoFenceObject cornerNBlue = new GeoFenceObject(fieldWest, fieldNorth - cornerWidth, fieldWest + cornerLength, fieldNorth, wallBuffer);
-        public static final GeoFenceObject cornerSRed = new GeoFenceObject(fieldEast, fieldSouth + cornerWidth, fieldEast - cornerLength, fieldSouth, wallBuffer);
-        public static final GeoFenceObject cornerNRed = new GeoFenceObject(fieldEast, fieldNorth - cornerWidth, fieldEast - cornerLength, fieldNorth, wallBuffer);
+        public static final GeoFenceObject reefBlue      = new GeoFenceObject(4.489, 4.026, reefBuffer, circumscribedReefDiameter / 2, 0, 6);
+        public static final GeoFenceObject reefZoneBlue  = new GeoFenceObject(4.489, 4.026, reefBuffer, circumscribedReefZoneDiameter / 2, 0, 6);
+        public static final GeoFenceObject reefRed       = new GeoFenceObject(13.059, 4.026, reefBuffer, circumscribedReefDiameter / 2, 180, 6);
+        public static final GeoFenceObject reefZoneRed   = new GeoFenceObject(13.059, 4.026, reefBuffer, circumscribedReefZoneDiameter / 2, 180, 6);
+        public static final GeoFenceObject bargeColumn   = new GeoFenceObject(8.774, 4.026, 0.25, 0.15);
+        public static final GeoFenceObject bargeZoneBlue = new GeoFenceObject(8.190, 4.331, 9.358, fieldWidth, bargeBuffer, 0.1, ObjectTypes.box);
+        public static final GeoFenceObject bargeZoneRed  = new GeoFenceObject(8.190, 3.721, 9.358, 0, bargeBuffer, 0.1, ObjectTypes.box);
+        public static final GeoFenceObject cornerSBlue   = new GeoFenceObject(fieldWest, fieldSouth + cornerWidth, fieldWest + cornerLength, fieldSouth, wallBuffer);
+        public static final GeoFenceObject cornerNBlue   = new GeoFenceObject(fieldWest, fieldNorth - cornerWidth, fieldWest + cornerLength, fieldNorth, wallBuffer);
+        public static final GeoFenceObject cornerSRed    = new GeoFenceObject(fieldEast, fieldSouth + cornerWidth, fieldEast - cornerLength, fieldSouth, wallBuffer);
+        public static final GeoFenceObject cornerNRed    = new GeoFenceObject(fieldEast, fieldNorth - cornerWidth, fieldEast - cornerLength, fieldNorth, wallBuffer);
 
-        public static final GeoFenceObject[] fieldGeoFence = 
+        public static final GeoFenceObject[] fieldBlueGeoFence = 
         {
             field, 
             reefBlue, 
+            reefZoneRed, 
+            bargeColumn, 
+            bargeZoneRed, 
+            cornerSBlue, 
+            cornerNBlue, 
+            cornerSRed, 
+            cornerNRed
+        };
+
+        public static final GeoFenceObject[] fieldRedGeoFence = 
+        {
+            field, 
             reefRed, 
+            reefZoneBlue, 
             bargeColumn, 
             bargeZoneBlue, 
-            bargeZoneRed, 
             cornerSBlue, 
             cornerNBlue, 
             cornerSRed, 
