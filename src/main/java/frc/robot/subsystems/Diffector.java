@@ -61,7 +61,7 @@ public class Diffector extends SubsystemBase
     m_diffectorDC = new TalonFX(Constants.Diffector.uaMotorID);
     encoder = new DutyCycleEncoder(Constants.Diffector.encoderPWMID);
 
-    targetElevation = Constants.Diffector.startingElevation;
+    targetElevation = Constants.Diffector.startElevation;
     targetAngle = 0;
 
     m_diffectorUC.getConfigurator().apply(motorConfig);
@@ -127,27 +127,23 @@ public class Diffector extends SubsystemBase
     motorTargets = calculateMotorTargets(targetElevation, targetAngle);
   }
 
+  /** Returns true if the diffector is at its current target angle */
   public boolean armAtAngle()
   {
     return Math.abs(getArmPos() - targetAngle) < Constants.Diffector.angleTolerance;
   }
 
+  /** Returns true if the diffector is at its current target elevation */
   public boolean elevatorAtElevation()
   {
     return Math.abs(getElevatorPos() - targetElevation) < Constants.Diffector.elevationTolerance;
   }
 
-  /**
-   * Returns true if the diffector is safely in climb position
-   */
+  /** Returns true if the diffector is safely in climb position */
   public boolean climbReady()
   {
     return (targetElevation == Constants.Diffector.climbElevation && elevatorAtElevation());
   }
-
-  /*  
-   * TODO: return true when difector is in position to climb
-   */
 
   /** 
    * Sets the Diffector arm to unwind to starting position 
@@ -155,7 +151,7 @@ public class Diffector extends SubsystemBase
    */
   public boolean unwind()
   {
-    targetAngle = Constants.Diffector.returnPos;
+    targetAngle = Constants.Diffector.startAngle;
     return (Math.abs(armPos) < stowThreshold);
   }
 
@@ -257,19 +253,23 @@ public class Diffector extends SubsystemBase
 
   public boolean safeToMoveCoral()
   {
-    return Constants.Diffector.coralElevatorLowTheshold < getElevatorPos() && getElevatorPos() < Constants.Diffector.coralElevatorHighThreshold;
+    return Constants.Diffector.coralElevatorLowTheshold < getElevatorPos() 
+    && getElevatorPos() < Constants.Diffector.coralElevatorHighThreshold;
   }
 
   public boolean safeToMoveAlgae()
   {
-    return Constants.Diffector.algaeElevatorLowTheshold < getElevatorPos() && getElevatorPos() < Constants.Diffector.algaeElevatorHighThreshold;
+    return Constants.Diffector.algaeElevatorLowTheshold < getElevatorPos() 
+    && getElevatorPos() < Constants.Diffector.algaeElevatorHighThreshold;
   }
 
   public boolean safeToMoveClimber()
   {
-    return Constants.Diffector.climberElevatorLowTheshold < getElevatorPos() && getElevatorPos() < Constants.Diffector.climberElevatorHighThreshold;
+    return Constants.Diffector.climberElevatorLowTheshold < getElevatorPos() 
+    && getElevatorPos() < Constants.Diffector.climberElevatorHighThreshold;
   }
 
+  /** Returns the ID of the motor control slot to use */
   private int getSlot()
   {
     switch (cargoState) 
@@ -304,7 +304,7 @@ public class Diffector extends SubsystemBase
   @Override
   public void periodic() 
   { 
-    cargoState = updateCargoState();
+    cargoState = updateCargoState(); // TODO: Don't need to call this in periodic, only needs to be called when state changes
 
     calculateMotorTargets();
 

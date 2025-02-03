@@ -215,10 +215,11 @@ public final class Constants
         public static final boolean startingAlgaeState = false;
 
         public static final double maxRotation = 3;
+        /** Maximum total angle the arm is allowed to rotate away from centre */
         public static final double maxAbsPos = maxRotation * 360;
+        /** Above this angle, the arm can turn towards centre even if it's a longer path */
         public static final double turnBackThreshold = 135;
-        public static final double returnPos = 0;
-        public static final double climbAngle = 90;
+        public static final double startAngle = 0;
         
         /**
          * How many degrees off 0 
@@ -227,21 +228,22 @@ public final class Constants
 
         /** Elevation height tolerance, m */
         public static final double elevationTolerance = 0.05;
-
-        /* Preset arm angles */
+        
+        /* Preset arm angles, degrees anticlockwise, 0 = coral at top */
         public static final double netAngle = 0;
         public static final double processorAngle = 0;
         public static final double reef4Angle = 0;
         public static final double reef3Angle = 0;
         public static final double reef2Angle = 0;
         public static final double reef1Angle = 0;
-        public static final double coralTransferAngle = 0;
+        public static final double coralTransferAngle = 180;
         public static final double algaeTransferAngle = 0;
         public static final double coralStationAngle = 0;
-        public static final double algae1Angel = 0;
-        public static final double algae2Angel = 0;
-
-        /* Preset elevator heights */
+        public static final double algae1Angle = 0;
+        public static final double algae2Angle = 0;
+        public static final double climbAngle = 90;
+        
+        /* Preset elevator heights, height of centre of rotation above the ground, metres */
         public static final double netElevation = 0;
         public static final double processorElevation = 0; 
         public static final double reef4Elevation = 0;
@@ -253,8 +255,8 @@ public final class Constants
         public static final double coralStationElevation = 0;
         public static final double algae1Elevation = 0;
         public static final double algae2Elevation = 0;
-        public static final double climbElevation = 0;
-        public static final double startingElevation = 0;
+        public static final double climbElevation = 0.444;
+        public static final double startElevation = 0.574;
         
         public static final class IKGeometry
         {
