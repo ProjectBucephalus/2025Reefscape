@@ -46,7 +46,7 @@ public class Diffector extends SubsystemBase
   private double targetAngle;
 
   private double offset;
-  private double altOffset;
+  private double reverseOffset;
   private double armPos;
   private double elevatorPos;
   private static ArmCalculator arm;
@@ -56,19 +56,21 @@ public class Diffector extends SubsystemBase
   {
     arm = new ArmCalculator();
     motorConfig = CTREConfigs.diffectorFXConfig;
+    rotationRatio = Constants.Diffector.rotationRatio;
+    travelRatio = Constants.Diffector.travelRatio;
 
     m_diffectorUC = new TalonFX(Constants.Diffector.ucMotorID);
     m_diffectorDC = new TalonFX(Constants.Diffector.uaMotorID);
     encoder = new DutyCycleEncoder(Constants.Diffector.encoderPWMID);
 
-    targetElevation = Constants.Diffector.startingElevation;
+    targetElevation = Constants.Diffector.startElevation;
     targetAngle = 0;
 
     m_diffectorUC.getConfigurator().apply(motorConfig);
     m_diffectorDC.getConfigurator().apply(motorConfig);
 
-    rotationRatio = Constants.Diffector.rotationRatio;
-    travelRatio = Constants.Diffector.travelRatio;
+    m_diffectorUC.setPosition((Constants.Diffector.startAngle / rotationRatio) + (Constants.Diffector.startElevation / travelRatio));
+    m_diffectorDC.setPosition((Constants.Diffector.startAngle / rotationRatio) - (Constants.Diffector.startElevation / travelRatio));
 
     cargoState = updateCargoState();
 
@@ -105,9 +107,9 @@ public class Diffector extends SubsystemBase
 
   /**
    * Calculates the position to drive each motor to, based on the target positions for the elevator and arm
-   * @param elevatorTarget
-   * @param armTarget
-   * @return
+   * @param elevatorTarget Target height of the elevator carriage, metres above the ground
+   * @param armTarget Target angle of the arm, degrees anticlockwise, 0 = unwound with coral at top
+   * @return [motor1 target, motor2 target]
    */
   public double[] calculateMotorTargets(double elevatorTarget, double armTarget)
   {
@@ -127,27 +129,23 @@ public class Diffector extends SubsystemBase
     motorTargets = calculateMotorTargets(targetElevation, targetAngle);
   }
 
+  /** Returns true if the diffector is at its current target angle */
   public boolean armAtAngle()
   {
     return Math.abs(getArmPos() - targetAngle) < Constants.Diffector.angleTolerance;
   }
 
+  /** Returns true if the diffector is at its current target elevation */
   public boolean elevatorAtElevation()
   {
     return Math.abs(getElevatorPos() - targetElevation) < Constants.Diffector.elevationTolerance;
   }
 
-  /**
-   * Returns true if the diffector is safely in climb position
-   */
+  /** Returns true if the diffector is safely in climb position */
   public boolean climbReady()
   {
     return (targetElevation == Constants.Diffector.climbElevation && elevatorAtElevation());
   }
-
-  /*  
-   * TODO: return true when difector is in position to climb
-   */
 
   /** 
    * Sets the Diffector arm to unwind to starting position 
@@ -155,7 +153,7 @@ public class Diffector extends SubsystemBase
    */
   public boolean unwind()
   {
-    targetAngle = Constants.Diffector.returnPos;
+    targetAngle = Constants.Diffector.startAngle;
     return (Math.abs(armPos) < stowThreshold);
   }
 
@@ -228,10 +226,10 @@ public class Diffector extends SubsystemBase
 
     if (Math.abs(offset) >= turnBackThreshold)
     {
-      altOffset = offset - Math.copySign(360, offset);
+      reverseOffset = offset - Math.copySign(360, offset);
 
-      if (Math.abs(armPos + offset) > Math.abs(armPos + altOffset))
-          {targetAngle = (armPos + altOffset);}
+      if (Math.abs(armPos + offset) > Math.abs(armPos + reverseOffset))
+          {targetAngle = (armPos + reverseOffset);}
       
       else 
           {targetAngle = (armPos + offset);}
@@ -257,19 +255,23 @@ public class Diffector extends SubsystemBase
 
   public boolean safeToMoveCoral()
   {
-    return Constants.Diffector.coralElevatorLowTheshold < getElevatorPos() && getElevatorPos() < Constants.Diffector.coralElevatorHighThreshold;
+    return Constants.Diffector.coralElevatorLowTheshold < getElevatorPos() 
+    && getElevatorPos() < Constants.Diffector.coralElevatorHighThreshold;
   }
 
   public boolean safeToMoveAlgae()
   {
-    return Constants.Diffector.algaeElevatorLowTheshold < getElevatorPos() && getElevatorPos() < Constants.Diffector.algaeElevatorHighThreshold;
+    return Constants.Diffector.algaeElevatorLowTheshold < getElevatorPos() 
+    && getElevatorPos() < Constants.Diffector.algaeElevatorHighThreshold;
   }
 
   public boolean safeToMoveClimber()
   {
-    return Constants.Diffector.climberElevatorLowTheshold < getElevatorPos() && getElevatorPos() < Constants.Diffector.climberElevatorHighThreshold;
+    return Constants.Diffector.climberElevatorLowTheshold < getElevatorPos() 
+    && getElevatorPos() < Constants.Diffector.climberElevatorHighThreshold;
   }
 
+  /** Returns the ID of the motor control slot to use */
   private int getSlot()
   {
     switch (cargoState) 
@@ -304,7 +306,7 @@ public class Diffector extends SubsystemBase
   @Override
   public void periodic() 
   { 
-    cargoState = updateCargoState();
+    cargoState = updateCargoState(); // TODO: Don't need to call this in periodic, only needs to be called when state changes
 
     calculateMotorTargets();
 

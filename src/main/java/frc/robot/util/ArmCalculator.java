@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.RobotContainer;
+import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Diffector.IKGeometry;
 
 /** Add your docs here. */
@@ -42,16 +43,17 @@ public class ArmCalculator
   private Translation2d algaeClawA, algaeClawC;
   private Translation2d algaeWheelA, algaeWheelC;
 
+  /** Unrotated virtual arm */
   private final Translation2d[] armGeometry;
+  /** Rotatable virtual arm */
   private Translation2d[] armGeometryRotated;
 
   public ArmCalculator()
   {
-    minElevation  = IKGeometry.minElevation;
-    maxElevation  = IKGeometry.maxElevation;
-    safeElevation = deckHeight + Math.max(coralArmLength, algaeArmLength);
+    maxElevation  = Constants.Diffector.maxElevation;
+    minElevation  = Constants.Diffector.minElevation;
     projectionAngle = IKGeometry.projectionAngle;
-
+    
     railHeight    = IKGeometry.railHeight;
     railLateral   = IKGeometry.railLateral;
     railMedial    = IKGeometry.railMedial;
@@ -67,6 +69,8 @@ public class ArmCalculator
     algaeClawLength  = IKGeometry.algaeClawLength;
     algaeInnerLength = IKGeometry.algaeInnerLength;
     algaeInnerAngle  = IKGeometry.algaeInnerAngle;
+
+    safeElevation = deckHeight + Math.max(coralArmLength, algaeArmLength + harpoonHeight);
     
     coralA      = new Translation2d(0,coralArmLength)  .rotateBy(new Rotation2d(Units.degreesToRadians(coralArmAngle)));
     coralC      = new Translation2d(0,coralArmLength)  .rotateBy(new Rotation2d(Units.degreesToRadians(-coralArmAngle)));
@@ -135,10 +139,6 @@ public class ArmCalculator
       // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
       waypointList.add(safeElevation);
       waypointList.add(angleTarget - (angleTarget % 180));
-      
-      // Target waypoint:
-      waypointList.add(checkPosition(elevationTarget, angleTarget));
-      waypointList.add(angleTarget);
     }
 
     // Clockwise rotation past both verticals:
@@ -153,10 +153,6 @@ public class ArmCalculator
       // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
       waypointList.add(safeElevation);
       waypointList.add(angleTarget + (-angleTarget % 180));
-      
-      // Target waypoint:
-      waypointList.add(checkPosition(elevationTarget, angleTarget));
-      waypointList.add(angleTarget);
     }
 
     // Anticlockwise rotation taking the arm past vertical:
@@ -170,10 +166,6 @@ public class ArmCalculator
       // Intermediate waypoint: Safe elevation for the last vertical point before the target
       waypointList.add(checkPosition(elevationTarget, angleTarget - (angleTarget % 180)));
       waypointList.add(angleTarget - (angleTarget % 180));
-      
-      // Target waypoint:
-      waypointList.add(checkPosition(elevationTarget, angleTarget));
-      waypointList.add(angleTarget);
     }
     
     // Clockwise rotation taking the arm past vertical:
@@ -187,30 +179,26 @@ public class ArmCalculator
       // Intermediate waypoint: Safe elevation for the last vertical point before the target
       waypointList.add(checkPosition(elevationTarget, angleTarget + (-angleTarget % 180)));
       waypointList.add(angleTarget + (-angleTarget % 180));
-      
-      // Target waypoint:
-      waypointList.add(checkPosition(elevationTarget, angleTarget));
-      waypointList.add(angleTarget);
     }
 
-    // Angle change does not take arm past vertical, so the change in safe height is strictly monotonic
-    // Or safe height decreases then increases
-    else 
-    {
-      waypointList.add(checkPosition(elevationTarget, angleTarget));
-      waypointList.add(angleTarget);
-    }
+    // else: Angle change does not take arm past vertical
+    //       therefore the safe height is greatest at one end
+    //       and no intermediate waypoint is needed
 
-    // Need to add immediate projection to protect against dangerous elevation/rotation sequencing
+    // Add Target waypoint:
+    waypointList.add(checkPosition(elevationTarget, angleTarget));
+    waypointList.add(angleTarget);
+
+    // Immediate path projection to protect against dangerous elevation/rotation sequencing
     if (Math.abs(angleChange) > projectionAngle)
     {
-      // Immediate rotation would cause collision
+      // Immediate rotation would cause collision:
       if (checkAngle(angleCurrent + Math.copySign(projectionAngle, angleChange)) > elevationCurrent)
       { // Set initial waypoint halfway between initial and first waypoint elevations without rotating
         waypointList.add(0, (elevationCurrent + waypointList.get(0)) / 2);
         waypointList.add(1, angleCurrent);
       }
-      // Immediate drop in elevation would cause collision
+      // Immediate drop in elevation would cause collision:
       else if (checkAngle(angleCurrent + Math.copySign(projectionAngle, angleChange)) > waypointList.get(2))
       { // Set initial waypoint halfway between initial and first waypoint rotations without elevating
         waypointList.add(0, elevationCurrent);
@@ -218,10 +206,11 @@ public class ArmCalculator
       }
     }
 
+    // Convert waypoint ArrayList to double primative array to return
     waypoints = new double[waypointList.size()];
     for (int i = 0; i < waypointList.size(); i++) 
     {
-      waypoints[i] = waypointList.get(i);
+      waypoints[i] = (double) waypointList.get(i);
     }
     return waypoints;
   }
@@ -233,9 +222,7 @@ public class ArmCalculator
    * @return maximum of the intended elevation and the safe elevation for the given angle
    */
   public double checkPosition(double elevation, double angle)
-  {
-    return Math.max(elevation, checkAngle(angle));
-  }
+    {return Math.max(elevation, checkAngle(angle));}
 
   /**
    * Returns the minimum safe arm height for a given angle
@@ -243,20 +230,38 @@ public class ArmCalculator
    */
   public double checkAngle(double angle)
   {
+    /*
+     *  NOTE:
+     *    Right-handed rotation on the +Y (forwards) robot axis, +Rotation called Anticlockwise
+     *    Arm-relative geometry uses X/Y, mapping to Robot-relative X/Z
+     *    +X = Port (robot Left), -X = Starboard (robot Right)
+     *    Topside of electronics = Deck, Obstructing mechanisms/bumbers = Rail
+     *    Centreline = Mast, Near = Medial, Far = Lateral
+     */
+
+    // Starting stow position puts the Algae arm below deck
+    if (angle == Constants.Diffector.startAngle && !RobotContainer.algae)
+      {return Constants.Diffector.startElevation;}
+
     angle %= 360;
+
+    /*  
+     *  Rotating the virtual arm reference points to allow for position calculations
+     *    Some conditions are based on the angle
+     *    Some on the relative height of certain reference points
+     *    Some on the relative translation of certain reference points
+     */
     Rotation2d rotation = new Rotation2d(Units.degreesToRadians(angle));
     for(int i = 0; i < armGeometry.length; i++)
       {armGeometryRotated[i] = armGeometry[i].rotateBy(rotation);}
-    
-    //  Min height: 0.444 -> used for climb
-    //  Max height: 1.709 -> used for net scoring
-    //  Stow height: 0.574
 
     if(angle > 90 && angle < 270) // Coral arm down:
     { 
-    //  Coral manipulator:
-    //    64 degree arc, centred on 0
-    //    0.5m radius
+    /*
+     *  Coral manipulator:
+     *    64 degree arc, centred on 0
+     *    0.5m radius
+     */
 
       if (armGeometryRotated[0].getX() >= 0 && armGeometryRotated[1].getX() <= 0) // Coral arm extends to either side of the mast:
         {return coralArmLength + deckHeight;} // Keep carriage above the deck by the length of the arm
@@ -293,20 +298,22 @@ public class ArmCalculator
       }
     }
 
-    else // Algae arm down:
+    else if (angle < 90 || angle < 270) // Algae arm down:
     {
-    //  Algae manipulator:
-    //    Primary span:
-    //      60 degree arc, centred on 180
-    //      0.6m radius
-    //    Claw:
-    //      Inner span:
-    //        107 degree arc, centred on 180
-    //        0.3m radius, then projected paralel to arm
-    //      Outerpoint of wheels halfway between the limits of the primary span, and the point where the Claw meets the primary span
-    //  Harpoon:
-    //    Extends from the deck behind the plane of rotation, such that if algae is held,
-    //    the minimum safe height 17 degrees either side of mast is increased by 0.1m
+    /*
+     *  Algae manipulator:
+     *    Primary span:
+     *      60 degree arc, centred on 180
+     *      0.6m radius
+     *    Claw:
+     *      Inner span:
+     *        108 degree arc, centred on 180
+     *        0.3m radius, then projected paralel to arm
+     *      Outerpoint of wheels halfway between the limits of the primary span, and the point where the Claw meets the primary span
+     *  Harpoon:
+     *    Extends from the deck behind the plane of rotation, such that if algae is held,
+     *    the minimum safe height is increased by 0.1m, 17 degrees either side of mast
+     */
 
       if ((angle <= harpoonAngle || angle >= 360 - harpoonAngle) && RobotContainer.algae) // Holding algae & angle is within range of the harpoon:
         {return algaeArmLength + deckHeight + harpoonHeight;} // Keep algae above the harpoon
@@ -366,5 +373,8 @@ public class ArmCalculator
           {return -armGeometryRotated[3].getY() + railHeight;} // Keep the Clockwise limit above the rail
       }
     }
+
+    else // Arm is horizontal
+      {return minElevation;}
   }
 }
