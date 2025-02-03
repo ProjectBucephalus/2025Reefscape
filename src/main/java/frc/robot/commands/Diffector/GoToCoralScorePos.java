@@ -28,20 +28,20 @@ public class GoToCoralScorePos extends Command
     switch (level)
     {
       case 1:
-      moveCommand = new MoveTo(s_Diffector, Constants.Diffector.reef4Elevation, Constants.Diffector.reef4Angle);
-      break;
+        moveCommand = new MoveTo(s_Diffector, Constants.Diffector.reef4Elevation, Constants.Diffector.reef4Angle);
+        break;
 
       case 2:
-      moveCommand = new MoveTo(s_Diffector, Constants.Diffector.reef3Elevation, Constants.Diffector.reef3Angle);
-      break;
+        moveCommand = new MoveTo(s_Diffector, Constants.Diffector.reef3Elevation, Constants.Diffector.reef3Angle);
+        break;
 
       case 3:
-      moveCommand = new MoveTo(s_Diffector, Constants.Diffector.reef2Elevation, Constants.Diffector.reef2Angle);
-      break;
+        moveCommand = new MoveTo(s_Diffector, Constants.Diffector.reef2Elevation, Constants.Diffector.reef2Angle);
+        break;
 
       case 4:
-      moveCommand = new MoveTo(s_Diffector, Constants.Diffector.reef1Elevation, Constants.Diffector.reef1Angle);
-      break;
+        moveCommand = new MoveTo(s_Diffector, Constants.Diffector.reef1Elevation, Constants.Diffector.reef1Angle);
+        break;
     }
 
     moveCommand.schedule();
@@ -50,7 +50,5 @@ public class GoToCoralScorePos extends Command
   // Returns true when the command should end.
   @Override
   public boolean isFinished()
-  {
-    return moveCommand.isFinished();
-  }
+    {return moveCommand.isFinished();}
 }

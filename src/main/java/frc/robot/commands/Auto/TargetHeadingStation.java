@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) FIRST and other WPILib 
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -85,9 +85,7 @@ public class TargetHeadingStation extends Command
     motionXY = new Translation2d(translationSpeed, strafeSpeed);
 
     if (SmartDashboard.getBoolean("Station Snap Updating", true))
-    {
-      updateTargetHeading();
-    }
+      {updateTargetHeading();}
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     
@@ -133,10 +131,10 @@ public class TargetHeadingStation extends Command
       SmartDashboard.putString("Drive State", "Non-Fenced");
       s_Swerve.setControl
       (
-          driveRequest
-          .withVelocityX(motionXY.getX())
-          .withVelocityY(motionXY.getY())
-          .withTargetDirection(targetHeading)
+        driveRequest
+        .withVelocityX(motionXY.getX())
+        .withVelocityY(motionXY.getY())
+        .withTargetDirection(targetHeading)
       );
     }
   }
@@ -144,9 +142,7 @@ public class TargetHeadingStation extends Command
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
-  {
-    return false;
-  }
+    {return false;}
 
   private void updateTargetHeading()
   {
@@ -155,24 +151,16 @@ public class TargetHeadingStation extends Command
     if (FieldUtils.isRedAlliance()) 
     {
       if (robotY >= 4.026) 
-      {
-        targetHeading = new Rotation2d(Units.degreesToRadians(-126));
-      } 
+        {targetHeading = new Rotation2d(Units.degreesToRadians(-126));} 
       else 
-      {
-        targetHeading = new Rotation2d(Units.degreesToRadians(126));
-      }
+        {targetHeading = new Rotation2d(Units.degreesToRadians(126));}
     }
     else
     {
       if (robotY >= 4.026) 
-      {
-        targetHeading = new Rotation2d(Units.degreesToRadians(126));
-      } 
+        {targetHeading = new Rotation2d(Units.degreesToRadians(126));} 
       else 
-      {
-        targetHeading = new Rotation2d(Units.degreesToRadians(-126));
-      }
+        {targetHeading = new Rotation2d(Units.degreesToRadians(-126));}
     }
   }
 }

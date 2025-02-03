@@ -15,7 +15,5 @@ import frc.robot.subsystems.Diffector;
 public class IntakeAlgaeSequence extends SequentialCommandGroup 
 { 
   public IntakeAlgaeSequence(boolean level2, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator) 
-  {
-    addCommands(new GoToAlgaeIntakePos(level2, s_Diffector), new IntakeAlgae(s_AlgaeManipulator));
-  }
+    {addCommands(new GoToAlgaeIntakePos(level2, s_Diffector), new IntakeAlgae(s_AlgaeManipulator));}
 }

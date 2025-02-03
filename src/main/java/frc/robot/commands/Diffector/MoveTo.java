@@ -34,7 +34,5 @@ public class MoveTo extends Command
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
-  {
-    return s_Diffector.armAtAngle() && s_Diffector.elevatorAtElevation();
-  }
+    {return s_Diffector.armAtAngle() && s_Diffector.elevatorAtElevation();}
 }

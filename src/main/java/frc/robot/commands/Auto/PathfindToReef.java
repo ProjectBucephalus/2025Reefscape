@@ -58,24 +58,16 @@ public class PathfindToReef extends Command
     
       case LEFT: 
         if (nearestReefFace == 1 || nearestReefFace == 2 || nearestReefFace == 6) 
-        {
-          pathName = "r" + (char)((nearestReefFace * 2) + 63);
-        }
+          {pathName = "r" + (char)((nearestReefFace * 2) + 63);}
         else if (nearestReefFace == 3 || nearestReefFace == 4 || nearestReefFace == 5) 
-        {
-          pathName = "r" + (char)((nearestReefFace * 2) + 64);
-        }    
+          {pathName = "r" + (char)((nearestReefFace * 2) + 64);}    
         break;
 
       case RIGHT:
         if (nearestReefFace == 1 || nearestReefFace == 2 || nearestReefFace == 6) 
-        {
-          pathName = "r" + (char)((nearestReefFace * 2) + 64);
-        }
+          {pathName = "r" + (char)((nearestReefFace * 2) + 64);}
         else if (nearestReefFace == 3 || nearestReefFace == 4 || nearestReefFace == 5) 
-        {
-          pathName = "r" + (char)((nearestReefFace * 2) + 63);
-        }      
+          {pathName = "r" + (char)((nearestReefFace * 2) + 63);}      
         break;
     }
 
@@ -92,12 +84,8 @@ public class PathfindToReef extends Command
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
-  {
-    return pathfindingCommand.isFinished();
-  }
+    {return pathfindingCommand.isFinished();}
 
   public int getNearestReefFace()
-  {
-    return nearestReefFace;
-  }
+    {return nearestReefFace;}
 }

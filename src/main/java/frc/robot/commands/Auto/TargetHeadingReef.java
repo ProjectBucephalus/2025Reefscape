@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) FIRST and other WPILib 
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -87,9 +87,7 @@ public class TargetHeadingReef extends Command
     motionXY = new Translation2d(translationSpeed, strafeSpeed);
 
     if (SmartDashboard.getBoolean("Reef Snap Updating", true)) 
-    {
-      updateTargetHeading();
-    }
+      {updateTargetHeading();}
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     
@@ -98,9 +96,7 @@ public class TargetHeadingReef extends Command
       robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
       SmartDashboard.putString("Drive State", "Fenced");
       if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
-      {
-          robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;
-      }
+        {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
       else
       {
           robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;
@@ -124,10 +120,10 @@ public class TargetHeadingReef extends Command
         
       s_Swerve.setControl
       (
-          driveRequest
-          .withVelocityX(motionXY.getX())
-          .withVelocityY(motionXY.getY())
-          .withTargetDirection(targetHeading)
+        driveRequest
+        .withVelocityX(motionXY.getX())
+        .withVelocityY(motionXY.getY())
+        .withTargetDirection(targetHeading)
       );
     }
     else
@@ -135,10 +131,10 @@ public class TargetHeadingReef extends Command
       SmartDashboard.putString("Drive State", "Non-Fenced");
       s_Swerve.setControl
       (
-          driveRequest
-          .withVelocityX(motionXY.getX())
-          .withVelocityY(motionXY.getY())
-          .withTargetDirection(targetHeading)
+        driveRequest
+        .withVelocityX(motionXY.getX())
+        .withVelocityY(motionXY.getY())
+        .withTargetDirection(targetHeading)
       );
     }
   }
@@ -146,9 +142,7 @@ public class TargetHeadingReef extends Command
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
-  {
-    return false;
-  }
+    {return false;}
 
   private void updateTargetHeading()
   {
