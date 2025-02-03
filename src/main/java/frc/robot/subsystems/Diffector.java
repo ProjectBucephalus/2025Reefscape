@@ -46,7 +46,7 @@ public class Diffector extends SubsystemBase
   private double targetAngle;
 
   private double offset;
-  private double altOffset;
+  private double reverseOffset;
   private double armPos;
   private double elevatorPos;
   private static ArmCalculator arm;
@@ -105,9 +105,9 @@ public class Diffector extends SubsystemBase
 
   /**
    * Calculates the position to drive each motor to, based on the target positions for the elevator and arm
-   * @param elevatorTarget
-   * @param armTarget
-   * @return
+   * @param elevatorTarget Target height of the elevator carriage, metres above the ground
+   * @param armTarget Target angle of the arm, degrees anticlockwise, 0 = unwound with coral at top
+   * @return [motor1 target, motor2 target]
    */
   public double[] calculateMotorTargets(double elevatorTarget, double armTarget)
   {
@@ -224,10 +224,10 @@ public class Diffector extends SubsystemBase
 
     if (Math.abs(offset) >= turnBackThreshold)
     {
-      altOffset = offset - Math.copySign(360, offset);
+      reverseOffset = offset - Math.copySign(360, offset);
 
-      if (Math.abs(armPos + offset) > Math.abs(armPos + altOffset))
-          {targetAngle = (armPos + altOffset);}
+      if (Math.abs(armPos + offset) > Math.abs(armPos + reverseOffset))
+          {targetAngle = (armPos + reverseOffset);}
       
       else 
           {targetAngle = (armPos + offset);}
