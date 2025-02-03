@@ -323,7 +323,7 @@ public class GeoFenceObject
                     }
                     else // W Cardinal
                     {
-                        distanceToEdgeX = Math.abs((Xa - radius) - (robotXY.getX() + robotR)); 
+                        distanceToEdgeX = (Xa - radius) - (robotXY.getX() + robotR);
                         motionX = Math.min(motionX, (Conversions.clamp(distanceToEdgeX, 0, buffer)) / buffer);
                     }
                 }
@@ -339,7 +339,7 @@ public class GeoFenceObject
                     }
                     else // E Cardinal
                     {
-                        distanceToEdgeX = Math.abs((robotXY.getX() - robotR) - (Xb + radius));
+                        distanceToEdgeX = (robotXY.getX() - robotR) - (Xb + radius);
                         motionX = Math.max(motionX, (-Conversions.clamp(distanceToEdgeX, 0, buffer)) / buffer);
                     }
                 }
@@ -347,12 +347,12 @@ public class GeoFenceObject
                 {
                     if (robotXY.getY() < Ya) // S Cardinal
                     {
-                        distanceToEdgeY = Math.abs((Ya - radius) - (robotXY.getY() + robotR));
+                        distanceToEdgeY = (Ya - radius) - (robotXY.getY() + robotR);
                         motionY = Math.min(motionY, (Conversions.clamp(distanceToEdgeY, 0, buffer)) / buffer);
                     } 
                     else if (robotXY.getY() > Yb) // N Cardinal
                     {
-                        distanceToEdgeY = Math.abs((robotXY.getY() - robotR) - (Yb + radius));
+                        distanceToEdgeY = (robotXY.getY() - robotR) - (Yb + radius);
                         motionY = Math.max(motionY, (-Conversions.clamp(distanceToEdgeY, 0, buffer)) / buffer);
                     }
                     else // Center (you've met a terrible fate *insert kazoo music here*)
