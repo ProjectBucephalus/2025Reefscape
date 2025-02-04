@@ -8,7 +8,6 @@ import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
@@ -26,10 +25,7 @@ public class Limelight extends SubsystemBase
 
   private double headingDeg;
   private double omegaRps;
-  private double objectX;
-  private double objectY;
   FieldObject2d objectTest;
-  private Rotation2d objectRota;
 
   private final String limelightName;
   
@@ -38,17 +34,12 @@ public class Limelight extends SubsystemBase
   {
     this.s_Swerve = s_Swerve;
     limelightName = name;
-
-    objectTest = (s_Swerve.field.getObject("Test"));
     
     SmartDashboard.putBoolean("Use Limelight", true);
   }
   
   public Pose2d getPose() 
   {return mt2.pose;}
-  
-  public Pose3d getObjectPose()
-  {return LimelightHelpers.getTargetPose3d_RobotSpace(limelightName);}
 
   public void setIMUMode(int mode)
   {LimelightHelpers.SetIMUMode(limelightName, mode);}
@@ -59,10 +50,6 @@ public class Limelight extends SubsystemBase
 
     headingDeg = s_Swerve.getPigeon2().getYaw().getValueAsDouble();
     omegaRps = Units.radiansToRotations(s_Swerve.getState().Speeds.omegaRadiansPerSecond);
-    objectRota = s_Swerve.getState().Pose.getRotation();
-    
-    
-    objectTest.setPose(objectX, objectY, objectRota);
     
     
     if (SmartDashboard.getBoolean("Use Limelight", true))
@@ -71,9 +58,6 @@ public class Limelight extends SubsystemBase
       LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, validIDs);
       
       mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
-      
-      objectX = (getObjectPose().getX() + mt2.pose.getX());
-      objectY = (getObjectPose().getY() + mt2.pose.getY());
       
       
       useUpdate = !(mt2 == null || mt2.tagCount == 0 || omegaRps > 2.0);
