@@ -53,23 +53,23 @@ public class TeleopSwerve extends Command
     this.s_Swerve = s_Swerve;
     addRequirements(s_Swerve);
 
-        this.translationSup = translationSup;
-        this.strafeSup = strafeSup;
-        this.rotationSup = rotationSup;
-        this.brakeSup = brakeSup;
-        this.fieldCentricSup = fieldCentricSup;
-        this.fencedSup = fencedSup;
-    }
+    this.translationSup = translationSup;
+    this.strafeSup = strafeSup;
+    this.rotationSup = rotationSup;
+    this.brakeSup = brakeSup;
+    this.fieldCentricSup = fieldCentricSup;
+    this.fencedSup = fencedSup;
+  }
 
     @Override
     public void initialize()
     {
-        redAlliance = FieldUtils.isRedAlliance();
-        SmartDashboard.putBoolean("redAlliance", redAlliance);
-        if (redAlliance)
-            {fieldGeoFence = FieldUtils.GeoFencing.fieldRedGeoFence;}
-        else
-            {fieldGeoFence = FieldUtils.GeoFencing.fieldBlueGeoFence;}
+      redAlliance = FieldUtils.isRedAlliance();
+      SmartDashboard.putBoolean("redAlliance", redAlliance);
+      if (redAlliance)
+        {fieldGeoFence = FieldUtils.GeoFencing.fieldRedGeoFence;}
+      else
+        {fieldGeoFence = FieldUtils.GeoFencing.fieldBlueGeoFence;}
     }
 
   @Override

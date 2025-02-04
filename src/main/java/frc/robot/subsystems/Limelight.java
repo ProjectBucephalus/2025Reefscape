@@ -8,9 +8,7 @@ import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.util.Units;
-//import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
@@ -33,25 +31,15 @@ public class Limelight extends SubsystemBase
   {
     this.s_Swerve = s_Swerve;
     limelightName = name;
-
-    //FieldObject2d algaeTest = (s_Swerve.field.getObject("Algae"));
-    /* FieldObject2d test = (s_Swerve.field.getObject("Box"));
-    test.setPoses(new Pose2d(2.65,4.15,new Rotation2d()), new Pose2d(8.25,4.15,new Rotation2d(0)), new Pose2d(1,4.15,new Rotation2d()), new Pose2d(2,2,new Rotation2d())); 
-    SmartDashboard.putString("Test Box", test.toString()); */
     
     SmartDashboard.putBoolean("Use Limelight", true);
   }
   
   public Pose2d getPose() 
-  {return mt2.pose;}
-
-  public Pose3d getObjectPose()
-  {return LimelightHelpers.getTargetPose3d_RobotSpace(limelightName);}
+    {return mt2.pose;}
 
   public void setIMUMode(int mode)
-  {
-    LimelightHelpers.SetIMUMode(limelightName, mode);
-  }
+    {LimelightHelpers.SetIMUMode(limelightName, mode);}
    
   @Override
   public void periodic() 
