@@ -60,9 +60,9 @@ public class Robot extends TimedRobot
   {
     CommandScheduler.getInstance().run();
 
-    if (RobotContainer.s_Swerve.getState().Pose.getX() < 0.75 && RobotContainer.s_Swerve.getState().Pose.getY() < 0.75) 
+    if (RobotContainer.s_Swerve.getState().Pose.getX() == 0 && RobotContainer.s_Swerve.getState().Pose.getY() == 0) 
     {
-      RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, 1, RobotContainer.s_Swerve.getState().Pose.getRotation()));
+      RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, 4, RobotContainer.s_Swerve.getState().Pose.getRotation()));
     }
 
     SmartDashboard.putBoolean("Unlock Heading Trigger", RobotContainer.unlockHeadingTrigger.getAsBoolean());

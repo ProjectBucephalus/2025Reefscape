@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -42,8 +43,10 @@ public class RobotContainer
     public static boolean algae = Constants.Diffector.startingAlgaeState;
 
     /* Controllers */
-    public static final CommandXboxController driver = new CommandXboxController(0);
-    public static final CommandXboxController copilot = new CommandXboxController(1);
+    public static final CommandXboxController driver    = new CommandXboxController(0);
+    public static final CommandXboxController copilot   = new CommandXboxController(1);
+    public static final CommandXboxController buttonBox = new CommandXboxController(2);
+    public static final CommandXboxController testing   = new CommandXboxController(3);
 
     /* Subsystems */
     public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
@@ -75,7 +78,7 @@ public class RobotContainer
                 s_Intake.getAlgaeState() && (s_Diffector.getEncoderPos() > 135 && s_Diffector.getEncoderPos() < 225));
     //private final Trigger driverRightRumblTrigger = new Trigger(() -> )
     // TODO: Ready to score rumble
-    private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.climbReady() && s_Climber.climbReady() && s_Diffector.climbReady() );
+    private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.climbReady() && s_Climber.climbReady() && s_Diffector.climbReady());
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() 
@@ -131,6 +134,8 @@ public class RobotContainer
         configureAutoDriveBindings();
         configureCopilotBindings();
         configureRumbleBindings();
+        configureButtonBoxBindings();
+        configureTestBindings();
     }
 
     private void configureDriverBindings()
@@ -334,9 +339,20 @@ public class RobotContainer
         copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
     }
 
+    private void configureButtonBoxBindings()
+    {}
+
+    private void configureTestBindings()
+    {
+      testing.a().whileTrue(new MoveManual(s_Diffector, () -> testing.getRawAxis(translationAxis), () -> testing.getRawAxis(strafeAxis)));
+      testing.back().whileTrue(new InstantCommand(() -> s_Diffector.unwind()));
+      testing.x().onTrue(new MoveTo(s_Diffector, 0, 90));
+      testing.y().onTrue(new MoveTo(s_Diffector, 0, -90));
+    }
+
     public CommandSwerveDrivetrain getSwerve()
     {
-        return s_Swerve;
+      return s_Swerve;
     }
 
     public Limelight getLimelightPort()

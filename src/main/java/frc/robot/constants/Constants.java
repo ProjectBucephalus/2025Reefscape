@@ -159,6 +159,9 @@ public final class Constants
     public static final int uaMotorID = IDConstants.uaMotorID;
     public static final int encoderPWMID = IDConstants.encoderPWMID;
 
+    public static final double manualElevationScalar = -0.5;
+    public static final double manualAngleScalar = 10;
+
     public static final double diffectorMotorKSEmpty = 0;
     public static final double diffectorMotorKVEmpty = 0;
     public static final double diffectorMotorKAEmpty = 0;
@@ -190,26 +193,29 @@ public final class Constants
     public static final double climberElevatorLowTheshold = 0;
     public static final double climberElevatorHighThreshold = 0;
 
+    private static final double diffectorGearTeethIn  = 8;
+    private static final double diffectorGearTeethOut = 60;
+    private static final double diffectorSprocketTeethIn  = 18;
+    private static final double diffectorSprocketTeethOut = 72;
     /** Output sprocket rotations per motor rotation */
-    public static final double gearboxRatio = 8/60;
+    public static final double gearboxRatio = diffectorGearTeethIn / diffectorGearTeethOut;
     /** Pitch Diameter of the sprocket, in mm */
     public static final double sprocketPitchDiameter = 36.576;
     /** Ratio of output sprocket to arm sprocket (output sprocket teeth/arm sprocket teeth) */
-    public static final double sprocketRatio = 18/72;
+    public static final double sprocketRatio = diffectorSprocketTeethIn / diffectorSprocketTeethOut;
 
     /** 
      * Number of chain mm moved for one motor degree. 
      * Sprocket rotations per motor rotation * m of chain moved per sprocket rotation (pitch diam. * pi), 
-     * divided by 360 to convert rotations to degrees
      * divided by 2 to give the contribution of a single motor
      */
-    public static final double travelRatio = ((gearboxRatio * (sprocketPitchDiameter / 1000) * Math.PI) / 360) / 2;
+    public static final double travelRatio = ((gearboxRatio * (sprocketPitchDiameter / 1000) * Math.PI));
     /** 
      * Number of arm degrees moved for one motor degree of a single motor 
      * Output sprocket rotations per motor rotation * output sprocket to arm sprocket ratio,
      * divided by 2 to give the contribution of a single motor
      */
-    public static final double rotationRatio = gearboxRatio * sprocketRatio / 2;
+    public static final double rotationRatio = (gearboxRatio * sprocketRatio * 360);
 
     public static final boolean startingCoralState = true;
     public static final boolean startingAlgaeState = false;
@@ -232,7 +238,7 @@ public final class Constants
     public static final double elevationTolerance = 0.05;
     
     /* Preset arm angles, degrees anticlockwise for Port-side usecase, 0 = coral at top */
-    public static final double startAngle         =   0;
+    public static final double startAngle         =  10;
     public static final double climbAngle         =  90;
     public static final double netAngle           = 150;
     public static final double processorAngle     =  45;
@@ -247,7 +253,7 @@ public final class Constants
     public static final double algae1Angle        = 100;
     
     /* Preset elevator heights, height of centre of rotation above the ground, metres */
-    public static final double startElevation         = 0.574;
+    public static final double startElevation         = 0.75;
     public static final double climbElevation         = minElevation;
     public static final double netElevation           = maxElevation;
     public static final double processorElevation     = 0.5; 
@@ -281,8 +287,10 @@ public final class Constants
       public static final double harpoonHeight = 0.1;
       public static final double harpoonAngle  = 17;
 
-      /** For IK, angle the arm is projected to test for immediate collisions */
+      /** For IK, angle the arm is projected to test for immediate collisions, degrees */
       public static final double projectionAngle = 5;
+      /** For IK, distance the arm is projected down to test for immediate collisions, m */
+      public static final double projectionElevation = 0.1;
     }
   }
 

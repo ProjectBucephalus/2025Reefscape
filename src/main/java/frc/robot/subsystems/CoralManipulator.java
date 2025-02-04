@@ -90,7 +90,7 @@ public class CoralManipulator extends SubsystemBase {
         break;
 
       case DELIVERY:
-        if (RobotContainer.s_Diffector.getArmPos() % 360 <= 180)
+        if (RobotContainer.s_Diffector.getEncoderPos() <= 180)
         {
           setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed);
         } 

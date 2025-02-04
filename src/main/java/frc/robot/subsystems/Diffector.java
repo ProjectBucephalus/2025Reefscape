@@ -64,36 +64,19 @@ public class Diffector extends SubsystemBase
     encoder = new DutyCycleEncoder(Constants.Diffector.encoderPWMID);
 
     targetElevation = Constants.Diffector.startElevation;
-    targetAngle = 0;
+    targetAngle = 10;
 
     m_diffectorUC.getConfigurator().apply(motorConfig);
     m_diffectorDC.getConfigurator().apply(motorConfig);
 
     m_diffectorUC.setPosition((Constants.Diffector.startAngle / rotationRatio) + (Constants.Diffector.startElevation / travelRatio));
     m_diffectorDC.setPosition((Constants.Diffector.startAngle / rotationRatio) - (Constants.Diffector.startElevation / travelRatio));
+    simUC = ((Constants.Diffector.startAngle / rotationRatio) + (Constants.Diffector.startElevation / travelRatio));
+    simDC = ((Constants.Diffector.startAngle / rotationRatio) - (Constants.Diffector.startElevation / travelRatio));
 
     cargoState = updateCargoState();
 
     motionMagicRequester = new MotionMagicVoltage(0);
-  }
-
-  /**
-   * Calculates arm rotation based on motor positions
-   * @return Arm rotation, degrees clockwise, 0 = algae at top
-   */
-  public double getArmPos()
-  {
-    return (m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorDC.getPosition().getValueAsDouble()) * rotationRatio;
-  }
-
-    /**
-   * Arm Rotation as measured from encoder
-   * @return Arm rotation, degrees clockwise, 0 = coral at top
-   */
-  public double getEncoderPos()
-  {
-    // Encoder outputs [0..1] and is geared 1:1 to the arm
-    return (1 - encoder.get()) * 360;
   }
 
   /**
@@ -102,7 +85,28 @@ public class Diffector extends SubsystemBase
    */
   public double getElevatorPos()
   {
-    return ((m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorDC.getPosition().getValueAsDouble()) * travelRatio);
+    return ((simUC - simDC) * travelRatio) / 2;
+    //return ((m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorDC.getPosition().getValueAsDouble()) * travelRatio);
+  }
+
+  /**
+   * Calculates arm rotation based on motor positions
+   * @return Arm rotation, degrees clockwise, 0 = algae at top
+   */
+  public double getArmPos()
+  {
+    return ((simUC + simDC) * rotationRatio) / 2;
+    //return (m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorDC.getPosition().getValueAsDouble()) * rotationRatio;
+  }
+
+  /**
+   * Arm Rotation as measured from encoder
+   * @return Arm rotation, degrees clockwise, 0 = coral at top
+   */
+  public double getEncoderPos()
+  {
+    // Encoder outputs [0..1] and is geared 1:1 to the arm
+    return (1 - encoder.get()) * 360;
   }
 
   /**
@@ -115,6 +119,7 @@ public class Diffector extends SubsystemBase
   {
     // IK projection and object avoidance
     double[] projectedTargets = arm.pathfindArm(elevatorTarget, armTarget, elevatorPos, armPos);
+    SmartDashboard.putNumberArray("Arm Path:", projectedTargets);
 
     double[] calculatedTargets = new double[2];
 
@@ -159,12 +164,12 @@ public class Diffector extends SubsystemBase
 
   /**
    * Sets the Diffector arm to rotate the shortest path to the target angle, with protection against over-rotation
-   * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
+   * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public void goShortest(double targetAngle)
+  public void goShortest(double newAngle)
   {
-    targetAngle %= 360;
-    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
+    newAngle %= 360;
+    offset = MathUtil.inputModulus(newAngle - (armPos % 360), -180, 180);
 
     if (armPos + offset > maxAbsPos)
         {targetAngle = (armPos + offset - 360);}
@@ -178,12 +183,12 @@ public class Diffector extends SubsystemBase
 
   /**
    * Sets the Diffector arm to rotate Clockwise (viewed from bow) to the target angle, with protection against over-rotation
-   * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
+   * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public void goClockwise(double targetAngle)
+  public void goClockwise(double newAngle)
   {
-    targetAngle %= 360;
-    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -360, 0);
+    newAngle %= 360;
+    offset = MathUtil.inputModulus(newAngle - (armPos % 360), -360, 0);
 
     if (armPos + offset > maxAbsPos)
         {targetAngle = (armPos + offset - 360);}
@@ -197,12 +202,12 @@ public class Diffector extends SubsystemBase
 
   /**
    * Sets the Diffector arm to rotate Anticlockwise (viewed from bow) to the target angle, with protection against over-rotation
-   * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
+   * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public void goAnticlockwise(double targetAngle)
+  public void goAnticlockwise(double newAngle)
   {
-    targetAngle %= 360;
-    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), 0, 360);
+    newAngle %= 360;
+    offset = MathUtil.inputModulus(newAngle - (armPos % 360), 0, 360);
 
     if (armPos + offset > maxAbsPos)
         {targetAngle = (armPos + offset - 360);}
@@ -217,12 +222,12 @@ public class Diffector extends SubsystemBase
   /**
    * Sets the Diffector arm to rotate the safest path to the target angle, with protection against over-rotation. 
    * Below a threshold will go shortest path, otherwise will minimise total rotations
-   * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
+   * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public void goToAngle(double targetAngle)
+  public void goToAngle(double newAngle)
   {
-    targetAngle %= 360;
-    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
+    newAngle %= 360;
+    offset = MathUtil.inputModulus(newAngle - (armPos % 360), -180, 180);
 
     if (Math.abs(offset) >= turnBackThreshold)
     {
@@ -303,20 +308,43 @@ public class Diffector extends SubsystemBase
     }
   }
 
+  double simUC = 0;
+  double simDC = 0;
+  double simTest = 360;
+
   @Override
   public void periodic() 
   { 
-    cargoState = updateCargoState(); // TODO: Don't need to call this in periodic, only needs to be called when state changes
-
+    //cargoState = updateCargoState(); // TODO: Don't need to call this in periodic, only needs to be called when state changes
+/* 
     calculateMotorTargets();
 
-    m_diffectorUC.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(getSlot()));
-    m_diffectorDC.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
+    if (simUC > motorTargets[0])
+      {simUC -= .1;}
+    else if (simUC < motorTargets[0])
+      {simUC += .1;}
+
+    if (simDC > motorTargets[1])
+      {simDC -= .1;}
+    else if (simDC < motorTargets[1])
+      {simDC += .1;}
+
+    SmartDashboard.putNumberArray("MotorTargets", motorTargets);
+    SmartDashboard.putNumberArray("MotorActual", new double[] {simUC,simDC});
+    //m_diffectorUC.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(getSlot()));
+    //m_diffectorDC.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
 
     armPos = getArmPos();
     elevatorPos = getElevatorPos();
 
+    SmartDashboard.putNumber("Elevator Target", targetElevation);
+    SmartDashboard.putNumber("Arm Target", targetAngle);
     SmartDashboard.putNumber("Elevator Height", getElevatorPos());
     SmartDashboard.putNumber("Arm Rotation", getArmPos());
+    SmartDashboard.putBoolean("Existance", true);
+*/
+    SmartDashboard.putNumber("Angle Test", simTest);
+    SmartDashboard.putNumber("Min Height", arm.checkAngle(simTest));
+    simTest -= 0.1;
   }
 }

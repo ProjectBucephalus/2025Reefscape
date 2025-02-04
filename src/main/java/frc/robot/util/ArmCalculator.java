@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Diffector.IKGeometry;
@@ -20,6 +21,8 @@ public class ArmCalculator
   private double maxElevation;
   private double safeElevation;
   private double projectionAngle;
+  private double projectionElevation;
+  private double waypointHold;
 
   private double railHeight;
   private double railLateral;
@@ -53,6 +56,7 @@ public class ArmCalculator
     maxElevation  = Constants.Diffector.maxElevation;
     minElevation  = Constants.Diffector.minElevation;
     projectionAngle = IKGeometry.projectionAngle;
+    projectionElevation = IKGeometry.projectionElevation;
     
     railHeight    = IKGeometry.railHeight;
     railLateral   = IKGeometry.railLateral;
@@ -97,7 +101,7 @@ public class ArmCalculator
       algaeWheelC  // [9] // Clockwise limit of Algae wheel
     };
     
-    armGeometryRotated = armGeometry;
+    armGeometryRotated = armGeometry.clone();
   }
 
   /**
@@ -115,7 +119,10 @@ public class ArmCalculator
 
     // Full intended path of arm is above safe limits, path is safe as given
     if (elevationCurrent >= safeElevation && elevationTarget >= safeElevation)
-      {return new double[] {elevationTarget, angleTarget};}
+      {
+        SmartDashboard.putNumber("Path Case", 1);
+        return new double[] {elevationTarget, angleTarget};
+      }
 
     double angleChange = angleTarget - angleCurrent;
     double angleRelative = angleCurrent % 360;
@@ -124,8 +131,11 @@ public class ArmCalculator
     ArrayList<Double> waypointList = new ArrayList<Double>();
 
     // Elevation change only
-    if (angleChange == 0)
-      {return new double[] {checkPosition(elevationTarget, angleTarget), angleTarget};}
+    if (Math.abs(angleChange) <= 0.01)
+      {
+        SmartDashboard.putNumber("Path Case", 2);
+        return new double[] {checkPosition(elevationTarget, angleTarget), angleTarget};
+      }
 
     // Anticlockwise rotation past both verticals:
     if 
@@ -136,6 +146,7 @@ public class ArmCalculator
       (angleRelative < 180 && angleRelative + angleChange >= 360)
     )
     {
+      SmartDashboard.putNumber("Path Case", 3);
       // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
       waypointList.add(safeElevation);
       waypointList.add(angleTarget - (angleTarget % 180));
@@ -150,6 +161,7 @@ public class ArmCalculator
       (angleRelative > 180 && angleRelative + angleChange <= 0)
     )
     {
+      SmartDashboard.putNumber("Path Case", 4);
       // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
       waypointList.add(safeElevation);
       waypointList.add(angleTarget + (-angleTarget % 180));
@@ -163,6 +175,7 @@ public class ArmCalculator
       (angleRelative < 180 && angleRelative + angleChange >= 180)
     )
     {
+      SmartDashboard.putNumber("Path Case", 5);
       // Intermediate waypoint: Safe elevation for the last vertical point before the target
       waypointList.add(checkPosition(elevationTarget, angleTarget - (angleTarget % 180)));
       waypointList.add(angleTarget - (angleTarget % 180));
@@ -171,15 +184,17 @@ public class ArmCalculator
     // Clockwise rotation taking the arm past vertical:
     else if 
     ( // Relative angle change goes past upright
-      angleRelative + angleChange <= 360 || 
+      angleRelative + angleChange <= 0 || 
       // Or relative angle change goes past upside-down
       (angleRelative > 180 && angleRelative + angleChange <= 180)
     )
     {
+      SmartDashboard.putNumber("Path Case", 6);
       // Intermediate waypoint: Safe elevation for the last vertical point before the target
       waypointList.add(checkPosition(elevationTarget, angleTarget + (-angleTarget % 180)));
       waypointList.add(angleTarget + (-angleTarget % 180));
     }
+    else SmartDashboard.putNumber("Path Case", 0);
 
     // else: Angle change does not take arm past vertical
     //       therefore the safe height is greatest at one end
@@ -195,22 +210,27 @@ public class ArmCalculator
       // Immediate rotation would cause collision:
       if (checkAngle(angleCurrent + Math.copySign(projectionAngle, angleChange)) > elevationCurrent)
       { // Set initial waypoint halfway between initial and first waypoint elevations without rotating
-        waypointList.add(0, (elevationCurrent + waypointList.get(0)) / 2);
+        SmartDashboard.putNumber("Path Projection", 1);
+        waypointHold = waypointList.get(0);
+        waypointList.add(0, (elevationCurrent + waypointHold) / 2);
         waypointList.add(1, angleCurrent);
       }
       // Immediate drop in elevation would cause collision:
-      else if (checkAngle(angleCurrent + Math.copySign(projectionAngle, angleChange)) > waypointList.get(2))
+      else if (waypointList.get(0) < elevationCurrent && checkAngle(angleCurrent) > elevationCurrent - projectionElevation)
       { // Set initial waypoint halfway between initial and first waypoint rotations without elevating
+        SmartDashboard.putNumber("Path Projection", 2);
+        waypointHold = waypointList.get(1);
         waypointList.add(0, elevationCurrent);
-        waypointList.add(1, (angleCurrent + waypointList.get(2) / 2));
+        waypointList.add(1, (angleCurrent + waypointHold) / 2);
       }
+      else SmartDashboard.putNumber("Path Projection", 0);
     }
 
     // Convert waypoint ArrayList to double primative array to return
     waypoints = new double[waypointList.size()];
     for (int i = 0; i < waypointList.size(); i++) 
     {
-      waypoints[i] = (double) waypointList.get(i);
+      waypoints[i] = Math.floor((double) waypointList.get(i) * 100)/100;
     }
     return waypoints;
   }
@@ -240,10 +260,11 @@ public class ArmCalculator
      */
 
     // Starting stow position puts the Algae arm below deck
-    if (angle == Constants.Diffector.startAngle && !RobotContainer.algae)
-      {return Constants.Diffector.startElevation;}
+    //if (angle == Constants.Diffector.startAngle && !RobotContainer.algae)
+    //  {return Constants.Diffector.startElevation;}
 
-    angle %= 360;
+    angle = angle % 360;
+    if (angle < 0) {angle += 360;}
 
     /*  
      *  Rotating the virtual arm reference points to allow for position calculations
@@ -298,7 +319,7 @@ public class ArmCalculator
       }
     }
 
-    else if (angle < 90 || angle < 270) // Algae arm down:
+    else if (angle < 90 || angle > 270) // Algae arm down:
     {
     /*
      *  Algae manipulator:
@@ -318,12 +339,12 @@ public class ArmCalculator
       if ((angle <= harpoonAngle || angle >= 360 - harpoonAngle) && RobotContainer.algae) // Holding algae & angle is within range of the harpoon:
         {return algaeArmLength + deckHeight + harpoonHeight;} // Keep algae above the harpoon
       
-      if (armGeometryRotated[2].getX() >= 0 && armGeometryRotated[3].getX() <= 0) // Algae arm extends to either side of the mast:
+      if (armGeometryRotated[2].getX() >= -0 && armGeometryRotated[3].getX() <= 0) // Algae arm extends to either side of the mast:
         {return algaeArmLength + deckHeight;} // Keep carriage above the deck by the length of the arm
       
       if (armGeometryRotated[2].getX() < 0) // Anticlockwise Algae limit is Starbord/Clockwise of the mast:
       {
-        if (armGeometryRotated[2].getX() >= railMedial) // Anticlockwise Algae limit is within the rail:
+        if (armGeometryRotated[2].getX() >= -railMedial) // Anticlockwise Algae limit is within the Starboard rail:
         {
           {
             return Math.max

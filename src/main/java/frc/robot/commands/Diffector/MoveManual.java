@@ -4,20 +4,23 @@
 
 package frc.robot.commands.Diffector;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.Diffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class MoveTo extends Command 
+public class MoveManual extends Command 
 {
-  double height;
-  double angle;
+  DoubleSupplier height;
+  DoubleSupplier angle;
   Diffector s_Diffector;
 
-  public MoveTo(Diffector s_Diffector, double height, double angle) 
+  public MoveManual(Diffector s_Diffector, DoubleSupplier heightSup, DoubleSupplier angleSup) 
   {
-    this.height = height;
-    this.angle = angle;
+    this.height = heightSup;
+    this.angle = angleSup;
     this.s_Diffector = s_Diffector;
 
     addRequirements(s_Diffector);
@@ -27,12 +30,12 @@ public class MoveTo extends Command
   @Override
   public void execute() 
   {
-    s_Diffector.setElevatorTarget(height);
-    s_Diffector.goToAngle(angle);
+    s_Diffector.setElevatorTarget(s_Diffector.getElevatorPos() + (height.getAsDouble() * Constants.Diffector.manualElevationScalar));
+    s_Diffector.goToAngle(s_Diffector.getArmPos() + (angle.getAsDouble() * Constants.Diffector.manualAngleScalar));
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
-    {return true;}
+    {return false;}
 }
