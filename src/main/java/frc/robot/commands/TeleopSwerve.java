@@ -12,7 +12,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -85,13 +84,12 @@ public class TeleopSwerve extends Command
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     rotationVal *= (Constants.Control.maxRotThrottle - ((Constants.Control.maxRotThrottle - Constants.Control.minRotThrottle) * brakeVal));
-      
+    
     if (fieldCentricSup.getAsBoolean())
     {
       if (fencedSup.getAsBoolean())
       {
         SmartDashboard.putString("Drive State", "Fenced");
-        SmartDashboard.putString("XY in:", motionXY.toString());
 
         robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
         if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
@@ -114,83 +112,21 @@ public class TeleopSwerve extends Command
         // Uninvert processing output when on red alliance
         if (redAlliance)
           {motionXY = motionXY.unaryMinus();}
-        
-        SmartDashboard.putString("XY out:", motionXY.toString());
-        s_Swerve.setControl
-        (
-          driveRequest
-          .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
-          .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
-          .withRotationalRate(rotationVal * Constants.Swerve.maxAngularVelocity)
-        );
-      }
-      else
-      {   
-        SmartDashboard.putString("Drive State", "Non-Fenced");
-        s_Swerve.setControl
-        (
-          driveRequest
-          .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
-          .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
-          .withRotationalRate(rotationVal * Constants.Swerve.maxAngularVelocity)
-        );
-      }
-    }
-    else
-    {
-      SmartDashboard.putString("Drive State", "Robot-Relative");
+      } 
+      else 
+        {SmartDashboard.putString("Drive State", "Non-Fenced");}
+
       s_Swerve.setControl
       (
-        driveRequestRoboCentric
+        driveRequest
         .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
         .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
         .withRotationalRate(rotationVal * Constants.Swerve.maxAngularVelocity)
       );
     }
-
-    motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
-    rotationVal *= (Constants.Control.maxRotThrottle - ((Constants.Control.maxRotThrottle - Constants.Control.minRotThrottle) * brakeVal));
-    
-    if (fieldCentricSup.getAsBoolean())
-    {
-      if (fencedSup.getAsBoolean())
-      {
-        robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
-        SmartDashboard.putString("Drive State", "Fenced");
-        if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
-          {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
-        else
-          {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
-        // Read down the list of geofence objects
-        // Outer wall is index 0, so has highest authority by being processed last
-        for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
-        {
-          Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY.unaryMinus(), robotRadius);
-          motionXY = inputDamping.unaryMinus();
-        }
-          s_Swerve.setControl
-        (
-          driveRequest
-          .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
-          .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
-          .withRotationalRate(rotationVal * Constants.Swerve.maxAngularVelocity)
-        );
-      }
-      else
-      {   
-        SmartDashboard.putString("Drive State", "Non-Fenced");
-        s_Swerve.setControl
-        (
-          driveRequest
-          .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
-          .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
-          .withRotationalRate(rotationVal * Constants.Swerve.maxAngularVelocity)
-        );
-      }
-    }
     else
     {
-      SmartDashboard.putString("Drive State", "Robot-Rel");
+      SmartDashboard.putString("Drive State", "Robot-Relative");
       s_Swerve.setControl
       (
         driveRequestRoboCentric
