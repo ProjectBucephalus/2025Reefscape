@@ -31,7 +31,6 @@ public class PathfindToStation extends Command
 
   private PathPlannerPath path;
   private Command pathfindingCommand;
-
  
   /** Creates a new PathfindToStation. */
   public PathfindToStation(int stationPosition, DoubleSupplier ySup, CommandSwerveDrivetrain s_Swerve) 
@@ -46,13 +45,19 @@ public class PathfindToStation extends Command
   {
     robotY = ySup.getAsDouble();
 
-    if (this.robotY >= 4.026) 
+    if (FieldUtils.isRedAlliance()) 
     {
-      stationSide = 'l';
+      if (robotY >= 4.026) 
+        {stationSide = 'r';}
+      else 
+        {stationSide = 'l';}
     }
-    else 
+    else
     {
-      stationSide = 'r';
+      if (robotY >= 4.026) 
+        {stationSide = 'l';}
+      else 
+        {stationSide = 'r';}
     }
 
     pathName = "c" + stationSide + stationPosition;
@@ -66,7 +71,5 @@ public class PathfindToStation extends Command
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
-  {
-    return pathfindingCommand.isFinished();
-  }
+    {return pathfindingCommand.isFinished();}
 }

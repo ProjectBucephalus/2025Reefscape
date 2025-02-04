@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) FIRST and other WPILib 
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -12,12 +12,12 @@ import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 public class SetCoralStatus extends Command 
 {
   CoralManipulator s_CoralManipulator;
-  CoralManipulatorStatus coralManipulatorStatus;
+  CoralManipulatorStatus s_CoralManipulatorStatus;
 
-  public SetCoralStatus(CoralManipulator s_CoralManipulator, CoralManipulatorStatus coralManipulatorStatus) 
+  public SetCoralStatus(CoralManipulator s_CoralManipulator, CoralManipulatorStatus s_CoralManipulatorStatus) 
   {
     this.s_CoralManipulator = s_CoralManipulator;
-    this.coralManipulatorStatus = coralManipulatorStatus;
+    this.s_CoralManipulatorStatus = s_CoralManipulatorStatus;
 
     addRequirements(s_CoralManipulator);
   }
@@ -25,14 +25,10 @@ public class SetCoralStatus extends Command
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
-  {
-    s_CoralManipulator.setCoralManipulatorStatus(coralManipulatorStatus);
-  }
+    {s_CoralManipulator.setCoralManipulatorStatus(s_CoralManipulatorStatus);}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
-  {
-    return true;
-  }
+    {return true;}
 }

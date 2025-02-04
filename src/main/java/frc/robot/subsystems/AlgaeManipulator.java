@@ -58,19 +58,13 @@ public class AlgaeManipulator extends SubsystemBase {
    * @param Speed Algae manipulator motor speed, positive to eject [-1..1]
    */
   public void setAlgaeManipulatorSpeed(double Speed)
-  {
-    algaeMotor.set(Speed);
-  }
+    {algaeMotor.set(Speed);}
 
   public void setAlgaeManipulatorStatus(AlgaeManipulatorStatus status)
-  {
-    algaeStatus = status;
-  }
+    {algaeStatus = status;}
 
   public AlgaeManipulatorStatus getStatus()
-  {
-    return algaeStatus;
-  }
+    {return algaeStatus;}
 
   @Override
   public void periodic() 
@@ -82,9 +76,7 @@ public class AlgaeManipulator extends SubsystemBase {
       case INTAKE:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorIntakeSpeed);
         if (RobotContainer.algae) 
-        {
-          algaeStatus = AlgaeManipulatorStatus.HOLDING;
-        }
+          {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
         break;
 
       case HOLDING:
@@ -93,33 +85,25 @@ public class AlgaeManipulator extends SubsystemBase {
           algaeMotor.setVoltage(Constants.GamePiecesManipulator.algaeManipulatorHoldingVoltage);      
         } 
         else
-        {
-          algaeStatus = AlgaeManipulatorStatus.EMPTY;
-        }
+          {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
         break;
 
       case NET:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);
         if (!RobotContainer.algae) 
-        {
-          algaeStatus = AlgaeManipulatorStatus.EMPTY;
-        }
+          {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
         break;
 
       case PROCESSOR:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorProcessorSpeed);
         if (!RobotContainer.algae) 
-        {
-          algaeStatus = AlgaeManipulatorStatus.EMPTY;
-        }
+          {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
         break;
 
       case EMPTY:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorEmptySpeed);
         if (RobotContainer.algae) 
-        {
-          algaeStatus = AlgaeManipulatorStatus.HOLDING;
-        }
+          {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
         break;
     }
   }

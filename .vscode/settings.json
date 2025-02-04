@@ -60,6 +60,8 @@
     "edu.wpi.first.math.**.struct.*",
   ],
   "java.project.explorer.showNonJavaResources": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
   "editor.formatOnSave": true,
   "editor.formatOnPaste": true,
   "java.settings.url": ".vscode/settings.prefs",

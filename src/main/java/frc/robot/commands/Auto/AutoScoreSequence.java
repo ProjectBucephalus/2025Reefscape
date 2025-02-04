@@ -9,10 +9,10 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
-import frc.robot.commands.AlgaeManipulator.ArmToAlgaeIntakePos;
+import frc.robot.commands.Diffector.GoToAlgaeIntakePos;
 import frc.robot.commands.AlgaeManipulator.IntakeAlgae;
 import frc.robot.commands.Auto.PathfindToReef.DpadOptions;
-import frc.robot.commands.CoralManipulator.ArmToCoralScorePos;
+import frc.robot.commands.Diffector.GoToCoralScorePos;
 import frc.robot.commands.CoralManipulator.SetCoralStatus;
 import frc.robot.commands.Diffector.MoveTo;
 import frc.robot.subsystems.Diffector;
@@ -45,13 +45,9 @@ public class AutoScoreSequence extends SequentialCommandGroup
     nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
 
     if (RobotContainer.driver.povLeft().getAsBoolean()) 
-    {
-      postSide = DpadOptions.LEFT;
-    }
+      {postSide = DpadOptions.LEFT;}
     else if (RobotContainer.driver.povRight().getAsBoolean())
-    {
-      postSide = DpadOptions.RIGHT;
-    }
+      {postSide = DpadOptions.RIGHT;}
     else 
     {
       switch (nearestReefFace) 
@@ -71,29 +67,17 @@ public class AutoScoreSequence extends SequentialCommandGroup
     }
 
     if (RobotContainer.copilot.a().getAsBoolean()) 
-    {
-      coralLevel = 1;
-    }
+      {coralLevel = 1;}
     else if (RobotContainer.copilot.b().getAsBoolean())
-    {
-      coralLevel = 2;
-    }
+      {coralLevel = 2;}
     else if (RobotContainer.copilot.x().getAsBoolean())
-    {
-      coralLevel = 3;
-    }
+      {coralLevel = 3;}
     else if (RobotContainer.copilot.y().getAsBoolean())
-    {
-      coralLevel = 4;
-    }
+      {coralLevel = 4;}
     else if (algaeLevel2) 
-    {
-      coralLevel = 3;
-    }
+      {coralLevel = 3;}
     else if (!algaeLevel2) 
-    {
-      coralLevel = 2;
-    }
+      {coralLevel = 2;}
 
     switch (nearestReefFace) 
     {
@@ -115,12 +99,12 @@ public class AutoScoreSequence extends SequentialCommandGroup
       addCommands
       (
         new PathfindToReef(DpadOptions.CENTRE, posSup, s_Swerve)
-        .alongWith(new ArmToAlgaeIntakePos(algaeLevel2, s_Diffector)),
+        .alongWith(new GoToAlgaeIntakePos(algaeLevel2, s_Diffector)),
         
         new IntakeAlgae(s_AlgaeManipulator),
         
         new PathfindToReef(postSide, posSup, s_Swerve)
-        .alongWith(new ArmToCoralScorePos(coralLevel, s_Diffector)),
+        .alongWith(new GoToCoralScorePos(coralLevel, s_Diffector)),
 
         new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY),
 
