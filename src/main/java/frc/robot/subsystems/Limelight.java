@@ -7,9 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
@@ -24,7 +22,6 @@ public class Limelight extends SubsystemBase
 
   private double headingDeg;
   private double omegaRps;
-  FieldObject2d objectTest;
 
   private final String limelightName;
   
@@ -67,7 +64,7 @@ public class Limelight extends SubsystemBase
     {
       SmartDashboard.putString(limelightName + " mt2 Pose", mt2.pose.toString());
     }
-    
+
     SmartDashboard.putNumber(limelightName + "RPS", omegaRps);
     SmartDashboard.putNumber("Gyro yaw", headingDeg);
   }
