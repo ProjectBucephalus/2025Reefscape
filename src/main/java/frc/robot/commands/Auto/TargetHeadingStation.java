@@ -94,13 +94,9 @@ public class TargetHeadingStation extends Command
       robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
       SmartDashboard.putString("Drive State", "Fenced");
       if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
-      {
-        robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;
-      }
+        {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
       else
-      {
-        robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;
-      }
+        {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
       
       // Invert processing input when on red alliance
       if (redAlliance)

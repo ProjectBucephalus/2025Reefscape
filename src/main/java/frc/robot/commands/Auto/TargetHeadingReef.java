@@ -98,9 +98,7 @@ public class TargetHeadingReef extends Command
       if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
         {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
       else
-      {
-          robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;
-      }
+        {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
 
       // Invert processing input when on red alliance
       if (redAlliance)

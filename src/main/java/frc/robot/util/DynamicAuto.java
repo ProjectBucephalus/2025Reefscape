@@ -1,5 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
+  // Copyright (c) FIRST and other WPILib contributors./ Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.util;
@@ -48,14 +47,10 @@ public class DynamicAuto
     {
         // 'w' is a command
         if (splitCommands[i].charAt(0) == 'w')
-        {
-          commandList.add(new WaitCommand(Double.parseDouble(splitCommands[i].substring(1))));
-        }
+          {commandList.add(new WaitCommand(Double.parseDouble(splitCommands[i].substring(1))));}
         // 't' is a wait until match time command
         else if (splitCommands[i].charAt(0) == 't') 
-        {
-          commandList.add(new WaitUntilAutoTime(Double.parseDouble(splitCommands[i].substring(1))));
-        }
+          {commandList.add(new WaitUntilAutoTime(Double.parseDouble(splitCommands[i].substring(1))));}
         else if (splitCommands[i].charAt(0) == 'r')
         {
           nextPath = FieldUtils.loadPath(Constants.Auto.autoMap.get(splitCommands[i].substring(0, 1)).pathName);
