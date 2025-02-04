@@ -11,21 +11,21 @@ public final class IDConstants
 
   /* Drive */
   /* _____ */
-  public static final int mod0DriveMotorID = 9; //1
-  public static final int mod0AngleMotorID = 11; //2
-  public static final int mod0CanCoderID = 10; //3
+  public static final int frontLeftDriveMotorID = 9; //1
+  public static final int frontLeftAngleMotorID = 11; //2
+  public static final int frontLeftCanCoderID = 10; //3
 
-  public static final int mod1DriveMotorID = 6; //4
-  public static final int mod1AngleMotorID = 8; //5
-  public static final int mod1CanCoderID = 7; //6
+  public static final int frontRightDriveMotorID = 6; //4
+  public static final int frontRightAngleMotorID = 8; //5
+  public static final int frontRightCanCoderID = 7; //6
 
-  public static final int mod2DriveMotorID = 16; //7
-  public static final int mod2AngleMotorID = 18; //8
-  public static final int mod2CanCoderID = 17; //9
+  public static final int backLeftDriveMotorID = 16; //7
+  public static final int backLeftAngleMotorID = 18; //8
+  public static final int backLeftCanCoderID = 17; //9
 
-  public static final int mod3DriveMotorID = 1; //10
-  public static final int mod3AngleMotorID = 3; //11
-  public static final int mod3CanCoderID = 2; //12
+  public static final int backRightDriveMotorID = 1; //10
+  public static final int backRightAngleMotorID = 3; //11
+  public static final int backRightCanCoderID = 2; //12
 
   public static final int pigeonID = 5; //13
 

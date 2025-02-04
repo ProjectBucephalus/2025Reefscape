@@ -126,49 +126,48 @@ public class TunerConstants {
 
 
     // Front Left
-    private static final int kFrontLeftDriveMotorId = 9;
-    private static final int kFrontLeftSteerMotorId = 11;
-    private static final int kFrontLeftEncoderId = 10;
+    private static final int kFrontLeftDriveMotorId = IDConstants.frontLeftDriveMotorID;
+    private static final int kFrontLeftSteerMotorId = IDConstants.frontLeftAngleMotorID;
+    private static final int kFrontLeftEncoderId = IDConstants.frontLeftCanCoderID;
     private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.069091796875);
     private static final boolean kFrontLeftSteerMotorInverted = true;
     private static final boolean kFrontLeftEncoderInverted = false;
 
-    private static final Distance kFrontLeftXPos = Inches.of(10.748);
-    private static final Distance kFrontLeftYPos = Inches.of(10.748);
+    private static final Distance kFrontLeftXPos = Meters.of(0.273);
+    private static final Distance kFrontLeftYPos = Meters.of(0.273);
 
     // Front Right
-    private static final int kFrontRightDriveMotorId = 6;
-    private static final int kFrontRightSteerMotorId = 8;
-    private static final int kFrontRightEncoderId = 7;
+    private static final int kFrontRightDriveMotorId = IDConstants.frontRightDriveMotorID;
+    private static final int kFrontRightSteerMotorId = IDConstants.frontRightAngleMotorID;
+    private static final int kFrontRightEncoderId = IDConstants.frontRightCanCoderID;
     private static final Angle kFrontRightEncoderOffset = Rotations.of(0.184326171875);
     private static final boolean kFrontRightSteerMotorInverted = true;
     private static final boolean kFrontRightEncoderInverted = false;
 
-    private static final Distance kFrontRightXPos = Inches.of(10.748);
-    private static final Distance kFrontRightYPos = Inches.of(-10.748);
+    private static final Distance kFrontRightXPos = Meters.of(0.273);
+    private static final Distance kFrontRightYPos = Meters.of(-0.273);
 
     // Back Left
-    private static final int kBackLeftDriveMotorId = 16;
-    private static final int kBackLeftSteerMotorId = 18;
-    private static final int kBackLeftEncoderId = 17;
+    private static final int kBackLeftDriveMotorId = IDConstants.backLeftDriveMotorID;
+    private static final int kBackLeftSteerMotorId = IDConstants.backLeftAngleMotorID;
+    private static final int kBackLeftEncoderId = IDConstants.backLeftCanCoderID;
     private static final Angle kBackLeftEncoderOffset = Rotations.of(0.146240234375);
     private static final boolean kBackLeftSteerMotorInverted = true;
     private static final boolean kBackLeftEncoderInverted = false;
 
-    private static final Distance kBackLeftXPos = Inches.of(-10.748);
-    private static final Distance kBackLeftYPos = Inches.of(10.748);
+    private static final Distance kBackLeftXPos = Meters.of(-0.273);
+    private static final Distance kBackLeftYPos = Meters.of(0.273);
 
     // Back Right
-    private static final int kBackRightDriveMotorId = 1;
-    private static final int kBackRightSteerMotorId = 3;
-    private static final int kBackRightEncoderId = 2;
+    private static final int kBackRightDriveMotorId = IDConstants.backRightDriveMotorID;
+    private static final int kBackRightSteerMotorId = IDConstants.backRightAngleMotorID;
+    private static final int kBackRightEncoderId = IDConstants.backRightCanCoderID;
     private static final Angle kBackRightEncoderOffset = Rotations.of(0.40966796875);
     private static final boolean kBackRightSteerMotorInverted = true;
     private static final boolean kBackRightEncoderInverted = false;
 
-    private static final Distance kBackRightXPos = Inches.of(-10.748);
-    private static final Distance kBackRightYPos = Inches.of(-10.748);
-
+    private static final Distance kBackRightXPos = Meters.of(-0.273);
+    private static final Distance kBackRightYPos = Meters.of(-0.273);
 
     public static final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> FrontLeft =
         ConstantCreator.createModuleConstants(
@@ -200,7 +199,6 @@ public class TunerConstants {
             DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight
         );
     }
-
 
     /**
      * Swerve Drive class utilizing CTR Electronics' Phoenix 6 API with the selected device types.
