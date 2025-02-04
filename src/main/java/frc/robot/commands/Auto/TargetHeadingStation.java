@@ -40,8 +40,8 @@ public class TargetHeadingStation extends Command
   private double robotRadius;
   private double robotSpeed;
 
-  private double translationSpeed;
-  private double strafeSpeed;
+  private double translationVal;
+  private double strafeVal;
   private double brakeVal;
   
   private double robotY;
@@ -79,29 +79,26 @@ public class TargetHeadingStation extends Command
   @Override
   public void execute() 
   {
-    translationSpeed = translationSup.getAsDouble() * Constants.Swerve.maxSpeed;
-    strafeSpeed = strafeSup.getAsDouble() * Constants.Swerve.maxSpeed;
+    translationVal = translationSup.getAsDouble();
+    strafeVal = strafeSup.getAsDouble();
     brakeVal = brakeSup.getAsDouble();
-    motionXY = new Translation2d(translationSpeed, strafeSpeed);
+    motionXY = new Translation2d(translationVal, strafeVal);
 
-    if (SmartDashboard.getBoolean("Station Snap Updating", true))
+    if (SmartDashboard.getBoolean("Reef Snap Updating", true)) 
       {updateTargetHeading();}
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     
     if (fencedSup.getAsBoolean())
     {
-      robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
       SmartDashboard.putString("Drive State", "Fenced");
+
+      robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
       if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
-      {
-        robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;
-      }
+        {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
       else
-      {
-        robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;
-      }
-      
+        {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
+
       // Invert processing input when on red alliance
       if (redAlliance)
         {motionXY = motionXY.unaryMinus();}
@@ -117,26 +114,17 @@ public class TargetHeadingStation extends Command
       // Uninvert processing output when on red alliance
       if (redAlliance)
         {motionXY = motionXY.unaryMinus();}
-
-      s_Swerve.setControl
-      (
-        driveRequest
-        .withVelocityX(motionXY.getX())
-        .withVelocityY(motionXY.getY())
-        .withTargetDirection(targetHeading)
-      );
     }
     else
-    {   
-      SmartDashboard.putString("Drive State", "Non-Fenced");
+      {SmartDashboard.putString("Drive State", "Non-Fenced");}
+    
       s_Swerve.setControl
-      (
-        driveRequest
-        .withVelocityX(motionXY.getX())
-        .withVelocityY(motionXY.getY())
-        .withTargetDirection(targetHeading)
-      );
-    }
+    (
+      driveRequest
+      .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
+      .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
+      .withTargetDirection(targetHeading)
+    );
   }
 
   // Returns true when the command should end.
