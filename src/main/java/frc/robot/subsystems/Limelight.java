@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,33 +33,26 @@ public class Limelight extends SubsystemBase
     
     SmartDashboard.putBoolean("Use Limelight", true);
   }
-  
-  public Pose2d getPose() 
-    {return mt2.pose;}
 
   public void setIMUMode(int mode)
     {LimelightHelpers.SetIMUMode(limelightName, mode);}
    
   @Override
   public void periodic() 
-  {
-    // This method will be called once per scheduler run  
-
+  { 
     headingDeg = s_Swerve.getPigeon2().getYaw().getValueAsDouble();
     omegaRps = Units.radiansToRotations(s_Swerve.getState().Speeds.omegaRadiansPerSecond);
-
-    SmartDashboard.putNumber("Gyro yaw", headingDeg);
     
-    if (SmartDashboard.getBoolean("Use Limelight", true)) 
+    if (SmartDashboard.getBoolean("Use Limelight", true))
     {
       LimelightHelpers.SetRobotOrientation(limelightName, headingDeg, 0, 0, 0, 0, 0);
       LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, validIDs);
-
+      
       mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
-
+      
       useUpdate = !(mt2 == null || mt2.tagCount == 0 || omegaRps > 2.0);
       SmartDashboard.putBoolean("Use " + limelightName + " update", useUpdate);
-
+      
       if (useUpdate) 
       {
         s_Swerve.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
@@ -71,8 +63,9 @@ public class Limelight extends SubsystemBase
     if(mt2 != null)
     {
       SmartDashboard.putString(limelightName + " mt2 Pose", mt2.pose.toString());
-      SmartDashboard.putNumber(limelightName + " Tag Count", mt2.tagCount);
     }
+
     SmartDashboard.putNumber(limelightName + "RPS", omegaRps);
+    SmartDashboard.putNumber("Gyro yaw", headingDeg);
   }
 }
