@@ -17,6 +17,16 @@ public class FieldConstants
     public static final double fieldLength = 17.548;
     public static final double fieldWidth = 8.051;
 
+    /* Co-ordinates to the center of each driver station */
+
+    public static final Translation2d driverBlue1 = new Translation2d(0.0, 5.278);
+    public static final Translation2d driverBlue2 = new Translation2d(0.0, 4.026);
+    public static final Translation2d driverBlue3 = new Translation2d(0.0,2.278);
+    public static final Translation2d driverRed1 = new Translation2d(fieldLength,2.278);
+    public static final Translation2d driverRed2 = new Translation2d(fieldLength,4.026);
+    public static final Translation2d driverRed3 = new Translation2d(fieldLength,5.278);
+    
+
     public static boolean isRedAlliance() 
     {
         Optional<Alliance> alliance = DriverStation.getAlliance();

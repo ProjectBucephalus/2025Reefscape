@@ -12,6 +12,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.Test;
 import frc.robot.subsystems.Diffector.CargoStates;
@@ -404,4 +405,19 @@ public final class Constants
             public static final double m_ClimbWinchPos = 0;
         }
     }
+
+    public static final class LEDStrip
+    {
+        public static final int LEDPWMPort = IDConstants.LEDPWM;
+        public static final int lightsLen = 120;
+        public static final int viewWidth = 30;
+        public static final int startOffset = 1;
+        public static final double degreesPerLED = 360/lightsLen;
+        public static final Color defaultBackColor = Color.kRed;
+        public static final Color defaultFrontColor = Color.kGreen;
+        public static final Color displayBorderColor = Color.kBlue;
+        public static final int defaultStatusSegments = 3;
+        public static final int pointerGradientThreshold = 5;
+    }
+
 }
