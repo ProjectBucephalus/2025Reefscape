@@ -310,13 +310,13 @@ public class Diffector extends SubsystemBase
 
   double simUC = 0;
   double simDC = 0;
-  double simTest = 360;
+  //double simTest = 360;
 
   @Override
   public void periodic() 
   { 
     //cargoState = updateCargoState(); // TODO: Don't need to call this in periodic, only needs to be called when state changes
-/* 
+ 
     calculateMotorTargets();
 
     if (simUC > motorTargets[0])
@@ -342,9 +342,9 @@ public class Diffector extends SubsystemBase
     SmartDashboard.putNumber("Elevator Height", getElevatorPos());
     SmartDashboard.putNumber("Arm Rotation", getArmPos());
     SmartDashboard.putBoolean("Existance", true);
-*/
-    SmartDashboard.putNumber("Angle Test", simTest);
-    SmartDashboard.putNumber("Min Height", arm.checkAngle(simTest));
-    simTest -= 0.1;
+
+    //SmartDashboard.putNumber("Angle Test", simTest);
+    //SmartDashboard.putNumber("Min Height", arm.checkAngle(simTest));
+    //simTest -= 0.1;
   }
 }

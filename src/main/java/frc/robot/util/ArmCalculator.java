@@ -212,7 +212,7 @@ public class ArmCalculator
       { // Set initial waypoint halfway between initial and first waypoint elevations without rotating
         SmartDashboard.putNumber("Path Projection", 1);
         waypointHold = waypointList.get(0);
-        waypointList.add(0, (elevationCurrent + waypointHold) / 2);
+        waypointList.add(0, Math.max(Math.max((elevationCurrent + waypointHold) / 2, elevationCurrent), waypointHold));
         waypointList.add(1, angleCurrent);
       }
       // Immediate drop in elevation would cause collision:
