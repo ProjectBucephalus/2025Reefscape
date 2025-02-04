@@ -14,19 +14,15 @@ public class SetRumble extends Command
 
     public SetRumble(Rumbler s_Rumbler, Sides side, String requestID)
     {
-        this.s_Rumbler = s_Rumbler;
-        this.side = side;
-        request = requestID;
+      this.s_Rumbler = s_Rumbler;
+      this.side = side;
+      request = requestID;
     }
 
     @Override
     public void execute()
-    {
-        s_Rumbler.addRequest(side, request);
-    }
+      {s_Rumbler.addRequest(side, request);}
 
     public boolean isFinished()
-    {
-        return true;
-    }
+      {return true;}
 }

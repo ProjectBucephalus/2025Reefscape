@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) FIRST and other WPILib 
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -35,12 +35,13 @@ public class TargetHeadingStation extends Command
   private BooleanSupplier fencedSup;
   private Translation2d motionXY;
   private DoubleSupplier ySup;
-  private final GeoFenceObject[] fieldGeoFence = FieldUtils.GeoFencing.fieldGeoFence;
+  private GeoFenceObject[] fieldGeoFence;
+  private boolean redAlliance;
   private double robotRadius;
   private double robotSpeed;
 
-  private double translationSpeed;
-  private double strafeSpeed;
+  private double translationVal;
+  private double strafeVal;
   private double brakeVal;
   
   private double robotY;
@@ -62,86 +63,92 @@ public class TargetHeadingStation extends Command
     driveRequest.HeadingController.setPID(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
   }
 
-  @Override 
+  @Override
   public void initialize()
   {
     updateTargetHeading();
+    redAlliance = FieldUtils.isRedAlliance();
+    SmartDashboard.putBoolean("redAlliance", redAlliance);
+    if (redAlliance)
+      {fieldGeoFence = FieldUtils.GeoFencing.fieldRedGeoFence;}
+    else
+      {fieldGeoFence = FieldUtils.GeoFencing.fieldBlueGeoFence;}
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    translationSpeed = translationSup.getAsDouble() * Constants.Swerve.maxSpeed;
-    strafeSpeed = strafeSup.getAsDouble() * Constants.Swerve.maxSpeed;
+    translationVal = translationSup.getAsDouble();
+    strafeVal = strafeSup.getAsDouble();
     brakeVal = brakeSup.getAsDouble();
-    motionXY = new Translation2d(translationSpeed, strafeSpeed);
+    motionXY = new Translation2d(translationVal, strafeVal);
 
-    if (SmartDashboard.getBoolean("Station Snap Updating", true))
-    {
-      updateTargetHeading();
-    }
+    if (SmartDashboard.getBoolean("Reef Snap Updating", true)) 
+      {updateTargetHeading();}
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     
     if (fencedSup.getAsBoolean())
     {
-      robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
       SmartDashboard.putString("Drive State", "Fenced");
+
+      robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
       if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
-      {
-          robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;
-      }
+        {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
       else
-      {
-          robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;
-      }
+        {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
+
+      // Invert processing input when on red alliance
+      if (redAlliance)
+        {motionXY = motionXY.unaryMinus();}
+
       // Read down the list of geofence objects
       // Outer wall is index 0, so has highest authority by being processed last
-      for (int i = fieldGeoFence.length - 1; i >= 0; i--)
+      for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
       {
-          Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
-          motionXY = inputDamping;
+        Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
+        motionXY = inputDamping;
       }
-      s_Swerve.setControl
-      (
-          driveRequest
-          .withVelocityX(motionXY.getX())
-          .withVelocityY(motionXY.getY())
-          .withTargetDirection(targetHeading)
-      );
+
+      // Uninvert processing output when on red alliance
+      if (redAlliance)
+        {motionXY = motionXY.unaryMinus();}
     }
     else
-    {   
-      SmartDashboard.putString("Drive State", "Non-Fenced");
+      {SmartDashboard.putString("Drive State", "Non-Fenced");}
+    
       s_Swerve.setControl
-      (
-          driveRequest
-          .withVelocityX(motionXY.getX())
-          .withVelocityY(motionXY.getY())
-          .withTargetDirection(targetHeading)
-      );
-    }
+    (
+      driveRequest
+      .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
+      .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
+      .withTargetDirection(targetHeading)
+    );
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
-  {
-    return false;
-  }
+    {return false;}
 
   private void updateTargetHeading()
   {
     robotY = ySup.getAsDouble();
 
-    if (robotY >= 4.026) 
+    if (FieldUtils.isRedAlliance()) 
     {
-      targetHeading = new Rotation2d(Units.degreesToRadians(126));
-    } 
-    else 
+      if (robotY >= 4.026) 
+        {targetHeading = new Rotation2d(Units.degreesToRadians(-126));} 
+      else 
+        {targetHeading = new Rotation2d(Units.degreesToRadians(126));}
+    }
+    else
     {
-      targetHeading = new Rotation2d(Units.degreesToRadians(-126));
+      if (robotY >= 4.026) 
+        {targetHeading = new Rotation2d(Units.degreesToRadians(126));} 
+      else 
+        {targetHeading = new Rotation2d(Units.degreesToRadians(-126));}
     }
   }
 }
