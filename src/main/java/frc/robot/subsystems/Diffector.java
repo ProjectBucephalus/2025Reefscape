@@ -61,8 +61,8 @@ public class Diffector extends SubsystemBase
   {
     arm = new ArmCalculator();
     motorConfig = CTREConfigs.diffectorFXConfig;
-    rotationRatio = Constants.Diffector.rotationRatio;
-    travelRatio = Constants.Diffector.travelRatio;
+    rotationRatio = 1; // Constants.Diffector.rotationRatio;
+    travelRatio   = 0.01; // Constants.Diffector.travelRatio;
 
     m_diffectorUA = new TalonFX(Constants.Diffector.uaMotorID);
     m_diffectorDA = new TalonFX(Constants.Diffector.daMotorID);
@@ -100,7 +100,7 @@ public class Diffector extends SubsystemBase
    */
   public double getArmPos()
   {
-    return ((simUA + simDA) * rotationRatio);
+    return ((simUA + simDA) * rotationRatio) / 2;
     //return (m_diffectorUA.getPosition().getValueAsDouble() + m_diffectorDA.getPosition().getValueAsDouble()) * rotationRatio;
   }
 
@@ -304,8 +304,8 @@ public class Diffector extends SubsystemBase
  
     calculateMotorTargets();
 
-    simUA += Conversions.clamp(motorTargets[0] - simUA, -100, 100);
-    simDA += Conversions.clamp(motorTargets[1] - simDA, -100, 100);
+    simUA += Conversions.clamp((motorTargets[0] - simUA)*0.01, -10, 10);
+    simDA += Conversions.clamp((motorTargets[1] - simDA)*0.01, -10, 10);
 
     SmartDashboard.putNumberArray("MotorTargets", motorTargets);
     SmartDashboard.putNumberArray("MotorActual", new double[] {simUA,simDA});

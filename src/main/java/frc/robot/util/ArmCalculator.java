@@ -129,95 +129,99 @@ public class ArmCalculator
     ArrayList<Double> waypointList = new ArrayList<Double>();
 
     // Elevation change only
-    if (Math.abs(angleChange) <= 0.01)
+    if (Math.abs(angleChange) <= Constants.Diffector.angleTolerance)
       {return new double[] {checkPosition(elevationTarget, angleTarget), angleTarget};}
 
-    // Anticlockwise rotation past both verticals:
-    if 
+    // Arm is not vertical:
+    else if
     (
-      // Angle change greater than one rotation
-      angleChange >= 360 ||
-      // Or relative angle change goes past both verticals
-      (angleRelative < 180 && angleRelative + angleChange >= 360)
+      Conversions.mod(angleRelative, 180) > Constants.Diffector.angleTolerance && 
+      Conversions.mod(angleRelative, 180) < 180 - Constants.Diffector.angleTolerance  
     )
     {
-      // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
-      waypointList.add(safeElevation);
-      waypointList.add(angleTarget - Conversions.mod(angleTarget, 180));
-    }
+      // Anticlockwise rotation past both verticals:
+      if 
+      (
+        // Angle change greater than one rotation
+        angleChange >= 360 ||
+        // Or relative angle change goes past both verticals
+        (angleRelative < 180 && angleRelative + angleChange >= 360)
+      )
+      {
+        // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
+        waypointList.add(safeElevation);
+        waypointList.add(angleTarget - Conversions.mod(angleTarget, 180));
+      }
 
-    // Clockwise rotation past both verticals:
-    else if 
-    (
-      // Angle change greater than one rotation
-      angleChange <= -360 ||
-      // Or relative angle change goes past both verticals
-      (angleRelative > 180 && angleRelative + angleChange <= 0)
-    )
-    {
-      // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
-      waypointList.add(safeElevation);
-      waypointList.add(angleTarget + Conversions.mod(-angleTarget, 180));
-    }
+      // Clockwise rotation past both verticals:
+      else if 
+      (
+        // Angle change greater than one rotation
+        angleChange <= -360 ||
+        // Or relative angle change goes past both verticals
+        (angleRelative > 180 && angleRelative + angleChange <= 0)
+      )
+      {
+        // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
+        waypointList.add(safeElevation);
+        waypointList.add(angleTarget + Conversions.mod(-angleTarget, 180));
+      }
 
-    // Anticlockwise rotation taking the arm past vertical:
-    else if 
-    ( // Relative angle change goes past upright
-      angleRelative + angleChange >= 360 || 
-      // Or relative angle change goes past upside-down
-      (angleRelative < 180 && angleRelative + angleChange >= 180)
-    )
-    {
-      // Intermediate waypoint: Safe elevation for the last vertical point before the target
-      waypointList.add(checkPosition(elevationTarget, angleTarget - Conversions.mod(angleTarget, 180)));
-      waypointList.add(angleTarget - Conversions.mod(angleTarget, 180));
-    }
-    
-    // Clockwise rotation taking the arm past vertical:
-    else if 
-    ( // Relative angle change goes past upright
-      angleRelative + angleChange <= 0 || 
-      // Or relative angle change goes past upside-down
-      (angleRelative > 180 && angleRelative + angleChange <= 180)
-    )
-    {
-      // Intermediate waypoint: Safe elevation for the last vertical point before the target
-      waypointList.add(checkPosition(elevationTarget, angleTarget + Conversions.mod(-angleTarget, 180)));
-      waypointList.add(angleTarget + Conversions.mod(-angleTarget, 180));
-    }
+      // Anticlockwise rotation taking the arm past vertical:
+      else if 
+      ( // Relative angle change goes past upright
+        angleRelative + angleChange >= 360 || 
+        // Or relative angle change goes past upside-down
+        (angleRelative < 180 && angleRelative + angleChange >= 180)
+      )
+      {
+        // Intermediate waypoint: Safe elevation for the last vertical point before the target
+        waypointList.add(checkPosition(elevationTarget, angleTarget - Conversions.mod(angleTarget, 180)));
+        waypointList.add(angleTarget - Conversions.mod(angleTarget, 180));
+      }
+      
+      // Clockwise rotation taking the arm past vertical:
+      else if 
+      ( // Relative angle change goes past upright
+        angleRelative + angleChange <= 0 || 
+        // Or relative angle change goes past upside-down
+        (angleRelative > 180 && angleRelative + angleChange <= 180)
+      )
+      {
+        // Intermediate waypoint: Safe elevation for the last vertical point before the target
+        waypointList.add(checkPosition(elevationTarget, angleTarget + Conversions.mod(-angleTarget, 180)));
+        waypointList.add(angleTarget + Conversions.mod(-angleTarget, 180));
+      }
 
-    // else: Angle change does not take arm past vertical
-    //       therefore the safe height is greatest at one end
-    //       and no intermediate waypoint is needed
+      // else: Angle change does not take arm past vertical
+      //       therefore the safe height is greatest at one end
+      //       and no intermediate waypoint is needed
+    }
+    // Unless stowed, ensure the arm is safe before moving from vertical
+    else if (!Diffector.stowRequested && elevationCurrent <= checkAngle(angleCurrent))
+    {
+      waypointList.add(checkAngle(angleCurrent) + projectionAngle);
+      waypointList.add(angleCurrent);
+    }
 
     // Add Target waypoint:
     waypointList.add(checkPosition(elevationTarget, angleTarget));
     waypointList.add(angleTarget);
 
     // Immediate path projection to protect against dangerous elevation/rotation sequencing
-    if (Math.abs(angleChange) > projectionAngle)
-    {
-      // Immediate rotation would cause collision:
-      if (checkAngle(angleCurrent + Math.copySign(projectionAngle, angleChange)) > elevationCurrent)
-      { // Set initial waypoint halfway between initial and first waypoint elevations without rotating
-        waypointHold = waypointList.get(0);
-        waypointList.add(0, Math.max(Math.max((elevationCurrent + waypointHold) / 2, elevationCurrent), waypointHold));
-        waypointList.add(1, angleCurrent);
-      }
-      // Immediate drop in elevation would cause collision:
-      else if (waypointList.get(0) < elevationCurrent && checkAngle(angleCurrent) > elevationCurrent - projectionElevation)
-      { // Set initial waypoint halfway between initial and first waypoint rotations without elevating
-        waypointHold = waypointList.get(1);
-        waypointList.add(0, elevationCurrent);
-        waypointList.add(1, (angleCurrent + waypointHold) / 2);
-      }
-    }
-
-    // Unless stowed, ensure the arm is safe before moving
-    if (!Diffector.stowRequested && elevationCurrent < checkAngle(angleCurrent))
-    {
-      waypointList.add(0, checkAngle(angleCurrent) + projectionElevation);
+    // Immediate rotation would cause collision:
+    if (checkAngle(angleCurrent + Math.copySign(Math.min(projectionAngle, Math.abs(angleChange)), angleChange)) > elevationCurrent)
+    { // Set initial waypoint halfway between initial and first waypoint elevations without rotating
+      waypointHold = waypointList.get(0);
+      waypointList.add(0, Math.max(Math.max((elevationCurrent + waypointHold) / 2, elevationCurrent), waypointHold));
       waypointList.add(1, angleCurrent);
+    }
+    // Immediate drop in elevation would cause collision:
+    else if (waypointList.get(0) < elevationCurrent && checkAngle(angleCurrent) > elevationCurrent - projectionElevation)
+    { // Set initial waypoint halfway between initial and first waypoint rotations without elevating
+      waypointHold = waypointList.get(1);
+      waypointList.add(0, elevationCurrent);
+      waypointList.add(1, (angleCurrent + waypointHold) / 2);
     }
 
     // Convert waypoint ArrayList to double primative array to return
