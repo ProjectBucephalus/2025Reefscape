@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Diffector.IKGeometry;
+import frc.robot.subsystems.Diffector;
 
 /** Add your docs here. */
 public class ArmCalculator 
@@ -119,10 +120,7 @@ public class ArmCalculator
 
     // Full intended path of arm is above safe limits, path is safe as given
     if (elevationCurrent >= safeElevation && elevationTarget >= safeElevation)
-      {
-        SmartDashboard.putNumber("Path Case", 1);
-        return new double[] {elevationTarget, angleTarget};
-      }
+      {return new double[] {elevationTarget, angleTarget};}
 
     double angleChange = angleTarget - angleCurrent;
     double angleRelative = Conversions.mod(angleCurrent, 360);
@@ -130,12 +128,13 @@ public class ArmCalculator
     double[] waypoints;
     ArrayList<Double> waypointList = new ArrayList<Double>();
 
+    // Unless stowed, ensure the arm is safe before moving
+    if (!Diffector.stowRequested && elevationCurrent < checkAngle(angleCurrent))
+      {return new double[] {checkAngle(angleCurrent), angleCurrent};}
+
     // Elevation change only
     if (Math.abs(angleChange) <= 0.01)
-      {
-        SmartDashboard.putNumber("Path Case", 2);
-        return new double[] {checkPosition(elevationTarget, angleTarget), angleTarget};
-      }
+      {return new double[] {checkPosition(elevationTarget, angleTarget), angleTarget};}
 
     // Anticlockwise rotation past both verticals:
     if 
@@ -146,7 +145,6 @@ public class ArmCalculator
       (angleRelative < 180 && angleRelative + angleChange >= 360)
     )
     {
-      SmartDashboard.putNumber("Path Case", 3);
       // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
       waypointList.add(safeElevation);
       waypointList.add(angleTarget - Conversions.mod(angleTarget, 180));
@@ -161,7 +159,6 @@ public class ArmCalculator
       (angleRelative > 180 && angleRelative + angleChange <= 0)
     )
     {
-      SmartDashboard.putNumber("Path Case", 4);
       // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
       waypointList.add(safeElevation);
       waypointList.add(angleTarget + Conversions.mod(-angleTarget, 180));
@@ -175,7 +172,6 @@ public class ArmCalculator
       (angleRelative < 180 && angleRelative + angleChange >= 180)
     )
     {
-      SmartDashboard.putNumber("Path Case", 5);
       // Intermediate waypoint: Safe elevation for the last vertical point before the target
       waypointList.add(checkPosition(elevationTarget, angleTarget - Conversions.mod(angleTarget, 180)));
       waypointList.add(angleTarget - Conversions.mod(angleTarget, 180));
@@ -189,12 +185,10 @@ public class ArmCalculator
       (angleRelative > 180 && angleRelative + angleChange <= 180)
     )
     {
-      SmartDashboard.putNumber("Path Case", 6);
       // Intermediate waypoint: Safe elevation for the last vertical point before the target
       waypointList.add(checkPosition(elevationTarget, angleTarget + Conversions.mod(-angleTarget, 180)));
       waypointList.add(angleTarget + Conversions.mod(-angleTarget, 180));
     }
-    else SmartDashboard.putNumber("Path Case", 0);
 
     // else: Angle change does not take arm past vertical
     //       therefore the safe height is greatest at one end
@@ -210,7 +204,6 @@ public class ArmCalculator
       // Immediate rotation would cause collision:
       if (checkAngle(angleCurrent + Math.copySign(projectionAngle, angleChange)) > elevationCurrent)
       { // Set initial waypoint halfway between initial and first waypoint elevations without rotating
-        SmartDashboard.putNumber("Path Projection", 1);
         waypointHold = waypointList.get(0);
         waypointList.add(0, Math.max(Math.max((elevationCurrent + waypointHold) / 2, elevationCurrent), waypointHold));
         waypointList.add(1, angleCurrent);
@@ -218,12 +211,10 @@ public class ArmCalculator
       // Immediate drop in elevation would cause collision:
       else if (waypointList.get(0) < elevationCurrent && checkAngle(angleCurrent) > elevationCurrent - projectionElevation)
       { // Set initial waypoint halfway between initial and first waypoint rotations without elevating
-        SmartDashboard.putNumber("Path Projection", 2);
         waypointHold = waypointList.get(1);
         waypointList.add(0, elevationCurrent);
         waypointList.add(1, (angleCurrent + waypointHold) / 2);
       }
-      else SmartDashboard.putNumber("Path Projection", 0);
     }
 
     // Convert waypoint ArrayList to double primative array to return
@@ -258,8 +249,8 @@ public class ArmCalculator
      */
 
     // Starting stow position puts the Algae arm below deck
-    //if (angle == Constants.Diffector.startAngle && !RobotContainer.algae)
-    //  {return Constants.Diffector.startElevation;}
+    if (angle == Constants.Diffector.Presets.startAngle && !RobotContainer.algae && Diffector.stowRequested)
+      {return Constants.Diffector.Presets.startElevation;}
 
     angle = Conversions.mod(angle, 360);
 
