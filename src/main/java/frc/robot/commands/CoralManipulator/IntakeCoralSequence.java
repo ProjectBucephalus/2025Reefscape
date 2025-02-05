@@ -6,7 +6,7 @@ package frc.robot.commands.CoralManipulator;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.MoveTo;
-import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.Diffector.Presets;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
 
@@ -16,5 +16,5 @@ import frc.robot.subsystems.Diffector;
 public class IntakeCoralSequence extends SequentialCommandGroup 
 {
   public IntakeCoralSequence(Diffector s_Diffector, CoralManipulator s_CoralManipulator) 
-    {addCommands(new MoveTo(s_Diffector, Constants.Diffector.coralStationElevation, Constants.Diffector.coralStationAngle), new IntakeCoral(s_CoralManipulator));}
+    {addCommands(new MoveTo(s_Diffector, Presets.coralStationElevation, Presets.coralStationAngle), new IntakeCoral(s_CoralManipulator));}
 }

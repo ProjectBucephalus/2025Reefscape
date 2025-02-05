@@ -7,7 +7,7 @@ package frc.robot.commands.CoralManipulator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.MoveTo;
-import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.Diffector.Presets;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
@@ -24,19 +24,19 @@ public class ScoreCoral extends SequentialCommandGroup
     switch(level)
     {
       case 1:
-        diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.reef4Elevation, Constants.Diffector.reef4Angle);
+        diffectorPosCommand = new MoveTo(s_Diffector, Presets.reef4Elevation, Presets.reef4Angle);
         break;
 
       case 2:
-        diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.reef3Elevation, Constants.Diffector.reef3Angle);
+        diffectorPosCommand = new MoveTo(s_Diffector, Presets.reef3Elevation, Presets.reef3Angle);
         break;
 
       case 3:
-        diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.reef2Elevation, Constants.Diffector.reef2Angle);
+        diffectorPosCommand = new MoveTo(s_Diffector, Presets.reef2Elevation, Presets.reef2Angle);
         break;
 
       case 4:
-        diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.reef1Elevation, Constants.Diffector.reef1Angle);
+        diffectorPosCommand = new MoveTo(s_Diffector, Presets.reef1Elevation, Presets.reef1Angle);
         break;
     }
     addCommands(diffectorPosCommand, new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY));
