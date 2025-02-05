@@ -5,7 +5,7 @@
 package frc.robot.commands.Diffector;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.Constants.Diffector.Presets;
+import frc.robot.constants.Constants.Diffector.ArmPresets;
 import frc.robot.subsystems.Diffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -29,13 +29,13 @@ public class GoToAlgaeIntakePos extends Command
   {
     if (level2)
     {
-      elevation = Presets.algae2Elevation;
-      angle     = Presets.algae2Angle;
+      elevation = ArmPresets.algae2Elevation;
+      angle     = ArmPresets.algae2Angle;
     }
     else
     {
-      elevation = Presets.algae1Elevation;
-      angle     = Presets.algae1Angle;
+      elevation = ArmPresets.algae1Elevation;
+      angle     = ArmPresets.algae1Angle;
     }
 
     moveCommand = new MoveTo(s_Diffector, elevation, angle);

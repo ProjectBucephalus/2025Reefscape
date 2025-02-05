@@ -7,7 +7,7 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.MoveTo;
-import frc.robot.constants.Constants.Diffector.Presets;
+import frc.robot.constants.Constants.Diffector.ArmPresets;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Diffector;
 import frc.robot.subsystems.Intake.IntakeStatus;
@@ -24,12 +24,12 @@ public class TransferGamePiece extends SequentialCommandGroup
   {
     if (isCoral)
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, Presets.coralTransferElevation, Presets.coralTransferAngle);
+      diffectorPosCommand = new MoveTo(s_Diffector, ArmPresets.coralTransferElevation, ArmPresets.coralTransferAngle);
       intakeCommand = new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_CORAL);
     } 
     else
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, Presets.algaeTransferElevation, Presets.algaeTransferAngle);
+      diffectorPosCommand = new MoveTo(s_Diffector, ArmPresets.algaeTransferElevation, ArmPresets.algaeTransferAngle);
       intakeCommand = new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE);
     }
 

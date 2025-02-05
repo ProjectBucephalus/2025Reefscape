@@ -5,7 +5,7 @@
 package frc.robot.commands.Diffector;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.Constants.Diffector.Presets;
+import frc.robot.constants.Constants.Diffector.ArmPresets;
 import frc.robot.subsystems.Diffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -28,19 +28,19 @@ public class GoToCoralScorePos extends Command
     switch (level)
     {
       case 1:
-        moveCommand = new MoveTo(s_Diffector, Presets.reef4Elevation, Presets.reef4Angle);
+        moveCommand = new MoveTo(s_Diffector, ArmPresets.reef4Elevation, ArmPresets.reef4Angle);
         break;
 
       case 2:
-        moveCommand = new MoveTo(s_Diffector, Presets.reef3Elevation, Presets.reef3Angle);
+        moveCommand = new MoveTo(s_Diffector, ArmPresets.reef3Elevation, ArmPresets.reef3Angle);
         break;
 
       case 3:
-        moveCommand = new MoveTo(s_Diffector, Presets.reef2Elevation, Presets.reef2Angle);
+        moveCommand = new MoveTo(s_Diffector, ArmPresets.reef2Elevation, ArmPresets.reef2Angle);
         break;
 
       case 4:
-        moveCommand = new MoveTo(s_Diffector, Presets.reef1Elevation, Presets.reef1Angle);
+        moveCommand = new MoveTo(s_Diffector, ArmPresets.reef1Elevation, ArmPresets.reef1Angle);
         break;
     }
 

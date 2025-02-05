@@ -68,16 +68,16 @@ public class Diffector extends SubsystemBase
     m_diffectorDA = new TalonFX(Constants.Diffector.daMotorID);
     encoder = new DutyCycleEncoder(Constants.Diffector.encoderPWMID);
 
-    targetElevation = Constants.Diffector.Presets.startElevation;
-    targetAngle = Constants.Diffector.Presets.startAngle;
+    targetElevation = Constants.Diffector.ArmPresets.startElevation;
+    targetAngle = Constants.Diffector.ArmPresets.startAngle;
 
     m_diffectorUA.getConfigurator().apply(motorConfig);
     m_diffectorDA.getConfigurator().apply(motorConfig);
 
-    m_diffectorUA.setPosition((Constants.Diffector.Presets.startAngle / rotationRatio) + (Constants.Diffector.Presets.startElevation / travelRatio));
-    m_diffectorDA.setPosition((Constants.Diffector.Presets.startAngle / rotationRatio) - (Constants.Diffector.Presets.startElevation / travelRatio));
-    simUA = ((Constants.Diffector.Presets.startAngle / rotationRatio) + (Constants.Diffector.Presets.startElevation / travelRatio));
-    simDA = ((Constants.Diffector.Presets.startAngle / rotationRatio) - (Constants.Diffector.Presets.startElevation / travelRatio));
+    m_diffectorUA.setPosition((Constants.Diffector.ArmPresets.startAngle / rotationRatio) + (Constants.Diffector.ArmPresets.startElevation / travelRatio));
+    m_diffectorDA.setPosition((Constants.Diffector.ArmPresets.startAngle / rotationRatio) - (Constants.Diffector.ArmPresets.startElevation / travelRatio));
+    simUA = ((Constants.Diffector.ArmPresets.startAngle / rotationRatio) + (Constants.Diffector.ArmPresets.startElevation / travelRatio));
+    simDA = ((Constants.Diffector.ArmPresets.startAngle / rotationRatio) - (Constants.Diffector.ArmPresets.startElevation / travelRatio));
 
     cargoState = updateCargoState();
 
@@ -96,7 +96,7 @@ public class Diffector extends SubsystemBase
 
   /**
    * Calculates arm rotation based on motor positions
-   * @return Arm rotation, degrees clockwise, 0 = algae at top
+   * @return Arm rotation, degrees anticlockwise, 0 = algae at top
    */
   public double getArmPos()
   {
@@ -106,7 +106,7 @@ public class Diffector extends SubsystemBase
 
   /**
    * Arm Rotation as measured from encoder
-   * @return Arm rotation, degrees clockwise, 0 = coral at top
+   * @return Arm rotation, degrees anticlockwise, 0 = coral at top [0..360]
    */
   public double getEncoderPos()
   {
@@ -139,15 +139,15 @@ public class Diffector extends SubsystemBase
 
   /** Returns true if the diffector is at its current target angle */
   public boolean armAtAngle()
-    {return Math.abs(getArmPos() - targetAngle) < Constants.Diffector.angleTolerance;}
+    {return Math.abs(armPos - targetAngle) < Constants.Diffector.angleTolerance;}
 
   /** Returns true if the diffector is at its current target elevation */
   public boolean elevatorAtElevation()
-    {return Math.abs(getElevatorPos() - targetElevation) < Constants.Diffector.elevationTolerance;}
+    {return Math.abs(elevatorPos - targetElevation) < Constants.Diffector.elevationTolerance;}
 
   /** Returns true if the diffector is safely in climb position */
   public boolean climbReady()
-    {return (targetElevation == Constants.Diffector.Presets.climbElevation && elevatorAtElevation());}
+    {return (targetElevation == Constants.Diffector.ArmPresets.climbElevation && elevatorAtElevation());}
 
   /** 
    * Sets the Diffector arm to unwind to starting position 
@@ -155,7 +155,7 @@ public class Diffector extends SubsystemBase
    */
   public boolean unwind()
   {
-    targetAngle = Constants.Diffector.Presets.startAngle;
+    targetAngle = Constants.Diffector.ArmPresets.startAngle;
     return (stowRequested = Math.abs(armPos) < stowThreshold);
   }
 
@@ -257,20 +257,20 @@ public class Diffector extends SubsystemBase
 
   public boolean safeToMoveCoral()
   {
-    return Constants.Diffector.coralElevatorLowTheshold < getElevatorPos() 
-    && getElevatorPos() < Constants.Diffector.coralElevatorHighThreshold;
+    return Constants.Diffector.coralElevatorLowTheshold < elevatorPos 
+    && elevatorPos < Constants.Diffector.coralElevatorHighThreshold;
   }
 
   public boolean safeToMoveAlgae()
   {
-    return Constants.Diffector.algaeElevatorLowTheshold < getElevatorPos() 
-    && getElevatorPos() < Constants.Diffector.algaeElevatorHighThreshold;
+    return Constants.Diffector.algaeElevatorLowTheshold < elevatorPos 
+    && elevatorPos < Constants.Diffector.algaeElevatorHighThreshold;
   }
 
   public boolean safeToMoveClimber()
   {
-    return Constants.Diffector.climberElevatorLowTheshold < getElevatorPos() 
-    && getElevatorPos() < Constants.Diffector.climberElevatorHighThreshold;
+    return Constants.Diffector.climberElevatorLowTheshold < elevatorPos 
+    && elevatorPos < Constants.Diffector.climberElevatorHighThreshold;
   }
 
   /** Returns the ID of the motor control slot to use */
@@ -320,8 +320,8 @@ public class Diffector extends SubsystemBase
 
     SmartDashboard.putNumber("Elevator Target", targetElevation);
     SmartDashboard.putNumber("Arm Target", targetAngle);
-    SmartDashboard.putNumber("Elevator Height", getElevatorPos());
-    SmartDashboard.putNumber("Arm Rotation", getArmPos());
+    SmartDashboard.putNumber("Elevator Height", elevatorPos);
+    SmartDashboard.putNumber("Arm Rotation", armPos);
     SmartDashboard.putBoolean("Existance", true);
 
     //SmartDashboard.putNumber("Angle Test", simTest);

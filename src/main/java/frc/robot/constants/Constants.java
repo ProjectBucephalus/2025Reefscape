@@ -234,7 +234,7 @@ public final class Constants
     /** Elevation height check tolerance, m */
     public static final double elevationTolerance = 0.025;
     
-    public static final class Presets
+    public static final class ArmPresets
     {
       /* Preset arm angles, degrees anticlockwise for Port-side usecase, 0 = coral at top */
       public static final double startAngle         =   0;
