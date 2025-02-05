@@ -128,10 +128,6 @@ public class ArmCalculator
     double[] waypoints;
     ArrayList<Double> waypointList = new ArrayList<Double>();
 
-    // Unless stowed, ensure the arm is safe before moving
-    if (!Diffector.stowRequested && elevationCurrent < checkAngle(angleCurrent))
-      {return new double[] {checkAngle(angleCurrent), angleCurrent};}
-
     // Elevation change only
     if (Math.abs(angleChange) <= 0.01)
       {return new double[] {checkPosition(elevationTarget, angleTarget), angleTarget};}
@@ -217,6 +213,13 @@ public class ArmCalculator
       }
     }
 
+    // Unless stowed, ensure the arm is safe before moving
+    if (!Diffector.stowRequested && elevationCurrent < checkAngle(angleCurrent))
+    {
+      waypointList.add(0, checkAngle(angleCurrent) + projectionElevation);
+      waypointList.add(1, angleCurrent);
+    }
+
     // Convert waypoint ArrayList to double primative array to return
     waypoints = new double[waypointList.size()];
     for (int i = 0; i < waypointList.size(); i++) 
@@ -249,8 +252,8 @@ public class ArmCalculator
      */
 
     // Starting stow position puts the Algae arm below deck
-    if (angle == Constants.Diffector.Presets.startAngle && !RobotContainer.algae && Diffector.stowRequested)
-      {return Constants.Diffector.Presets.startElevation;}
+    if (angle == Constants.Diffector.ArmPresets.startAngle && !RobotContainer.algae && Diffector.stowRequested)
+      {return Constants.Diffector.ArmPresets.startElevation;}
 
     angle = Conversions.mod(angle, 360);
 
