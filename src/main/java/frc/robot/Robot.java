@@ -61,9 +61,7 @@ public class Robot extends TimedRobot
     CommandScheduler.getInstance().run();
 
     if (RobotContainer.s_Swerve.getState().Pose.getX() == 0 && RobotContainer.s_Swerve.getState().Pose.getY() == 0) 
-    {
-      RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, 4, RobotContainer.s_Swerve.getState().Pose.getRotation()));
-    }
+      {RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, FieldUtils.fieldWidth/2, RobotContainer.s_Swerve.getState().Pose.getRotation()));}
 
     SmartDashboard.putBoolean("Unlock Heading Trigger", RobotContainer.unlockHeadingTrigger.getAsBoolean());
     SmartDashboard.putString("Heading State", RobotContainer.headingState.toString());
@@ -87,19 +85,14 @@ public class Robot extends TimedRobot
     RobotContainer.s_LimelightStbd.setIMUMode(2);
 
     if (FieldUtils.isRedAlliance()) 
-    {
-      robotContainer.getSwerve().resetRotation(robotContainer.getSwerve().getState().Pose.getRotation().plus(Rotation2d.k180deg));
-    }
+      {robotContainer.getSwerve().resetRotation(robotContainer.getSwerve().getState().Pose.getRotation().plus(Rotation2d.k180deg));}
     else 
-    {
-      robotContainer.getSwerve().resetRotation(robotContainer.getSwerve().getState().Pose.getRotation());
-    }
+      {robotContainer.getSwerve().resetRotation(robotContainer.getSwerve().getState().Pose.getRotation());}
     
     autonomousCommand = robotContainer.getAutoCommand();
 
-    if (autonomousCommand != null) {
-      autonomousCommand.schedule();
-    }
+    if (autonomousCommand != null) 
+      {autonomousCommand.schedule();}
   }
 
   @Override
@@ -112,9 +105,7 @@ public class Robot extends TimedRobot
     RobotContainer.s_LimelightStbd.setIMUMode(2);
 
     if (autonomousCommand != null) 
-    {
-      autonomousCommand.cancel();
-    }
+      {autonomousCommand.cancel();}
   }
 
   @Override

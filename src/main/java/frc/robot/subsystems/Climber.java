@@ -30,9 +30,7 @@ public class Climber extends SubsystemBase {
   }
 
   private void setClimberSpeed(double speed)
-  {
-    m_Winch.set(speed);
-  }
+    {m_Winch.set(speed);}
 
   private void setClimbTargets(double newWinchTarget)
   {
@@ -68,18 +66,12 @@ public class Climber extends SubsystemBase {
   }
 
   public boolean isStowed()
-  {
-    return (m_Winch.getPosition()).getValueAsDouble() <= Constants.Climber.initWinchThreshold;
-  }
+    {return (m_Winch.getPosition()).getValueAsDouble() <= Constants.Climber.initWinchThreshold;}
 
   public boolean climbReady()
-  {
-    return (m_Winch.getPosition()).getValueAsDouble() >= Constants.Climber.deployWinchPos;
-  }
+    {return (m_Winch.getPosition()).getValueAsDouble() >= Constants.Climber.deployWinchPos;}
 
   @Override
   public void periodic()
-  {
-    m_Winch.setControl(motionMagic.withPosition(climbTarget));
-  }
+    {m_Winch.setControl(motionMagic.withPosition(climbTarget));}
 }
