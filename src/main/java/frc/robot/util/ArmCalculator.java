@@ -125,7 +125,7 @@ public class ArmCalculator
       }
 
     double angleChange = angleTarget - angleCurrent;
-    double angleRelative = angleCurrent % 360;
+    double angleRelative = Conversions.mod(angleCurrent, 360);
 
     double[] waypoints;
     ArrayList<Double> waypointList = new ArrayList<Double>();
@@ -149,7 +149,7 @@ public class ArmCalculator
       SmartDashboard.putNumber("Path Case", 3);
       // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
       waypointList.add(safeElevation);
-      waypointList.add(angleTarget - (angleTarget % 180));
+      waypointList.add(angleTarget - Conversions.mod(angleTarget, 180));
     }
 
     // Clockwise rotation past both verticals:
@@ -164,7 +164,7 @@ public class ArmCalculator
       SmartDashboard.putNumber("Path Case", 4);
       // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
       waypointList.add(safeElevation);
-      waypointList.add(angleTarget + (-angleTarget % 180));
+      waypointList.add(angleTarget + Conversions.mod(-angleTarget, 180));
     }
 
     // Anticlockwise rotation taking the arm past vertical:
@@ -177,8 +177,8 @@ public class ArmCalculator
     {
       SmartDashboard.putNumber("Path Case", 5);
       // Intermediate waypoint: Safe elevation for the last vertical point before the target
-      waypointList.add(checkPosition(elevationTarget, angleTarget - (angleTarget % 180)));
-      waypointList.add(angleTarget - (angleTarget % 180));
+      waypointList.add(checkPosition(elevationTarget, angleTarget - Conversions.mod(angleTarget, 180)));
+      waypointList.add(angleTarget - Conversions.mod(angleTarget, 180));
     }
     
     // Clockwise rotation taking the arm past vertical:
@@ -191,8 +191,8 @@ public class ArmCalculator
     {
       SmartDashboard.putNumber("Path Case", 6);
       // Intermediate waypoint: Safe elevation for the last vertical point before the target
-      waypointList.add(checkPosition(elevationTarget, angleTarget + (-angleTarget % 180)));
-      waypointList.add(angleTarget + (-angleTarget % 180));
+      waypointList.add(checkPosition(elevationTarget, angleTarget + Conversions.mod(-angleTarget, 180)));
+      waypointList.add(angleTarget + Conversions.mod(-angleTarget, 180));
     }
     else SmartDashboard.putNumber("Path Case", 0);
 
@@ -263,8 +263,7 @@ public class ArmCalculator
     //if (angle == Constants.Diffector.startAngle && !RobotContainer.algae)
     //  {return Constants.Diffector.startElevation;}
 
-    angle = angle % 360;
-    if (angle < 0) {angle += 360;}
+    angle = Conversions.mod(angle, 360);
 
     /*  
      *  Rotating the virtual arm reference points to allow for position calculations

@@ -19,6 +19,7 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 import frc.robot.util.ArmCalculator;
+import frc.robot.util.Conversions;
 
 public class Diffector extends SubsystemBase 
 {
@@ -168,8 +169,8 @@ public class Diffector extends SubsystemBase
    */
   public void goShortest(double newAngle)
   {
-    newAngle %= 360;
-    offset = MathUtil.inputModulus(newAngle - (armPos % 360), -180, 180);
+    newAngle = Conversions.mod(newAngle, 360);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(armPos, 360), -180, 180);
 
     if (armPos + offset > maxAbsPos)
         {targetAngle = (armPos + offset - 360);}
@@ -187,8 +188,8 @@ public class Diffector extends SubsystemBase
    */
   public void goClockwise(double newAngle)
   {
-    newAngle %= 360;
-    offset = MathUtil.inputModulus(newAngle - (armPos % 360), -360, 0);
+    newAngle = Conversions.mod(newAngle, 360);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(armPos, 360), -360, 0);
 
     if (armPos + offset > maxAbsPos)
         {targetAngle = (armPos + offset - 360);}
@@ -206,8 +207,8 @@ public class Diffector extends SubsystemBase
    */
   public void goAnticlockwise(double newAngle)
   {
-    newAngle %= 360;
-    offset = MathUtil.inputModulus(newAngle - (armPos % 360), 0, 360);
+    newAngle = Conversions.mod(newAngle, 360);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(armPos, 360), 0, 360);
 
     if (armPos + offset > maxAbsPos)
         {targetAngle = (armPos + offset - 360);}
@@ -226,8 +227,8 @@ public class Diffector extends SubsystemBase
    */
   public void goToAngle(double newAngle)
   {
-    newAngle %= 360;
-    offset = MathUtil.inputModulus(newAngle - (armPos % 360), -180, 180);
+    newAngle = Conversions.mod(newAngle, 360);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(armPos, 360), -180, 180);
 
     if (Math.abs(offset) >= turnBackThreshold)
     {
