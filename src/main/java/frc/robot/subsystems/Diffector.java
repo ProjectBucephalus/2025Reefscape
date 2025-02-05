@@ -34,14 +34,17 @@ public class Diffector extends SubsystemBase
   private final double turnBackThreshold = Constants.Diffector.turnBackThreshold;
   private final double stowThreshold = Constants.Diffector.angleTolerance;
   
-  /* Name is effect of motor when running clockwise/positive (e.g. elevator Up, arm Clockwise) */
-  /** starboardside motor(?), forward direction drives carriage up and clockwise */
-  private static TalonFX m_diffectorUC;
-  /** portside motor(?), forward direction drives carriage down and clockwise */
-  private static TalonFX m_diffectorDC;
+  /* Name is effect of motor when running anticlockwise/positive (e.g. elevator Up, arm Anticlockwise) */
+  /** starboard-side motor(?), forward direction drives carriage up and anticlockwise */
+  private static TalonFX m_diffectorUA;
+  /** port-side motor(?), forward direction drives carriage down and anticlockwise */
+  private static TalonFX m_diffectorDA;
   private DutyCycleEncoder encoder;
-
+  
   private double[] motorTargets = new double[2];
+  // Virtual "motors" for simulation; TODO: replace all instances before actual use
+  private double simUA = 0;
+  private double simDA = 0;
 
   private double targetElevation;
   private double targetAngle;
@@ -51,6 +54,7 @@ public class Diffector extends SubsystemBase
   private double armPos;
   private double elevatorPos;
   private static ArmCalculator arm;
+  public static boolean stowRequested = true;
 
   /** Creates a new Diffector. */
   public Diffector() 
@@ -60,20 +64,20 @@ public class Diffector extends SubsystemBase
     rotationRatio = Constants.Diffector.rotationRatio;
     travelRatio = Constants.Diffector.travelRatio;
 
-    m_diffectorUC = new TalonFX(Constants.Diffector.ucMotorID);
-    m_diffectorDC = new TalonFX(Constants.Diffector.uaMotorID);
+    m_diffectorUA = new TalonFX(Constants.Diffector.uaMotorID);
+    m_diffectorDA = new TalonFX(Constants.Diffector.daMotorID);
     encoder = new DutyCycleEncoder(Constants.Diffector.encoderPWMID);
 
-    targetElevation = Constants.Diffector.startElevation;
-    targetAngle = 10;
+    targetElevation = Constants.Diffector.Presets.startElevation;
+    targetAngle = Constants.Diffector.Presets.startAngle;
 
-    m_diffectorUC.getConfigurator().apply(motorConfig);
-    m_diffectorDC.getConfigurator().apply(motorConfig);
+    m_diffectorUA.getConfigurator().apply(motorConfig);
+    m_diffectorDA.getConfigurator().apply(motorConfig);
 
-    m_diffectorUC.setPosition((Constants.Diffector.startAngle / rotationRatio) + (Constants.Diffector.startElevation / travelRatio));
-    m_diffectorDC.setPosition((Constants.Diffector.startAngle / rotationRatio) - (Constants.Diffector.startElevation / travelRatio));
-    simUC = ((Constants.Diffector.startAngle / rotationRatio) + (Constants.Diffector.startElevation / travelRatio));
-    simDC = ((Constants.Diffector.startAngle / rotationRatio) - (Constants.Diffector.startElevation / travelRatio));
+    m_diffectorUA.setPosition((Constants.Diffector.Presets.startAngle / rotationRatio) + (Constants.Diffector.Presets.startElevation / travelRatio));
+    m_diffectorDA.setPosition((Constants.Diffector.Presets.startAngle / rotationRatio) - (Constants.Diffector.Presets.startElevation / travelRatio));
+    simUA = ((Constants.Diffector.Presets.startAngle / rotationRatio) + (Constants.Diffector.Presets.startElevation / travelRatio));
+    simDA = ((Constants.Diffector.Presets.startAngle / rotationRatio) - (Constants.Diffector.Presets.startElevation / travelRatio));
 
     cargoState = updateCargoState();
 
@@ -86,8 +90,8 @@ public class Diffector extends SubsystemBase
    */
   public double getElevatorPos()
   {
-    return ((simUC - simDC) * travelRatio) / 2;
-    //return ((m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorDC.getPosition().getValueAsDouble()) * travelRatio);
+    return ((simUA - simDA) * travelRatio) / 2;
+    //return ((m_diffectorUA.getPosition().getValueAsDouble() - m_diffectorDA.getPosition().getValueAsDouble()) * travelRatio);
   }
 
   /**
@@ -96,8 +100,8 @@ public class Diffector extends SubsystemBase
    */
   public double getArmPos()
   {
-    return ((simUC + simDC) * rotationRatio) / 2;
-    //return (m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorDC.getPosition().getValueAsDouble()) * rotationRatio;
+    return ((simUA + simDA) * rotationRatio);
+    //return (m_diffectorUA.getPosition().getValueAsDouble() + m_diffectorDA.getPosition().getValueAsDouble()) * rotationRatio;
   }
 
   /**
@@ -143,7 +147,7 @@ public class Diffector extends SubsystemBase
 
   /** Returns true if the diffector is safely in climb position */
   public boolean climbReady()
-    {return (targetElevation == Constants.Diffector.climbElevation && elevatorAtElevation());}
+    {return (targetElevation == Constants.Diffector.Presets.climbElevation && elevatorAtElevation());}
 
   /** 
    * Sets the Diffector arm to unwind to starting position 
@@ -151,8 +155,8 @@ public class Diffector extends SubsystemBase
    */
   public boolean unwind()
   {
-    targetAngle = Constants.Diffector.startAngle;
-    return (Math.abs(armPos) < stowThreshold);
+    targetAngle = Constants.Diffector.Presets.startAngle;
+    return (stowRequested = Math.abs(armPos) < stowThreshold);
   }
 
   /**
@@ -293,10 +297,6 @@ public class Diffector extends SubsystemBase
       {return CargoStates.EMPTY;}
   }
 
-  double simUC = 0;
-  double simDC = 0;
-  //double simTest = 360;
-
   @Override
   public void periodic() 
   { 
@@ -304,23 +304,19 @@ public class Diffector extends SubsystemBase
  
     calculateMotorTargets();
 
-    if (simUC > motorTargets[0])
-      {simUC -= .1;}
-    else if (simUC < motorTargets[0])
-      {simUC += .1;}
-
-    if (simDC > motorTargets[1])
-      {simDC -= .1;}
-    else if (simDC < motorTargets[1])
-      {simDC += .1;}
+    simUA += Conversions.clamp(motorTargets[0] - simUA, -100, 100);
+    simDA += Conversions.clamp(motorTargets[1] - simDA, -100, 100);
 
     SmartDashboard.putNumberArray("MotorTargets", motorTargets);
-    SmartDashboard.putNumberArray("MotorActual", new double[] {simUC,simDC});
-    //m_diffectorUC.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(getSlot()));
-    //m_diffectorDC.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
+    SmartDashboard.putNumberArray("MotorActual", new double[] {simUA,simDA});
+    //m_diffectorUA.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(getSlot()));
+    //m_diffectorDA.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
 
     armPos = getArmPos();
     elevatorPos = getElevatorPos();
+    
+    if (stowRequested && (Math.abs(armPos) > stowThreshold || Math.abs(targetAngle) > stowThreshold))
+     {stowRequested = false;}
 
     SmartDashboard.putNumber("Elevator Target", targetElevation);
     SmartDashboard.putNumber("Arm Target", targetAngle);

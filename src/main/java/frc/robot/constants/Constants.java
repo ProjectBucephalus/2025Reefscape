@@ -155,36 +155,39 @@ public final class Constants
 
   public static final class Diffector
   {
-    public static final int ucMotorID = IDConstants.ucMotorID;
-    public static final int uaMotorID = IDConstants.uaMotorID;
+    public static final int uaMotorID = IDConstants.ucMotorID;
+    public static final int daMotorID = IDConstants.uaMotorID;
     public static final int encoderPWMID = IDConstants.encoderPWMID;
 
     public static final double manualElevationScalar = -0.5;
     public static final double manualAngleScalar = 10;
 
-    public static final double diffectorMotorKSEmpty = 0;
-    public static final double diffectorMotorKVEmpty = 0;
-    public static final double diffectorMotorKAEmpty = 0;
-    public static final double diffectorMotorKPEmpty = 0;
-    public static final double diffectorMotorKIEmpty = 0;
-    public static final double diffectorMotorKDEmpty = 0;
+    public static final class Kinematics
+    {
+      public static final double diffectorMotorKSEmpty = 0;
+      public static final double diffectorMotorKVEmpty = 0;
+      public static final double diffectorMotorKAEmpty = 0;
+      public static final double diffectorMotorKPEmpty = 0;
+      public static final double diffectorMotorKIEmpty = 0;
+      public static final double diffectorMotorKDEmpty = 0;
 
-    public static final double diffectorMotorKSOneItem = 0;
-    public static final double diffectorMotorKVOneItem = 0;
-    public static final double diffectorMotorKAOneItem = 0;
-    public static final double diffectorMotorKPOneItem = 0;
-    public static final double diffectorMotorKIOneItem = 0;
-    public static final double diffectorMotorKDOneItem = 0;
+      public static final double diffectorMotorKSOneItem = 0;
+      public static final double diffectorMotorKVOneItem = 0;
+      public static final double diffectorMotorKAOneItem = 0;
+      public static final double diffectorMotorKPOneItem = 0;
+      public static final double diffectorMotorKIOneItem = 0;
+      public static final double diffectorMotorKDOneItem = 0;
 
-    public static final double diffectorMotorKSTwoItem = 0;
-    public static final double diffectorMotorKVTwoItem = 0;
-    public static final double diffectorMotorKATwoItem = 0;
-    public static final double diffectorMotorKPTwoItem = 0;
-    public static final double diffectorMotorKITwoItem = 0;
-    public static final double diffectorMotorKDTwoItem = 0;
+      public static final double diffectorMotorKSTwoItem = 0;
+      public static final double diffectorMotorKVTwoItem = 0;
+      public static final double diffectorMotorKATwoItem = 0;
+      public static final double diffectorMotorKPTwoItem = 0;
+      public static final double diffectorMotorKITwoItem = 0;
+      public static final double diffectorMotorKDTwoItem = 0;
 
-    public static final double diffectorMotionMagicCruise = 0;
-    public static final double diffectorMotionMagicAccel = 0;
+      public static final double diffectorMotionMagicCruise = 0;
+      public static final double diffectorMotionMagicAccel = 0;
+    }
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;
@@ -197,25 +200,19 @@ public final class Constants
     private static final double diffectorGearTeethOut = 60;
     private static final double diffectorSprocketTeethIn  = 18;
     private static final double diffectorSprocketTeethOut = 72;
-    /** Output sprocket rotations per motor rotation */
+    /** Gearbox sprocket degrees per motor degree */
     public static final double gearboxRatio = diffectorGearTeethIn / diffectorGearTeethOut;
-    /** Pitch Diameter of the sprocket, in mm */
-    public static final double sprocketPitchDiameter = 36.576;
-    /** Ratio of output sprocket to arm sprocket (output sprocket teeth/arm sprocket teeth) */
+    /** Arm sprocket degrees per Gearbox sprocket degree */
     public static final double sprocketRatio = diffectorSprocketTeethIn / diffectorSprocketTeethOut;
+    /** Pitch Diameter of the gearbox sprocket, m */
+    public static final double sprocketPitchDiameter = 0.036576; // 1.44 inch, 36.576 mm
+    /** metres/degree of the gearbox sprocket */
+    public static final double sprocketFeedRate = (sprocketPitchDiameter * Math.PI) / 360;
 
-    /** 
-     * Number of chain mm moved for one motor degree. 
-     * Sprocket rotations per motor rotation * m of chain moved per sprocket rotation (pitch diam. * pi), 
-     * divided by 2 to give the contribution of a single motor
-     */
-    public static final double travelRatio = ((gearboxRatio * (sprocketPitchDiameter / 1000) * Math.PI));
-    /** 
-     * Number of arm degrees moved for one motor degree of a single motor 
-     * Output sprocket rotations per motor rotation * output sprocket to arm sprocket ratio,
-     * divided by 2 to give the contribution of a single motor
-     */
-    public static final double rotationRatio = (gearboxRatio * sprocketRatio * 360);
+    /** Number of chain m moved per motor degree */
+    public static final double travelRatio = (gearboxRatio * sprocketFeedRate);
+    /** Number of arm degrees moved per motor degree of a single motor */
+    public static final double rotationRatio = (gearboxRatio * sprocketRatio) / 2;
 
     public static final boolean startingCoralState = true;
     public static final boolean startingAlgaeState = false;
@@ -235,37 +232,40 @@ public final class Constants
     public static final double angleTolerance = 1;
     
     /** Elevation height check tolerance, m */
-    public static final double elevationTolerance = 0.05;
+    public static final double elevationTolerance = 0.025;
     
-    /* Preset arm angles, degrees anticlockwise for Port-side usecase, 0 = coral at top */
-    public static final double startAngle         =  10;
-    public static final double climbAngle         =  90;
-    public static final double netAngle           = 150;
-    public static final double processorAngle     =  45;
-    public static final double reef4Angle         = 340;
-    public static final double reef3Angle         = 330;
-    public static final double reef2Angle         = 320;
-    public static final double reef1Angle         = 300;
-    public static final double coralTransferAngle = 180;
-    public static final double algaeTransferAngle =   0;
-    public static final double coralStationAngle  = 240;
-    public static final double algae2Angle        = 110;
-    public static final double algae1Angle        = 100;
-    
-    /* Preset elevator heights, height of centre of rotation above the ground, metres */
-    public static final double startElevation         = 0.75;
-    public static final double climbElevation         = minElevation;
-    public static final double netElevation           = maxElevation;
-    public static final double processorElevation     = 0.5; 
-    public static final double reef4Elevation         = 1.6;
-    public static final double reef3Elevation         = 1.4;
-    public static final double reef2Elevation         = 1.2;
-    public static final double reef1Elevation         = 1.0;
-    public static final double coralTransferElevation = 1.0;
-    public static final double algaeTransferElevation = 1.5;
-    public static final double coralStationElevation  = 1.0;
-    public static final double algae2Elevation        = 1.5;
-    public static final double algae1Elevation        = 1.3;
+    public static final class Presets
+    {
+      /* Preset arm angles, degrees anticlockwise for Port-side usecase, 0 = coral at top */
+      public static final double startAngle         =   0;
+      public static final double climbAngle         =  90;
+      public static final double netAngle           = 150;
+      public static final double processorAngle     =  45;
+      public static final double reef4Angle         = 340;
+      public static final double reef3Angle         = 330;
+      public static final double reef2Angle         = 320;
+      public static final double reef1Angle         = 300;
+      public static final double coralTransferAngle = 180;
+      public static final double algaeTransferAngle =   0;
+      public static final double coralStationAngle  = 240;
+      public static final double algae2Angle        = 110;
+      public static final double algae1Angle        = 100;
+      
+      /* Preset elevator heights, height of centre of rotation above the ground, metres */
+      public static final double startElevation         = 0.575;
+      public static final double climbElevation         = minElevation;
+      public static final double netElevation           = maxElevation;
+      public static final double processorElevation     = 0.5; 
+      public static final double reef4Elevation         = 1.6;
+      public static final double reef3Elevation         = 1.4;
+      public static final double reef2Elevation         = 1.2;
+      public static final double reef1Elevation         = 1.0;
+      public static final double coralTransferElevation = 1.0;
+      public static final double algaeTransferElevation = 1.5;
+      public static final double coralStationElevation  = 1.0;
+      public static final double algae2Elevation        = 1.5;
+      public static final double algae1Elevation        = 1.3;
+    }
     
     public static final class IKGeometry
     {
