@@ -8,13 +8,14 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.CTREConfigs;
-import frc.robot.util.FieldUtils;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -31,6 +32,10 @@ public class Robot extends TimedRobot
   private RobotContainer robotContainer;
 
   private Field2d autoPosition = new Field2d();
+
+  private Pose2d robotPose;
+
+  private boolean allianceKnown = false;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -60,8 +65,10 @@ public class Robot extends TimedRobot
   {
     CommandScheduler.getInstance().run();
 
-    if (RobotContainer.s_Swerve.getState().Pose.getX() == 0 && RobotContainer.s_Swerve.getState().Pose.getY() == 0) 
-      {RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, FieldUtils.fieldWidth/2, RobotContainer.s_Swerve.getState().Pose.getRotation()));}
+    robotPose = RobotContainer.s_Swerve.getState().Pose;
+
+    if (robotPose.getX() < 0.75 && robotPose.getY() < 0.75) 
+      {RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, 1, robotPose.getRotation()));}
 
     SmartDashboard.putBoolean("Unlock Heading Trigger", RobotContainer.unlockHeadingTrigger.getAsBoolean());
     SmartDashboard.putString("Heading State", RobotContainer.headingState.toString());
@@ -76,18 +83,28 @@ public class Robot extends TimedRobot
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() 
+  {
+    if (!allianceKnown) 
+    {
+      if (DriverStation.getAlliance().isPresent()) 
+      {
+        allianceKnown = true;
+        if (DriverStation.getAlliance().get() == Alliance.Red) 
+        {
+          RobotContainer.s_Swerve.getPigeon2().setYaw(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble() + 180);
+        }
+      }  
+    }
+    
+    RobotContainer.s_Swerve.resetRotation(new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble())));
+  }
 
   @Override
   public void autonomousInit() 
   {  
     RobotContainer.s_LimelightPort.setIMUMode(2);
     RobotContainer.s_LimelightStbd.setIMUMode(2);
-
-    if (FieldUtils.isRedAlliance()) 
-      {robotContainer.getSwerve().resetRotation(robotContainer.getSwerve().getState().Pose.getRotation().plus(Rotation2d.k180deg));}
-    else 
-      {robotContainer.getSwerve().resetRotation(robotContainer.getSwerve().getState().Pose.getRotation());}
     
     autonomousCommand = robotContainer.getAutoCommand();
 

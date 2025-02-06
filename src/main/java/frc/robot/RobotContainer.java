@@ -50,8 +50,8 @@ public class RobotContainer
 
   /* Subsystems */
   public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
-  public static final Limelight s_LimelightPort = new Limelight(s_Swerve, "limelight-port");
-  public static final Limelight s_LimelightStbd = new Limelight(s_Swerve, "limelight-stbd");
+  public static final Limelight s_LimelightPort = new Limelight("limelight-port");
+  public static final Limelight s_LimelightStbd = new Limelight("limelight-stbd");
   public static final Diffector s_Diffector = new Diffector();
   public static final Climber s_Climber = new Climber();
   public static final Intake s_Intake = new Intake();
@@ -83,9 +83,6 @@ public class RobotContainer
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() 
   {
-    /* Initialise values */
-    s_Swerve.resetRotation(new Rotation2d(Math.toRadians(s_Swerve.getPigeon2().getYaw().getValueAsDouble())));
-
     s_Swerve.setDefaultCommand
     (
       new TeleopSwerve
@@ -139,9 +136,7 @@ public class RobotContainer
   }
 
   private void configureDriverBindings()
-  {   
-    //driver.rightStick().whileTrue(new Test("targetObj", "Target Obj")); Leave commented until we decide on object tracking
-
+  {
     // Heading reset
     driver.start().onTrue(Commands.runOnce(() -> s_Swerve.seedFieldCentric()));
 
