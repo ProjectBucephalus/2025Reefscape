@@ -297,6 +297,7 @@ public class Diffector extends SubsystemBase
       {return CargoStates.EMPTY;}
   }
 
+
   @Override
   public void periodic() 
   { 
@@ -311,6 +312,20 @@ public class Diffector extends SubsystemBase
     SmartDashboard.putNumberArray("MotorActual", new double[] {simUA,simDA});
     //m_diffectorUA.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(getSlot()));
     //m_diffectorDA.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
+
+    stowRequested = true;
+    boolean[] dataDumpArray = new boolean[200];
+    for (int i = 0; i < 720;)
+    {
+      double testHeight = arm.checkAngle(i-360);
+      for (double j = 0; j < 200; j++)
+      {  
+        dataDumpArray[(int) j] = (j/100 < testHeight || j/100 > Constants.Diffector.maxElevation);
+      }
+      SmartDashboard.putBooleanArray("dataDump:",dataDumpArray);
+      SmartDashboard.putNumber("angleTest", i);
+      i++;
+    }
 
     armPos = getArmPos();
     elevatorPos = getElevatorPos();
