@@ -18,7 +18,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
  * @author 5985
  * @author Sebastian Aiello
  */
-public class AlgaeManipulator extends SubsystemBase {
+public class AlgaeManipulator extends SubsystemBase 
+{
 
   /* Declaration of the motor controllers */
   private TalonFX algaeMotor;

@@ -134,9 +134,7 @@ public class RobotContainer
   }
 
   private void configureDriverBindings()
-  {   
-    //driver.rightStick().whileTrue(new Test("targetObj", "Target Obj")); Leave commented until we decide on object tracking
-
+  {
     // Heading reset
     driver.start().onTrue(Commands.runOnce(() -> s_Swerve.seedFieldCentric()));
 
