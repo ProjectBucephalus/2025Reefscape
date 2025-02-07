@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 //import edu.wpi.first.wpilibj.DriverStation.Alliance;
 //import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 //import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.FieldConstants;
+import frc.robot.util.FieldUtils.DriveTeamRef;
 import frc.robot.constants.Constants.LEDStrip;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 //import edu.wpi.first.wpilibj.util.*;
@@ -99,24 +99,24 @@ public class LightLayer
       statusOn[i] = Color.kGold;
       statusCol[i] = Color.kBlack;
     }
-    if (FieldConstants.isRedAlliance())
+    if (DriveTeamRef.isRedAlliance())
     {
       switch (DriverStation.getLocation().getAsInt())
       {
-        case 1: target = FieldConstants.driverRed1; break;
-        case 2: target = FieldConstants.driverRed2; break;
-        case 3: target = FieldConstants.driverRed3; break;
-        default: target = FieldConstants.driverRed1;
+        case 1: target = DriveTeamRef.driverRed1; break;
+        case 2: target = DriveTeamRef.driverRed2; break;
+        case 3: target = DriveTeamRef.driverRed3; break;
+        default: target = DriveTeamRef.driverRed1;
       }
     }
     else
     {
       switch (DriverStation.getLocation().getAsInt())
       {
-        case 1: target = FieldConstants.driverBlue1; break;
-        case 2: target = FieldConstants.driverBlue2; break;
-        case 3: target = FieldConstants.driverBlue3; break;
-        default: target = FieldConstants.driverBlue1;
+        case 1: target = DriveTeamRef.driverBlue1; break;
+        case 2: target = DriveTeamRef.driverBlue2; break;
+        case 3: target = DriveTeamRef.driverBlue3; break;
+        default: target = DriveTeamRef.driverBlue1;
       }
     }
   }
@@ -165,24 +165,24 @@ public class LightLayer
     displayMode = newMode;
     if (displayMode == Mode.DRIVERFACE)
     {
-      if (FieldConstants.isRedAlliance())
+      if (DriveTeamRef.isRedAlliance())
       {
         switch (DriverStation.getLocation().getAsInt())
         {
-          case 1: target = FieldConstants.driverRed1; break;
-          case 2: target = FieldConstants.driverRed2; break;
-          case 3: target = FieldConstants.driverRed3; break;
-          default: target = FieldConstants.driverRed1;
+          case 1: target = DriveTeamRef.driverRed1; break;
+          case 2: target = DriveTeamRef.driverRed2; break;
+          case 3: target = DriveTeamRef.driverRed3; break;
+          default: target = DriveTeamRef.driverRed1;
         }
       }
       else 
       {
         switch (DriverStation.getLocation().getAsInt())
         {
-          case 1: target = FieldConstants.driverBlue1; break;
-          case 2: target = FieldConstants.driverBlue2; break;
-          case 3: target = FieldConstants.driverBlue3; break;
-          default: target = FieldConstants.driverBlue1;
+          case 1: target = DriveTeamRef.driverBlue1; break;
+          case 2: target = DriveTeamRef.driverBlue2; break;
+          case 3: target = DriveTeamRef.driverBlue3; break;
+          default: target = DriveTeamRef.driverBlue1;
         }
       }  
     }

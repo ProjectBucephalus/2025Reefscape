@@ -17,7 +17,6 @@ import frc.robot.commands.*;
 import frc.robot.commands.AlgaeManipulator.*;
 import frc.robot.commands.Auto.*;
 import frc.robot.commands.Auto.PathfindToReef.DpadOptions;
-import frc.robot.constants.FieldConstants;
 import frc.robot.commands.CoralManipulator.*;
 import frc.robot.commands.Diffector.*;
 import frc.robot.commands.Intake.*;

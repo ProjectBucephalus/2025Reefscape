@@ -407,4 +407,20 @@ public final class Constants
 
     public static final double initWinchThreshold = 10;
   }
+  
+
+  public static final class LEDStrip
+  {
+      public static final int LEDPWMPort = IDConstants.LEDPWM;
+      public static final int lightsLen = 120;
+      public static final int viewWidth = 30;
+      public static final int startOffset = 1;
+      public static final double degreesPerLED = 360/lightsLen;
+      public static final Color defaultBackColor = Color.kRed;
+      public static final Color defaultFrontColor = Color.kGreen;
+      public static final Color displayBorderColor = Color.kBlue;
+      public static final int defaultStatusSegments = 3;
+      public static final int pointerGradientThreshold = 5;
+  }
+
 }
