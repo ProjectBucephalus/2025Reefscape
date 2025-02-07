@@ -4,14 +4,19 @@
 
 package frc.robot.subsystems;
 
+import java.util.List;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.pathfinding.LocalADStar;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -56,6 +61,8 @@ public class Diffector extends SubsystemBase
   private static ArmCalculator arm;
   public static boolean stowRequested = true;
 
+  private static LocalADStar armPathFinder;
+
   /** Creates a new Diffector. */
   public Diffector() 
   {
@@ -82,6 +89,8 @@ public class Diffector extends SubsystemBase
     cargoState = updateCargoState();
 
     motionMagicRequester = new MotionMagicVoltage(0);
+
+    ensureInitialized();
   }
 
   /**
@@ -312,20 +321,7 @@ public class Diffector extends SubsystemBase
     SmartDashboard.putNumberArray("MotorActual", new double[] {simUA,simDA});
     //m_diffectorUA.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(getSlot()));
     //m_diffectorDA.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
-
-    stowRequested = true;
-    boolean[] dataDumpArray = new boolean[200];
-    for (int i = 0; i < 720;)
-    {
-      double testHeight = arm.checkAngle(i-360);
-      for (double j = 0; j < 200; j++)
-      {  
-        dataDumpArray[(int) j] = (j/100 < testHeight || j/100 > Constants.Diffector.maxElevation);
-      }
-      SmartDashboard.putBooleanArray("dataDump:",dataDumpArray);
-      SmartDashboard.putNumber("angleTest", i);
-      i++;
-    }
+    // TODO: Ensure both motors take the same time to reach their respective targets
 
     armPos = getArmPos();
     elevatorPos = getElevatorPos();
@@ -339,8 +335,87 @@ public class Diffector extends SubsystemBase
     SmartDashboard.putNumber("Arm Rotation", armPos);
     SmartDashboard.putBoolean("Existance", true);
 
-    //SmartDashboard.putNumber("Angle Test", simTest);
-    //SmartDashboard.putNumber("Min Height", arm.checkAngle(simTest));
-    //simTest -= 0.1;
+  }
+
+
+  
+/*
+ * The following functions exist in place of the "Pathfinding" file from the Pathplanner library.
+ * 
+ * A custom version of "LocalADStar" has been created, with an overload constructor that allows for a
+ * custom navGrid file path to be specified.
+ * 
+ * We have then mapped out the valid (φ,z) space of the Diffector arm, presented as a (x,y) navGrid.
+ * 
+ * By using this, we are (hopefully) able to use the pathfinding algorithms from Pathplanner to
+ * produce an optimal path for the Diffector arm to follow.
+ */
+
+  /** Ensure that a pathfinding implementation has been chosen. If not, set it to the default. */
+  public static void ensureInitialized() 
+  {
+    if (armPathFinder == null) 
+    {
+      // Hasn't been initialized yet, use the default implementation
+
+      armPathFinder = new LocalADStar("armplanner/diffector_navgrid.json");
+    }
+  }
+
+  /**
+   * Get if a new path has been calculated since the last time a path was retrieved
+   *
+   * @return True if a new path is available
+   */
+  public static boolean isNewPathAvailable() 
+  {
+    return armPathFinder.isNewPathAvailable();
+  }
+
+  /**
+   * Get the most recently calculated path
+   *
+   * @param constraints The path constraints to use when creating the path
+   * @param goalEndState The goal end state to use when creating the path
+   * @return The PathPlannerPath created from the points calculated by the pathfinder
+   */
+  public static PathPlannerPath getCurrentPath(PathConstraints constraints, GoalEndState goalEndState) 
+  {
+    return armPathFinder.getCurrentPath(constraints, goalEndState);
+  }
+
+  /**
+   * Set the start position to pathfind from
+   *
+   * @param startPosition Start position on the field. If this is within an obstacle it will be
+   *     moved to the nearest non-obstacle node.
+   */
+  public static void setStartPosition(Translation2d startPosition) 
+  {
+    armPathFinder.setStartPosition(startPosition);
+  }
+
+  /**
+   * Set the goal position to pathfind to
+   *
+   * @param goalPosition Goal position on the field. f this is within an obstacle it will be moved
+   *     to the nearest non-obstacle node.
+   */
+  public static void setGoalPosition(Translation2d goalPosition) 
+  {
+    armPathFinder.setGoalPosition(goalPosition);
+  }
+
+  /**
+   * Set the dynamic obstacles that should be avoided while pathfinding.
+   *
+   * @param obs A List of Translation2d pairs representing obstacles. Each Translation2d represents
+   *     opposite corners of a bounding box.
+   * @param currentRobotPos The current position of the robot. This is needed to change the start
+   *     position of the path if the robot is now within an obstacle.
+   */
+  public static void setDynamicObstacles(List<Pair<Translation2d, Translation2d>> obs, Translation2d currentRobotPos) 
+  {
+    armPathFinder.setDynamicObstacles(obs, currentRobotPos);
   }
 }
