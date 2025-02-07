@@ -6,14 +6,16 @@ package frc.robot;
 
 import com.pathplanner.lib.commands.PathfindingCommand;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.CTREConfigs;
-import frc.robot.constants.FieldConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -25,11 +27,15 @@ public class Robot extends TimedRobot
 {
   public static final CTREConfigs ctreConfigs = new CTREConfigs();
 
-  private Command m_autonomousCommand;
+  private Command autonomousCommand;
 
   private RobotContainer robotContainer;
 
   private Field2d autoPosition = new Field2d();
+
+  private Pose2d robotPose;
+
+  private boolean allianceKnown = false;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -40,6 +46,9 @@ public class Robot extends TimedRobot
   {
     robotContainer = new RobotContainer();
     PathfindingCommand.warmupCommand().schedule();
+
+    RobotContainer.s_LimelightPort.setIMUMode(1);
+    RobotContainer.s_LimelightStbd.setIMUMode(1);
 
     SmartDashboard.putData("Field", autoPosition);
   }
@@ -55,32 +64,52 @@ public class Robot extends TimedRobot
   public void robotPeriodic() 
   {
     CommandScheduler.getInstance().run();
+
+    robotPose = RobotContainer.s_Swerve.getState().Pose;
+
+    if (robotPose.getX() < 0.75 && robotPose.getY() < 0.75) 
+      {RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, 1, robotPose.getRotation()));}
+
+    SmartDashboard.putBoolean("Unlock Heading Trigger", RobotContainer.unlockHeadingTrigger.getAsBoolean());
+    SmartDashboard.putString("Heading State", RobotContainer.headingState.toString());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() 
+  {
+    RobotContainer.s_LimelightPort.setIMUMode(1);
+    RobotContainer.s_LimelightStbd.setIMUMode(1);
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() 
+  {
+    if (!allianceKnown) 
+    {
+      if (DriverStation.getAlliance().isPresent()) 
+      {
+        allianceKnown = true;
+        if (DriverStation.getAlliance().get() == Alliance.Red) 
+        {
+          RobotContainer.s_Swerve.getPigeon2().setYaw(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble() + 180);
+        }
+      }  
+    }
+    
+    RobotContainer.s_Swerve.resetRotation(new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble())));
+  }
 
   @Override
   public void autonomousInit() 
   {  
-    if (FieldConstants.isRedAlliance()) 
-    {
-      robotContainer.getSwerve().resetRotation(robotContainer.getSwerve().getState().Pose.getRotation().plus(Rotation2d.k180deg));
-    }
-    else 
-    {
-      robotContainer.getSwerve().resetRotation(robotContainer.getSwerve().getState().Pose.getRotation());
-    }
+    RobotContainer.s_LimelightPort.setIMUMode(2);
+    RobotContainer.s_LimelightStbd.setIMUMode(2);
     
-    m_autonomousCommand = robotContainer.getAutoCommand();
+    autonomousCommand = robotContainer.getAutoCommand();
 
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+    if (autonomousCommand != null) 
+      {autonomousCommand.schedule();}
   }
 
   @Override
@@ -89,10 +118,11 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit() 
   {
-    if (m_autonomousCommand != null) 
-    {
-      m_autonomousCommand.cancel();
-    }
+    RobotContainer.s_LimelightPort.setIMUMode(2);
+    RobotContainer.s_LimelightStbd.setIMUMode(2);
+
+    if (autonomousCommand != null) 
+      {autonomousCommand.cancel();}
   }
 
   @Override

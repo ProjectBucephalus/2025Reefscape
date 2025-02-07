@@ -1,5 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
+  // Copyright (c) FIRST and other WPILib contributors./ Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.util;
@@ -12,13 +11,11 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
-import frc.robot.commands.ScoreReef;
-import frc.robot.commands.WaitUntilAutoTime;
+import frc.robot.commands.CoralManipulator.ScoreCoralSequence;
+import frc.robot.commands.Util.WaitUntilAutoTime;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Auto.AutoMapping;
 
@@ -48,34 +45,28 @@ public class DynamicAuto
     // For each command phrase, adds the associated path and then the associated command to the command list
     for (int i = 0; i < splitCommands.length; i++) 
     {
-      try
-      {
         // 'w' is a command
         if (splitCommands[i].charAt(0) == 'w')
-        {
-          commandList.add(new WaitCommand(Double.parseDouble(splitCommands[i].substring(1))));
-        }
+          {commandList.add(new WaitCommand(Double.parseDouble(splitCommands[i].substring(1))));}
         // 't' is a wait until match time command
         else if (splitCommands[i].charAt(0) == 't') 
-        {
-          commandList.add(new WaitUntilAutoTime(Double.parseDouble(splitCommands[i].substring(1))));
-        }
+          {commandList.add(new WaitUntilAutoTime(Double.parseDouble(splitCommands[i].substring(1))));}
         else if (splitCommands[i].charAt(0) == 'r')
         {
-          nextPath = PathPlannerPath.fromPathFile(Constants.Auto.autoMap.get(splitCommands[i].substring(0, 1)).pathName);
+          nextPath = FieldUtils.loadPath(Constants.Auto.autoMap.get(splitCommands[i].substring(0, 1)).pathName);
 
           Pathfinding.setStartPosition(prevEndPoint);
           
           commandList.add(AutoBuilder.pathfindThenFollowPath(nextPath, constraints));
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();
 
-          commandList.add(new ScoreReef(RobotContainer.s_Diffector, Integer.parseInt(splitCommands[i].substring(2))));
+          commandList.add(new ScoreCoralSequence(Integer.parseInt(splitCommands[i].substring(2)), RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator));
         }
         else
         {
           // Each iteration fills two indexes in the command list
           autoMapValue = Constants.Auto.autoMap.get(splitCommands[i]);
-          nextPath = PathPlannerPath.fromPathFile(autoMapValue.pathName);
+          nextPath = FieldUtils.loadPath(autoMapValue.pathName);
 
           Pathfinding.setStartPosition(prevEndPoint);
           
@@ -84,11 +75,6 @@ public class DynamicAuto
 
           commandList.add(autoMapValue.command.get());
         }
-      } 
-      catch (Exception e) 
-      {
-        DriverStation.reportError("Path error: " + e.getMessage(), e.getStackTrace());
-      }  
     }
 
     return commandList;

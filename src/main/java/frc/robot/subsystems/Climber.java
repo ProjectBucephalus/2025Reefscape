@@ -3,14 +3,14 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.CTREConfigs;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
-
 
 public class Climber extends SubsystemBase {
   private final MotionMagicVoltage motionMagic;
-  private TalonFX m_Claws;
   private TalonFX m_Winch;
-  private double[] climbTargets = new double[2];
+  private double climbTarget;
   
   public enum ClimberStatus 
   {
@@ -22,62 +22,56 @@ public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   public Climber() 
   { 
-    m_Claws = new TalonFX(Constants.Climber.MotorID.m_Claws);
-    m_Winch = new TalonFX(Constants.Climber.MotorID.m_Winch);
+    m_Winch = new TalonFX(Constants.Climber.winchID);
+
+    m_Winch.getConfigurator().apply(CTREConfigs.climberWinchFXConfiguration);
+
     motionMagic = new MotionMagicVoltage(0);
   }
 
   private void setClimberSpeed(double speed)
+    {m_Winch.set(speed);}
+
+  private void setClimbTargets(double newWinchTarget)
   {
-    m_Claws.set(speed);
-    m_Winch.set(speed);
-  };
-
-private void setClawTargetPos (double newClawTarget)
-{
-  climbTargets[0] = newClawTarget;
-  //Use for Manual Controls as to not set winch as well
-}
-
-private void setWinchTargetPos (double newWinchTarget)
-{
-  climbTargets[1] = newWinchTarget;
-  //Use for Manual Controls as to not set claws as well
-}
-
-private void setClimbTargets(double newClawTarget, double newWinchTarget)
-{
-  climbTargets[0] = newClawTarget;
-  climbTargets[1] = newWinchTarget;
-  //Use for auto-positoning
-}
+    climbTarget = newWinchTarget;
+    //Use for auto-positoning
+  }
 
   public void setClimberStatus(ClimberStatus Status)
   {
     switch (Status)
     {
       case INIT_CONFIG:
-      setClimberSpeed(Constants.Climber.MotorSpeeds.m_InitSpeed);
-      setClimbTargets(Constants.Climber.ClimberPos.m_InitClawPos, Constants.Climber.ClimberPos.m_InitWinchPos);
-      break;
+        setClimberSpeed(Constants.Climber.initSpeed);
+        setClimbTargets(Constants.Climber.initWinchPos);
+        break;
 
-      case DEPLOY_CONFIG:
-      setClimberSpeed(Constants.Climber.MotorSpeeds.m_DeploySpeed);
-      setClimbTargets(Constants.Climber.ClimberPos.m_DeployClawPos, Constants.Climber.ClimberPos.m_DeployWinchPos);
-      break;
+      case DEPLOY_CONFIG: 
+        if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
+        {
+          setClimberSpeed(Constants.Climber.deploySpeed);
+          setClimbTargets(Constants.Climber.deployWinchPos);
+        }   
+        break;
 
       case CLIMB_CONFIG:
-      setClimberSpeed(Constants.Climber.MotorSpeeds.m_ClimbSpeed);
-      setClimbTargets(Constants.Climber.ClimberPos.m_ClimbClawPos, Constants.Climber.ClimberPos.m_ClimbWinchPos);
-      break;
+        if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
+        {
+          setClimberSpeed(Constants.Climber.climbSpeed);
+          setClimbTargets(Constants.Climber.climbWinchPos);
+        }
+        break;
     }
   }
 
+  public boolean isStowed()
+    {return (m_Winch.getPosition()).getValueAsDouble() <= Constants.Climber.initWinchThreshold;}
+
+  public boolean climbReady()
+    {return (m_Winch.getPosition()).getValueAsDouble() >= Constants.Climber.deployWinchPos;}
+
   @Override
   public void periodic()
-  {
-    m_Claws.setControl(motionMagic.withPosition(climbTargets[0]));
-    m_Winch.setControl(motionMagic.withPosition(climbTargets[1]));
-  }
-
+    {m_Winch.setControl(motionMagic.withPosition(climbTarget));}
 }
