@@ -50,4 +50,8 @@ public final class IDConstants
     /* ___________ */
     public static final int coralMotorID = 0;
     public static final int algaeMotorID = 0;
+
+    /* LED Strip */
+    /* _________ */
+    public static final int LEDPWM = 1;
 }
