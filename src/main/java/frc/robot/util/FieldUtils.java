@@ -161,4 +161,20 @@ public class FieldUtils
     /** Speed threshold at which the robot changes between radii, in meters per second*/
     public static final double robotSpeedThreshold = 1.5;
   }
+
+  public static final class DriverFieldRefs
+  {
+    public static final Translation2d driverBlue1 = new Translation2d(0.0, 5.278);
+    public static final Translation2d driverBlue2 = new Translation2d(0.0, 4.026);
+    public static final Translation2d driverBlue3 = new Translation2d(0.0,2.278);
+    public static final Translation2d driverRed1 = new Translation2d(fieldLength,2.278);
+    public static final Translation2d driverRed2 = new Translation2d(fieldLength,4.026);
+    public static final Translation2d driverRed3 = new Translation2d(fieldLength,5.278);
+
+    public static boolean isRedAlliance() 
+    {
+        Optional<Alliance> alliance = DriverStation.getAlliance();
+        return alliance.isPresent() && alliance.get() == Alliance.Red;
+    }
+  }
 }

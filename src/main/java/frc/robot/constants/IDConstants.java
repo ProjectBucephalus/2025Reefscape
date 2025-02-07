@@ -58,4 +58,8 @@ public final class IDConstants
   public static final int coralManipulatorDIO1 = 4;
   public static final int coralManipulatorDIO2 = 5;
   public static final int algaeManipulatorDIO  = 6;
+
+  /* LED Strip */
+  /* _________ */
+  public static final int LEDPWM = 1;
 }
