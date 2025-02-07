@@ -102,10 +102,10 @@ public class RobotContainer
         processorPointerLayer.setMode(Mode.TARGETFACE);
         processorPointerLayer.setType(LEDType.POINTER);
         processorPointerLayer.setColor(Color.kCoral, Color.kBlack);
-        processorPointerLayer.setWidth(3);
+        processorPointerLayer.setWidth(7);
         processorPointerLayer.setBorder(false);
         processorPointerLayer.setPriority(3);
-        processorPointerLayer.setTarget(new Translation2d(9.5,FieldConstants.fieldWidth));
+        processorPointerLayer.setTarget(FieldConstants.driverRed1);
 
         s_Lights.addLayer(progressLayer);
         s_Lights.addLayer(statusLayer);

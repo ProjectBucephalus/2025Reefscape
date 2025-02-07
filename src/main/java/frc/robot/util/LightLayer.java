@@ -356,7 +356,7 @@ public class LightLayer
       if (drawBorder)
       {
         i = startLED - 1;
-        if (i < 0) {i=LEDStrip.lightsLen;}
+        if (i < 0) {i+=LEDStrip.lightsLen;}
         lightBuff.setLED(i, borderColor);
         i = startLED + width;
         if (i > LEDStrip.lightsLen) {i -= LEDStrip.lightsLen;}
