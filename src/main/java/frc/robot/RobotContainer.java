@@ -341,8 +341,8 @@ public class RobotContainer
   {
     testing.a().whileTrue(new MoveManual(s_Diffector, () -> testing.getRawAxis(translationAxis), () -> testing.getRawAxis(strafeAxis)));
     testing.back().whileTrue(new InstantCommand(() -> s_Diffector.unwind()));
-    testing.x().onTrue(new MoveTo(s_Diffector, 0, 90));
-    testing.y().onTrue(new MoveTo(s_Diffector, 0, -90));
+    testing.x().onTrue(new MoveTo(s_Diffector, 0.5, 90));
+    testing.y().onTrue(new MoveTo(s_Diffector, 0.5, -90));
   }
 
   public CommandSwerveDrivetrain getSwerve()

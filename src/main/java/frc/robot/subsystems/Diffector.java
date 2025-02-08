@@ -13,6 +13,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 
 import edu.wpi.first.math.MathUtil;
@@ -67,7 +68,7 @@ public class Diffector extends SubsystemBase
   public static boolean stowRequested = true;
 
   private static LocalADStar armPathFinder;
-  private double nodeSize = 0.1;
+  private double nodeSize = 0.2;
   private PathConstraints armPathConstraints = new PathConstraints(1, 1, 0, 0);
   private GoalEndState armEndState = new GoalEndState(0, new Rotation2d());
   private static ArrayList<Translation2d> plannedPathPoints = new ArrayList<Translation2d>();
@@ -154,14 +155,14 @@ public class Diffector extends SubsystemBase
 
       if (plannedPath != null)
       { 
-        List<Pose2d> plannedPathPoses = getCurrentPath(armPathConstraints, armEndState).getPathPoses();
+        List<Waypoint> plannedPathWaypoints = getCurrentPath(armPathConstraints, armEndState).getWaypoints();
         plannedPathPoints.clear();
         
-        if (plannedPathPoses != null)
+        if (plannedPathWaypoints != null)
         {
-          for (Pose2d pose : plannedPathPoses) 
+          for (Waypoint waypoint : plannedPathWaypoints) 
           {
-            plannedPathPoints.add(toArmRelative(pose.getTranslation()));
+            plannedPathPoints.add(toArmRelative(waypoint.anchor()));
           }
         }
         else
@@ -175,7 +176,7 @@ public class Diffector extends SubsystemBase
         
     SmartDashboard.putString("pathDump", plannedPathPoints.toString());
     
-    //motorTargets = calculateMotorTargets(targetElevation, targetAngle);
+    motorTargets = calculateMotorTargets(elevation, angle);
   }
 
   /**
@@ -416,7 +417,7 @@ public class Diffector extends SubsystemBase
  {
     return new Translation2d
     (
-      (armElevationRotation.getX() - Constants.Diffector.minElevation) * nodeSize,
+      Math.min((armElevationRotation.getX() - Constants.Diffector.minElevation), 0) * nodeSize,
       (armElevationRotation.getY() + maxAbsPos) / nodeSize
     );
  }

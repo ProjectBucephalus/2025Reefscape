@@ -115,6 +115,7 @@ public class LocalADStar implements Pathfinder
         fieldWidth = ((Number) fieldSize.get("y")).doubleValue();
       } catch (Exception e) {
         // Do nothing, use defaults
+        System.out.println("Cannot read file " + navGridFilePath);
       }
     }
 
