@@ -70,7 +70,7 @@ public class Diffector extends SubsystemBase
   private double nodeSize = 0.1;
   private PathConstraints armPathConstraints = new PathConstraints(1, 1, 0, 0);
   private GoalEndState armEndState = new GoalEndState(0, new Rotation2d());
-  private static ArrayList<Translation2d> plannedPath = new ArrayList<Translation2d>();
+  private static ArrayList<Translation2d> plannedPathPoints = new ArrayList<Translation2d>();
 
   /** Creates a new Diffector. */
   public Diffector() 
@@ -146,24 +146,30 @@ public class Diffector extends SubsystemBase
 
     if (isNewPathAvailable())
     {
-      List<Pose2d> plannedPathPoses = getCurrentPath(armPathConstraints, armEndState).getPathPoses();
-      plannedPath.clear();
-      if (plannedPathPoses != null)
-      {
-        for (Pose2d pose : plannedPathPoses) 
+      PathPlannerPath plannedPath = getCurrentPath(armPathConstraints, armEndState);
+
+      if (plannedPath != null)
+      { 
+        List<Pose2d> plannedPathPoses = getCurrentPath(armPathConstraints, armEndState).getPathPoses();
+        plannedPathPoints.clear();
+        
+        if (plannedPathPoses != null)
         {
-          plannedPath.add(toArmRelative(pose.getTranslation()));
+          for (Pose2d pose : plannedPathPoses) 
+          {
+            plannedPathPoints.add(toArmRelative(pose.getTranslation()));
+          }
         }
-      }
-      else
-      {
-        plannedPath.add(new Translation2d(arm.checkPosition(targetElevation, targetAngle), targetAngle));
+        else
+        {
+          plannedPathPoints.add(new Translation2d(arm.checkPosition(targetElevation, targetAngle), targetAngle));
+        }
       }
     }
 
     
         
-    SmartDashboard.putString("pathDump", plannedPath.toString());
+    SmartDashboard.putString("pathDump", plannedPathPoints.toString());
     
     motorTargets = calculateMotorTargets(targetElevation, targetAngle);
   }
