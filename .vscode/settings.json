@@ -68,12 +68,6 @@
   "java.format.settings.url": ".vscode/formatter-settings.xml",
   "java.format.settings.profile": "PBFormatter",
   "editor.defaultFormatter": "redhat.java",
-  "java.cleanup.actions": [
-    "renameFileToType",
-    "qualifyMembers",
-    "qualifyStaticMembers",
-    "addOverride"
-  ],
   "[java]": {
     "editor.insertSpaces": false,
     "editor.detectIndentation": false,
@@ -82,4 +76,6 @@
   "editor.language.brackets": [
 
   ],
+  "java.saveActions.cleanup": true,
+  "java.cleanup.actions": [],
 }

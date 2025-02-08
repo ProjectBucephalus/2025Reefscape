@@ -65,7 +65,7 @@ public class RobotContainer
   /* Triggers */
   public static final Trigger unlockHeadingTrigger = new Trigger(() -> Math.abs(driver.getRawAxis(rotationAxis)) > Constants.Control.stickDeadband);
   private final Trigger cageDriveTrigger = new Trigger(() -> headingState == HeadingStates.CAGE_LOCK);
-  private final Trigger reefDriveTrigger = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
+  private final Trigger reefDriveTrigger = new Trigger(() -> headingState == HeadingStates.REEF_LOCK); 
   private final Trigger stationDriveTrigger = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
   private final Trigger processorDriveTrigger = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
   private final Trigger driverLeftRumbleTrigger = new Trigger(() -> s_Intake.getCoralState() || s_Intake.getAlgaeState());
