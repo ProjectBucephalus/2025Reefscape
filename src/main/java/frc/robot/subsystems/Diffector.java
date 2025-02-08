@@ -49,7 +49,7 @@ public class Diffector extends SubsystemBase
   private static TalonFX m_diffectorDA;
   private DutyCycleEncoder encoder;
   
-  private double[] motorTargets = new double[2];
+  private double[] motorTargets = new double[] {0,0};
   // Virtual "motors" for simulation; TODO: replace all instances before actual use
   private double simUA = 0;
   private double simDA = 0;
@@ -85,7 +85,9 @@ public class Diffector extends SubsystemBase
     encoder = new DutyCycleEncoder(Constants.Diffector.encoderPWMID);
 
     targetElevation = Constants.Diffector.ArmPresets.startElevation;
-    targetAngle = Constants.Diffector.ArmPresets.startAngle;
+    elevation       = Constants.Diffector.ArmPresets.startElevation;
+    targetAngle     = Constants.Diffector.ArmPresets.startAngle;
+    angle           = Constants.Diffector.ArmPresets.startAngle;
 
     m_diffectorUA.getConfigurator().apply(motorConfig);
     m_diffectorDA.getConfigurator().apply(motorConfig);
@@ -136,9 +138,11 @@ public class Diffector extends SubsystemBase
 
   private void calculateMotorTargets()
   {
+    ensureInitialized();
+
     if (targetElevation != oldElevation || targetAngle != oldAngle)
     {
-      setGoalPosition(fromArmRelative(targetElevation, targetElevation));
+      setGoalPosition(fromArmRelative(targetElevation, targetAngle));
       setStartPosition(fromArmRelative(elevation, angle));
       oldElevation = targetElevation;
       oldAngle = targetAngle;
@@ -171,7 +175,7 @@ public class Diffector extends SubsystemBase
         
     SmartDashboard.putString("pathDump", plannedPathPoints.toString());
     
-    motorTargets = calculateMotorTargets(targetElevation, targetAngle);
+    //motorTargets = calculateMotorTargets(targetElevation, targetAngle);
   }
 
   /**
@@ -357,12 +361,19 @@ public class Diffector extends SubsystemBase
   { 
     cargoState = updateCargoState(); // TODO: Don't need to call this in periodic, only needs to be called when state changes
  
+    angle = getAngle();
+    elevation = getElevation();
     calculateMotorTargets();
 
     double dUA = motorTargets[0] - simUA;
     double dDA = motorTargets[1] - simDA;
-    simUA += (dUA) / (Math.abs(dUA) + Math.abs(dDA));
-    simDA += (dDA) / (Math.abs(dUA) + Math.abs(dDA));
+    if (dUA != 0 || dDA != 0)
+    {
+      (dUA) /= (Math.hypot(dUA, dDA));
+      (dDA) /= (Math.hypot(dUA, dDA));
+    }
+    simUA += Conversions.clamp(dUA);
+    simDA += Conversions.clamp(dDA);
 
     SmartDashboard.putNumberArray("MotorTargets", motorTargets);
     SmartDashboard.putNumberArray("MotorActual", new double[] {simUA,simDA});
@@ -370,8 +381,6 @@ public class Diffector extends SubsystemBase
     //m_diffectorDA.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
     // TODO: Ensure both motors take the same time to reach their respective targets
 
-    angle = getAngle();
-    elevation = getElevation();
     
     if (stowRequested && (Math.abs(angle) > stowThreshold || Math.abs(targetAngle) > stowThreshold))
      {stowRequested = false;}
