@@ -22,7 +22,8 @@ import org.json.simple.parser.JSONParser;
  * <p>I would like to apologize to anyone trying to understand this code. The implementation I
  * translated it from was much worse.
  */
-public class LocalADStar implements Pathfinder {
+public class LocalADStar implements Pathfinder 
+{
   private static final double SMOOTHING_ANCHOR_PCT = 0.8;
   private static final double EPS = 2.5;
 

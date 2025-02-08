@@ -30,8 +30,8 @@ public class MoveManual extends Command
   @Override
   public void execute() 
   {
-    s_Diffector.setElevatorTarget(s_Diffector.getElevatorPos() + (height.getAsDouble() * Constants.Diffector.manualElevationScalar));
-    s_Diffector.goToAngle(s_Diffector.getArmPos() + (angle.getAsDouble() * Constants.Diffector.manualAngleScalar));
+    s_Diffector.setElevatorTarget(s_Diffector.getElevation() + (height.getAsDouble() * Constants.Diffector.manualElevationScalar));
+    s_Diffector.goToAngle(s_Diffector.getAngle() + (angle.getAsDouble() * Constants.Diffector.manualAngleScalar));
   }
 
   // Returns true when the command should end.

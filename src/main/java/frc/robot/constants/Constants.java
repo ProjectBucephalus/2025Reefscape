@@ -217,7 +217,7 @@ public final class Constants
     public static final boolean startingCoralState = true;
     public static final boolean startingAlgaeState = false;
 
-    public static final double maxRotation = 3;
+    public static final double maxRotation = 1;
     /** Maximum total angle the arm is allowed to rotate away from centre */
     public static final double maxAbsPos = maxRotation * 360;
     /** Above this angle, the arm can turn towards centre even if it's a longer path */

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -16,6 +17,8 @@ import com.pathplanner.lib.pathfinding.LocalADStar;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -53,15 +56,21 @@ public class Diffector extends SubsystemBase
 
   private double targetElevation;
   private double targetAngle;
+  private double oldElevation;
+  private double oldAngle;
 
   private double offset;
   private double reverseOffset;
-  private double armPos;
-  private double elevatorPos;
+  private double angle;
+  private double elevation;
   private static ArmCalculator arm;
   public static boolean stowRequested = true;
 
   private static LocalADStar armPathFinder;
+  private double nodeSize = 0.1;
+  private PathConstraints armPathConstraints = new PathConstraints(1, 1, 0, 0);
+  private GoalEndState armEndState = new GoalEndState(0, new Rotation2d());
+  private static ArrayList<Translation2d> plannedPath = new ArrayList<Translation2d>();
 
   /** Creates a new Diffector. */
   public Diffector() 
@@ -91,13 +100,15 @@ public class Diffector extends SubsystemBase
     motionMagicRequester = new MotionMagicVoltage(0);
 
     ensureInitialized();
+    setStartPosition(fromArmRelative(targetElevation, targetAngle));
+    setGoalPosition(fromArmRelative(targetElevation, targetAngle));
   }
 
   /**
    * Calculates elevator height based on motor positions
    * @return Elevator height in m
    */
-  public double getElevatorPos()
+  public double getElevation()
   {
     return ((simUA - simDA) * travelRatio) / 2;
     //return ((m_diffectorUA.getPosition().getValueAsDouble() - m_diffectorDA.getPosition().getValueAsDouble()) * travelRatio);
@@ -107,7 +118,7 @@ public class Diffector extends SubsystemBase
    * Calculates arm rotation based on motor positions
    * @return Arm rotation, degrees anticlockwise, 0 = algae at top
    */
-  public double getArmPos()
+  public double getAngle()
   {
     return ((simUA + simDA) * rotationRatio) / 2;
     //return (m_diffectorUA.getPosition().getValueAsDouble() + m_diffectorDA.getPosition().getValueAsDouble()) * rotationRatio;
@@ -123,6 +134,40 @@ public class Diffector extends SubsystemBase
     return (1 - encoder.get()) * 360;
   }
 
+  private void calculateMotorTargets()
+  {
+    if (targetElevation != oldElevation || targetAngle != oldAngle)
+    {
+      setGoalPosition(fromArmRelative(targetElevation, targetElevation));
+      setStartPosition(fromArmRelative(elevation, angle));
+      oldElevation = targetElevation;
+      oldAngle = targetAngle;
+    }
+
+    if (isNewPathAvailable())
+    {
+      List<Pose2d> plannedPathPoses = getCurrentPath(armPathConstraints, armEndState).getPathPoses();
+      plannedPath.clear();
+      if (plannedPathPoses != null)
+      {
+        for (Pose2d pose : plannedPathPoses) 
+        {
+          plannedPath.add(toArmRelative(pose.getTranslation()));
+        }
+      }
+      else
+      {
+        plannedPath.add(new Translation2d(arm.checkPosition(targetElevation, targetAngle), targetAngle));
+      }
+    }
+
+    
+        
+    SmartDashboard.putString("pathDump", plannedPath.toString());
+    
+    motorTargets = calculateMotorTargets(targetElevation, targetAngle);
+  }
+
   /**
    * Calculates the position to drive each motor to, based on the target positions for the elevator and arm
    * @param elevatorTarget Target height of the elevator carriage, metres above the ground
@@ -131,28 +176,22 @@ public class Diffector extends SubsystemBase
    */
   public double[] calculateMotorTargets(double elevatorTarget, double armTarget)
   {
-    // IK projection and object avoidance
-    double[] projectedTargets = arm.pathfindArm(elevatorTarget, armTarget, elevatorPos, armPos);
-    SmartDashboard.putNumberArray("Arm Path:", projectedTargets);
-
     double[] calculatedTargets = new double[2];
 
-    calculatedTargets[0] = (projectedTargets[1] / rotationRatio) + (projectedTargets[0] / travelRatio);
-    calculatedTargets[1] = (projectedTargets[1] / rotationRatio) - (projectedTargets[0] / travelRatio);
+    calculatedTargets[0] = (armTarget / rotationRatio) + (elevatorTarget / travelRatio);
+    calculatedTargets[1] = (armTarget / rotationRatio) - (elevatorTarget / travelRatio);
 
     return calculatedTargets;
   }
 
-  private void calculateMotorTargets()
-    {motorTargets = calculateMotorTargets(targetElevation, targetAngle);}
 
   /** Returns true if the diffector is at its current target angle */
   public boolean armAtAngle()
-    {return Math.abs(armPos - targetAngle) < Constants.Diffector.angleTolerance;}
+    {return Math.abs(angle - targetAngle) < Constants.Diffector.angleTolerance;}
 
   /** Returns true if the diffector is at its current target elevation */
   public boolean elevatorAtElevation()
-    {return Math.abs(elevatorPos - targetElevation) < Constants.Diffector.elevationTolerance;}
+    {return Math.abs(elevation - targetElevation) < Constants.Diffector.elevationTolerance;}
 
   /** Returns true if the diffector is safely in climb position */
   public boolean climbReady()
@@ -165,7 +204,7 @@ public class Diffector extends SubsystemBase
   public boolean unwind()
   {
     targetAngle = Constants.Diffector.ArmPresets.startAngle;
-    return (stowRequested = Math.abs(armPos) < stowThreshold);
+    return (stowRequested = Math.abs(angle) < stowThreshold);
   }
 
   /**
@@ -175,16 +214,16 @@ public class Diffector extends SubsystemBase
   public void goShortest(double newAngle)
   {
     newAngle = Conversions.mod(newAngle, 360);
-    offset = MathUtil.inputModulus(newAngle - Conversions.mod(armPos, 360), -180, 180);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), -180, 180);
 
-    if (armPos + offset > maxAbsPos)
-      {targetAngle = (armPos + offset - 360);}
+    if (angle + offset > maxAbsPos)
+      {targetAngle = (angle + offset - 360);}
 
-    else if (armPos + offset < -maxAbsPos)
-      {targetAngle = (armPos + offset + 360);}
+    else if (angle + offset < -maxAbsPos)
+      {targetAngle = (angle + offset + 360);}
 
     else
-      {targetAngle = (armPos + offset);}
+      {targetAngle = (angle + offset);}
   }
 
   /**
@@ -194,16 +233,16 @@ public class Diffector extends SubsystemBase
   public void goClockwise(double newAngle)
   {
     newAngle = Conversions.mod(newAngle, 360);
-    offset = MathUtil.inputModulus(newAngle - Conversions.mod(armPos, 360), -360, 0);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), -360, 0);
 
-    if (armPos + offset > maxAbsPos)
-      {targetAngle = (armPos + offset - 360);}
+    if (angle + offset > maxAbsPos)
+      {targetAngle = (angle + offset - 360);}
 
-    else if (armPos + offset < -maxAbsPos)
-      {targetAngle = (armPos + offset + 360);}
+    else if (angle + offset < -maxAbsPos)
+      {targetAngle = (angle + offset + 360);}
 
     else
-      {targetAngle = (armPos + offset);}
+      {targetAngle = (angle + offset);}
   }
 
   /**
@@ -213,16 +252,16 @@ public class Diffector extends SubsystemBase
   public void goAnticlockwise(double newAngle)
   {
     newAngle = Conversions.mod(newAngle, 360);
-    offset = MathUtil.inputModulus(newAngle - Conversions.mod(armPos, 360), 0, 360);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), 0, 360);
 
-    if (armPos + offset > maxAbsPos)
-      {targetAngle = (armPos + offset - 360);}
+    if (angle + offset > maxAbsPos)
+      {targetAngle = (angle + offset - 360);}
 
-    else if (armPos + offset < -maxAbsPos)
-      {targetAngle = (armPos + offset + 360);}
+    else if (angle + offset < -maxAbsPos)
+      {targetAngle = (angle + offset + 360);}
 
     else
-      {targetAngle = (armPos + offset);}
+      {targetAngle = (angle + offset);}
   }
 
   /**
@@ -233,26 +272,26 @@ public class Diffector extends SubsystemBase
   public void goToAngle(double newAngle)
   {
     newAngle = Conversions.mod(newAngle, 360);
-    offset = MathUtil.inputModulus(newAngle - Conversions.mod(armPos, 360), -180, 180);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), -180, 180);
 
     if (Math.abs(offset) >= turnBackThreshold)
     {
       reverseOffset = offset - Math.copySign(360, offset);
 
-      if (Math.abs(armPos + offset) > Math.abs(armPos + reverseOffset))
-        {targetAngle = (armPos + reverseOffset);}
+      if (Math.abs(angle + offset) > Math.abs(angle + reverseOffset))
+        {targetAngle = (angle + reverseOffset);}
       
       else 
-        {targetAngle = (armPos + offset);}
+        {targetAngle = (angle + offset);}
     }
-    else if (armPos + offset > maxAbsPos)
-      {targetAngle = (armPos + offset - 360);}
+    else if (angle + offset > maxAbsPos)
+      {targetAngle = (angle + offset - 360);}
 
-    else if (armPos + offset < -maxAbsPos)
-      {targetAngle = (armPos + offset + 360);}
+    else if (angle + offset < -maxAbsPos)
+      {targetAngle = (angle + offset + 360);}
 
     else
-      {targetAngle = (armPos + offset);}
+      {targetAngle = (angle + offset);}
   }
 
   public double getArmTarget()
@@ -266,20 +305,20 @@ public class Diffector extends SubsystemBase
 
   public boolean safeToMoveCoral()
   {
-    return Constants.Diffector.coralElevatorLowTheshold < elevatorPos 
-    && elevatorPos < Constants.Diffector.coralElevatorHighThreshold;
+    return Constants.Diffector.coralElevatorLowTheshold < elevation 
+    && elevation < Constants.Diffector.coralElevatorHighThreshold;
   }
 
   public boolean safeToMoveAlgae()
   {
-    return Constants.Diffector.algaeElevatorLowTheshold < elevatorPos 
-    && elevatorPos < Constants.Diffector.algaeElevatorHighThreshold;
+    return Constants.Diffector.algaeElevatorLowTheshold < elevation 
+    && elevation < Constants.Diffector.algaeElevatorHighThreshold;
   }
 
   public boolean safeToMoveClimber()
   {
-    return Constants.Diffector.climberElevatorLowTheshold < elevatorPos 
-    && elevatorPos < Constants.Diffector.climberElevatorHighThreshold;
+    return Constants.Diffector.climberElevatorLowTheshold < elevation 
+    && elevation < Constants.Diffector.climberElevatorHighThreshold;
   }
 
   /** Returns the ID of the motor control slot to use */
@@ -310,12 +349,14 @@ public class Diffector extends SubsystemBase
   @Override
   public void periodic() 
   { 
-    //cargoState = updateCargoState(); // TODO: Don't need to call this in periodic, only needs to be called when state changes
+    cargoState = updateCargoState(); // TODO: Don't need to call this in periodic, only needs to be called when state changes
  
     calculateMotorTargets();
 
-    simUA += Conversions.clamp((motorTargets[0] - simUA)*0.01, -10, 10);
-    simDA += Conversions.clamp((motorTargets[1] - simDA)*0.01, -10, 10);
+    double dUA = motorTargets[0] - simUA;
+    double dDA = motorTargets[1] - simDA;
+    simUA += (dUA) / (Math.abs(dUA) + Math.abs(dDA));
+    simDA += (dDA) / (Math.abs(dUA) + Math.abs(dDA));
 
     SmartDashboard.putNumberArray("MotorTargets", motorTargets);
     SmartDashboard.putNumberArray("MotorActual", new double[] {simUA,simDA});
@@ -323,16 +364,16 @@ public class Diffector extends SubsystemBase
     //m_diffectorDA.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
     // TODO: Ensure both motors take the same time to reach their respective targets
 
-    armPos = getArmPos();
-    elevatorPos = getElevatorPos();
+    angle = getAngle();
+    elevation = getElevation();
     
-    if (stowRequested && (Math.abs(armPos) > stowThreshold || Math.abs(targetAngle) > stowThreshold))
+    if (stowRequested && (Math.abs(angle) > stowThreshold || Math.abs(targetAngle) > stowThreshold))
      {stowRequested = false;}
 
     SmartDashboard.putNumber("Elevator Target", targetElevation);
     SmartDashboard.putNumber("Arm Target", targetAngle);
-    SmartDashboard.putNumber("Elevator Height", elevatorPos);
-    SmartDashboard.putNumber("Arm Rotation", armPos);
+    SmartDashboard.putNumber("Elevator Height", elevation);
+    SmartDashboard.putNumber("Arm Rotation", angle);
     SmartDashboard.putBoolean("Existance", true);
 
   }
@@ -345,11 +386,50 @@ public class Diffector extends SubsystemBase
  * A custom version of "LocalADStar" has been created, with an overload constructor that allows for a
  * custom navGrid file path to be specified.
  * 
- * We have then mapped out the valid (φ,z) space of the Diffector arm, presented as a (x,y) navGrid.
+ * We have then mapped out the valid (z,φ) space of the Diffector arm, presented as a (x,y) navGrid.
  * 
  * By using this, we are (hopefully) able to use the pathfinding algorithms from Pathplanner to
  * produce an optimal path for the Diffector arm to follow.
  */
+
+ /**
+  * Converts from arm-relative coordinates to the coordinates used by the AD* system
+  * @param armElevationRotation metres over ground | total degrees anticlockwise
+  * @return pathfinderXY -> arm state-space mapping
+  */
+ public Translation2d fromArmRelative(Translation2d armElevationRotation)
+ {
+    return new Translation2d
+    (
+      (armElevationRotation.getX() - Constants.Diffector.minElevation) * nodeSize,
+      (armElevationRotation.getY() + maxAbsPos) / nodeSize
+    );
+ }
+
+ /**
+  * Converts from arm-relative coordinates to the coordinates used by the AD* system
+  * @param armElevation metres over ground
+  * @param armRotation total degrees anticlockwise
+  * @return pathfinderXY -> arm state-space mapping
+  */
+  public Translation2d fromArmRelative(double armElevation, double armRotation)
+  {
+    return fromArmRelative(new Translation2d(armElevation, armRotation));
+  }
+
+ /**
+  * Converts from the coordinates used by the AD* system to arm-relative coordinates
+  * @param pathfinderXY arm state-space mapping
+  * @return armElevationRotation -> metres over ground | total degrees anticlockwise
+  */
+ public Translation2d toArmRelative(Translation2d pathfinderXY)
+ {
+    return new Translation2d
+    (
+      (pathfinderXY.getX() / nodeSize) + Constants.Diffector.minElevation,
+      (pathfinderXY.getY() * nodeSize) - maxAbsPos
+    );
+ }
 
   /** Ensure that a pathfinding implementation has been chosen. If not, set it to the default. */
   public static void ensureInitialized() 
@@ -357,7 +437,6 @@ public class Diffector extends SubsystemBase
     if (armPathFinder == null) 
     {
       // Hasn't been initialized yet, use the default implementation
-
       armPathFinder = new LocalADStar("armplanner/diffector_navgrid.json");
     }
   }
@@ -368,9 +447,7 @@ public class Diffector extends SubsystemBase
    * @return True if a new path is available
    */
   public static boolean isNewPathAvailable() 
-  {
-    return armPathFinder.isNewPathAvailable();
-  }
+    {return armPathFinder.isNewPathAvailable();}
 
   /**
    * Get the most recently calculated path
@@ -380,9 +457,7 @@ public class Diffector extends SubsystemBase
    * @return The PathPlannerPath created from the points calculated by the pathfinder
    */
   public static PathPlannerPath getCurrentPath(PathConstraints constraints, GoalEndState goalEndState) 
-  {
-    return armPathFinder.getCurrentPath(constraints, goalEndState);
-  }
+    {return armPathFinder.getCurrentPath(constraints, goalEndState);}
 
   /**
    * Set the start position to pathfind from
@@ -391,9 +466,7 @@ public class Diffector extends SubsystemBase
    *     moved to the nearest non-obstacle node.
    */
   public static void setStartPosition(Translation2d startPosition) 
-  {
-    armPathFinder.setStartPosition(startPosition);
-  }
+    {armPathFinder.setStartPosition(startPosition);}
 
   /**
    * Set the goal position to pathfind to
@@ -402,9 +475,7 @@ public class Diffector extends SubsystemBase
    *     to the nearest non-obstacle node.
    */
   public static void setGoalPosition(Translation2d goalPosition) 
-  {
-    armPathFinder.setGoalPosition(goalPosition);
-  }
+    {armPathFinder.setGoalPosition(goalPosition);}
 
   /**
    * Set the dynamic obstacles that should be avoided while pathfinding.
@@ -415,7 +486,5 @@ public class Diffector extends SubsystemBase
    *     position of the path if the robot is now within an obstacle.
    */
   public static void setDynamicObstacles(List<Pair<Translation2d, Translation2d>> obs, Translation2d currentRobotPos) 
-  {
-    armPathFinder.setDynamicObstacles(obs, currentRobotPos);
-  }
+    {armPathFinder.setDynamicObstacles(obs, currentRobotPos);}
 }
