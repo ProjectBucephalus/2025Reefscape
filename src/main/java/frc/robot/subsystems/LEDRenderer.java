@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants.LEDStrip;
 import frc.robot.util.LightLayer;
@@ -93,6 +94,7 @@ public class LEDRenderer extends SubsystemBase
     patternBlack.applyTo(lightBuffer);
     // sort the queue by layer priority
     renderQueue.sort(Comparator.comparing(LightLayer::getPriority));
+    SmartDashboard.putStringArray("Render Queue", listLayers());
     // call each layers render() method to draw to the buffer
     for (LightLayer layer : renderQueue) 
     {
