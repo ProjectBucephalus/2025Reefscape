@@ -14,12 +14,12 @@ public class Conversions
     if(value < min)
     {
       value += ((max-min) + 1);
-      value = wrap(value, min, max);
+      value = Conversions.wrap(value, min, max);
     }
     else if(value > max)
     {
       value -= ((max-min) + 1);
-      value = wrap(value,min,max);
+      value = Conversions.wrap(value,min,max);
     }
     return  value;
   }
@@ -31,7 +31,7 @@ public class Conversions
     */
   public static double clamp(double value)
   {
-    return clamp(value, -1, 1);
+    return Conversions.clamp(value, -1, 1);
   }
 
   /**
@@ -105,7 +105,8 @@ public class Conversions
   public static Translation2d flipTranslation(Translation2d position) 
   {
     // flip when red
-    if (FieldUtils.isRedAlliance()) {
+    if (FieldUtils.isRedAlliance()) 
+    {
       // reflect the pose over center line, flip both the X
       return new Translation2d(FieldUtils.fieldLength - position.getX(), position.getY());
     }

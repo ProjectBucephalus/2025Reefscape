@@ -44,13 +44,13 @@ public class Robot extends TimedRobot
   @Override
   public void robotInit() 
   {
-    robotContainer = new RobotContainer();
+    this.robotContainer = new RobotContainer();
     PathfindingCommand.warmupCommand().schedule();
 
     RobotContainer.s_LimelightPort.setIMUMode(1);
     RobotContainer.s_LimelightStbd.setIMUMode(1);
 
-    SmartDashboard.putData("Field", autoPosition);
+    SmartDashboard.putData("Field", this.autoPosition);
   }
 
   /**
@@ -65,10 +65,10 @@ public class Robot extends TimedRobot
   {
     CommandScheduler.getInstance().run();
 
-    robotPose = RobotContainer.s_Swerve.getState().Pose;
+    this.robotPose = RobotContainer.s_Swerve.getState().Pose;
 
-    if (robotPose.getX() < 0.75 && robotPose.getY() < 0.75) 
-      {RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, 1, robotPose.getRotation()));}
+    if (this.robotPose.getX() < 0.75 && this.robotPose.getY() < 0.75) 
+      {RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, 1, this.robotPose.getRotation()));}
 
     SmartDashboard.putBoolean("Unlock Heading Trigger", RobotContainer.unlockHeadingTrigger.getAsBoolean());
     SmartDashboard.putString("Heading State", RobotContainer.headingState.toString());
@@ -85,15 +85,13 @@ public class Robot extends TimedRobot
   @Override
   public void disabledPeriodic() 
   {
-    if (!allianceKnown) 
+    if (!this.allianceKnown) 
     {
       if (DriverStation.getAlliance().isPresent()) 
       {
-        allianceKnown = true;
+        this.allianceKnown = true;
         if (DriverStation.getAlliance().get() == Alliance.Red) 
-        {
-          RobotContainer.s_Swerve.getPigeon2().setYaw(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble() + 180);
-        }
+        	{RobotContainer.s_Swerve.getPigeon2().setYaw(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble() + 180);}
       }  
     }
     
@@ -106,10 +104,10 @@ public class Robot extends TimedRobot
     RobotContainer.s_LimelightPort.setIMUMode(2);
     RobotContainer.s_LimelightStbd.setIMUMode(2);
     
-    autonomousCommand = robotContainer.getAutoCommand();
+    this.autonomousCommand = this.robotContainer.getAutoCommand();
 
-    if (autonomousCommand != null) 
-      {autonomousCommand.schedule();}
+    if (this.autonomousCommand != null) 
+      {this.autonomousCommand.schedule();}
   }
 
   @Override
@@ -121,8 +119,8 @@ public class Robot extends TimedRobot
     RobotContainer.s_LimelightPort.setIMUMode(2);
     RobotContainer.s_LimelightStbd.setIMUMode(2);
 
-    if (autonomousCommand != null) 
-      {autonomousCommand.cancel();}
+    if (this.autonomousCommand != null) 
+      {this.autonomousCommand.cancel();}
   }
 
   @Override

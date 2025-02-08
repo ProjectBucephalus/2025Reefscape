@@ -62,8 +62,8 @@
   "java.project.explorer.showNonJavaResources": true,
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
-  "editor.formatOnSave": true,
-  "editor.formatOnPaste": true,
+  "editor.formatOnSave": false,
+  "editor.formatOnPaste": false,
   "java.settings.url": ".vscode/settings.prefs",
   "java.format.settings.url": ".vscode/formatter-settings.xml",
   "java.format.settings.profile": "PBFormatter",
@@ -77,6 +77,9 @@
   "[java]": {
     "editor.insertSpaces": false,
     "editor.detectIndentation": false,
-    "editor.tabSize": 3
+    "editor.tabSize": 2
   },
+  "editor.language.brackets": [
+
+  ],
 }

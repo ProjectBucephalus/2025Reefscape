@@ -26,10 +26,11 @@ public class FieldUtils
   public static Pose2d flipPose(Pose2d pose) 
   {
     // flip pose when red
-    if (isRedAlliance()) {
+    if (FieldUtils.isRedAlliance()) 
+    {
       Rotation2d rot = pose.getRotation();
       // reflect the pose over center line, flip both the X and the rotation
-      return new Pose2d(fieldLength - pose.getX(), pose.getY(), new Rotation2d(-rot.getCos(), rot.getSin()));
+      return new Pose2d(FieldUtils.fieldLength - pose.getX(), pose.getY(), new Rotation2d(-rot.getCos(), rot.getSin()));
     }
 
     // Blue or we don't know; return the original pose
@@ -41,7 +42,7 @@ public class FieldUtils
     int nearestReefFace;
     ArrayList<Translation2d> localList;
 
-    if (isRedAlliance()) 
+    if (FieldUtils.isRedAlliance()) 
     {   
       localList = Constants.Auto.reefRedMidPoints;
     }
@@ -59,10 +60,13 @@ public class FieldUtils
 
   public static PathPlannerPath loadPath(String pathName) 
   {
-    try {
+    try 
+    {
       PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
       return path;
-    } catch (Exception e) {
+    } 
+    catch (Exception e) 
+    {
       DriverStation.reportError(String.format("Unable to load path: %s", pathName), true);
     }
     return null;
@@ -75,13 +79,13 @@ public class FieldUtils
     // 0 means the wall is running through the middle of the robot
     // negative distances will have the robot start outside the area, and can only move into it
     /** Metres the robot can travel left */
-    public static final double fieldNorth = fieldWidth;
+    public static final double fieldNorth = FieldUtils.fieldWidth;
 
     /** Metres the robot can travel right */
     public static final double fieldSouth = 0;
 
     /** Metres the robot can travel forwards */
-    public static final double fieldEast = fieldLength;
+    public static final double fieldEast = FieldUtils.fieldLength;
 
     /** Metres the robot can travel back */
     public static final double fieldWest = 0;
@@ -107,51 +111,51 @@ public class FieldUtils
 
     public static final GeoFenceObject field = new GeoFenceObject
     (
-      fieldWest, 
-      fieldSouth, 
-      fieldEast, 
-      fieldNorth, 
-      wallBuffer,
+      GeoFencing.fieldWest, 
+      GeoFencing.fieldSouth, 
+      GeoFencing.fieldEast, 
+      GeoFencing.fieldNorth, 
+      GeoFencing.wallBuffer,
       0.0,
       ObjectTypes.walls
     );
 
-    public static final GeoFenceObject reefBlue      = new GeoFenceObject(4.489, 4.026, reefBuffer, circumscribedReefDiameter / 2, 0, 6);
-    public static final GeoFenceObject reefZoneBlue  = new GeoFenceObject(4.489, 4.026, reefBuffer, circumscribedReefZoneDiameter / 2, 0, 6);
-    public static final GeoFenceObject reefRed       = new GeoFenceObject(13.059, 4.026, reefBuffer, circumscribedReefDiameter / 2, 180, 6);
-    public static final GeoFenceObject reefZoneRed   = new GeoFenceObject(13.059, 4.026, reefBuffer, circumscribedReefZoneDiameter / 2, 180, 6);
+    public static final GeoFenceObject reefBlue      = new GeoFenceObject(4.489, 4.026, GeoFencing.reefBuffer, GeoFencing.circumscribedReefDiameter / 2, 0, 6);
+    public static final GeoFenceObject reefZoneBlue  = new GeoFenceObject(4.489, 4.026, GeoFencing.reefBuffer, GeoFencing.circumscribedReefZoneDiameter / 2, 0, 6);
+    public static final GeoFenceObject reefRed       = new GeoFenceObject(13.059, 4.026, GeoFencing.reefBuffer, GeoFencing.circumscribedReefDiameter / 2, 180, 6);
+    public static final GeoFenceObject reefZoneRed   = new GeoFenceObject(13.059, 4.026, GeoFencing.reefBuffer, GeoFencing.circumscribedReefZoneDiameter / 2, 180, 6);
     public static final GeoFenceObject bargeColumn   = new GeoFenceObject(8.774, 4.026, 0.25, 0.15);
-    public static final GeoFenceObject bargeZoneBlue = new GeoFenceObject(8.190, 4.331, 9.358, fieldWidth, bargeBuffer, 0.1, ObjectTypes.box);
-    public static final GeoFenceObject bargeZoneRed  = new GeoFenceObject(8.190, 3.721, 9.358, 0, bargeBuffer, 0.1, ObjectTypes.box);
-    public static final GeoFenceObject cornerSBlue   = new GeoFenceObject(fieldWest, fieldSouth + cornerWidth, fieldWest + cornerLength, fieldSouth, wallBuffer);
-    public static final GeoFenceObject cornerNBlue   = new GeoFenceObject(fieldWest, fieldNorth - cornerWidth, fieldWest + cornerLength, fieldNorth, wallBuffer);
-    public static final GeoFenceObject cornerSRed    = new GeoFenceObject(fieldEast, fieldSouth + cornerWidth, fieldEast - cornerLength, fieldSouth, wallBuffer);
-    public static final GeoFenceObject cornerNRed    = new GeoFenceObject(fieldEast, fieldNorth - cornerWidth, fieldEast - cornerLength, fieldNorth, wallBuffer);
+    public static final GeoFenceObject bargeZoneBlue = new GeoFenceObject(8.190, 4.331, 9.358, FieldUtils.fieldWidth, GeoFencing.bargeBuffer, 0.1, ObjectTypes.box);
+    public static final GeoFenceObject bargeZoneRed  = new GeoFenceObject(8.190, 3.721, 9.358, 0, GeoFencing.bargeBuffer, 0.1, ObjectTypes.box);
+    public static final GeoFenceObject cornerSBlue   = new GeoFenceObject(GeoFencing.fieldWest, GeoFencing.fieldSouth + GeoFencing.cornerWidth, GeoFencing.fieldWest + GeoFencing.cornerLength, GeoFencing.fieldSouth, GeoFencing.wallBuffer);
+    public static final GeoFenceObject cornerNBlue   = new GeoFenceObject(GeoFencing.fieldWest, GeoFencing.fieldNorth - GeoFencing.cornerWidth, GeoFencing.fieldWest + GeoFencing.cornerLength, GeoFencing.fieldNorth, GeoFencing.wallBuffer);
+    public static final GeoFenceObject cornerSRed    = new GeoFenceObject(GeoFencing.fieldEast, GeoFencing.fieldSouth + GeoFencing.cornerWidth, GeoFencing.fieldEast - GeoFencing.cornerLength, GeoFencing.fieldSouth, GeoFencing.wallBuffer);
+    public static final GeoFenceObject cornerNRed    = new GeoFenceObject(GeoFencing.fieldEast, GeoFencing.fieldNorth - GeoFencing.cornerWidth, GeoFencing.fieldEast - GeoFencing.cornerLength, GeoFencing.fieldNorth, GeoFencing.wallBuffer);
 
     public static final GeoFenceObject[] fieldBlueGeoFence = 
     {
-      field, 
-      reefBlue, 
-      reefZoneRed, 
-      bargeColumn, 
-      bargeZoneRed, 
-      cornerSBlue, 
-      cornerNBlue, 
-      cornerSRed, 
-      cornerNRed
+      GeoFencing.field, 
+      GeoFencing.reefBlue, 
+      GeoFencing.reefZoneRed, 
+      GeoFencing.bargeColumn, 
+      GeoFencing.bargeZoneRed, 
+      GeoFencing.cornerSBlue, 
+      GeoFencing.cornerNBlue, 
+      GeoFencing.cornerSRed, 
+      GeoFencing.cornerNRed
     };
 
     public static final GeoFenceObject[] fieldRedGeoFence = 
     {
-      field, 
-      reefRed, 
-      reefZoneBlue, 
-      bargeColumn, 
-      bargeZoneBlue, 
-      cornerSBlue, 
-      cornerNBlue, 
-      cornerSRed, 
-      cornerNRed
+      GeoFencing.field, 
+      GeoFencing.reefRed, 
+      GeoFencing.reefZoneBlue, 
+      GeoFencing.bargeColumn, 
+      GeoFencing.bargeZoneBlue, 
+      GeoFencing.cornerSBlue, 
+      GeoFencing.cornerNBlue, 
+      GeoFencing.cornerSRed, 
+      GeoFencing.cornerNRed
     };
     
     /** Radius from robot centre in metres where geofence is triggered */
