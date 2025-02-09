@@ -137,6 +137,7 @@ public class Diffector extends SubsystemBase
     return (1 - encoder.get()) * 360;
   }
 
+  double[] armPath = new double[2];
   private void calculateMotorTargets()
   {
     ensureInitialized();
@@ -169,14 +170,18 @@ public class Diffector extends SubsystemBase
         {
           plannedPathPoints.add(new Translation2d(arm.checkPosition(targetElevation, targetAngle), targetAngle));
         }
+        armPath = new double[2 * plannedPathPoints.size()];
+        for (int i = 0; i < plannedPathPoints.size(); i++)
+        {
+          armPath[2 * i] = plannedPathPoints.get(i).getX();
+          armPath[2 * i + 1] = plannedPathPoints.get(i).getY();
+        }
       }
     }
 
-    
-        
-    SmartDashboard.putString("pathDump", plannedPathPoints.toString());
-    
-    motorTargets = calculateMotorTargets(elevation, angle);
+    SmartDashboard.putNumberArray("pathDump", armPath);
+    if (armPath[0] != 0)
+      {motorTargets = calculateMotorTargets(plannedPathPoints.get(1).getX(), plannedPathPoints.get(1).getY());}
   }
 
   /**
