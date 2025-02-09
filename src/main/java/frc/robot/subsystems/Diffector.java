@@ -417,8 +417,8 @@ public class Diffector extends SubsystemBase
  {
     return new Translation2d
     (
-      Math.min((armElevationRotation.getX() - Constants.Diffector.minElevation), 0) * nodeSize,
-      (armElevationRotation.getY() + maxAbsPos) / nodeSize
+      Math.min((armElevationRotation.getX() - Constants.Diffector.minElevation), 0) / nodeSize,
+      (armElevationRotation.getY() + maxAbsPos) * nodeSize
     );
  }
 
@@ -442,8 +442,8 @@ public class Diffector extends SubsystemBase
  {
     return new Translation2d
     (
-      (pathfinderXY.getX() / nodeSize) + Constants.Diffector.minElevation,
-      (pathfinderXY.getY() * nodeSize) - maxAbsPos
+      (pathfinderXY.getX() * nodeSize) + Constants.Diffector.minElevation,
+      (pathfinderXY.getY() / nodeSize) - maxAbsPos
     );
  }
 
