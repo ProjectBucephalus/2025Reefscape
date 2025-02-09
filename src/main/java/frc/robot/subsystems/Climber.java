@@ -43,25 +43,25 @@ public class Climber extends SubsystemBase {
     switch (Status)
     {
       case INIT_CONFIG:
-      setClimberSpeed(Constants.Climber.initSpeed);
-      setClimbTargets(Constants.Climber.initWinchPos);
-      break;
+        setClimberSpeed(Constants.Climber.initSpeed);
+        setClimbTargets(Constants.Climber.initWinchPos);
+        break;
 
       case DEPLOY_CONFIG: 
-      if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
-      {
-        setClimberSpeed(Constants.Climber.deploySpeed);
-        setClimbTargets(Constants.Climber.deployWinchPos);
-      }   
-      break;
+        if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
+        {
+          setClimberSpeed(Constants.Climber.deploySpeed);
+          setClimbTargets(Constants.Climber.deployWinchPos);
+        }   
+        break;
 
       case CLIMB_CONFIG:
-      if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
-      {
-        setClimberSpeed(Constants.Climber.climbSpeed);
-        setClimbTargets(Constants.Climber.climbWinchPos);
-      }
-      break;
+        if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
+        {
+          setClimberSpeed(Constants.Climber.climbSpeed);
+          setClimbTargets(Constants.Climber.climbWinchPos);
+        }
+        break;
     }
   }
 

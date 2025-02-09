@@ -256,15 +256,19 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     builder.setSmartDashboardType("Subsystem");
 
     builder.addBooleanProperty(".hasDefault", () -> getDefaultCommand() != null, null);
-    builder.addStringProperty(
+    builder.addStringProperty
+    (
       ".default",
       () -> getDefaultCommand() != null ? getDefaultCommand().getName() : "none",
-      null);
+      null
+    );
     builder.addBooleanProperty(".hasCommand", () -> getCurrentCommand() != null, null);
-    builder.addStringProperty(
+    builder.addStringProperty
+    (
       ".command",
       () -> getCurrentCommand() != null ? getCurrentCommand().getName() : "none",
-      null);
+      null
+    );
   }
 
   /**
