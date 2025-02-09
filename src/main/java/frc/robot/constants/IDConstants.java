@@ -11,23 +11,23 @@ public final class IDConstants
 
   /* Drive */
   /* _____ */
-  public static final int mod0DriveMotorID = 1;
-  public static final int mod0AngleMotorID = 2;
-  public static final int mod0CanCoderID   = 3;
+  public static final int foreStbdDriveMotorID = 1;
+  public static final int foreStbdAngleMotorID = 2;
+  public static final int foreStbdCanCoderID   = 3;
 
-  public static final int mod1DriveMotorID = 4;
-  public static final int mod1AngleMotorID = 5;
-  public static final int mod1CanCoderID   = 6;
+  public static final int forePortDriveMotorID = 4;
+  public static final int forePortAngleMotorID = 5;
+  public static final int forePortCanCoderID   = 6;
 
-  public static final int mod2DriveMotorID = 7;
-  public static final int mod2AngleMotorID = 8;
-  public static final int mod2CanCoderID   = 9;
+  public static final int aftPortDriveMotorID = 7;
+  public static final int aftPortAngleMotorID = 8;
+  public static final int aftPortCanCoderID   = 9;
 
-  public static final int mod3DriveMotorID = 10;
-  public static final int mod3AngleMotorID = 11;
-  public static final int mod3CanCoderID   = 12;
+  public static final int aftStbdDriveMotorID = 10;
+  public static final int aftStbdAngleMotorID = 11;
+  public static final int aftStbdCanCoderID   = 12;
 
-  public static final int pigeonID = 13;
+  public static final int pigeonID = 53;
 
   /* Diffector */
   /* _________ */
@@ -37,10 +37,10 @@ public final class IDConstants
 
   /* Intake */
   /* ______ */
-  public static final int mTopIntakeID    = 16;
-  public static final int mBottomIntakeID = 17;
-  public static final int mTopArmID       = 18;
-  public static final int mBottomArmID    = 19;
+  public static final int mAlgaeIntakeRollerID    = 16;
+  public static final int mCoralIntakeRollerID = 17;
+  public static final int mAlgaeIntakeArmID       = 18;
+  public static final int mCoralIntakeArmID    = 19;
 
   public static final int coralIntakeDIO1 = 1;
   public static final int coralIntakeDIO2 = 2;
@@ -52,8 +52,8 @@ public final class IDConstants
 
   /* Manipulator */
   /* ___________ */
-  public static final int coralMotorID = 21;
-  public static final int algaeMotorID = 22;
+  public static final int coralManipulatorID = 21;
+  public static final int algaeManipulatorID = 22;
   
   public static final int coralManipulatorDIO1 = 4;
   public static final int coralManipulatorDIO2 = 5;

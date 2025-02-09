@@ -393,4 +393,27 @@ public class ArmCalculator
     else // Arm is horizontal
       {return minElevation;}
   }
+
+  public Translation2d pathFollow(ArrayList<Translation2d> pathPoints, Translation2d currentPoint)
+  {
+    if (pathPoints.size() == 0)
+      {return currentPoint;}
+    if (pathPoints.size() == 1)
+      {return pathPoints.get(0);}
+    int pathIndex = 0;
+    while (pathIndex < pathPoints.size() - 1)
+    {
+      if (pathPoints.get(pathIndex).getDistance(currentPoint) > pathPoints.get(pathIndex + 1).getDistance(currentPoint))
+      {
+        pathIndex++;
+      }
+      else
+      {
+        break;
+      }
+    }
+
+
+    return pathPoints.get(pathIndex);
+  }
 }

@@ -291,13 +291,16 @@ public final class Constants
       public static final double projectionAngle = 5;
       /** For IK, distance the arm is projected down to test for immediate collisions, m */
       public static final double projectionElevation = 0.1;
+
+      /** For pathfollowing, elevation/rotation "distance" to set the dynamic target position at */
+      public static final Translation2d unitTravel = new Translation2d(projectionElevation, projectionAngle);
     }
   }
 
   public static final class GamePiecesManipulator 
   {
-    public static final int coralMotorID = IDConstants.coralMotorID;
-    public static final int algaeMotorID = IDConstants.algaeMotorID;
+    public static final int coralMotorID = IDConstants.coralManipulatorID;
+    public static final int algaeMotorID = IDConstants.algaeManipulatorID;
 
     public static final int coralManipulatorDIO1 = IDConstants.coralManipulatorDIO1;
     public static final int coralManipulatorDIO2 = IDConstants.coralManipulatorDIO2;
@@ -318,10 +321,10 @@ public final class Constants
 
   public static final class Intake // TODO: Speeds and Angles must be tuned to the specific robot
   {
-    public static final int algaeIntakeID = IDConstants.mTopIntakeID;
-    public static final int coralIntakeID = IDConstants.mBottomIntakeID;
-    public static final int algaeArmID = IDConstants.mTopArmID;
-    public static final int coralArmID = IDConstants.mBottomArmID;
+    public static final int algaeIntakeID = IDConstants.mAlgaeIntakeRollerID;
+    public static final int coralIntakeID = IDConstants.mCoralIntakeRollerID;
+    public static final int algaeArmID = IDConstants.mAlgaeIntakeArmID;
+    public static final int coralArmID = IDConstants.mCoralIntakeArmID;
 
     public static final int coralIntakeDIO1 = IDConstants.coralIntakeDIO1;
     public static final int coralIntakeDIO2 = IDConstants.coralIntakeDIO2;
