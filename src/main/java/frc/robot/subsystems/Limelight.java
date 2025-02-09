@@ -15,7 +15,7 @@ import frc.robot.constants.Constants;
 import frc.robot.util.LimelightHelpers;
 
 public class Limelight extends SubsystemBase 
-{  
+{
   private boolean useUpdate;
   private LimelightHelpers.PoseEstimate mt2;
   private int[] validIDs = Constants.Vision.validIDs;
@@ -24,42 +24,42 @@ public class Limelight extends SubsystemBase
   private double omegaRps;
 
   private final String limelightName;
-  
+
   /** Creates a new Limelight. */
   public Limelight(String name) 
   {
-    limelightName = name;
-    
+    this.limelightName = name;
+
     SmartDashboard.putBoolean("Use Limelight", true);
   }
 
-  public void setIMUMode(int mode)
-    {LimelightHelpers.SetIMUMode(limelightName, mode);}
-   
+  public void setIMUMode(int mode) { LimelightHelpers.SetIMUMode(this.limelightName, mode); 
+  }
+
   @Override
   public void periodic() 
-  { 
-    headingDeg = RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble();
-    omegaRps = Units.radiansToRotations(RobotContainer.s_Swerve.getState().Speeds.omegaRadiansPerSecond);
-    
-    if (SmartDashboard.getBoolean("Use Limelight", true))
+  {
+    this.headingDeg = RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble();
+    this.omegaRps = Units.radiansToRotations(RobotContainer.s_Swerve.getState().Speeds.omegaRadiansPerSecond);
+
+    if (SmartDashboard.getBoolean("Use Limelight", true)) 
     {
-      LimelightHelpers.SetRobotOrientation(limelightName, headingDeg, 0, 0, 0, 0, 0);
-      
-      LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, validIDs);
-      
-      mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
-      
-      useUpdate = !(mt2 == null || mt2.tagCount == 0 || omegaRps > 2.0);
-      SmartDashboard.putBoolean("Use " + limelightName + " update", useUpdate);
-      
-      if (useUpdate) 
+      LimelightHelpers.SetRobotOrientation(this.limelightName, this.headingDeg, 0, 0, 0, 0, 0);
+
+      LimelightHelpers.SetFiducialIDFiltersOverride(this.limelightName, this.validIDs);
+
+      this.mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(this.limelightName);
+
+      this.useUpdate = !(this.mt2 == null || this.mt2.tagCount == 0 || this.omegaRps > 2.0);
+      SmartDashboard.putBoolean("Use " + this.limelightName + " update", this.useUpdate);
+
+      if (this.useUpdate) 
       {
-        RobotContainer.s_Swerve.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
-        RobotContainer.s_Swerve.addVisionMeasurement(mt2.pose, Utils.fpgaToCurrentTime(mt2.timestampSeconds));
+        RobotContainer.s_Swerve.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
+        RobotContainer.s_Swerve.addVisionMeasurement(this.mt2.pose, Utils.fpgaToCurrentTime(this.mt2.timestampSeconds));
       }
     }
 
-    SmartDashboard.putNumber("Gyro yaw", headingDeg);
+    SmartDashboard.putNumber("Gyro yaw", this.headingDeg);
   }
 }
