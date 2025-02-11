@@ -4,10 +4,9 @@
 
 package frc.robot.constants;
 
-/** Add your docs here. */
 public final class IDConstants 
 {   
-  public static final int pdhID = 0; //0
+  public static final int pdhID = 0;
 
   /* Drive */
   /* _____ */
@@ -37,14 +36,14 @@ public final class IDConstants
 
   /* Intake */
   /* ______ */
-  public static final int algaeIntakeRollerID    = 16;
+  public static final int algaeIntakeRollerID = 16;
   public static final int coralIntakeRollerID = 17;
-  public static final int algaeIntakeArmID       = 18;
+  public static final int algaeIntakeArmID    = 18;
   public static final int coralIntakeArmID    = 19;
 
   public static final int coralIntakeDIOPort = 1;
   public static final int coralIntakeDIOStbd = 2;
-  public static final int algaeIntakeDIO  = 3;
+  public static final int algaeIntakeDIO     = 3;
 
   /* Climber */
   /* _______ */

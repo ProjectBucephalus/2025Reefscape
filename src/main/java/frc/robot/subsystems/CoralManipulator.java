@@ -55,9 +55,7 @@ public class CoralManipulator extends SubsystemBase {
   }
 
   public CoralManipulatorStatus getStatus()
-  {
-    return coralStatus;
-  }
+    {return coralStatus; }
 
   /**
    * Sets the coral manipulator motor speed
@@ -65,14 +63,10 @@ public class CoralManipulator extends SubsystemBase {
    * @param Speed Coral manipulator motor speed, positive to eject [-1..1]
    */
   public void setCoralManipulatorSpeed(double Speed)
-  {
-    coralMotor.set(Speed);
-  }
+    {coralMotor.set(Speed); }
 
   public void setCoralManipulatorStatus(CoralManipulatorStatus Status)
-  {
-    coralStatus = Status;
-  }
+    {coralStatus = Status; }
 
   @Override
   public void periodic() 
@@ -84,43 +78,27 @@ public class CoralManipulator extends SubsystemBase {
       case INTAKE:
         setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);
         if (RobotContainer.coral) 
-        {
-          coralStatus = CoralManipulatorStatus.DEFAULT;
-        }
+          {coralStatus = CoralManipulatorStatus.DEFAULT; }
         break;
 
       case DELIVERY:
         if (RobotContainer.s_Diffector.getArmPos() % 360 <= 180)
-        {
-          setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed);
-        } 
+          {setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed);} 
         else
-        {
-          setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed);
-        }
+          {setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed); }
         if (!RobotContainer.coral) 
-        {
-          coralStatus = CoralManipulatorStatus.DEFAULT;
-        }
+          {coralStatus = CoralManipulatorStatus.DEFAULT; }
         break;
 
       case DEFAULT:
         if (coralBeamBreak1.get() && coralBeamBreak2.get())
-        {
-          setCoralManipulatorSpeed(0);
-        } 
+          {setCoralManipulatorSpeed(0);} 
         else if (coralBeamBreak1.get() && !coralBeamBreak2.get())
-        {
-          setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);
-        } 
+          {setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);} 
         else if (!coralBeamBreak1.get() && coralBeamBreak2.get()) 
-        {
-          setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);
-        } 
+          {setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);} 
         else if (!coralBeamBreak1.get() && !coralBeamBreak2.get()) 
-        {
-          coralMotor.setVoltage(Constants.GamePiecesManipulator.coralManipulatorHoldingVoltage);
-        }
+          {coralMotor.setVoltage(Constants.GamePiecesManipulator.coralManipulatorHoldingVoltage); }
         break;
     }
   }

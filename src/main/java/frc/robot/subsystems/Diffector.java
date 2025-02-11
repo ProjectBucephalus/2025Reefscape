@@ -82,9 +82,7 @@ public class Diffector extends SubsystemBase
    * @return Arm rotation, degrees clockwise, 0 = algae at top
    */
   public double getArmPos()
-  {
-    return (m_diffectorUA.getPosition().getValueAsDouble() + m_diffectorDA.getPosition().getValueAsDouble()) * rotationRatio;
-  }
+    {return (m_diffectorUA.getPosition().getValueAsDouble() + m_diffectorDA.getPosition().getValueAsDouble()) * rotationRatio;}
 
     /**
    * Arm Rotation as measured from encoder
@@ -101,9 +99,7 @@ public class Diffector extends SubsystemBase
    * @return Elevator height in m
    */
   public double getElevatorPos()
-  {
-    return ((m_diffectorUA.getPosition().getValueAsDouble() - m_diffectorDA.getPosition().getValueAsDouble()) * travelRatio);
-  }
+    {return ((m_diffectorUA.getPosition().getValueAsDouble() - m_diffectorDA.getPosition().getValueAsDouble()) * travelRatio);}
 
   /**
    * Calculates the position to drive each motor to, based on the target positions for the elevator and arm
@@ -125,27 +121,19 @@ public class Diffector extends SubsystemBase
   }
 
   private void calculateMotorTargets()
-  {
-    motorTargets = calculateMotorTargets(targetElevation, targetAngle);
-  }
+    {motorTargets = calculateMotorTargets(targetElevation, targetAngle);}
 
   /** Returns true if the diffector is at its current target angle */
   public boolean armAtAngle()
-  {
-    return Math.abs(getArmPos() - targetAngle) < Constants.Diffector.angleTolerance;
-  }
+    {return Math.abs(getArmPos() - targetAngle) < Constants.Diffector.angleTolerance;}
 
   /** Returns true if the diffector is at its current target elevation */
   public boolean elevatorAtElevation()
-  {
-    return Math.abs(getElevatorPos() - targetElevation) < Constants.Diffector.elevationTolerance;
-  }
+    {return Math.abs(getElevatorPos() - targetElevation) < Constants.Diffector.elevationTolerance;}
 
   /** Returns true if the diffector is safely in climb position */
   public boolean climbReady()
-  {
-    return (targetElevation == Constants.Diffector.climbElevation && elevatorAtElevation());
-  }
+    {return (targetElevation == Constants.Diffector.climbElevation && elevatorAtElevation());}
 
   /** 
    * Sets the Diffector arm to unwind to starting position 
@@ -167,13 +155,13 @@ public class Diffector extends SubsystemBase
     offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
 
     if (armPos + offset > maxAbsPos)
-        {targetAngle = (armPos + offset - 360);}
+      {targetAngle = (armPos + offset - 360);}
 
     else if (armPos + offset < -maxAbsPos)
-        {targetAngle = (armPos + offset + 360);}
+      {targetAngle = (armPos + offset + 360);}
 
     else
-        {targetAngle = (armPos + offset);}
+      {targetAngle = (armPos + offset);}
   }
 
   /**
@@ -186,13 +174,13 @@ public class Diffector extends SubsystemBase
     offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -360, 0);
 
     if (armPos + offset > maxAbsPos)
-        {targetAngle = (armPos + offset - 360);}
+      {targetAngle = (armPos + offset - 360);}
 
     else if (armPos + offset < -maxAbsPos)
-        {targetAngle = (armPos + offset + 360);}
+      {targetAngle = (armPos + offset + 360);}
 
     else
-        {targetAngle = (armPos + offset);}
+      {targetAngle = (armPos + offset);}
   }
 
   /**
@@ -205,13 +193,13 @@ public class Diffector extends SubsystemBase
     offset = MathUtil.inputModulus(targetAngle - (armPos % 360), 0, 360);
 
     if (armPos + offset > maxAbsPos)
-        {targetAngle = (armPos + offset - 360);}
+      {targetAngle = (armPos + offset - 360);}
 
     else if (armPos + offset < -maxAbsPos)
-        {targetAngle = (armPos + offset + 360);}
+      {targetAngle = (armPos + offset + 360);}
 
     else
-        {targetAngle = (armPos + offset);}
+      {targetAngle = (armPos + offset);}
   }
 
   /**
@@ -229,19 +217,19 @@ public class Diffector extends SubsystemBase
       reverseOffset = offset - Math.copySign(360, offset);
 
       if (Math.abs(armPos + offset) > Math.abs(armPos + reverseOffset))
-          {targetAngle = (armPos + reverseOffset);}
+        {targetAngle = (armPos + reverseOffset);}
       
       else 
-          {targetAngle = (armPos + offset);}
+        {targetAngle = (armPos + offset);}
     }
     else if (armPos + offset > maxAbsPos)
-        {targetAngle = (armPos + offset - 360);}
+      {targetAngle = (armPos + offset - 360);}
 
     else if (armPos + offset < -maxAbsPos)
-        {targetAngle = (armPos + offset + 360);}
+      {targetAngle = (armPos + offset + 360);}
 
     else
-        {targetAngle = (armPos + offset);}
+      {targetAngle = (armPos + offset);}
   }
 
   public double getArmTarget()
@@ -286,21 +274,13 @@ public class Diffector extends SubsystemBase
   private CargoStates updateCargoState()
   {
     if(RobotContainer.coral && RobotContainer.algae) // Both game pieces
-    {
-      return CargoStates.TWO_ITEM;
-    }
+      {return CargoStates.TWO_ITEM;}
     else if(RobotContainer.coral ^ RobotContainer.algae) // One game piece
-    {
-      return CargoStates.ONE_ITEM;
-    }
+      {return CargoStates.ONE_ITEM;}
     else if(!RobotContainer.coral && !RobotContainer.algae) // No game piece
-    {
-      return CargoStates.EMPTY;
-    }
+      {return CargoStates.EMPTY;}
     else // Default state, should never be reached
-    {
-      return CargoStates.EMPTY;
-    }
+      {return CargoStates.EMPTY;}
   }
 
   public void testingOveride(boolean a, double input)

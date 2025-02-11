@@ -30,9 +30,7 @@ public class Climber extends SubsystemBase {
   }
 
   private void setClimberSpeed(double speed)
-  {
-    m_Winch.set(speed);
-  }
+    {m_Winch.set(speed);}
 
   private void setClimbTargets(double newWinchTarget)
   {
@@ -45,41 +43,35 @@ public class Climber extends SubsystemBase {
     switch (Status)
     {
       case INIT_CONFIG:
-      setClimberSpeed(Constants.Climber.initSpeed);
-      setClimbTargets(Constants.Climber.initWinchPos);
-      break;
+        setClimberSpeed(Constants.Climber.initSpeed);
+        setClimbTargets(Constants.Climber.initWinchPos);
+        break;
 
       case DEPLOY_CONFIG: 
-      if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
-      {
-        setClimberSpeed(Constants.Climber.deploySpeed);
-        setClimbTargets(Constants.Climber.deployWinchPos);
-      }   
-      break;
+        if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
+        {
+          setClimberSpeed(Constants.Climber.deploySpeed);
+          setClimbTargets(Constants.Climber.deployWinchPos);
+        }   
+        break;
 
       case CLIMB_CONFIG:
-      if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
-      {
-        setClimberSpeed(Constants.Climber.climbSpeed);
-        setClimbTargets(Constants.Climber.climbWinchPos);
-      }
-      break;
+        if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
+        {
+          setClimberSpeed(Constants.Climber.climbSpeed);
+          setClimbTargets(Constants.Climber.climbWinchPos);
+        }
+        break;
     }
   }
 
   public boolean isStowed()
-  {
-    return (m_Winch.getPosition()).getValueAsDouble() <= Constants.Climber.initWinchThreshold;
-  }
+    {return (m_Winch.getPosition()).getValueAsDouble() <= Constants.Climber.initWinchThreshold;}
 
   public boolean climbReady()
-  {
-    return (m_Winch.getPosition()).getValueAsDouble() >= Constants.Climber.deployWinchPos;
-  }
+    {return (m_Winch.getPosition()).getValueAsDouble() >= Constants.Climber.deployWinchPos;}
 
   @Override
   public void periodic()
-  {
-    m_Winch.setControl(motionMagic.withPosition(climbTarget));
-  }
+    {m_Winch.setControl(motionMagic.withPosition(climbTarget));}
 }

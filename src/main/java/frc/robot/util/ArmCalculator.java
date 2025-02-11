@@ -209,9 +209,7 @@ public class ArmCalculator
     // Convert waypoint ArrayList to double primative array to return
     waypoints = new double[waypointList.size()];
     for (int i = 0; i < waypointList.size(); i++) 
-    {
-      waypoints[i] = (double) waypointList.get(i);
-    }
+      {waypoints[i] = (double) waypointList.get(i);}
     return waypoints;
   }
 
