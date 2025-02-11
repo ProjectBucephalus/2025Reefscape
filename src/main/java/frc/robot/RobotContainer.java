@@ -339,10 +339,14 @@ public class RobotContainer
 
   private void configureTestBindings()
   {
-    testing.a().whileTrue(new MoveManual(s_Diffector, () -> testing.getRawAxis(translationAxis), () -> testing.getRawAxis(strafeAxis)));
+    //testing.a().whileTrue(new MoveManual(s_Diffector, () -> testing.getRawAxis(translationAxis), () -> testing.getRawAxis(strafeAxis)));
     testing.back().whileTrue(new InstantCommand(() -> s_Diffector.unwind()));
-    testing.x().onTrue(new MoveTo(s_Diffector, 0.5, 90));
-    testing.y().onTrue(new MoveTo(s_Diffector, 0.5, -90));
+    //testing.x().onTrue(new MoveTo(s_Diffector, 0.5, 90));
+    //testing.y().onTrue(new MoveTo(s_Diffector, 0.5, -90));
+    testing.y().onTrue(new InstantCommand(() -> s_Diffector.testingOveride(true, 0.2))).onFalse(new InstantCommand(() -> s_Diffector.testingOveride(true, 0)));
+    testing.a().onTrue(new InstantCommand(() -> s_Diffector.testingOveride(true, -0.2))).onFalse(new InstantCommand(() -> s_Diffector.testingOveride(true, 0)));
+    testing.povUp().onTrue(new InstantCommand(() -> s_Diffector.testingOveride(false, 0.2))).onFalse(new InstantCommand(() -> s_Diffector.testingOveride(false, 0)));
+    testing.povDown().onTrue(new InstantCommand(() -> s_Diffector.testingOveride(false, -0.2))).onFalse(new InstantCommand(() -> s_Diffector.testingOveride(false, 0)));
   }
 
   public CommandSwerveDrivetrain getSwerve()

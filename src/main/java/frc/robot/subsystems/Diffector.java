@@ -107,6 +107,19 @@ public class Diffector extends SubsystemBase
     setGoalPosition(fromArmRelative(targetElevation, targetAngle));
   }
 
+  public void testingOveride(boolean a, double power)
+  {
+    power = Conversions.clamp(power);
+    if (a)
+    {
+      m_diffectorUA.set(power);
+    }
+    else
+    {
+      m_diffectorDA.set(power);
+    }
+  }
+
   /**
    * Calculates elevator height based on motor positions
    * @return Elevator height in m

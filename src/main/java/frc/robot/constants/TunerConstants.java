@@ -124,9 +124,9 @@ public class TunerConstants {
             .withDriveFrictionVoltage(kDriveFrictionVoltage);
 
     // Front Left
-    private static final int kFrontLeftDriveMotorId = IDConstants.frontLeftDriveMotorID;
-    private static final int kFrontLeftSteerMotorId = IDConstants.frontLeftAngleMotorID;
-    private static final int kFrontLeftEncoderId = IDConstants.frontLeftCanCoderID;
+    private static final int kFrontLeftDriveMotorId = IDConstants.forePortDriveMotorID;
+    private static final int kFrontLeftSteerMotorId = IDConstants.forePortAngleMotorID;
+    private static final int kFrontLeftEncoderId = IDConstants.forePortCanCoderID;
     private static final Angle kFrontLeftEncoderOffset = Rotations.of(0.069091796875);
     private static final boolean kFrontLeftSteerMotorInverted = true;
     private static final boolean kFrontLeftEncoderInverted = false;
@@ -135,9 +135,9 @@ public class TunerConstants {
     private static final Distance kFrontLeftYPos = Meters.of(0.273);
 
     // Front Right
-    private static final int kFrontRightDriveMotorId = IDConstants.frontRightDriveMotorID;
-    private static final int kFrontRightSteerMotorId = IDConstants.frontRightAngleMotorID;
-    private static final int kFrontRightEncoderId = IDConstants.frontRightCanCoderID;
+    private static final int kFrontRightDriveMotorId = IDConstants.foreStbdDriveMotorID;
+    private static final int kFrontRightSteerMotorId = IDConstants.foreStbdAngleMotorID;
+    private static final int kFrontRightEncoderId = IDConstants.foreStbdCanCoderID;
     private static final Angle kFrontRightEncoderOffset = Rotations.of(0.184326171875);
     private static final boolean kFrontRightSteerMotorInverted = true;
     private static final boolean kFrontRightEncoderInverted = false;
@@ -146,9 +146,9 @@ public class TunerConstants {
     private static final Distance kFrontRightYPos = Meters.of(-0.273);
 
     // Back Left
-    private static final int kBackLeftDriveMotorId = IDConstants.backLeftDriveMotorID;
-    private static final int kBackLeftSteerMotorId = IDConstants.backLeftAngleMotorID;
-    private static final int kBackLeftEncoderId = IDConstants.backLeftCanCoderID;
+    private static final int kBackLeftDriveMotorId = IDConstants.aftPortDriveMotorID;
+    private static final int kBackLeftSteerMotorId = IDConstants.aftPortAngleMotorID;
+    private static final int kBackLeftEncoderId = IDConstants.aftPortCanCoderID;
     private static final Angle kBackLeftEncoderOffset = Rotations.of(0.146240234375);
     private static final boolean kBackLeftSteerMotorInverted = true;
     private static final boolean kBackLeftEncoderInverted = false;
@@ -157,9 +157,9 @@ public class TunerConstants {
     private static final Distance kBackLeftYPos = Meters.of(0.273);
 
     // Back Right
-    private static final int kBackRightDriveMotorId = IDConstants.backRightDriveMotorID;
-    private static final int kBackRightSteerMotorId = IDConstants.backRightAngleMotorID;
-    private static final int kBackRightEncoderId = IDConstants.backRightCanCoderID;
+    private static final int kBackRightDriveMotorId = IDConstants.aftStbdDriveMotorID;
+    private static final int kBackRightSteerMotorId = IDConstants.aftStbdAngleMotorID;
+    private static final int kBackRightEncoderId = IDConstants.aftStbdCanCoderID;
     private static final Angle kBackRightEncoderOffset = Rotations.of(0.40966796875);
     private static final boolean kBackRightSteerMotorInverted = true;
     private static final boolean kBackRightEncoderInverted = false;
@@ -197,22 +197,22 @@ public class TunerConstants {
       // # 5985 ADDITION >> Pulls previous calibration before it's wiped for persistant calibration!!! # //
       CANcoderConfiguration oldValueHolder = new CANcoderConfiguration();
 
-      CANcoder flCoder = new CANcoder(IDConstants.frontLeftCanCoderID);
+      CANcoder flCoder = new CANcoder(IDConstants.forePortCanCoderID);
       flCoder.getConfigurator().refresh(oldValueHolder);
       FrontLeft.EncoderOffset += oldValueHolder.MagnetSensor.MagnetOffset;
       flCoder.close();
       
-      CANcoder frCoder = new CANcoder(IDConstants.frontRightCanCoderID);
+      CANcoder frCoder = new CANcoder(IDConstants.foreStbdCanCoderID);
       frCoder.getConfigurator().refresh(oldValueHolder);
       FrontRight.EncoderOffset += oldValueHolder.MagnetSensor.MagnetOffset;
       frCoder.close();
       
-      CANcoder blCoder = new CANcoder(IDConstants.backLeftCanCoderID);
+      CANcoder blCoder = new CANcoder(IDConstants.aftPortCanCoderID);
       blCoder.getConfigurator().refresh(oldValueHolder);
       BackLeft.EncoderOffset += oldValueHolder.MagnetSensor.MagnetOffset;
       blCoder.close();
       
-      CANcoder brCoder = new CANcoder(IDConstants.backRightCanCoderID);
+      CANcoder brCoder = new CANcoder(IDConstants.aftStbdCanCoderID);
       brCoder.getConfigurator().refresh(oldValueHolder);
       BackRight.EncoderOffset += oldValueHolder.MagnetSensor.MagnetOffset;
       brCoder.close();
