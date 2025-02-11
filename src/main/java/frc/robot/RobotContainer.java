@@ -82,6 +82,7 @@ public class RobotContainer
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() 
   {
+    SmartDashboard.putBoolean("IgnoreFence", false);
     s_Swerve.setDefaultCommand
     (
       new TeleopSwerve
