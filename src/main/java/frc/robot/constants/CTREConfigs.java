@@ -1,6 +1,7 @@
 package frc.robot.constants;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public final class CTREConfigs 
 {
@@ -11,6 +12,9 @@ public final class CTREConfigs
 
   public CTREConfigs()
   {
+    /* Diffector Motor Gneral Config */
+    diffectorFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
     /* Diffector Motor Config (Empty) */
     diffectorFXConfig.Slot0.kS = Constants.Diffector.diffectorMotorKPEmpty;
     diffectorFXConfig.Slot0.kV = Constants.Diffector.diffectorMotorKIEmpty;

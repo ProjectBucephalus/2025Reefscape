@@ -155,9 +155,9 @@ public final class Constants
 
   public static final class Diffector
   {
-    public static final int ucMotorID = IDConstants.ucMotorID;
     public static final int uaMotorID = IDConstants.uaMotorID;
-    public static final int encoderPWMID = IDConstants.encoderPWMID;
+    public static final int daMotorID = IDConstants.daMotorID;
+    public static final int encoderPWMID = IDConstants.armEncoderID;
 
     public static final double diffectorMotorKSEmpty = 0;
     public static final double diffectorMotorKVEmpty = 0;
@@ -288,11 +288,11 @@ public final class Constants
 
   public static final class GamePiecesManipulator 
   {
-    public static final int coralMotorID = IDConstants.coralMotorID;
-    public static final int algaeMotorID = IDConstants.algaeMotorID;
+    public static final int coralMotorID = IDConstants.coralManipulatorID;
+    public static final int algaeMotorID = IDConstants.algaeManipulatorID;
 
-    public static final int coralManipulatorDIO1 = IDConstants.coralManipulatorDIO1;
-    public static final int coralManipulatorDIO2 = IDConstants.coralManipulatorDIO2;
+    public static final int coralManipulatorDIO1 = IDConstants.coralManipulatorDIOPort;
+    public static final int coralManipulatorDIO2 = IDConstants.coralManipulatorDIOStbd;
     public static final int algaeManipulatorDIO  = IDConstants.algaeManipulatorDIO;
 
     /* Coral manipulator speeds */
@@ -310,13 +310,13 @@ public final class Constants
 
   public static final class Intake // TODO: Speeds and Angles must be tuned to the specific robot
   {
-    public static final int algaeIntakeID = IDConstants.mTopIntakeID;
-    public static final int coralIntakeID = IDConstants.mBottomIntakeID;
-    public static final int algaeArmID = IDConstants.mTopArmID;
-    public static final int coralArmID = IDConstants.mBottomArmID;
+    public static final int algaeIntakeID = IDConstants.algaeIntakeRollerID;
+    public static final int coralIntakeID = IDConstants.coralIntakeRollerID;
+    public static final int algaeArmID = IDConstants.algaeIntakeArmID;
+    public static final int coralArmID = IDConstants.coralIntakeArmID;
 
-    public static final int coralIntakeDIO1 = IDConstants.coralIntakeDIO1;
-    public static final int coralIntakeDIO2 = IDConstants.coralIntakeDIO2;
+    public static final int coralIntakeDIO1 = IDConstants.coralIntakeDIOPort;
+    public static final int coralIntakeDIO2 = IDConstants.coralIntakeDIOStbd;
     public static final int algaeIntakeDIO  = IDConstants.algaeIntakeDIO;
 
     /* Intake motors speeds */

@@ -35,9 +35,9 @@ public class Diffector extends SubsystemBase
   
   /* Name is effect of motor when running clockwise/positive (e.g. elevator Up, arm Clockwise) */
   /** starboardside motor(?), forward direction drives carriage up and clockwise */
-  private static TalonFX m_diffectorUC;
+  private static TalonFX m_diffectorUA;
   /** portside motor(?), forward direction drives carriage down and clockwise */
-  private static TalonFX m_diffectorDC;
+  private static TalonFX m_diffectorDA;
   private DutyCycleEncoder encoder;
 
   private double[] motorTargets = new double[2];
@@ -59,18 +59,18 @@ public class Diffector extends SubsystemBase
     rotationRatio = Constants.Diffector.rotationRatio;
     travelRatio = Constants.Diffector.travelRatio;
 
-    m_diffectorUC = new TalonFX(Constants.Diffector.ucMotorID);
-    m_diffectorDC = new TalonFX(Constants.Diffector.uaMotorID);
+    m_diffectorUA = new TalonFX(Constants.Diffector.uaMotorID);
+    m_diffectorDA = new TalonFX(Constants.Diffector.daMotorID);
     encoder = new DutyCycleEncoder(Constants.Diffector.encoderPWMID);
 
     targetElevation = Constants.Diffector.startElevation;
     targetAngle = 0;
 
-    m_diffectorUC.getConfigurator().apply(motorConfig);
-    m_diffectorDC.getConfigurator().apply(motorConfig);
+    m_diffectorUA.getConfigurator().apply(motorConfig);
+    m_diffectorDA.getConfigurator().apply(motorConfig);
 
-    m_diffectorUC.setPosition((Constants.Diffector.startAngle / rotationRatio) + (Constants.Diffector.startElevation / travelRatio));
-    m_diffectorDC.setPosition((Constants.Diffector.startAngle / rotationRatio) - (Constants.Diffector.startElevation / travelRatio));
+    m_diffectorUA.setPosition((Constants.Diffector.startAngle / rotationRatio) + (Constants.Diffector.startElevation / travelRatio));
+    m_diffectorDA.setPosition((Constants.Diffector.startAngle / rotationRatio) - (Constants.Diffector.startElevation / travelRatio));
 
     cargoState = updateCargoState();
 
@@ -83,7 +83,7 @@ public class Diffector extends SubsystemBase
    */
   public double getArmPos()
   {
-    return (m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorDC.getPosition().getValueAsDouble()) * rotationRatio;
+    return (m_diffectorUA.getPosition().getValueAsDouble() + m_diffectorDA.getPosition().getValueAsDouble()) * rotationRatio;
   }
 
     /**
@@ -102,7 +102,7 @@ public class Diffector extends SubsystemBase
    */
   public double getElevatorPos()
   {
-    return ((m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorDC.getPosition().getValueAsDouble()) * travelRatio);
+    return ((m_diffectorUA.getPosition().getValueAsDouble() - m_diffectorDA.getPosition().getValueAsDouble()) * travelRatio);
   }
 
   /**
@@ -303,6 +303,18 @@ public class Diffector extends SubsystemBase
     }
   }
 
+  public void testingOveride(boolean a, double input)
+  {
+    if (a)
+    {
+      m_diffectorUA.set(input);
+    }
+    else
+    {
+      m_diffectorDA.set(input);
+    }
+  }
+
   @Override
   public void periodic() 
   { 
@@ -310,8 +322,8 @@ public class Diffector extends SubsystemBase
 
     calculateMotorTargets();
 
-    m_diffectorUC.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(getSlot()));
-    m_diffectorDC.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
+    //m_diffectorUC.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(getSlot()));
+    //m_diffectorDC.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
 
     armPos = getArmPos();
     elevatorPos = getElevatorPos();

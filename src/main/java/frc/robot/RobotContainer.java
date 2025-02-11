@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -44,6 +45,7 @@ public class RobotContainer
     /* Controllers */
     public static final CommandXboxController driver = new CommandXboxController(0);
     public static final CommandXboxController copilot = new CommandXboxController(1);
+    public static final CommandXboxController testing = new CommandXboxController(3);
 
     /* Subsystems */
     public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
@@ -130,6 +132,7 @@ public class RobotContainer
         configureDriverBindings();
         configureAutoDriveBindings();
         configureCopilotBindings();
+        configureTestBindings();
         configureRumbleBindings();
     }
 
@@ -322,6 +325,14 @@ public class RobotContainer
         /* Manual elevator controls */
         copilot.axisLessThan(5, -0.85).whileTrue(new Test("manualElevator", "elevator up"));
         copilot.axisGreaterThan(5, 0.85).whileTrue(new Test("manualElevator", "elevator down"));
+    }
+
+    private void configureTestBindings()
+    {
+      testing.y().onTrue(new InstantCommand(() -> s_Diffector.testingOveride(true, 0.2))).onFalse(new InstantCommand(() -> s_Diffector.testingOveride(true, 0)));
+      testing.a().onTrue(new InstantCommand(() -> s_Diffector.testingOveride(true, -0.2))).onFalse(new InstantCommand(() -> s_Diffector.testingOveride(true, 0)));
+      testing.povUp().onTrue(new InstantCommand(() -> s_Diffector.testingOveride(false, -0.2))).onFalse(new InstantCommand(() -> s_Diffector.testingOveride(false, 0)));
+      testing.povDown().onTrue(new InstantCommand(() -> s_Diffector.testingOveride(false, 0.2))).onFalse(new InstantCommand(() -> s_Diffector.testingOveride(false, 0)));
     }
 
     private void configureRumbleBindings()
