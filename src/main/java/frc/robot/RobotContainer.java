@@ -312,16 +312,18 @@ public class RobotContainer
     copilot.axisLessThan(0, -0.85).and(copilot.back()).whileTrue(new Test("manualWinch", "unspool winch"));
     
     /* Manual intake controls */
-    copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger()).onTrue(new Test("manualIntake", "intake up"));
-    copilot.axisGreaterThan(1, 0.85).and(copilot.rightTrigger()).onTrue(new Test("manualIntake", "intake down"));
+    copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger()).onTrue(new InstantCommand(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() + 0.05), s_Intake));
+    copilot.axisGreaterThan(1, 0.85).and(copilot.rightTrigger()).onTrue(new InstantCommand(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() - 0.05), s_Intake));
+    copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger().negate()).onTrue(new InstantCommand(() -> s_Intake.setCoralArmTarget(s_Intake.getCoralArmTarget() + 0.05), s_Intake));
+    copilot.axisGreaterThan(1, 0.85).and(copilot.rightTrigger().negate()).onTrue(new InstantCommand(() -> s_Intake.setCoralArmTarget(s_Intake.getCoralArmTarget() - 0.05), s_Intake));
 
     /* Manual arm controls */
-    copilot.axisGreaterThan(4, 0.85).onTrue(new Test("manualArm", "arm clockwise"));
-    copilot.axisLessThan(4, -0.85).onTrue(new Test("manualArm", "arm anticlockwise"));
+    copilot.axisGreaterThan(4, 0.85).onTrue(new InstantCommand(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() + 5), s_Diffector));
+    copilot.axisLessThan(4, -0.85).onTrue(new InstantCommand(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() - 5), s_Diffector));
   
     /* Manual elevator controls */
-    copilot.axisLessThan(5, -0.85).whileTrue(new Test("manualElevator", "elevator up"));
-    copilot.axisGreaterThan(5, 0.85).whileTrue(new Test("manualElevator", "elevator down"));
+    copilot.axisLessThan(5, -0.85).whileTrue(new InstantCommand(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() + 0.05), s_Diffector));
+    copilot.axisGreaterThan(5, 0.85).whileTrue(new InstantCommand(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() - 0.05), s_Diffector));
   }
 
   private void configureTestBindings()
