@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
@@ -21,7 +23,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 public class CoralManipulator extends SubsystemBase {
 
   /* Declaration of the motor controllers */
-  private TalonFX coralMotor;
+  private VictorSPX coralMotor;
 
   /* Declaration of the enum variable */
   private CoralManipulatorStatus coralStatus;
@@ -43,7 +45,7 @@ public class CoralManipulator extends SubsystemBase {
   public CoralManipulator() 
   {
     coralStatus = CoralManipulatorStatus.DEFAULT;
-    coralMotor = new TalonFX(Constants.GamePiecesManipulator.coralMotorID);
+    coralMotor = new VictorSPX(Constants.GamePiecesManipulator.coralMotorID);
     
     coralStatus = CoralManipulatorStatus.INTAKE;
   }
@@ -54,13 +56,13 @@ public class CoralManipulator extends SubsystemBase {
   /**
    * Sets the coral manipulator motor speed
    * 
-   * @param Speed Coral manipulator motor speed, positive to eject [-1..1]
+   * @param speed Coral manipulator motor speed, positive to eject [-1..1]
    */
-  public void setCoralManipulatorSpeed(double Speed)
-    {coralMotor.set(Speed); }
+  public void setCoralManipulatorSpeed(double speed)
+    {coralMotor.set(VictorSPXControlMode.PercentOutput, speed); }
 
-  public void setCoralManipulatorStatus(CoralManipulatorStatus Status)
-    {coralStatus = Status; }
+  public void setCoralManipulatorStatus(CoralManipulatorStatus status)
+    {coralStatus = status;}
 
   @Override
   public void periodic() 
@@ -92,7 +94,7 @@ public class CoralManipulator extends SubsystemBase {
         else if (!RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor()) 
           {setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);} 
         else if (!RobotContainer.s_Canifier.coralManiPortSensor() && !RobotContainer.s_Canifier.coralManiStbdSensor()) 
-          {coralMotor.setVoltage(Constants.GamePiecesManipulator.coralManipulatorHoldingVoltage); }
+          {coralMotor.set(VictorSPXControlMode.PercentOutput, 0); }
         break;
     }
   }
