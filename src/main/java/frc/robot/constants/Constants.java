@@ -286,6 +286,7 @@ public final class Constants
 
       /** For IK, angle the arm is projected to test for immediate collisions */
       public static final double projectionAngle = 5;
+      public static final double projectionDistance = 0.1;
     }
   }
 

@@ -31,7 +31,7 @@ public class EjectAlgae extends Command
   @Override
   public void execute() 
   {
-    if (Math.abs(RobotContainer.s_Diffector.getArmPos()) < 60) 
+    if (Math.abs(RobotContainer.s_Diffector.armPos) < 60) 
       {cancel = true;}
     else
       {s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET);}
