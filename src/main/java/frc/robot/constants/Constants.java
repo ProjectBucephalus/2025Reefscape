@@ -193,36 +193,32 @@ public final class Constants
     public static final double climberElevatorLowTheshold = 0;
     public static final double climberElevatorHighThreshold = 0;
 
-    private static final double diffectorGearTeethIn = 8;
+    private static final double diffectorGearTeethIn = 10;
     private static final double diffectorGearTeethOut = 60;
     private static final double diffectorSprocketTeethIn = 18;
     private static final double diffectorSprocketTeethOut = 72;
-    /** Output sprocket rotations per motor rotation */
-    public static final double gearboxRatio = diffectorGearTeethIn / diffectorGearTeethOut;
+    /** Output sprocket degrees per motor rotation */
+    public static final double gearboxRatio = (diffectorGearTeethIn / diffectorGearTeethOut) * 360;
     /** Ratio of output sprocket to arm sprocket (output sprocket teeth/arm sprocket teeth) */
-    public static final double sprocketRatio = diffectorSprocketTeethIn / diffectorSprocketTeethOut;
+    public static final double sprocketRatio = (diffectorSprocketTeethIn / diffectorSprocketTeethOut);
     /** Pitch Diameter of the sprocket, in m */
     public static final double sprocketPitchDiameter = 0.036576;
 
-    public static final double sprocketFeedRate = (sprocketPitchDiameter * Math.PI) / 360;
     /** 
-     * Number of chain mm moved for one motor degree. 
-     * Sprocket rotations per motor rotation * m of chain moved per sprocket rotation (pitch diam. * pi), 
-     * divided by 360 to convert rotations to degrees
-     * divided by 2 to give the contribution of a single motor
+     * Metres of chain moved per sprocket degree.
      */
-    public static final double travelRatio = (sprocketFeedRate);
+    public static final double travelRatio = (sprocketPitchDiameter * Math.PI) / 360;
     /** 
      * Number of arm degrees moved for one motor degree of a single motor 
      * Output sprocket rotations per motor rotation * output sprocket to arm sprocket ratio,
      * divided by 2 to give the contribution of a single motor
      */
-    public static final double rotationRatio = (sprocketRatio) / 2;
+    public static final double rotationRatio = (sprocketRatio);
 
     public static final boolean startingCoralState = true;
     public static final boolean startingAlgaeState = false;
 
-    public static final double maxRotation = 3;
+    public static final double maxRotation = 1;
     /** Maximum total angle the arm is allowed to rotate away from centre */
     public static final double maxAbsPos = maxRotation * 360;
     /** Above this angle, the arm can turn towards centre even if it's a longer path */

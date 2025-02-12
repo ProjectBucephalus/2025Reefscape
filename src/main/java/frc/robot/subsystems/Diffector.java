@@ -83,8 +83,7 @@ public class Diffector extends SubsystemBase
    * @return Arm rotation, degrees clockwise, 0 = algae at top
    */
   public double getArmPos()
-    {return (m_diffectorUA.getPosition().getValueAsDouble() + m_diffectorDA.getPosition().getValueAsDouble()) * rotationRatio / 2;}
-
+    {return ((m_diffectorUA.getPosition().getValueAsDouble() + m_diffectorDA.getPosition().getValueAsDouble()) * rotationRatio) / 2;}
     /**
    * Arm Rotation as measured from encoder
    * @return Arm rotation, degrees clockwise, 0 = coral at top
@@ -100,7 +99,7 @@ public class Diffector extends SubsystemBase
    * @return Elevator height in m
    */
   public double getElevatorPos()
-    {return ((m_diffectorUA.getPosition().getValueAsDouble() - m_diffectorDA.getPosition().getValueAsDouble()) * travelRatio) / 2;}
+    {return ((m_diffectorUA.getPosition().getValueAsDouble() - m_diffectorDA.getPosition().getValueAsDouble())/2) * travelRatio;}
 
   /**
    * Calculates the position to drive each motor to, based on the target positions for the elevator and arm
@@ -323,5 +322,8 @@ public class Diffector extends SubsystemBase
 
     SmartDashboard.putNumber("Elevator Height", elevatorPos);
     SmartDashboard.putNumber("Arm Rotation", armPos);
+
+    m_diffectorUA.setPosition(m_diffectorUA.getPosition().getValueAsDouble() + 10);
+    m_diffectorDA.setPosition(m_diffectorDA.getPosition().getValueAsDouble() + 10);
   }
 }
