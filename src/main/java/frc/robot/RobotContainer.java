@@ -308,22 +308,22 @@ public class RobotContainer
     copilot.rightBumper().onTrue(new Test("intakeModifier", "on")).onFalse(new Test("intakeModifier", "off"));
     
     /* Manual winch controls */
-    copilot.axisGreaterThan(0, 0.85).and(copilot.back()).whileTrue(new Test("manualWinch", "spool winch"));
-    copilot.axisLessThan(0, -0.85).and(copilot.back()).whileTrue(new Test("manualWinch", "unspool winch"));
+    copilot.axisGreaterThan(0, 0.85).and(copilot.back()).whileTrue(Commands.runOnce(() -> s_Climber.setClimbTargets(s_Climber.getClimbTargets() + 0.5), s_Climber));
+    copilot.axisLessThan(0, -0.85).and(copilot.back()).whileTrue(Commands.runOnce(() -> s_Climber.setClimbTargets(s_Climber.getClimbTargets() - 0.5), s_Climber));
     
     /* Manual intake controls */
-    copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger()).onTrue(new InstantCommand(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() + 0.05), s_Intake));
-    copilot.axisGreaterThan(1, 0.85).and(copilot.rightTrigger()).onTrue(new InstantCommand(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() - 0.05), s_Intake));
-    copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger().negate()).onTrue(new InstantCommand(() -> s_Intake.setCoralArmTarget(s_Intake.getCoralArmTarget() + 0.05), s_Intake));
-    copilot.axisGreaterThan(1, 0.85).and(copilot.rightTrigger().negate()).onTrue(new InstantCommand(() -> s_Intake.setCoralArmTarget(s_Intake.getCoralArmTarget() - 0.05), s_Intake));
+    copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger()).onTrue(Commands.runOnce(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() + 0.05), s_Intake));
+    copilot.axisGreaterThan(1, 0.85).and(copilot.rightTrigger()).onTrue(Commands.runOnce(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() - 0.05), s_Intake));
+    copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger().negate()).onTrue(Commands.runOnce(() -> s_Intake.setCoralArmTarget(s_Intake.getCoralArmTarget() + 0.05), s_Intake));
+    copilot.axisGreaterThan(1, 0.85).and(copilot.rightTrigger().negate()).onTrue(Commands.runOnce(() -> s_Intake.setCoralArmTarget(s_Intake.getCoralArmTarget() - 0.05), s_Intake));
 
     /* Manual arm controls */
-    copilot.axisGreaterThan(4, 0.85).onTrue(new InstantCommand(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() + 5), s_Diffector));
-    copilot.axisLessThan(4, -0.85).onTrue(new InstantCommand(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() - 5), s_Diffector));
+    copilot.axisGreaterThan(4, 0.85).onTrue(Commands.runOnce(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() + 5), s_Diffector));
+    copilot.axisLessThan(4, -0.85).onTrue(Commands.runOnce(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() - 5), s_Diffector));
   
     /* Manual elevator controls */
-    copilot.axisLessThan(5, -0.85).whileTrue(new InstantCommand(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() + 0.05), s_Diffector));
-    copilot.axisGreaterThan(5, 0.85).whileTrue(new InstantCommand(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() - 0.05), s_Diffector));
+    copilot.axisLessThan(5, -0.85).whileTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() + 0.05), s_Diffector));
+    copilot.axisGreaterThan(5, 0.85).whileTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() - 0.05), s_Diffector));
   }
 
   private void configureTestBindings()
