@@ -317,10 +317,14 @@ public class Diffector extends SubsystemBase
 
     calculateMotorTargets();
 
-    m_diffectorUA.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(getSlot()));
-    m_diffectorDA.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
+    m_diffectorUA.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(0));//getSlot()));
+    m_diffectorDA.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(0));//getSlot()));
 
+    SmartDashboard.putNumber("UA Error", motorTargets[0] - m_diffectorUA.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("DA Error", motorTargets[1] - m_diffectorDA.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("Elevator Height", elevatorPos);
+    SmartDashboard.putNumber("Elevator Target", targetElevation);
     SmartDashboard.putNumber("Arm Rotation", armPos);
+    SmartDashboard.putNumber("Arm Target", targetAngle);
   }
 }

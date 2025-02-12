@@ -165,26 +165,26 @@ public final class Constants
     public static final double diffectorMotorKSEmpty = 0;
     public static final double diffectorMotorKVEmpty = 0;
     public static final double diffectorMotorKAEmpty = 0;
-    public static final double diffectorMotorKPEmpty = 20;
+    public static final double diffectorMotorKPEmpty = 5;
     public static final double diffectorMotorKIEmpty = 0;
     public static final double diffectorMotorKDEmpty = 0;
 
     public static final double diffectorMotorKSOneItem = 0;
     public static final double diffectorMotorKVOneItem = 0;
     public static final double diffectorMotorKAOneItem = 0;
-    public static final double diffectorMotorKPOneItem = 20;
+    public static final double diffectorMotorKPOneItem = 3;
     public static final double diffectorMotorKIOneItem = 0;
     public static final double diffectorMotorKDOneItem = 0;
 
     public static final double diffectorMotorKSTwoItem = 0;
     public static final double diffectorMotorKVTwoItem = 0;
     public static final double diffectorMotorKATwoItem = 0;
-    public static final double diffectorMotorKPTwoItem = 20;
+    public static final double diffectorMotorKPTwoItem = 3;
     public static final double diffectorMotorKITwoItem = 0;
     public static final double diffectorMotorKDTwoItem = 0;
 
     public static final double diffectorMotionMagicCruise = 1;
-    public static final double diffectorMotionMagicAccel = 1;
+    public static final double diffectorMotionMagicAccel  = 1;
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;
@@ -251,7 +251,7 @@ public final class Constants
     public static final double algae1Angle        = 100;
     
     /* Preset elevator heights, height of centre of rotation above the ground, metres */
-    public static final double startElevation         = 0.574;
+    public static final double startElevation         = 0.9;//0.574;
     public static final double climbElevation         = minElevation;
     public static final double netElevation           = maxElevation;
     public static final double processorElevation     = 0.5; 

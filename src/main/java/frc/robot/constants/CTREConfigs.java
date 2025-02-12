@@ -13,7 +13,7 @@ public final class CTREConfigs
   public CTREConfigs()
   {
     /* Diffector Motor Gneral Config */
-    diffectorFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    diffectorFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     diffectorFXConfig.Feedback.SensorToMechanismRatio = Constants.Diffector.gearboxRatio;
 
     /* Diffector Motor Config (Empty) */
