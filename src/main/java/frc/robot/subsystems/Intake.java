@@ -199,17 +199,17 @@ public class Intake extends SubsystemBase {
         break;
 
       case EJECT_CORAL:
-        setAlgaeIntakeSpeed(Constants.Intake.algaeEjectMotorSpeed);
-        setCoralIntakeSpeed(Constants.Intake.algaeEjectMotorSpeed);
-        setAlgaeArmTarget(Constants.Intake.topAlgaeEjectArmTarget);
-        setCoralArmTarget(Constants.Intake.bottomAlgaeEjectArmTarget);
-        break;
-
-      case EJECT_ALGAE:
         setAlgaeIntakeSpeed(Constants.Intake.coralEjectMotorSpeed);
         setCoralIntakeSpeed(Constants.Intake.coralEjectMotorSpeed);
         setAlgaeArmTarget(Constants.Intake.topCoralEjectArmTarget);
         setCoralArmTarget(Constants.Intake.bottomCoralEjectArmTarget);
+        break;
+
+      case EJECT_ALGAE:
+        setAlgaeIntakeSpeed(Constants.Intake.algaeEjectMotorSpeed);
+        setCoralIntakeSpeed(Constants.Intake.algaeEjectMotorSpeed);
+        setAlgaeArmTarget(Constants.Intake.topAlgaeEjectArmTarget);
+        setCoralArmTarget(Constants.Intake.bottomAlgaeEjectArmTarget);
         break;
 
       case CLIMBING:
