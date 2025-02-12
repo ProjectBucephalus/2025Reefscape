@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import com.pathplanner.lib.path.PathConstraints;
+import com.ctre.phoenix.CANifier.GeneralPin;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -293,9 +294,9 @@ public final class Constants
     public static final int coralMotorID = IDConstants.coralManipulatorID;
     public static final int algaeMotorID = IDConstants.algaeManipulatorID;
 
-    public static final int coralManipulatorDIO1 = IDConstants.coralManipulatorDIOPort;
-    public static final int coralManipulatorDIO2 = IDConstants.coralManipulatorDIOStbd;
-    public static final int algaeManipulatorDIO  = IDConstants.algaeManipulatorDIO;
+    public static final GeneralPin coralManipulatorDIO1 = IDConstants.coralManipulatorDIOPort;
+    public static final GeneralPin coralManipulatorDIO2 = IDConstants.coralManipulatorDIOStbd;
+    public static final GeneralPin algaeManipulatorDIO  = IDConstants.algaeManipulatorDIO;
 
     /* Coral manipulator speeds */
     public static final double coralManipulatorIntakeSpeed = 0;
