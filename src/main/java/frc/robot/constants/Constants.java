@@ -299,9 +299,9 @@ public final class Constants
     public static final GeneralPin algaeManipulatorDIO  = IDConstants.algaeManipulatorDIO;
 
     /* Coral manipulator speeds */
-    public static final double coralManipulatorIntakeSpeed = 0;
+    public static final double coralManipulatorIntakeSpeed = 0.3;
     public static final double coralManipulatorDeliverySpeed = 0.9;
-    public static final double coralManipulatorHoldingVoltage = 0.2;
+    public static final double coralManipulatorHoldingVoltage = 0;
 
     /* Algae manipulator speeds */
     public static final double algaeManipulatorIntakeSpeed = -0.7;

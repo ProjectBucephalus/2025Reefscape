@@ -46,8 +46,6 @@ public class CoralManipulator extends SubsystemBase {
   {
     coralStatus = CoralManipulatorStatus.DEFAULT;
     coralMotor = new VictorSPX(Constants.GamePiecesManipulator.coralMotorID);
-    
-    coralStatus = CoralManipulatorStatus.INTAKE;
   }
 
   public CoralManipulatorStatus getStatus()
@@ -59,7 +57,7 @@ public class CoralManipulator extends SubsystemBase {
    * @param speed Coral manipulator motor speed, positive to eject [-1..1]
    */
   public void setCoralManipulatorSpeed(double speed)
-    {coralMotor.set(VictorSPXControlMode.PercentOutput, speed); }
+    {coralMotor.set(VictorSPXControlMode.PercentOutput, speed);}
 
   public void setCoralManipulatorStatus(CoralManipulatorStatus status)
     {coralStatus = status;}
@@ -94,7 +92,7 @@ public class CoralManipulator extends SubsystemBase {
         else if (!RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor()) 
           {setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);} 
         else if (!RobotContainer.s_Canifier.coralManiPortSensor() && !RobotContainer.s_Canifier.coralManiStbdSensor()) 
-          {coralMotor.set(VictorSPXControlMode.PercentOutput, 0); }
+          {setCoralManipulatorSpeed(0);}
         break;
     }
   }
