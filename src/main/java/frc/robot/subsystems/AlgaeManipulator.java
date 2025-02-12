@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
@@ -22,10 +24,7 @@ public class AlgaeManipulator extends SubsystemBase
 {
 
   /* Declaration of the motor controllers */
-  private TalonFX algaeMotor;
-
-  /* Declaration of the beam break sensor */
-  private DigitalInput algaeManipBeamBreak;
+  private VictorSPX algaeMotor;
 
   /* Declaration of the enum variable */
   private AlgaeManipulatorStatus algaeStatus;
@@ -48,18 +47,17 @@ public class AlgaeManipulator extends SubsystemBase
   public AlgaeManipulator() 
   {
     algaeStatus = AlgaeManipulatorStatus.EMPTY;
-    algaeMotor = new TalonFX(Constants.GamePiecesManipulator.algaeMotorID);
-    algaeManipBeamBreak = new DigitalInput(Constants.GamePiecesManipulator.algaeManipulatorDIO);
+    algaeMotor = new VictorSPX(Constants.GamePiecesManipulator.algaeMotorID);
     algaeStatus = AlgaeManipulatorStatus.EMPTY;
   }
 
   /**
    * Sets the speed of the algae manipulator motor
    * 
-   * @param Speed Algae manipulator motor speed, positive to eject [-1..1]
+   * @param speed Algae manipulator motor speed, positive to eject [-1..1]
    */
-  public void setAlgaeManipulatorSpeed(double Speed)
-    {algaeMotor.set(Speed);}
+  public void setAlgaeManipulatorSpeed(double speed)
+    {algaeMotor.set(VictorSPXControlMode.PercentOutput, speed);}
 
   public void setAlgaeManipulatorStatus(AlgaeManipulatorStatus status)
     {algaeStatus = status;}
@@ -70,7 +68,7 @@ public class AlgaeManipulator extends SubsystemBase
   @Override
   public void periodic() 
   {
-    RobotContainer.algae = !algaeManipBeamBreak.get();
+    RobotContainer.algae = !RobotContainer.s_Canifier.algaeManiSensor();
 
     switch(algaeStatus)
     {
@@ -83,7 +81,7 @@ public class AlgaeManipulator extends SubsystemBase
       case HOLDING:
         if (RobotContainer.algae) 
         {
-          algaeMotor.setVoltage(Constants.GamePiecesManipulator.algaeManipulatorHoldingVoltage);      
+          algaeMotor.set(VictorSPXControlMode.PercentOutput, 0);      
         } 
         else
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}

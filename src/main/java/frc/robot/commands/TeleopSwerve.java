@@ -87,7 +87,7 @@ public class TeleopSwerve extends Command
     
     if (fieldCentricSup.getAsBoolean())
     {
-      if (fencedSup.getAsBoolean())
+      if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", false))
       {
         SmartDashboard.putString("Drive State", "Fenced");
 

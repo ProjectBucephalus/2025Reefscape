@@ -1,6 +1,7 @@
 package frc.robot.constants;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public final class CTREConfigs 
 {
@@ -11,26 +12,30 @@ public final class CTREConfigs
 
   public CTREConfigs()
   {
+    /* Diffector Motor Gneral Config */
+    diffectorFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    diffectorFXConfig.Feedback.SensorToMechanismRatio = Constants.Diffector.gearboxRatio;
+
     /* Diffector Motor Config (Empty) */
-    diffectorFXConfig.Slot0.kS = Constants.Diffector.Kinematics.diffectorMotorKPEmpty;
-    diffectorFXConfig.Slot0.kV = Constants.Diffector.Kinematics.diffectorMotorKIEmpty;
-    diffectorFXConfig.Slot0.kA = Constants.Diffector.Kinematics.diffectorMotorKDEmpty;
+    diffectorFXConfig.Slot0.kS = Constants.Diffector.Kinematics.diffectorMotorKSEmpty;
+    diffectorFXConfig.Slot0.kV = Constants.Diffector.Kinematics.diffectorMotorKVEmpty;
+    diffectorFXConfig.Slot0.kA = Constants.Diffector.Kinematics.diffectorMotorKAEmpty;
     diffectorFXConfig.Slot0.kP = Constants.Diffector.Kinematics.diffectorMotorKPEmpty;
     diffectorFXConfig.Slot0.kI = Constants.Diffector.Kinematics.diffectorMotorKIEmpty;
     diffectorFXConfig.Slot0.kD = Constants.Diffector.Kinematics.diffectorMotorKDEmpty;
     
     /* Diffector Motor Config (Algae or Coral) */
-    diffectorFXConfig.Slot1.kS = Constants.Diffector.Kinematics.diffectorMotorKPOneItem;
-    diffectorFXConfig.Slot1.kV = Constants.Diffector.Kinematics.diffectorMotorKIOneItem;
-    diffectorFXConfig.Slot1.kA = Constants.Diffector.Kinematics.diffectorMotorKDOneItem;
+    diffectorFXConfig.Slot1.kS = Constants.Diffector.Kinematics.diffectorMotorKSOneItem;
+    diffectorFXConfig.Slot1.kV = Constants.Diffector.Kinematics.diffectorMotorKVOneItem;
+    diffectorFXConfig.Slot1.kA = Constants.Diffector.Kinematics.diffectorMotorKAOneItem;
     diffectorFXConfig.Slot1.kP = Constants.Diffector.Kinematics.diffectorMotorKPOneItem;
     diffectorFXConfig.Slot1.kI = Constants.Diffector.Kinematics.diffectorMotorKIOneItem;
     diffectorFXConfig.Slot1.kD = Constants.Diffector.Kinematics.diffectorMotorKDOneItem;        
 
     /* Diffector Motor Config (Algae and Coral) */
-    diffectorFXConfig.Slot2.kS = Constants.Diffector.Kinematics.diffectorMotorKPTwoItem;
-    diffectorFXConfig.Slot2.kV = Constants.Diffector.Kinematics.diffectorMotorKITwoItem;
-    diffectorFXConfig.Slot2.kA = Constants.Diffector.Kinematics.diffectorMotorKDTwoItem;
+    diffectorFXConfig.Slot2.kS = Constants.Diffector.Kinematics.diffectorMotorKSTwoItem;
+    diffectorFXConfig.Slot2.kV = Constants.Diffector.Kinematics.diffectorMotorKVTwoItem;
+    diffectorFXConfig.Slot2.kA = Constants.Diffector.Kinematics.diffectorMotorKATwoItem;
     diffectorFXConfig.Slot2.kP = Constants.Diffector.Kinematics.diffectorMotorKPTwoItem;
     diffectorFXConfig.Slot2.kI = Constants.Diffector.Kinematics.diffectorMotorKITwoItem;
     diffectorFXConfig.Slot2.kD = Constants.Diffector.Kinematics.diffectorMotorKDTwoItem;

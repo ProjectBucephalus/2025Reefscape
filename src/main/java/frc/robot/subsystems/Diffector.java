@@ -92,6 +92,8 @@ public class Diffector extends SubsystemBase
 
     m_diffectorUA.getConfigurator().apply(motorConfig);
     m_diffectorDA.getConfigurator().apply(motorConfig);
+    m_diffectorUA.getConfigurator().apply(motorConfig);
+    m_diffectorDA.getConfigurator().apply(motorConfig);
 
     m_diffectorUA.setPosition((Constants.Diffector.ArmPresets.startAngle / rotationRatio) + (Constants.Diffector.ArmPresets.startElevation / travelRatio));
     m_diffectorDA.setPosition((Constants.Diffector.ArmPresets.startAngle / rotationRatio) - (Constants.Diffector.ArmPresets.startElevation / travelRatio));
@@ -99,6 +101,7 @@ public class Diffector extends SubsystemBase
     simDA = ((Constants.Diffector.ArmPresets.startAngle / rotationRatio) - (Constants.Diffector.ArmPresets.startElevation / travelRatio));
 
     cargoState = updateCargoState();
+    updateLocalPos();
 
     motionMagicRequester = new MotionMagicVoltage(0);
 
@@ -134,11 +137,8 @@ public class Diffector extends SubsystemBase
    * Calculates arm rotation based on motor positions
    * @return Arm rotation, degrees anticlockwise, 0 = algae at top
    */
-  public double getAngle()
-  {
-    return ((simUA + simDA) * rotationRatio) / 2;
-    //return (m_diffectorUA.getPosition().getValueAsDouble() + m_diffectorDA.getPosition().getValueAsDouble()) * rotationRatio;
-  }
+  public double getArmPos()
+    {return (m_diffectorUA.getPosition().getValueAsDouble() + m_diffectorDA.getPosition().getValueAsDouble()) * rotationRatio / 2;}
 
   /**
    * Arm Rotation as measured from encoder
@@ -206,6 +206,16 @@ public class Diffector extends SubsystemBase
   public double[] calculateMotorTargets(double elevatorTarget, double armTarget)
   {
     double[] calculatedTargets = new double[2];
+    
+    if (arm.checkAngle(armTarget) > elevatorPos)
+    {
+      armTarget = armPos;
+    }
+
+    if (elevatorTarget < elevatorPos && arm.checkAngle(armPos) > elevatorTarget) 
+    {
+      elevatorTarget = elevatorPos;
+    }
 
     calculatedTargets[0] = (armTarget / rotationRatio) + (elevatorTarget / travelRatio);
     calculatedTargets[1] = (armTarget / rotationRatio) - (elevatorTarget / travelRatio);
@@ -374,10 +384,29 @@ public class Diffector extends SubsystemBase
       {return CargoStates.EMPTY;}
   }
 
+  public void testingOveride(boolean a, double input)
+  {
+    if (a)
+    {
+      m_diffectorUA.set(input);
+    }
+    else
+    {
+      m_diffectorDA.set(input);
+    }
+  }
+
+  private void updateLocalPos()
+  {
+    armPos = getArmPos();
+    elevatorPos = getElevatorPos();
+  }
 
   @Override
   public void periodic() 
   { 
+    updateLocalPos();
+
     cargoState = updateCargoState(); // TODO: Don't need to call this in periodic, only needs to be called when state changes
  
     angle = getAngle();

@@ -57,11 +57,14 @@ public class Intake extends SubsystemBase {
     STAND_BY,
     STOWED,
     TRANSFER_CORAL,
-    TRANSFER_ALGAE
+    TRANSFER_ALGAE,
+    TESTING
   };
   
   public Intake() 
   { 
+    status = IntakeStatus.TESTING;
+
     m_AlgaeIntake = new TalonFX(Constants.Intake.algaeIntakeID);
     m_CoralIntake = new TalonFX(Constants.Intake.coralIntakeID);
     m_AlgaeArm = new TalonFX(Constants.Intake.algaeArmID);
@@ -133,8 +136,8 @@ public class Intake extends SubsystemBase {
    * @param status Enum corresponds to the intake motor speeds and
    * arms position
    */
-  public void setIntakeStatus(IntakeStatus status)
-    {this.status = status;}
+  public void setIntakeStatus(IntakeStatus status){}
+    //{this.status = status;}
 
   /**
    * Gets the target the Algae arm wants to go to
@@ -168,6 +171,18 @@ public class Intake extends SubsystemBase {
   public boolean climbReady()
     {return (m_AlgaeArm.getPosition()).getValueAsDouble() > Constants.Intake.algaeClimbingArmTarget && m_CoralArm.getPosition().getValueAsDouble() > Constants.Intake.coralClimbingArmTarget;}
 
+  public void coralTestingOveride(boolean b, double input)
+  {
+    if (b)
+    {
+      m_CoralIntake.set(input);
+    } 
+    else 
+    {
+      m_CoralArm.set(input);
+    }
+  }
+    
   @Override
   public void periodic()  
   {
@@ -184,6 +199,9 @@ public class Intake extends SubsystemBase {
 
     switch (status)
     {
+      case TESTING:
+        break;
+      
       case INTAKE_CORAL:
         setAlgaeIntakeSpeed(Constants.Intake.coralIntakeMotorSpeed);
         setCoralIntakeSpeed(Constants.Intake.coralIntakeMotorSpeed);
@@ -199,17 +217,17 @@ public class Intake extends SubsystemBase {
         break;
 
       case EJECT_CORAL:
-        setAlgaeIntakeSpeed(Constants.Intake.algaeEjectMotorSpeed);
-        setCoralIntakeSpeed(Constants.Intake.algaeEjectMotorSpeed);
-        setAlgaeArmTarget(Constants.Intake.topAlgaeEjectArmTarget);
-        setCoralArmTarget(Constants.Intake.bottomAlgaeEjectArmTarget);
-        break;
-
-      case EJECT_ALGAE:
         setAlgaeIntakeSpeed(Constants.Intake.coralEjectMotorSpeed);
         setCoralIntakeSpeed(Constants.Intake.coralEjectMotorSpeed);
         setAlgaeArmTarget(Constants.Intake.topCoralEjectArmTarget);
         setCoralArmTarget(Constants.Intake.bottomCoralEjectArmTarget);
+        break;
+
+      case EJECT_ALGAE:
+        setAlgaeIntakeSpeed(Constants.Intake.algaeEjectMotorSpeed);
+        setCoralIntakeSpeed(Constants.Intake.algaeEjectMotorSpeed);
+        setAlgaeArmTarget(Constants.Intake.topAlgaeEjectArmTarget);
+        setCoralArmTarget(Constants.Intake.bottomAlgaeEjectArmTarget);
         break;
 
       case CLIMBING:

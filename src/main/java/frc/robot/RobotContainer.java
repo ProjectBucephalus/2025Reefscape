@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -57,6 +58,7 @@ public class RobotContainer
   public static final Intake s_Intake = new Intake();
   public static final CoralManipulator s_CoralManipulator = new CoralManipulator();
   public static final AlgaeManipulator s_AlgaeManipulator = new AlgaeManipulator();
+  public static final CANifierAccess s_Canifier = new CANifierAccess();
   public static Rumbler s_Rumbler = new Rumbler(driver, copilot);
 
   /* Drive Controls */
@@ -83,6 +85,7 @@ public class RobotContainer
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() 
   {
+    SmartDashboard.putBoolean("IgnoreFence", false);
     s_Swerve.setDefaultCommand
     (
       new TeleopSwerve
@@ -130,6 +133,7 @@ public class RobotContainer
     configureDriverBindings();
     configureAutoDriveBindings();
     configureCopilotBindings();
+    configureTestBindings();
     configureRumbleBindings();
     configureButtonBoxBindings();
     configureTestBindings();
@@ -324,9 +328,19 @@ public class RobotContainer
     copilot.axisGreaterThan(5, 0.85).whileTrue(new Test("manualElevator", "elevator down"));
   }
 
+  private void configureTestBindings()
+  {
+    testing.povUp().whileTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() + 0.05), s_Diffector));
+    testing.povDown().whileTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() - 0.05), s_Diffector));
+
+    testing.povLeft().whileTrue(Commands.runOnce(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() + 5), s_Diffector));
+    testing.povRight().whileTrue(Commands.runOnce(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() - 5), s_Diffector));
+  }
+
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
+    
     driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_LEFT, "Intake Full"));
     
     /* Copilot rumble bindings */

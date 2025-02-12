@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import com.pathplanner.lib.path.PathConstraints;
+import com.ctre.phoenix.CANifier.GeneralPin;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -44,6 +45,8 @@ public final class Constants
 
   public static final class Swerve
   {
+    /** Centre-centre distance (length and width) between wheels, metres */
+    public static final double drivebaseWidth = 0.616;
     public static final double initialHeading = 0;
 
     /* Drive Motor PID Values */
@@ -155,39 +158,33 @@ public final class Constants
 
   public static final class Diffector
   {
-    public static final int uaMotorID = IDConstants.ucMotorID;
-    public static final int daMotorID = IDConstants.uaMotorID;
-    public static final int encoderPWMID = IDConstants.encoderPWMID;
+    public static final int uaMotorID = IDConstants.uaMotorID;
+    public static final int daMotorID = IDConstants.daMotorID;
+    public static final int encoderPWMID = IDConstants.armEncoderID;
 
-    public static final double manualElevationScalar = -0.5;
-    public static final double manualAngleScalar = 10;
+    public static final double diffectorMotorKSEmpty = 0;
+    public static final double diffectorMotorKVEmpty = 0;
+    public static final double diffectorMotorKAEmpty = 0;
+    public static final double diffectorMotorKPEmpty = 20;
+    public static final double diffectorMotorKIEmpty = 0;
+    public static final double diffectorMotorKDEmpty = 0;
 
-    public static final class Kinematics
-    {
-      public static final double diffectorMotorKSEmpty = 0;
-      public static final double diffectorMotorKVEmpty = 0;
-      public static final double diffectorMotorKAEmpty = 0;
-      public static final double diffectorMotorKPEmpty = 0;
-      public static final double diffectorMotorKIEmpty = 0;
-      public static final double diffectorMotorKDEmpty = 0;
+    public static final double diffectorMotorKSOneItem = 0;
+    public static final double diffectorMotorKVOneItem = 0;
+    public static final double diffectorMotorKAOneItem = 0;
+    public static final double diffectorMotorKPOneItem = 20;
+    public static final double diffectorMotorKIOneItem = 0;
+    public static final double diffectorMotorKDOneItem = 0;
 
-      public static final double diffectorMotorKSOneItem = 0;
-      public static final double diffectorMotorKVOneItem = 0;
-      public static final double diffectorMotorKAOneItem = 0;
-      public static final double diffectorMotorKPOneItem = 0;
-      public static final double diffectorMotorKIOneItem = 0;
-      public static final double diffectorMotorKDOneItem = 0;
+    public static final double diffectorMotorKSTwoItem = 0;
+    public static final double diffectorMotorKVTwoItem = 0;
+    public static final double diffectorMotorKATwoItem = 0;
+    public static final double diffectorMotorKPTwoItem = 20;
+    public static final double diffectorMotorKITwoItem = 0;
+    public static final double diffectorMotorKDTwoItem = 0;
 
-      public static final double diffectorMotorKSTwoItem = 0;
-      public static final double diffectorMotorKVTwoItem = 0;
-      public static final double diffectorMotorKATwoItem = 0;
-      public static final double diffectorMotorKPTwoItem = 0;
-      public static final double diffectorMotorKITwoItem = 0;
-      public static final double diffectorMotorKDTwoItem = 0;
-
-      public static final double diffectorMotionMagicCruise = 0;
-      public static final double diffectorMotionMagicAccel = 0;
-    }
+    public static final double diffectorMotionMagicCruise = 1;
+    public static final double diffectorMotionMagicAccel = 1;
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;
@@ -210,9 +207,9 @@ public final class Constants
     public static final double sprocketFeedRate = (sprocketPitchDiameter * Math.PI) / 360;
 
     /** Number of chain m moved per motor degree */
-    public static final double travelRatio = (gearboxRatio * sprocketFeedRate);
+    public static final double travelRatio = (sprocketFeedRate);
     /** Number of arm degrees moved per motor degree of a single motor */
-    public static final double rotationRatio = (gearboxRatio * sprocketRatio) / 2;
+    public static final double rotationRatio = (sprocketRatio) / 2;
 
     public static final boolean startingCoralState = true;
     public static final boolean startingAlgaeState = false;
@@ -302,14 +299,15 @@ public final class Constants
     public static final int coralMotorID = IDConstants.coralManipulatorID;
     public static final int algaeMotorID = IDConstants.algaeManipulatorID;
 
-    public static final int coralManipulatorDIO1 = IDConstants.coralManipulatorDIO1;
-    public static final int coralManipulatorDIO2 = IDConstants.coralManipulatorDIO2;
-    public static final int algaeManipulatorDIO  = IDConstants.algaeManipulatorDIO;
+    public static final GeneralPin coralManipulatorDIO1 = IDConstants.coralManipulatorDIOPort;
+    public static final GeneralPin coralManipulatorDIO2 = IDConstants.coralManipulatorDIOStbd;
+    public static final GeneralPin algaeManipulatorDIO  = IDConstants.algaeManipulatorDIO;
 
     /* Coral manipulator speeds */
-    public static final double coralManipulatorIntakeSpeed = 0;
+    public static final double coralManipulatorBaseIntakeSpeed = 0.2;
+    public static final double coralManipulatorMaxIntakeSpeed = 0.4;
     public static final double coralManipulatorDeliverySpeed = 0.9;
-    public static final double coralManipulatorHoldingVoltage = 0.2;
+    public static final double coralManipulatorHoldingVoltage = 0;
 
     /* Algae manipulator speeds */
     public static final double algaeManipulatorIntakeSpeed = -0.7;
@@ -317,17 +315,20 @@ public final class Constants
     public static final double algaeManipulatorNetSpeed = 1;
     public static final double algaeManipulatorProcessorSpeed = 0.6;
     public static final double algaeManipulatorEmptySpeed = 0;
+
+    /* The number of cycles (each cycle is 0.02s) before the holding intake speed reaches max */
+    public static final double coralHoldingScalar = 100;
   }
 
   public static final class Intake // TODO: Speeds and Angles must be tuned to the specific robot
   {
-    public static final int algaeIntakeID = IDConstants.mAlgaeIntakeRollerID;
-    public static final int coralIntakeID = IDConstants.mCoralIntakeRollerID;
-    public static final int algaeArmID = IDConstants.mAlgaeIntakeArmID;
-    public static final int coralArmID = IDConstants.mCoralIntakeArmID;
+    public static final int algaeIntakeID = IDConstants.algaeIntakeRollerID;
+    public static final int coralIntakeID = IDConstants.coralIntakeRollerID;
+    public static final int algaeArmID = IDConstants.algaeIntakeArmID;
+    public static final int coralArmID = IDConstants.coralIntakeArmID;
 
-    public static final int coralIntakeDIO1 = IDConstants.coralIntakeDIO1;
-    public static final int coralIntakeDIO2 = IDConstants.coralIntakeDIO2;
+    public static final int coralIntakeDIO1 = IDConstants.coralIntakeDIOPort;
+    public static final int coralIntakeDIO2 = IDConstants.coralIntakeDIOStbd;
     public static final int algaeIntakeDIO  = IDConstants.algaeIntakeDIO;
 
     /* Intake motors speeds */
