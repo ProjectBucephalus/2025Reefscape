@@ -168,6 +168,18 @@ public class Intake extends SubsystemBase {
   public boolean climbReady()
     {return (m_AlgaeArm.getPosition()).getValueAsDouble() > Constants.Intake.algaeClimbingArmTarget && m_CoralArm.getPosition().getValueAsDouble() > Constants.Intake.coralClimbingArmTarget;}
 
+  public void intakeTestingOveride(boolean b, double input)
+  {
+    if (b)
+    {
+      m_CoralIntake.set(input);
+    } 
+    else 
+    {
+      m_CoralArm.set(input);
+    }
+  }
+    
   @Override
   public void periodic()  
   {
