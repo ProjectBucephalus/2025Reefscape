@@ -5,12 +5,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.IDConstants;
+
 import com.ctre.phoenix.CANifier;
 import com.ctre.phoenix.CANifier.GeneralPin;
 
 public class CANifierAccess extends SubsystemBase 
 {
-  CANifier io_CANifier = new CANifier(23);
+  CANifier io_CANifier = new CANifier(IDConstants.canifierID);
 
   public CANifierAccess() 
   {
@@ -18,13 +20,13 @@ public class CANifierAccess extends SubsystemBase
   }
 
   public boolean algaeManiCANifier()
-    {return io_CANifier.getGeneralInput(GeneralPin.SPI_MISO_PWM2P);}
+    {return io_CANifier.getGeneralInput(IDConstants.algaeManipulatorDIO);}
 
-  public boolean coralMani1CANifier()
-    {return io_CANifier.getGeneralInput(GeneralPin.SPI_MOSI_PWM1P);}
+  public boolean coralManiStbdCANifier()
+    {return io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOStbd);}
 
-  public boolean coralMani2CANifier()
-    {return io_CANifier.getGeneralInput(GeneralPin.SPI_CLK_PWM0P);}
+  public boolean coralManiPortCANifier()
+    {return io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOPort);}
 
   @Override
   public void periodic() 

@@ -4,6 +4,8 @@
 
 package frc.robot.constants;
 
+import com.ctre.phoenix.CANifier.GeneralPin;
+
 public final class IDConstants 
 {   
   public static final int pdhID = 0;
@@ -54,7 +56,10 @@ public final class IDConstants
   public static final int coralManipulatorID = 21;
   public static final int algaeManipulatorID = 22;
   
-  public static final int coralManipulatorDIOPort = 4;
-  public static final int coralManipulatorDIOStbd = 5;
-  public static final int algaeManipulatorDIO  = 6;
+  public static final int canifierID = 23;
+
+  public static final GeneralPin coralManipulatorDIOPort = GeneralPin.SPI_CLK_PWM0P;
+  public static final GeneralPin coralManipulatorDIOStbd = GeneralPin.SPI_MOSI_PWM1P;
+  public static final GeneralPin algaeManipulatorDIO     = GeneralPin.SPI_MISO_PWM2P;
+
 }
