@@ -83,7 +83,7 @@ public class Diffector extends SubsystemBase
    * @return Arm rotation, degrees clockwise, 0 = algae at top
    */
   public double getArmPos()
-    {return (m_diffectorUA.getPosition().getValueAsDouble() + m_diffectorDA.getPosition().getValueAsDouble()) * rotationRatio;}
+    {return (m_diffectorUA.getPosition().getValueAsDouble() + m_diffectorDA.getPosition().getValueAsDouble()) * rotationRatio / 2;}
 
     /**
    * Arm Rotation as measured from encoder
@@ -100,7 +100,7 @@ public class Diffector extends SubsystemBase
    * @return Elevator height in m
    */
   public double getElevatorPos()
-    {return ((m_diffectorUA.getPosition().getValueAsDouble() - m_diffectorDA.getPosition().getValueAsDouble()) * travelRatio);}
+    {return ((m_diffectorUA.getPosition().getValueAsDouble() - m_diffectorDA.getPosition().getValueAsDouble()) * travelRatio) / 2;}
 
   /**
    * Calculates the position to drive each motor to, based on the target positions for the elevator and arm
@@ -117,7 +117,7 @@ public class Diffector extends SubsystemBase
       armTarget = armPos;
     }
 
-    if (arm.checkAngle(armPos) > elevatorTarget) 
+    if (elevatorTarget < elevatorPos && arm.checkAngle(armPos) > elevatorTarget) 
     {
       elevatorTarget = elevatorPos;
     }
@@ -318,8 +318,8 @@ public class Diffector extends SubsystemBase
 
     calculateMotorTargets();
 
-    m_diffectorDA.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(getSlot()));
-    m_diffectorUA.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
+    m_diffectorUA.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(getSlot()));
+    m_diffectorDA.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
 
     SmartDashboard.putNumber("Elevator Height", elevatorPos);
     SmartDashboard.putNumber("Arm Rotation", armPos);

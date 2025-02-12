@@ -336,6 +336,7 @@ public class RobotContainer
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
+    
     driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_LEFT, "Intake Full"));
     
     /* Copilot rumble bindings */
