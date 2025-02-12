@@ -29,14 +29,17 @@ public class Climber extends SubsystemBase {
     motionMagic = new MotionMagicVoltage(0);
   }
 
-  private void setClimberSpeed(double speed)
+  public void setClimberSpeed(double speed)
     {m_Winch.set(speed);}
 
-  private void setClimbTargets(double newWinchTarget)
+  public void setClimbTargets(double newWinchTarget)
   {
     climbTarget = newWinchTarget;
     //Use for auto-positoning
   }
+
+  public double getClimbTargets()
+    {return climbTarget;}
 
   public void setClimberStatus(ClimberStatus Status)
   {
