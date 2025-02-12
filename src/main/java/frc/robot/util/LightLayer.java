@@ -1,10 +1,10 @@
 package frc.robot.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import frc.robot.util.FieldUtils.DriverFieldRefs;
@@ -24,13 +24,11 @@ public class LightLayer
   private CommandSwerveDrivetrain s_Swerve;
   private int startLED;
   private LEDPattern display;
-  public enum Mode {DRIVERFACE, WHOLESTRIP, TARGETFACE}
+  public enum Mode {DRIVERFACE, WHOLESTRIP, TARGETFACE, STATICSEGMENT, STBDSEGMENT, PORTSEGMENT}
   public double progress;
   private Mode displayMode;
-  public enum LEDType {INDIVIDUAL, PROGRESS, STATUS, POINTER}
+  public enum LEDType {INDIVIDUAL, PROGRESS, STATUS, POINTER, DISCO}
   private LEDType displayType;
-  boolean toggleMode = false;
-  boolean toggleType = false;
   int statusSegments = LEDStrip.defaultStatusSegments;
   Color[] statusOn = new Color[statusSegments];
   Color[] statusOff = new Color[statusSegments];
@@ -41,6 +39,7 @@ public class LightLayer
   int width = LEDStrip.viewWidth;
   boolean drawBorder = true;
   Color borderColor = LEDStrip.displayBorderColor;
+  ArrayList<DiscoLayer> discoQueue = new ArrayList<DiscoLayer>();
   
   int i = 0; // Loop counter and temporary index values
   
@@ -61,7 +60,7 @@ public class LightLayer
     }
     if (FieldUtils.isRedAlliance())
     {
-      switch (DriverStation.getLocation().getAsInt())
+      switch (FieldUtils.getDriverLocation())
       {
         case 1:target = DriverFieldRefs.driverRed1; break;
         case 2:target = DriverFieldRefs.driverRed2; break;
@@ -71,7 +70,7 @@ public class LightLayer
     }
     else
     {
-      switch (DriverStation.getLocation().getAsInt())
+      switch (FieldUtils.getDriverLocation())
       {
         case 1:target = DriverFieldRefs.driverBlue1; break;
         case 2:target = DriverFieldRefs.driverBlue2; break;
@@ -126,7 +125,7 @@ public class LightLayer
     {
       if (FieldUtils.isRedAlliance())
       {
-        switch (DriverStation.getLocation().getAsInt())
+        switch (FieldUtils.getDriverLocation())
         {
           case 1:target = DriverFieldRefs.driverRed1; break;
           case 2:target = DriverFieldRefs.driverRed2; break;
@@ -136,7 +135,7 @@ public class LightLayer
       }
       else 
       {
-        switch (DriverStation.getLocation().getAsInt())
+        switch (FieldUtils.getDriverLocation())
         {
           case 1:target = DriverFieldRefs.driverBlue1; break;
           case 2:target = DriverFieldRefs.driverBlue2; break;
@@ -144,6 +143,10 @@ public class LightLayer
           default:target = DriverFieldRefs.driverBlue1;
         }
       }  
+    }
+    else if (newMode == Mode.WHOLESTRIP)
+    {
+      width = LEDStrip.lightsLen;
     }
   }
 
@@ -257,6 +260,41 @@ public class LightLayer
       else
       {
         display.applyTo(shortBuff);
+      }
+    }
+
+    if (displayType == LEDType.DISCO)
+    {
+      if ((discoQueue.size() < LEDStrip.discoMin) || 
+          ((discoQueue.size() < LEDStrip.discoMax) && (Math.random() > 0.8)))
+      {
+        discoQueue.add(new DiscoLayer(width));
+      }
+      if (((discoQueue.size() > LEDStrip.discoMin) && (Math.random() > 0.9)) || 
+          ((discoQueue.size() == LEDStrip.discoMax) && (Math.random() > 0.5)))
+      {
+        discoQueue.remove((int)Math.floor(Math.random()*(discoQueue.size()-1)));
+      }
+      for (DiscoLayer disco : discoQueue)
+      {
+        disco.update();
+        for (i=0; i < disco.getLength(); i++)
+        {
+          int j = disco.getStartLED() + i;
+          if (j >= width) {j-=width;}
+          if (displayMode == Mode.WHOLESTRIP)
+          {
+            lightBuff.setLED(j, disco.shade);
+          }
+          else
+          {
+            shortBuff.setLED(j, disco.shade);
+          }
+        }
+        if ((((double)disco.age / LEDStrip.discoAgeLimit) + Math.random()) > 2)
+        {
+          discoQueue.remove(disco);
+        }
       }
     }
 

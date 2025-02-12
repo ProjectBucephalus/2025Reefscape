@@ -23,6 +23,18 @@ public class FieldUtils
     return alliance.isPresent() && alliance.get() == Alliance.Red;
   }
 
+  public static final int getDriverLocation()
+  {
+    if (DriverStation.getLocation().isPresent())
+    {
+      return DriverStation.getLocation().getAsInt();
+    }
+    else
+    {
+      return 0;
+    }
+  }
+
   public static Pose2d flipPose(Pose2d pose) 
   {
     // flip pose when red
