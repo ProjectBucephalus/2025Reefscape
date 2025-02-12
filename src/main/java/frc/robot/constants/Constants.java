@@ -300,7 +300,7 @@ public final class Constants
     public static final GeneralPin algaeManipulatorDIO  = IDConstants.algaeManipulatorDIO;
 
     /* Coral manipulator speeds */
-    public static final double coralManipulatorBaseIntakeSpeed = 0.15;
+    public static final double coralManipulatorBaseIntakeSpeed = 0.2;
     public static final double coralManipulatorMaxIntakeSpeed = 0.4;
     public static final double coralManipulatorDeliverySpeed = 0.9;
     public static final double coralManipulatorHoldingVoltage = 0;
@@ -313,7 +313,7 @@ public final class Constants
     public static final double algaeManipulatorEmptySpeed = 0;
 
     /* The number of cycles (each cycle is 0.02s) before the holding intake speed reaches max */
-    public static final double coralHoldingScalar = 150;
+    public static final double coralHoldingScalar = 100;
   }
 
   public static final class Intake // TODO: Speeds and Angles must be tuned to the specific robot
