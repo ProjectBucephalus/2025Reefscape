@@ -322,8 +322,5 @@ public class Diffector extends SubsystemBase
 
     SmartDashboard.putNumber("Elevator Height", elevatorPos);
     SmartDashboard.putNumber("Arm Rotation", armPos);
-
-    m_diffectorUA.setPosition(m_diffectorUA.getPosition().getValueAsDouble() + 10);
-    m_diffectorDA.setPosition(m_diffectorDA.getPosition().getValueAsDouble() + 10);
   }
 }

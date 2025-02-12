@@ -198,7 +198,7 @@ public final class Constants
     private static final double diffectorSprocketTeethIn = 18;
     private static final double diffectorSprocketTeethOut = 72;
     /** Output sprocket degrees per motor rotation */
-    public static final double gearboxRatio = (diffectorGearTeethIn / diffectorGearTeethOut) * 360;
+    public static final double gearboxRatio = 1.25 / ((diffectorGearTeethIn / diffectorGearTeethOut) * 360); // I have ABSOLUTELY NO IDEA where the 1.25 scale comes from
     /** Ratio of output sprocket to arm sprocket (output sprocket teeth/arm sprocket teeth) */
     public static final double sprocketRatio = (diffectorSprocketTeethIn / diffectorSprocketTeethOut);
     /** Pitch Diameter of the sprocket, in m */
