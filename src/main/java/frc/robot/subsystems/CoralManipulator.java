@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.util.Conversions;
 
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -28,6 +29,10 @@ public class CoralManipulator extends SubsystemBase {
   /* Declaration of the enum variable */
   private CoralManipulatorStatus coralStatus;
 
+  private double holdErrorTracker;
+
+  private double intakeSpeedError;
+
   /**
    * Enum representing the status this manipulator is in
    * (Keeps speed at zero while intaking,
@@ -46,6 +51,8 @@ public class CoralManipulator extends SubsystemBase {
   {
     coralStatus = CoralManipulatorStatus.DEFAULT;
     coralMotor = new VictorSPX(Constants.GamePiecesManipulator.coralMotorID);
+
+    holdErrorTracker = 0;
   }
 
   public CoralManipulatorStatus getStatus()
@@ -67,10 +74,12 @@ public class CoralManipulator extends SubsystemBase {
   {
     RobotContainer.coral = !RobotContainer.s_Canifier.coralManiPortSensor() || !RobotContainer.s_Canifier.coralManiStbdSensor();
 
+    intakeSpeedError = Constants.GamePiecesManipulator.coralManipulatorBaseIntakeSpeed;
+
     switch(coralStatus)
     {
       case INTAKE:
-        setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);
+        setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorBaseIntakeSpeed);
         if (RobotContainer.coral) 
           {coralStatus = CoralManipulatorStatus.DEFAULT; }
         break;
@@ -85,14 +94,27 @@ public class CoralManipulator extends SubsystemBase {
         break;
 
       case DEFAULT:
+        holdErrorTracker++;
+
+        intakeSpeedError = Conversions.clamp
+          (
+            (holdErrorTracker * Constants.GamePiecesManipulator.coralManipulatorBaseIntakeSpeed) 
+            / Constants.GamePiecesManipulator.coralHoldingScalar, 
+            Constants.GamePiecesManipulator.coralManipulatorBaseIntakeSpeed, 
+            Constants.GamePiecesManipulator.coralManipulatorMaxIntakeSpeed
+          );
+
         if (RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor())
           {setCoralManipulatorSpeed(0);} 
         else if (RobotContainer.s_Canifier.coralManiPortSensor() && !RobotContainer.s_Canifier.coralManiStbdSensor())
-          {setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);} 
+          {setCoralManipulatorSpeed(intakeSpeedError);} 
         else if (!RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor()) 
-          {setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorIntakeSpeed);} 
+          {setCoralManipulatorSpeed(-intakeSpeedError);} 
         else if (!RobotContainer.s_Canifier.coralManiPortSensor() && !RobotContainer.s_Canifier.coralManiStbdSensor()) 
-          {setCoralManipulatorSpeed(0);}
+        {
+          setCoralManipulatorSpeed(0);
+          holdErrorTracker--;
+        }
         break;
     }
   }
