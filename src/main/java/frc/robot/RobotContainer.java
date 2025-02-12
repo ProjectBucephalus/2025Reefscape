@@ -56,6 +56,7 @@ public class RobotContainer
   public static final Intake s_Intake = new Intake();
   public static final CoralManipulator s_CoralManipulator = new CoralManipulator();
   public static final AlgaeManipulator s_AlgaeManipulator = new AlgaeManipulator();
+  public static final CANifierAccess s_Canifier = new CANifierAccess();
   public static Rumbler s_Rumbler = new Rumbler(driver, copilot);
 
   /* Drive Controls */

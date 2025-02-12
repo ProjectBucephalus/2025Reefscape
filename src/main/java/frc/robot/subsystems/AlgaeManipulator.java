@@ -24,9 +24,6 @@ public class AlgaeManipulator extends SubsystemBase
   /* Declaration of the motor controllers */
   private TalonFX algaeMotor;
 
-  /* Declaration of the beam break sensor */
-  private DigitalInput algaeManipBeamBreak;
-
   /* Declaration of the enum variable */
   private AlgaeManipulatorStatus algaeStatus;
 
@@ -49,7 +46,6 @@ public class AlgaeManipulator extends SubsystemBase
   {
     algaeStatus = AlgaeManipulatorStatus.EMPTY;
     algaeMotor = new TalonFX(Constants.GamePiecesManipulator.algaeMotorID);
-    algaeManipBeamBreak = new DigitalInput(Constants.GamePiecesManipulator.algaeManipulatorDIO);
     algaeStatus = AlgaeManipulatorStatus.EMPTY;
   }
 
@@ -70,7 +66,7 @@ public class AlgaeManipulator extends SubsystemBase
   @Override
   public void periodic() 
   {
-    RobotContainer.algae = !algaeManipBeamBreak.get();
+    RobotContainer.algae = !RobotContainer.s_Canifier.algaeManiSensor();
 
     switch(algaeStatus)
     {

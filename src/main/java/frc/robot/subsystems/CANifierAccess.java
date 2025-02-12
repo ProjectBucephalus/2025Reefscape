@@ -19,13 +19,13 @@ public class CANifierAccess extends SubsystemBase
 
   }
 
-  public boolean algaeManiCANifier()
+  public boolean algaeManiSensor()
     {return io_CANifier.getGeneralInput(IDConstants.algaeManipulatorDIO);}
 
-  public boolean coralManiStbdCANifier()
+  public boolean coralManiStbdSensor()
     {return io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOStbd);}
 
-  public boolean coralManiPortCANifier()
+  public boolean coralManiPortSensor()
     {return io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOPort);}
 
   @Override
