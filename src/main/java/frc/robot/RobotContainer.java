@@ -331,10 +331,10 @@ public class RobotContainer
     testing.povUp().onTrue(new InstantCommand(() -> s_Diffector.testingOveride(false, -0.2))).onFalse(new InstantCommand(() -> s_Diffector.testingOveride(false, 0)));
     testing.povDown().onTrue(new InstantCommand(() -> s_Diffector.testingOveride(false, 0.2))).onFalse(new InstantCommand(() -> s_Diffector.testingOveride(false, 0)));
 
-    testing.b().onTrue(new InstantCommand(() -> s_Intake.intakeTestingOveride(true, 0.2))).onFalse(new InstantCommand(() -> s_Intake.intakeTestingOveride(true, 0)));
-    testing.x().onTrue(new InstantCommand(() -> s_Intake.intakeTestingOveride(true, -0.2))).onFalse(new InstantCommand(() -> s_Intake.intakeTestingOveride(true, 0)));
-    testing.povRight().onTrue(new InstantCommand(() -> s_Intake.intakeTestingOveride(false, -0.2))).onFalse(new InstantCommand(() -> s_Intake.intakeTestingOveride(false, 0)));
-    testing.povLeft().onTrue(new InstantCommand(() -> s_Intake.intakeTestingOveride(false, 0.2))).onFalse(new InstantCommand(() -> s_Intake.intakeTestingOveride(false, 0)));
+    testing.b().onTrue(new InstantCommand(() -> s_Intake.coralTestingOveride(true, 0.2))).onFalse(new InstantCommand(() -> s_Intake.coralTestingOveride(true, 0)));
+    testing.x().onTrue(new InstantCommand(() -> s_Intake.coralTestingOveride(true, -0.2))).onFalse(new InstantCommand(() -> s_Intake.coralTestingOveride(true, 0)));
+    testing.povRight().onTrue(new InstantCommand(() -> s_Intake.coralTestingOveride(false, -0.2))).onFalse(new InstantCommand(() -> s_Intake.coralTestingOveride(false, 0)));
+    testing.povLeft().onTrue(new InstantCommand(() -> s_Intake.coralTestingOveride(false, 0.2))).onFalse(new InstantCommand(() -> s_Intake.coralTestingOveride(false, 0)));
   }
 
   private void configureRumbleBindings()
