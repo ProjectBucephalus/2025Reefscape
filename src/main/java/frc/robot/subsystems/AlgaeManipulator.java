@@ -74,12 +74,13 @@ public class AlgaeManipulator extends SubsystemBase
     {
       case INTAKE:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorIntakeSpeed);
-        if (RobotContainer.algae) 
+
+        if (RobotContainer.s_Canifier.algaeManiSensor()) 
           {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
         break;
 
       case HOLDING:
-        if (RobotContainer.algae) 
+        if (RobotContainer.s_Canifier.algaeManiSensor()) 
         {
           algaeMotor.set(VictorSPXControlMode.PercentOutput, 0);      
         } 
@@ -89,19 +90,22 @@ public class AlgaeManipulator extends SubsystemBase
 
       case NET:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);
-        if (!RobotContainer.algae) 
+
+        if (!RobotContainer.s_Canifier.algaeManiSensor()) 
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
         break;
 
       case PROCESSOR:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorProcessorSpeed);
-        if (!RobotContainer.algae) 
+
+        if (!RobotContainer.s_Canifier.algaeManiSensor()) 
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
         break;
 
       case EMPTY:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorEmptySpeed);
-        if (RobotContainer.algae) 
+
+        if (RobotContainer.s_Canifier.algaeManiSensor()) 
           {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
         break;
     }
