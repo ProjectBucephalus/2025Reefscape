@@ -7,7 +7,8 @@ import frc.robot.constants.CTREConfigs;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 
-public class Climber extends SubsystemBase {
+public class Climber extends SubsystemBase 
+{
   private final MotionMagicVoltage motionMagic;
   private TalonFX m_Winch;
   private double climbTarget;
