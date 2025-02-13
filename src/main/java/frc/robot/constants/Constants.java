@@ -164,8 +164,8 @@ public final class Constants
     public static final double diffectorMotorKGEmpty = 0.225;
     public static final double diffectorMotorKSEmpty = 0.1;
     public static final double diffectorMotorKVEmpty = 0.75;
-    public static final double diffectorMotorKAEmpty = 0.8;
-    public static final double diffectorMotorKPEmpty = 7;
+    public static final double diffectorMotorKAEmpty = 0.1;
+    public static final double diffectorMotorKPEmpty = 40;
     public static final double diffectorMotorKIEmpty = 0;
     public static final double diffectorMotorKDEmpty = 0;
 
@@ -185,8 +185,8 @@ public final class Constants
     public static final double diffectorMotorKITwoItem = 0;
     public static final double diffectorMotorKDTwoItem = 0;
 
-    public static final double diffectorMotionMagicCruise = 1;
-    public static final double diffectorMotionMagicAccel  = 1;
+    public static final double diffectorMotionMagicCruise = 12;
+    public static final double diffectorMotionMagicAccel  = 4;
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;

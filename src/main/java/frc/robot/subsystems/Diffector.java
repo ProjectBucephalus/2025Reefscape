@@ -117,15 +117,10 @@ public class Diffector extends SubsystemBase
   public double[] calculateMotorTargets(double elevatorTarget, double armTarget)
   {
     double[] calculatedTargets = new double[2];
-    
-    if (arm.checkAngle(armTarget) > elevatorPos)
-    {
-      armTarget = armPos;
-    }
 
     if (elevatorTarget < elevatorPos && arm.checkAngle(armPos) > elevatorTarget) 
     {
-      elevatorTarget = elevatorPos;
+      elevatorTarget = Math.min(Constants.DiffectorConstants.maxElevation, elevatorPos);
     }
 
     calculatedTargets[0] = (armTarget / rotationRatio) + (elevatorTarget / travelRatio);
