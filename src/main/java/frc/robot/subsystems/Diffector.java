@@ -68,7 +68,7 @@ public class Diffector extends SubsystemBase
 
     m_diffectorUA = new TalonFX(Constants.DiffectorConstants.uaMotorID);
     m_diffectorDA = new TalonFX(Constants.DiffectorConstants.daMotorID);
-    encoder = new DutyCycleEncoder(Constants.DiffectorConstants.encoderPWMID);
+    encoder = new DutyCycleEncoder(Constants.DiffectorConstants.encoderCanCoderID);
 
     targetElevation = Constants.DiffectorConstants.startElevation;
     targetAngle = 0;
