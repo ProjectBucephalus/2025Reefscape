@@ -90,9 +90,6 @@ public class AlgaeManipulator extends SubsystemBase
 
       case NET:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);
-
-        if (!RobotContainer.s_Canifier.algaeManiSensor()) 
-          {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
         break;
 
       case PROCESSOR:

@@ -337,8 +337,8 @@ public class RobotContainer
     testing.povRight().whileTrue(new InstantCommand(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() - 45), s_Diffector));
 
     testing.x().onTrue(new InstantCommand(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE)));
-    testing.y().onTrue(new InstantCommand(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET)));
-    testing.a().onTrue(new InstantCommand(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DELIVERY)));
+    testing.y().onTrue(new InstantCommand(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET))).onFalse(new InstantCommand(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY)));
+    testing.a().onTrue(new InstantCommand(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DELIVERY))).onFalse(new InstantCommand(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT)));
   }
 
   private void configureRumbleBindings()
