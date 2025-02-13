@@ -289,8 +289,7 @@ public class RobotContainer
     copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new IntakeCoral(s_CoralManipulator));       //Coral manipulator to stowed
 
     // Intake from coral station
-    copilot.povLeft().and(copilot.rightBumper()).onTrue(new Test("s", "s"));                                     //Coral to intake from ground
-    copilot.povLeft().and(copilot.rightBumper().negate()).onTrue(new IntakeCoralSequence(s_Diffector, s_CoralManipulator)); //Coral to manipulator from coral station
+    copilot.povLeft().onTrue(new IntakeCoralSequence(s_Diffector, s_CoralManipulator)); //Coral to manipulator from coral station
 
     /* Game piece intake controls */
     copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_ALGAE));          //Intakes algae from intake
