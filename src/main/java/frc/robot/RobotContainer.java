@@ -23,6 +23,8 @@ import frc.robot.commands.Rumble.*;
 import frc.robot.commands.Util.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
+import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 import frc.robot.subsystems.Intake.IntakeStatus;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
@@ -328,11 +330,15 @@ public class RobotContainer
 
   private void configureTestBindings()
   {
-    testing.povUp().whileTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() + 0.05), s_Diffector));
-    testing.povDown().whileTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() - 0.05), s_Diffector));
+    testing.povUp().whileTrue(new InstantCommand(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() + 0.2), s_Diffector));
+    testing.povDown().whileTrue(new InstantCommand(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() - 0.2), s_Diffector));
 
-    testing.povLeft().whileTrue(Commands.runOnce(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() + 5), s_Diffector));
-    testing.povRight().whileTrue(Commands.runOnce(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() - 5), s_Diffector));
+    testing.povLeft().whileTrue(new InstantCommand(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() + 45), s_Diffector));
+    testing.povRight().whileTrue(new InstantCommand(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() - 45), s_Diffector));
+
+    testing.x().onTrue(new InstantCommand(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE)));
+    testing.y().onTrue(new InstantCommand(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET)));
+    testing.a().onTrue(new InstantCommand(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DELIVERY)));
   }
 
   private void configureRumbleBindings()
