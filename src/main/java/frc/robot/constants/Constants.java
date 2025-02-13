@@ -162,8 +162,8 @@ public final class Constants
     public static final int encoderPWMID = IDConstants.armEncoderID;
 
     public static final double diffectorMotorKSEmpty = 0;
-    public static final double diffectorMotorKVEmpty = 0;
-    public static final double diffectorMotorKAEmpty = 0;
+    public static final double diffectorMotorKVEmpty = 0.75;
+    public static final double diffectorMotorKAEmpty = 0.8;
     public static final double diffectorMotorKPEmpty = 5;
     public static final double diffectorMotorKIEmpty = 0;
     public static final double diffectorMotorKDEmpty = 0;
