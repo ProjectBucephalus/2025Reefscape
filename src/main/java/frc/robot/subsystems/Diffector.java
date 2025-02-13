@@ -163,10 +163,10 @@ public class Diffector extends SubsystemBase
    * Sets the Diffector arm to rotate the shortest path to the target angle, with protection against over-rotation
    * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public void goShortest(double targetAngle)
+  public void goShortest(double newTarget)
   {
-    targetAngle %= 360;
-    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
+    newTarget %= 360;
+    offset = MathUtil.inputModulus(newTarget - (armPos % 360), -180, 180);
 
     if (armPos + offset > maxAbsPos)
       {targetAngle = (armPos + offset - 360);}
@@ -182,10 +182,10 @@ public class Diffector extends SubsystemBase
    * Sets the Diffector arm to rotate Clockwise (viewed from bow) to the target angle, with protection against over-rotation
    * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public void goClockwise(double targetAngle)
+  public void goClockwise(double newTarget)
   {
-    targetAngle %= 360;
-    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -360, 0);
+    newTarget %= 360;
+    offset = MathUtil.inputModulus(newTarget - (armPos % 360), -360, 0);
 
     if (armPos + offset > maxAbsPos)
       {targetAngle = (armPos + offset - 360);}
@@ -201,10 +201,10 @@ public class Diffector extends SubsystemBase
    * Sets the Diffector arm to rotate Anticlockwise (viewed from bow) to the target angle, with protection against over-rotation
    * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public void goAnticlockwise(double targetAngle)
+  public void goAnticlockwise(double newTarget)
   {
-    targetAngle %= 360;
-    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), 0, 360);
+    newTarget %= 360;
+    offset = MathUtil.inputModulus(newTarget - (armPos % 360), 0, 360);
 
     if (armPos + offset > maxAbsPos)
       {targetAngle = (armPos + offset - 360);}
@@ -221,10 +221,10 @@ public class Diffector extends SubsystemBase
    * Below a threshold will go shortest path, otherwise will minimise total rotations
    * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public void goToAngle(double targetAngle)
+  public void goToAngle(double newTarget)
   {
-    targetAngle %= 360;
-    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
+    newTarget %= 360;
+    offset = MathUtil.inputModulus(newTarget - (armPos % 360), -180, 180);
 
     if (Math.abs(offset) >= turnBackThreshold)
     {
