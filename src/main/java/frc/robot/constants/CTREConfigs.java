@@ -14,70 +14,70 @@ public final class CTREConfigs
   {
     /* Diffector Motor Gneral Config */
     diffectorFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    diffectorFXConfig.Feedback.SensorToMechanismRatio = Constants.Diffector.gearboxRatio;
+    diffectorFXConfig.Feedback.SensorToMechanismRatio = Constants.DiffectorConstants.gearboxRatio;
 
     /* Diffector Motor Config (Empty) */
-    diffectorFXConfig.Slot0.kS = Constants.Diffector.diffectorMotorKSEmpty;
-    diffectorFXConfig.Slot0.kV = Constants.Diffector.diffectorMotorKVEmpty;
-    diffectorFXConfig.Slot0.kA = Constants.Diffector.diffectorMotorKAEmpty;
-    diffectorFXConfig.Slot0.kP = Constants.Diffector.diffectorMotorKPEmpty;
-    diffectorFXConfig.Slot0.kI = Constants.Diffector.diffectorMotorKIEmpty;
-    diffectorFXConfig.Slot0.kD = Constants.Diffector.diffectorMotorKDEmpty;
+    diffectorFXConfig.Slot0.kS = Constants.DiffectorConstants.diffectorMotorKSEmpty;
+    diffectorFXConfig.Slot0.kV = Constants.DiffectorConstants.diffectorMotorKVEmpty;
+    diffectorFXConfig.Slot0.kA = Constants.DiffectorConstants.diffectorMotorKAEmpty;
+    diffectorFXConfig.Slot0.kP = Constants.DiffectorConstants.diffectorMotorKPEmpty;
+    diffectorFXConfig.Slot0.kI = Constants.DiffectorConstants.diffectorMotorKIEmpty;
+    diffectorFXConfig.Slot0.kD = Constants.DiffectorConstants.diffectorMotorKDEmpty;
     
     /* Diffector Motor Config (Algae or Coral) */
-    diffectorFXConfig.Slot1.kS = Constants.Diffector.diffectorMotorKSOneItem;
-    diffectorFXConfig.Slot1.kV = Constants.Diffector.diffectorMotorKVOneItem;
-    diffectorFXConfig.Slot1.kA = Constants.Diffector.diffectorMotorKAOneItem;
-    diffectorFXConfig.Slot1.kP = Constants.Diffector.diffectorMotorKPOneItem;
-    diffectorFXConfig.Slot1.kI = Constants.Diffector.diffectorMotorKIOneItem;
-    diffectorFXConfig.Slot1.kD = Constants.Diffector.diffectorMotorKDOneItem;        
+    diffectorFXConfig.Slot1.kS = Constants.DiffectorConstants.diffectorMotorKSOneItem;
+    diffectorFXConfig.Slot1.kV = Constants.DiffectorConstants.diffectorMotorKVOneItem;
+    diffectorFXConfig.Slot1.kA = Constants.DiffectorConstants.diffectorMotorKAOneItem;
+    diffectorFXConfig.Slot1.kP = Constants.DiffectorConstants.diffectorMotorKPOneItem;
+    diffectorFXConfig.Slot1.kI = Constants.DiffectorConstants.diffectorMotorKIOneItem;
+    diffectorFXConfig.Slot1.kD = Constants.DiffectorConstants.diffectorMotorKDOneItem;        
 
     /* Diffector Motor Config (Algae and Coral) */
-    diffectorFXConfig.Slot2.kS = Constants.Diffector.diffectorMotorKSTwoItem;
-    diffectorFXConfig.Slot2.kV = Constants.Diffector.diffectorMotorKVTwoItem;
-    diffectorFXConfig.Slot2.kA = Constants.Diffector.diffectorMotorKATwoItem;
-    diffectorFXConfig.Slot2.kP = Constants.Diffector.diffectorMotorKPTwoItem;
-    diffectorFXConfig.Slot2.kI = Constants.Diffector.diffectorMotorKITwoItem;
-    diffectorFXConfig.Slot2.kD = Constants.Diffector.diffectorMotorKDTwoItem;
+    diffectorFXConfig.Slot2.kS = Constants.DiffectorConstants.diffectorMotorKSTwoItem;
+    diffectorFXConfig.Slot2.kV = Constants.DiffectorConstants.diffectorMotorKVTwoItem;
+    diffectorFXConfig.Slot2.kA = Constants.DiffectorConstants.diffectorMotorKATwoItem;
+    diffectorFXConfig.Slot2.kP = Constants.DiffectorConstants.diffectorMotorKPTwoItem;
+    diffectorFXConfig.Slot2.kI = Constants.DiffectorConstants.diffectorMotorKITwoItem;
+    diffectorFXConfig.Slot2.kD = Constants.DiffectorConstants.diffectorMotorKDTwoItem;
 
     /* Diffector MotionMagic Config */
-    diffectorFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.Diffector.diffectorMotionMagicCruise;
-    diffectorFXConfig.MotionMagic.MotionMagicAcceleration = Constants.Diffector.diffectorMotionMagicAccel;
+    diffectorFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.DiffectorConstants.diffectorMotionMagicCruise;
+    diffectorFXConfig.MotionMagic.MotionMagicAcceleration = Constants.DiffectorConstants.diffectorMotionMagicAccel;
 
     /* Intake Top Arm PID Config, Spring Behaviour */
-    intakeTopArmFXConfig.Slot0.kP = Constants.Intake.topArmSpringKP;
-    intakeTopArmFXConfig.Slot0.kI = Constants.Intake.topArmSpringKI;
-    intakeTopArmFXConfig.Slot0.kD = Constants.Intake.topArmSpringKD;
-    intakeTopArmFXConfig.Slot0.kS = Constants.Intake.topArmKS;
-    intakeTopArmFXConfig.Slot0.kG = -Constants.Intake.topArmKG;
+    intakeTopArmFXConfig.Slot0.kP = Constants.IntakeConstants.topArmSpringKP;
+    intakeTopArmFXConfig.Slot0.kI = Constants.IntakeConstants.topArmSpringKI;
+    intakeTopArmFXConfig.Slot0.kD = Constants.IntakeConstants.topArmSpringKD;
+    intakeTopArmFXConfig.Slot0.kS = Constants.IntakeConstants.topArmKS;
+    intakeTopArmFXConfig.Slot0.kG = -Constants.IntakeConstants.topArmKG;
 
     /* Intake Top Arm PID Config, Stop Behaviour */
-    intakeTopArmFXConfig.Slot1.kP = Constants.Intake.topArmStopKP;
-    intakeTopArmFXConfig.Slot1.kI = Constants.Intake.topArmStopKI;
-    intakeTopArmFXConfig.Slot1.kD = Constants.Intake.topArmStopKD;
-    intakeTopArmFXConfig.Slot1.kS = Constants.Intake.topArmKS;
-    intakeTopArmFXConfig.Slot1.kG = Constants.Intake.topArmKG;
+    intakeTopArmFXConfig.Slot1.kP = Constants.IntakeConstants.topArmStopKP;
+    intakeTopArmFXConfig.Slot1.kI = Constants.IntakeConstants.topArmStopKI;
+    intakeTopArmFXConfig.Slot1.kD = Constants.IntakeConstants.topArmStopKD;
+    intakeTopArmFXConfig.Slot1.kS = Constants.IntakeConstants.topArmKS;
+    intakeTopArmFXConfig.Slot1.kG = Constants.IntakeConstants.topArmKG;
 
     /* Intake Bottom Arm PID Config */
-    intakeBottomArmFXConfig.Slot0.kP = Constants.Intake.bottomArmKP;
-    intakeBottomArmFXConfig.Slot0.kI = Constants.Intake.bottomArmKI;
-    intakeBottomArmFXConfig.Slot0.kD = Constants.Intake.bottomArmKD;
+    intakeBottomArmFXConfig.Slot0.kP = Constants.IntakeConstants.bottomArmKP;
+    intakeBottomArmFXConfig.Slot0.kI = Constants.IntakeConstants.bottomArmKI;
+    intakeBottomArmFXConfig.Slot0.kD = Constants.IntakeConstants.bottomArmKD;
 
     /* Intake Arm MotionMagic Values */
-    intakeTopArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.Intake.intakeArmMotionMagicAccel;
-    intakeTopArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.Intake.intakeArmMotionMagicCruise;
-    intakeBottomArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.Intake.intakeArmMotionMagicAccel;
-    intakeBottomArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.Intake.intakeArmMotionMagicCruise;
+    intakeTopArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.IntakeConstants.intakeArmMotionMagicAccel;
+    intakeTopArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.IntakeConstants.intakeArmMotionMagicCruise;
+    intakeBottomArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.IntakeConstants.intakeArmMotionMagicAccel;
+    intakeBottomArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.IntakeConstants.intakeArmMotionMagicCruise;
 
     /* Intake Arm Ratios */
-    intakeTopArmFXConfig.Feedback.SensorToMechanismRatio = Constants.Intake.topArmRatio;
-    intakeBottomArmFXConfig.Feedback.SensorToMechanismRatio = Constants.Intake.bottomArmRatio;
+    intakeTopArmFXConfig.Feedback.SensorToMechanismRatio = Constants.IntakeConstants.topArmRatio;
+    intakeBottomArmFXConfig.Feedback.SensorToMechanismRatio = Constants.IntakeConstants.bottomArmRatio;
     
     /* Climber Winch Values */
-    climberWinchFXConfiguration.Slot0.kP = Constants.Climber.winchKP;
-    climberWinchFXConfiguration.Slot0.kI = Constants.Climber.winchKI;
-    climberWinchFXConfiguration.Slot0.kD = Constants.Climber.winchKD;
-    climberWinchFXConfiguration.MotionMagic.MotionMagicCruiseVelocity = Constants.Climber.winchMotionMagicCruise;
-    climberWinchFXConfiguration.MotionMagic.MotionMagicAcceleration = Constants.Climber.winchMotionMagicAccel; 
+    climberWinchFXConfiguration.Slot0.kP = Constants.ClimberConstants.winchKP;
+    climberWinchFXConfiguration.Slot0.kI = Constants.ClimberConstants.winchKI;
+    climberWinchFXConfiguration.Slot0.kD = Constants.ClimberConstants.winchKD;
+    climberWinchFXConfiguration.MotionMagic.MotionMagicCruiseVelocity = Constants.ClimberConstants.winchMotionMagicCruise;
+    climberWinchFXConfiguration.MotionMagic.MotionMagicAcceleration = Constants.ClimberConstants.winchMotionMagicAccel; 
   }
 }
