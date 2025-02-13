@@ -24,11 +24,11 @@ public class ScoreAlgae extends SequentialCommandGroup
   {
     if (toNet)
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.netElevation, Constants.Diffector.netAngle);
+      diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.netElevation, Constants.DiffectorConstants.netAngle);
       algaeManipulatorCommand = new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.NET);
     } else 
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.processorElevation, Constants.Diffector.processorAngle);
+      diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.processorElevation, Constants.DiffectorConstants.processorAngle);
       algaeManipulatorCommand = new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.PROCESSOR);
     }
     addCommands(diffectorPosCommand, algaeManipulatorCommand);

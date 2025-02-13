@@ -13,12 +13,11 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.AlgaeManipulator.IntakeAlgaeSequence;
 import frc.robot.commands.AlgaeManipulator.ScoreAlgae;
 import frc.robot.commands.CoralManipulator.IntakeCoralSequence;
-import frc.robot.subsystems.Diffector.CargoStates;
 import frc.robot.util.FieldUtils;
 
 public final class Constants 
 {
-  public static final class Rumbler 
+  public static final class RumblerConstants 
   {
     public static final double driverDefault = 1;
     public static final double copilotDefault = 1;  
@@ -156,35 +155,35 @@ public final class Constants
     public static final String defaultAuto = "t5,cR5,w3.5,cR5";
   }
 
-  public static final class Diffector
+  public static final class DiffectorConstants
   {
     public static final int uaMotorID = IDConstants.uaMotorID;
     public static final int daMotorID = IDConstants.daMotorID;
     public static final int encoderPWMID = IDConstants.armEncoderID;
 
     public static final double diffectorMotorKSEmpty = 0;
-    public static final double diffectorMotorKVEmpty = 0;
-    public static final double diffectorMotorKAEmpty = 0;
-    public static final double diffectorMotorKPEmpty = 20;
+    public static final double diffectorMotorKVEmpty = 0.75;
+    public static final double diffectorMotorKAEmpty = 0.8;
+    public static final double diffectorMotorKPEmpty = 5;
     public static final double diffectorMotorKIEmpty = 0;
     public static final double diffectorMotorKDEmpty = 0;
 
     public static final double diffectorMotorKSOneItem = 0;
     public static final double diffectorMotorKVOneItem = 0;
     public static final double diffectorMotorKAOneItem = 0;
-    public static final double diffectorMotorKPOneItem = 20;
+    public static final double diffectorMotorKPOneItem = 3;
     public static final double diffectorMotorKIOneItem = 0;
     public static final double diffectorMotorKDOneItem = 0;
 
     public static final double diffectorMotorKSTwoItem = 0;
     public static final double diffectorMotorKVTwoItem = 0;
     public static final double diffectorMotorKATwoItem = 0;
-    public static final double diffectorMotorKPTwoItem = 20;
+    public static final double diffectorMotorKPTwoItem = 3;
     public static final double diffectorMotorKITwoItem = 0;
     public static final double diffectorMotorKDTwoItem = 0;
 
     public static final double diffectorMotionMagicCruise = 1;
-    public static final double diffectorMotionMagicAccel = 1;
+    public static final double diffectorMotionMagicAccel  = 1;
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;
@@ -193,36 +192,32 @@ public final class Constants
     public static final double climberElevatorLowTheshold = 0;
     public static final double climberElevatorHighThreshold = 0;
 
-    private static final double diffectorGearTeethIn = 8;
+    private static final double diffectorGearTeethIn = 10;
     private static final double diffectorGearTeethOut = 60;
     private static final double diffectorSprocketTeethIn = 18;
     private static final double diffectorSprocketTeethOut = 72;
-    /** Output sprocket rotations per motor rotation */
-    public static final double gearboxRatio = diffectorGearTeethIn / diffectorGearTeethOut;
+    /** Output sprocket degrees per motor rotation */
+    public static final double gearboxRatio = 1.25 / (diffectorGearTeethIn / diffectorGearTeethOut); // I have ABSOLUTELY NO IDEA where the 1.25 scale comes from
     /** Ratio of output sprocket to arm sprocket (output sprocket teeth/arm sprocket teeth) */
-    public static final double sprocketRatio = diffectorSprocketTeethIn / diffectorSprocketTeethOut;
+    public static final double sprocketRatio = (diffectorSprocketTeethIn / diffectorSprocketTeethOut);
     /** Pitch Diameter of the sprocket, in m */
     public static final double sprocketPitchDiameter = 0.036576;
 
-    public static final double sprocketFeedRate = (sprocketPitchDiameter * Math.PI) / 360;
     /** 
-     * Number of chain mm moved for one motor degree. 
-     * Sprocket rotations per motor rotation * m of chain moved per sprocket rotation (pitch diam. * pi), 
-     * divided by 360 to convert rotations to degrees
-     * divided by 2 to give the contribution of a single motor
+     * Metres of chain moved per sprocket degree.
      */
-    public static final double travelRatio = (sprocketFeedRate);
+    public static final double travelRatio = (sprocketPitchDiameter * Math.PI) / 360;
     /** 
      * Number of arm degrees moved for one motor degree of a single motor 
      * Output sprocket rotations per motor rotation * output sprocket to arm sprocket ratio,
      * divided by 2 to give the contribution of a single motor
      */
-    public static final double rotationRatio = (sprocketRatio) / 2;
+    public static final double rotationRatio = (sprocketRatio);
 
     public static final boolean startingCoralState = true;
     public static final boolean startingAlgaeState = false;
 
-    public static final double maxRotation = 3;
+    public static final double maxRotation = 1;
     /** Maximum total angle the arm is allowed to rotate away from centre */
     public static final double maxAbsPos = maxRotation * 360;
     /** Above this angle, the arm can turn towards centre even if it's a longer path */
@@ -255,7 +250,7 @@ public final class Constants
     public static final double algae1Angle        = 100;
     
     /* Preset elevator heights, height of centre of rotation above the ground, metres */
-    public static final double startElevation         = 0.574;
+    public static final double startElevation         = 0.9;//0.574;
     public static final double climbElevation         = minElevation;
     public static final double netElevation           = maxElevation;
     public static final double processorElevation     = 0.5; 
@@ -321,7 +316,7 @@ public final class Constants
     public static final double coralHoldingScalar = 100;
   }
 
-  public static final class Intake // TODO: Speeds and Angles must be tuned to the specific robot
+  public static final class IntakeConstants // TODO: Speeds and Angles must be tuned to the specific robot
   {
     public static final int algaeIntakeID = IDConstants.algaeIntakeRollerID;
     public static final int coralIntakeID = IDConstants.coralIntakeRollerID;
@@ -397,7 +392,7 @@ public final class Constants
     public static final double bottomArmRatio = 1;
   }
 
-  public static final class Climber
+  public static final class ClimberConstants
   {
     public static final int winchID = IDConstants.climberWinchMotorID;
 
