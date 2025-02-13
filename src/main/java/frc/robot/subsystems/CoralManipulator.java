@@ -81,6 +81,7 @@ public class CoralManipulator extends SubsystemBase
     {
       case INTAKE:
         setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorBaseIntakeSpeed);
+        
         if (RobotContainer.coral) 
           {coralStatus = CoralManipulatorStatus.DEFAULT; }
         break;
