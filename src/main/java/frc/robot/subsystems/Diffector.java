@@ -118,6 +118,8 @@ public class Diffector extends SubsystemBase
   {
     double[] calculatedTargets = new double[2];
 
+    elevatorTarget = Math.min(Constants.DiffectorConstants.maxElevation, elevatorTarget);
+
     if (elevatorTarget < elevatorPos && arm.checkAngle(armPos) > elevatorTarget) 
     {
       elevatorTarget = Math.min(Constants.DiffectorConstants.maxElevation, elevatorPos);
@@ -130,7 +132,10 @@ public class Diffector extends SubsystemBase
   }
 
   private void calculateMotorTargets()
-    {motorTargets = calculateMotorTargets(targetElevation, targetAngle);}
+  {
+    targetElevation = Math.min(Constants.DiffectorConstants.maxElevation, targetElevation);
+    motorTargets = calculateMotorTargets(targetElevation, targetAngle);
+  }
 
   /** Returns true if the diffector is at its current target angle */
   public boolean armAtAngle()
