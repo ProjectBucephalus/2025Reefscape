@@ -13,12 +13,11 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.AlgaeManipulator.IntakeAlgaeSequence;
 import frc.robot.commands.AlgaeManipulator.ScoreAlgae;
 import frc.robot.commands.CoralManipulator.IntakeCoralSequence;
-import frc.robot.subsystems.Diffector.CargoStates;
 import frc.robot.util.FieldUtils;
 
 public final class Constants 
 {
-  public static final class Rumbler 
+  public static final class RumblerConstants 
   {
     public static final double driverDefault = 1;
     public static final double copilotDefault = 1;  
@@ -156,7 +155,7 @@ public final class Constants
     public static final String defaultAuto = "t5,cR5,w3.5,cR5";
   }
 
-  public static final class Diffector
+  public static final class DiffectorConstants
   {
     public static final int uaMotorID = IDConstants.uaMotorID;
     public static final int daMotorID = IDConstants.daMotorID;
@@ -317,7 +316,7 @@ public final class Constants
     public static final double coralHoldingScalar = 100;
   }
 
-  public static final class Intake // TODO: Speeds and Angles must be tuned to the specific robot
+  public static final class IntakeConstants // TODO: Speeds and Angles must be tuned to the specific robot
   {
     public static final int algaeIntakeID = IDConstants.algaeIntakeRollerID;
     public static final int coralIntakeID = IDConstants.coralIntakeRollerID;
@@ -393,7 +392,7 @@ public final class Constants
     public static final double bottomArmRatio = 1;
   }
 
-  public static final class Climber
+  public static final class ClimberConstants
   {
     public static final int winchID = IDConstants.climberWinchMotorID;
 

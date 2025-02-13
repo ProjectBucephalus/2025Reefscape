@@ -39,8 +39,8 @@ public class RobotContainer
 
   /* Persistent values for tracking systems */
   public static HeadingStates headingState = HeadingStates.UNLOCKED;
-  public static boolean coral = Constants.Diffector.startingCoralState;
-  public static boolean algae = Constants.Diffector.startingAlgaeState;
+  public static boolean coral = Constants.DiffectorConstants.startingCoralState;
+  public static boolean algae = Constants.DiffectorConstants.startingAlgaeState;
 
   /* Controllers */
   public static final CommandXboxController driver = new CommandXboxController(0);
@@ -255,7 +255,7 @@ public class RobotContainer
   private void configureCopilotBindings()
   {
     /* Climb controls */
-    copilot.start().and(copilot.back()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.climbElevation, Constants.Diffector.climbAngle));
+    copilot.start().and(copilot.back()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbElevation, Constants.DiffectorConstants.climbAngle));
     copilot.back().onTrue(new Test("climber", "deploy"));
 
     /* Coral scoring controls */
@@ -272,9 +272,9 @@ public class RobotContainer
 
     /* Game piece transfer positions controls*/
     copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE));
-    copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.algaeTransferElevation, Constants.Diffector.algaeTransferAngle));
+    copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferElevation, Constants.DiffectorConstants.algaeTransferAngle));
     copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE));
-    copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.coralTransferElevation, Constants.Diffector.coralTransferAngle));
+    copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferElevation, Constants.DiffectorConstants.coralTransferAngle));
 
     /* Transfer and deploy controls */
     copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STAND_BY));
