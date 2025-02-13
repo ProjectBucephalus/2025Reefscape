@@ -19,6 +19,7 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 import frc.robot.util.ArmCalculator;
+import frc.robot.util.Conversions;
 
 public class Diffector extends SubsystemBase 
 {
@@ -69,8 +70,8 @@ public class Diffector extends SubsystemBase
     m_diffectorUA.getConfigurator().apply(motorConfig);
     m_diffectorDA.getConfigurator().apply(motorConfig);
 
-    m_diffectorUA.setPosition((Constants.DiffectorConstants.startAngle / rotationRatio) + (Constants.DiffectorConstants.startElevation / travelRatio));
-    m_diffectorDA.setPosition((Constants.DiffectorConstants.startAngle / rotationRatio) - (Constants.DiffectorConstants.startElevation / travelRatio));
+    m_diffectorUA.setPosition(Units.degreesToRotations((Constants.DiffectorConstants.startAngle / rotationRatio) + (Constants.DiffectorConstants.startElevation / travelRatio)));
+    m_diffectorDA.setPosition(Units.degreesToRotations((Constants.DiffectorConstants.startAngle / rotationRatio) - (Constants.DiffectorConstants.startElevation / travelRatio)));
 
     cargoState = updateCargoState();
     updateLocalPos();
@@ -83,7 +84,7 @@ public class Diffector extends SubsystemBase
    * @return Arm rotation, degrees clockwise, 0 = algae at top
    */
   public double getArmPos()
-    {return ((m_diffectorUA.getPosition().getValueAsDouble() + m_diffectorDA.getPosition().getValueAsDouble()) * rotationRatio) / 2;}
+    {return ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) + Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) * rotationRatio) / 2;}
     /**
    * Arm Rotation as measured from encoder
    * @return Arm rotation, degrees clockwise, 0 = coral at top
@@ -99,7 +100,7 @@ public class Diffector extends SubsystemBase
    * @return Elevator height in m
    */
   public double getElevatorPos()
-    {return ((m_diffectorUA.getPosition().getValueAsDouble() - m_diffectorDA.getPosition().getValueAsDouble())/2) * travelRatio;}
+    {return ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) - Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) / 2) * travelRatio;}
 
   /**
    * Calculates the position to drive each motor to, based on the target positions for the elevator and arm
@@ -317,11 +318,11 @@ public class Diffector extends SubsystemBase
 
     calculateMotorTargets();
 
-    m_diffectorUA.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(0));//getSlot()));
-    m_diffectorDA.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(0));//getSlot()));
+    m_diffectorUA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[0])).withSlot(0));//getSlot()));
+    m_diffectorDA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])).withSlot(0));//getSlot()));
 
-    SmartDashboard.putNumber("UA Error", motorTargets[0] - m_diffectorUA.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("DA Error", motorTargets[1] - m_diffectorDA.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("UA Error", motorTargets[0] - Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()));
+    SmartDashboard.putNumber("DA Error", motorTargets[1] - Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble()));
     SmartDashboard.putNumber("Elevator Height", elevatorPos);
     SmartDashboard.putNumber("Elevator Target", targetElevation);
     SmartDashboard.putNumber("Arm Rotation", armPos);
