@@ -32,7 +32,7 @@ public final class IDConstants
 
   /* Diffector */
   /* _________ */
-  public static final int armEncoderID = 13;
+  public static final int encoderCanCoderID = 13;
   public static final int uaMotorID    = 14;
   public static final int daMotorID    = 15;
 
