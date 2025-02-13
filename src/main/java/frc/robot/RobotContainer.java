@@ -255,8 +255,8 @@ public class RobotContainer
   private void configureCopilotBindings()
   {
     /* Climb controls */
-    copilot.start().and(copilot.back()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbElevation, Constants.DiffectorConstants.climbAngle));
-    copilot.back().onTrue(new Test("climber", "deploy"));
+    copilot.start().and(copilot.back()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbElevation, Constants.DiffectorConstants.climbAngle)); //Starts climber
+    copilot.back().onTrue(new Test("climber", "deploy"));                                                                                           //Deploys the climber
 
     /* Coral scoring controls */
     copilot.a().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(1, s_Diffector, s_CoralManipulator));   //L1 scoring
