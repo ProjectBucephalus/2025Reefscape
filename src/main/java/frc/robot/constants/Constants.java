@@ -306,10 +306,10 @@ public final class Constants
     public static final double coralManipulatorHoldingVoltage = 0;
 
     /* Algae manipulator speeds */
-    public static final double algaeManipulatorIntakeSpeed = -0.7;
-    public static final double algaeManipulatorHoldingVoltage = 0.1;
-    public static final double algaeManipulatorNetSpeed = 1;
-    public static final double algaeManipulatorProcessorSpeed = 0.6;
+    public static final double algaeManipulatorIntakeSpeed = -0.4;
+    public static final double algaeManipulatorHoldingVoltage = 0;
+    public static final double algaeManipulatorNetSpeed = 0.5;
+    public static final double algaeManipulatorProcessorSpeed = 0.5;
     public static final double algaeManipulatorEmptySpeed = 0;
 
     /* The number of cycles (each cycle is 0.02s) before the holding intake speed reaches max */

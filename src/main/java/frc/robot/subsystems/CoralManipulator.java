@@ -21,7 +21,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
  * @author 5985
  * @author Sebastian Aiello
  */
-public class CoralManipulator extends SubsystemBase {
+public class CoralManipulator extends SubsystemBase 
+{
 
   /* Declaration of the motor controllers */
   private VictorSPX coralMotor;
