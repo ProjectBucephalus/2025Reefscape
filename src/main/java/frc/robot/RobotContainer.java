@@ -259,16 +259,16 @@ public class RobotContainer
     copilot.back().onTrue(new Test("climber", "deploy"));
 
     /* Coral scoring controls */
-    copilot.a().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(1, s_Diffector, s_CoralManipulator));  //L1 scoring
-    copilot.b().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(2, s_Diffector, s_CoralManipulator));  //L2 scoring
-    copilot.x().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(3, s_Diffector, s_CoralManipulator));  //L3 scoring
-    copilot.y().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(4, s_Diffector, s_CoralManipulator));  //L4 scoring
+    copilot.a().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(1, s_Diffector, s_CoralManipulator));   //L1 scoring
+    copilot.b().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(2, s_Diffector, s_CoralManipulator));   //L2 scoring
+    copilot.x().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(3, s_Diffector, s_CoralManipulator));   //L3 scoring
+    copilot.y().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(4, s_Diffector, s_CoralManipulator));   //L4 scoring
         
     /* Algae scoring controls */
-    copilot.a().and(copilot.rightTrigger()).onTrue(new ScoreAlgae(false, s_Diffector, s_AlgaeManipulator));           //Processor scoring
-    copilot.b().and(copilot.rightTrigger()).onTrue(new IntakeAlgaeSequence(true, s_Diffector, s_AlgaeManipulator));  //L2 pick up
-    copilot.x().and(copilot.rightTrigger()).onTrue(new IntakeAlgaeSequence(false, s_Diffector, s_AlgaeManipulator)); //L3 pick up
-    copilot.y().and(copilot.rightTrigger()).onTrue(new ScoreAlgae(true, s_Diffector, s_AlgaeManipulator));            //Net scoring
+    copilot.a().and(copilot.rightTrigger()).onTrue(new ScoreAlgae(false, s_Diffector, s_AlgaeManipulator));   //Processor scoring
+    copilot.b().and(copilot.rightTrigger()).onTrue(new IntakeAlgaeSequence(true, s_Diffector, s_AlgaeManipulator));   //L2 pick up
+    copilot.x().and(copilot.rightTrigger()).onTrue(new IntakeAlgaeSequence(false, s_Diffector, s_AlgaeManipulator));   //L3 pick up
+    copilot.y().and(copilot.rightTrigger()).onTrue(new ScoreAlgae(true, s_Diffector, s_AlgaeManipulator));   //Net scoring
 
     /* Game piece transfer positions controls*/
     copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE));
@@ -277,20 +277,20 @@ public class RobotContainer
     copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferElevation, Constants.DiffectorConstants.coralTransferAngle));
 
     /* Transfer and deploy controls */
-    copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STAND_BY));
-    copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new TransferGamePiece(s_Diffector, s_Intake, false));
-    copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STAND_BY));
-    copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new TransferGamePiece(s_Diffector, s_Intake, true));
+    copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STAND_BY));   //Intake to stand by for algae
+    copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new TransferGamePiece(s_Diffector, s_Intake, false));   //Handovers algae from intake to manipulator
+    copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STAND_BY));   //Intake to stand by for coral
+    copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new TransferGamePiece(s_Diffector, s_Intake, true))   ;//Handovers coral from intake to manipulator
 
     /* Stow position controls */
-    copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));
-    copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new IntakeAlgae(s_AlgaeManipulator));
-    copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));
-    copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new IntakeCoral(s_CoralManipulator));
+    copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));  //Intake to stow algae
+    copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new IntakeAlgae(s_AlgaeManipulator));  //Algae manipulator to stowed
+    copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));  //Intake to stow coral
+    copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new IntakeCoral(s_CoralManipulator));  //Coral manipulator to stowed
 
     // Intake from coral station
-    copilot.povLeft().and(copilot.rightBumper()).whileTrue(null);
-    copilot.povLeft().and(copilot.rightBumper().negate()).whileTrue(new IntakeCoralSequence(s_Diffector, s_CoralManipulator));
+    copilot.povLeft().and(copilot.rightBumper()).onTrue(new Test("s", "s"));
+    copilot.povLeft().and(copilot.rightBumper().negate()).onTrue(new IntakeCoralSequence(s_Diffector, s_CoralManipulator));
 
     /* Game piece intake controls */
     copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_ALGAE));
@@ -309,22 +309,22 @@ public class RobotContainer
     copilot.rightBumper().onTrue(new Test("intakeModifier", "on")).onFalse(new Test("intakeModifier", "off"));
     
     /* Manual winch controls */
-    copilot.axisGreaterThan(0, 0.85).and(copilot.back()).whileTrue(Commands.runOnce(() -> s_Climber.setClimbTargets(s_Climber.getClimbTargets() + 0.5), s_Climber));
-    copilot.axisLessThan(0, -0.85).and(copilot.back()).whileTrue(Commands.runOnce(() -> s_Climber.setClimbTargets(s_Climber.getClimbTargets() - 0.5), s_Climber));
+    copilot.axisGreaterThan(0, 0.85).and(copilot.back()).whileTrue(Commands.runOnce(() -> s_Climber.setClimbTargets(s_Climber.getClimbTargets() + 0.5), s_Climber));   //Spool winch
+    copilot.axisLessThan(0, -0.85).and(copilot.back()).whileTrue(Commands.runOnce(() -> s_Climber.setClimbTargets(s_Climber.getClimbTargets() - 0.5), s_Climber));   //Unspool winch
     
     /* Manual intake controls */
-    copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger()).onTrue(Commands.runOnce(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() + 0.05), s_Intake));
-    copilot.axisGreaterThan(1, 0.85).and(copilot.rightTrigger()).onTrue(Commands.runOnce(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() - 0.05), s_Intake));
-    copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger().negate()).onTrue(Commands.runOnce(() -> s_Intake.setCoralArmTarget(s_Intake.getCoralArmTarget() + 0.05), s_Intake));
-    copilot.axisGreaterThan(1, 0.85).and(copilot.rightTrigger().negate()).onTrue(Commands.runOnce(() -> s_Intake.setCoralArmTarget(s_Intake.getCoralArmTarget() - 0.05), s_Intake));
+    copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger()).onTrue(Commands.runOnce(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() + 0.05), s_Intake));   //Algae intake arm up
+    copilot.axisGreaterThan(1, 0.85).and(copilot.rightTrigger()).onTrue(Commands.runOnce(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() - 0.05), s_Intake));   //Algae intake arm down
+    copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger().negate()).onTrue(Commands.runOnce(() -> s_Intake.setCoralArmTarget(s_Intake.getCoralArmTarget() + 0.05), s_Intake));   //Coral intake arm up
+    copilot.axisGreaterThan(1, 0.85).and(copilot.rightTrigger().negate()).onTrue(Commands.runOnce(() -> s_Intake.setCoralArmTarget(s_Intake.getCoralArmTarget() - 0.05), s_Intake));   //Coral intake arm down
 
     /* Manual arm controls */
-    copilot.axisGreaterThan(4, 0.85).onTrue(Commands.runOnce(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() + 5), s_Diffector));
-    copilot.axisLessThan(4, -0.85).onTrue(Commands.runOnce(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() - 5), s_Diffector));
+    copilot.axisGreaterThan(4, 0.85).onTrue(Commands.runOnce(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() + 5), s_Diffector));   //Arm clockwise
+    copilot.axisLessThan(4, -0.85).onTrue(Commands.runOnce(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() - 5), s_Diffector));   //Arm anticlockwise
   
     /* Manual elevator controls */
-    copilot.axisLessThan(5, -0.85).whileTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() + 0.05), s_Diffector));
-    copilot.axisGreaterThan(5, 0.85).whileTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() - 0.05), s_Diffector));
+    copilot.axisLessThan(5, -0.85).whileTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() + 0.05), s_Diffector));   //Elevator up
+    copilot.axisGreaterThan(5, 0.85).whileTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() - 0.05), s_Diffector));   //Elevator down
   }
 
   private void configureTestBindings()
