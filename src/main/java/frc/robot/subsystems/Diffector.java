@@ -29,7 +29,8 @@ public class Diffector extends SubsystemBase
   private final MotionMagicVoltage motionMagicRequester;
   private final double rotationRatio;
   private final double travelRatio;
-  private final TalonFXConfiguration motorConfig;
+  private final TalonFXConfiguration motorConfigUA;
+  private final TalonFXConfiguration motorConfigDA;
   private final double maxAbsPos = Constants.DiffectorConstants.maxAbsPos;
   private final double turnBackThreshold = Constants.DiffectorConstants.turnBackThreshold;
   private final double stowThreshold = Constants.DiffectorConstants.angleTolerance;
@@ -56,7 +57,12 @@ public class Diffector extends SubsystemBase
   public Diffector() 
   {
     arm = new ArmCalculator();
-    motorConfig = CTREConfigs.diffectorFXConfig;
+    motorConfigUA = CTREConfigs.diffectorFXConfig;
+    motorConfigDA = motorConfigUA;
+    motorConfigDA.Slot0.kG = -motorConfigUA.Slot0.kG;
+    motorConfigDA.Slot1.kG = -motorConfigUA.Slot1.kG;
+    motorConfigDA.Slot2.kG = -motorConfigUA.Slot2.kG;
+
     rotationRatio = Constants.DiffectorConstants.rotationRatio;
     travelRatio = Constants.DiffectorConstants.travelRatio;
 
@@ -67,8 +73,8 @@ public class Diffector extends SubsystemBase
     targetElevation = Constants.DiffectorConstants.startElevation;
     targetAngle = 0;
 
-    m_diffectorUA.getConfigurator().apply(motorConfig);
-    m_diffectorDA.getConfigurator().apply(motorConfig);
+    m_diffectorUA.getConfigurator().apply(motorConfigUA);
+    m_diffectorDA.getConfigurator().apply(motorConfigDA);
 
     m_diffectorUA.setPosition(Units.degreesToRotations((Constants.DiffectorConstants.startAngle / rotationRatio) + (Constants.DiffectorConstants.startElevation / travelRatio)));
     m_diffectorDA.setPosition(Units.degreesToRotations((Constants.DiffectorConstants.startAngle / rotationRatio) - (Constants.DiffectorConstants.startElevation / travelRatio)));

@@ -161,13 +161,15 @@ public final class Constants
     public static final int daMotorID = IDConstants.daMotorID;
     public static final int encoderPWMID = IDConstants.armEncoderID;
 
+    public static final double diffectorMotorKGEmpty = 0;
     public static final double diffectorMotorKSEmpty = 0;
     public static final double diffectorMotorKVEmpty = 0.75;
     public static final double diffectorMotorKAEmpty = 0.8;
-    public static final double diffectorMotorKPEmpty = 5;
+    public static final double diffectorMotorKPEmpty = 7;
     public static final double diffectorMotorKIEmpty = 0;
     public static final double diffectorMotorKDEmpty = 0;
 
+    public static final double diffectorMotorKGOneItem = 0;
     public static final double diffectorMotorKSOneItem = 0;
     public static final double diffectorMotorKVOneItem = 0;
     public static final double diffectorMotorKAOneItem = 0;
@@ -175,6 +177,7 @@ public final class Constants
     public static final double diffectorMotorKIOneItem = 0;
     public static final double diffectorMotorKDOneItem = 0;
 
+    public static final double diffectorMotorKGTwoItem = 0;
     public static final double diffectorMotorKSTwoItem = 0;
     public static final double diffectorMotorKVTwoItem = 0;
     public static final double diffectorMotorKATwoItem = 0;

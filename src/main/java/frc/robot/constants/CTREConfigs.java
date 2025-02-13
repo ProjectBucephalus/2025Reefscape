@@ -17,6 +17,7 @@ public final class CTREConfigs
     diffectorFXConfig.Feedback.SensorToMechanismRatio = Constants.DiffectorConstants.gearboxRatio;
 
     /* Diffector Motor Config (Empty) */
+    diffectorFXConfig.Slot0.kG = Constants.DiffectorConstants.diffectorMotorKGEmpty;
     diffectorFXConfig.Slot0.kS = Constants.DiffectorConstants.diffectorMotorKSEmpty;
     diffectorFXConfig.Slot0.kV = Constants.DiffectorConstants.diffectorMotorKVEmpty;
     diffectorFXConfig.Slot0.kA = Constants.DiffectorConstants.diffectorMotorKAEmpty;
@@ -25,6 +26,7 @@ public final class CTREConfigs
     diffectorFXConfig.Slot0.kD = Constants.DiffectorConstants.diffectorMotorKDEmpty;
     
     /* Diffector Motor Config (Algae or Coral) */
+    diffectorFXConfig.Slot1.kG = Constants.DiffectorConstants.diffectorMotorKGOneItem;
     diffectorFXConfig.Slot1.kS = Constants.DiffectorConstants.diffectorMotorKSOneItem;
     diffectorFXConfig.Slot1.kV = Constants.DiffectorConstants.diffectorMotorKVOneItem;
     diffectorFXConfig.Slot1.kA = Constants.DiffectorConstants.diffectorMotorKAOneItem;
@@ -33,6 +35,7 @@ public final class CTREConfigs
     diffectorFXConfig.Slot1.kD = Constants.DiffectorConstants.diffectorMotorKDOneItem;        
 
     /* Diffector Motor Config (Algae and Coral) */
+    diffectorFXConfig.Slot2.kG = Constants.DiffectorConstants.diffectorMotorKGTwoItem;
     diffectorFXConfig.Slot2.kS = Constants.DiffectorConstants.diffectorMotorKSTwoItem;
     diffectorFXConfig.Slot2.kV = Constants.DiffectorConstants.diffectorMotorKVTwoItem;
     diffectorFXConfig.Slot2.kA = Constants.DiffectorConstants.diffectorMotorKATwoItem;
