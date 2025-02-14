@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
 import frc.robot.commands.AlgaeManipulator.*;
 import frc.robot.commands.Auto.*;
@@ -48,6 +48,7 @@ public class RobotContainer
   public static final CommandXboxController driver = new CommandXboxController(0);
   public static final CommandXboxController copilot = new CommandXboxController(1);
   public static final CommandXboxController testing = new CommandXboxController(3);
+  public static final CommandXboxController sysID = new CommandXboxController(4);
 
   /* Subsystems */
   public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
@@ -136,6 +137,7 @@ public class RobotContainer
     configureCopilotBindings();
     configureTestBindings();
     configureRumbleBindings();
+    configureSysIDBindings();
   }
 
   private void configureDriverBindings()
@@ -351,6 +353,14 @@ public class RobotContainer
     /* Copilot rumble bindings */
     copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_LEFT, "Transfer Ready"));
     copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
+  }
+
+  private void configureSysIDBindings()
+  {
+    sysID.povUp().whileTrue(s_Swerve.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    sysID.povLeft().whileTrue(s_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    sysID.povDown().whileTrue(s_Swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    sysID.povRight().whileTrue(s_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
   }
 
   public Command getAutoCommand()
