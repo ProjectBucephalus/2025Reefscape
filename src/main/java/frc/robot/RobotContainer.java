@@ -330,15 +330,15 @@ public class RobotContainer
 
   private void configureTestBindings()
   {
-    testing.povUp().whileTrue(new InstantCommand(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() + 0.2), s_Diffector));
-    testing.povDown().whileTrue(new InstantCommand(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() - 0.2), s_Diffector));
+    testing.povUp().whileTrue(new ManualElevatorControl(s_Diffector, () -> 0.1));
+    testing.povDown().whileTrue(new ManualElevatorControl(s_Diffector, () -> -0.1));
 
-    testing.povLeft().whileTrue(new InstantCommand(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() + 45), s_Diffector));
-    testing.povRight().whileTrue(new InstantCommand(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() - 45), s_Diffector));
+    testing.povLeft().whileTrue(new ManualArmControl(s_Diffector, () -> 15));
+    testing.povRight().whileTrue(new ManualArmControl(s_Diffector, () -> -15));
 
-    testing.x().onTrue(new InstantCommand(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE)));
-    testing.y().onTrue(new InstantCommand(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET))).onFalse(new InstantCommand(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY)));
-    testing.a().onTrue(new InstantCommand(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DELIVERY))).onFalse(new InstantCommand(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT)));
+    testing.x().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE)));
+    testing.y().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET))).onFalse(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY)));
+    testing.a().onTrue(Commands.runOnce(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DELIVERY))).onFalse(Commands.runOnce(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT)));
   }
 
   private void configureRumbleBindings()

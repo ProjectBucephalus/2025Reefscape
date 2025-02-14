@@ -75,7 +75,7 @@ public class AlgaeManipulator extends SubsystemBase
       case INTAKE:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorIntakeSpeed);
 
-        if (RobotContainer.s_Canifier.algaeManiSensor()) 
+        if (!RobotContainer.s_Canifier.algaeManiSensor()) 
           {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
         break;
 

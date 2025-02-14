@@ -164,7 +164,7 @@ public final class Constants
     public static final double diffectorMotorKGEmpty = 0.225;
     public static final double diffectorMotorKSEmpty = 0.1;
     public static final double diffectorMotorKVEmpty = 0.75;
-    public static final double diffectorMotorKAEmpty = 0.1;
+    public static final double diffectorMotorKAEmpty = 0.12;
     public static final double diffectorMotorKPEmpty = 40;
     public static final double diffectorMotorKIEmpty = 0;
     public static final double diffectorMotorKDEmpty = 0;
@@ -186,7 +186,7 @@ public final class Constants
     public static final double diffectorMotorKDTwoItem = 0;
 
     public static final double diffectorMotionMagicCruise = 12;
-    public static final double diffectorMotionMagicAccel  = 4;
+    public static final double diffectorMotionMagicAccel  = 6;
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;
@@ -253,7 +253,7 @@ public final class Constants
     public static final double algae1Angle        = 100;
     
     /* Preset elevator heights, height of centre of rotation above the ground, metres */
-    public static final double startElevation         = 0.9;//0.574;
+    public static final double startElevation         = 0.574;
     public static final double climbElevation         = minElevation;
     public static final double netElevation           = maxElevation;
     public static final double processorElevation     = 0.5; 
