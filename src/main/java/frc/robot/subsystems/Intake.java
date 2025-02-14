@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
+import frc.robot.constants.IDConstants;
 
 /**
  * Intake subsystem, handling the intake wheels, and intake arms.
@@ -65,10 +66,10 @@ public class Intake extends SubsystemBase {
   { 
     status = IntakeStatus.TESTING;
 
-    m_AlgaeIntake = new TalonFX(Constants.IntakeConstants.algaeIntakeID);
-    m_CoralIntake = new TalonFX(Constants.IntakeConstants.coralIntakeID);
-    m_AlgaeArm = new TalonFX(Constants.IntakeConstants.algaeArmID);
-    m_CoralArm = new TalonFX(Constants.IntakeConstants.coralArmID);
+    m_AlgaeIntake = new TalonFX(IDConstants.algaeIntakeRollerID);
+    m_CoralIntake = new TalonFX(IDConstants.coralIntakeRollerID);
+    m_AlgaeArm = new TalonFX(IDConstants.algaeIntakeArmID);
+    m_CoralArm = new TalonFX(IDConstants.coralIntakeArmID);
 
     m_AlgaeArm.getConfigurator().apply(CTREConfigs.intakeTopArmFXConfig);
     m_CoralArm.getConfigurator().apply(CTREConfigs.intakeBottomArmFXConfig);
@@ -78,9 +79,9 @@ public class Intake extends SubsystemBase {
 
     motionMagic = new MotionMagicVoltage(0);
 
-    coralLimitSwitch1 = new DigitalInput(Constants.IntakeConstants.coralIntakeDIO1);
-    coralLimitSwitch2 = new DigitalInput(Constants.IntakeConstants.coralIntakeDIO2);
-    algaeIntakeBeamBreak    = new DigitalInput(Constants.IntakeConstants.algaeIntakeDIO);
+    coralLimitSwitch1 = new DigitalInput(IDConstants.coralIntakeDIOPort);
+    coralLimitSwitch2 = new DigitalInput(IDConstants.coralIntakeDIOStbd);
+    algaeIntakeBeamBreak    = new DigitalInput(IDConstants.algaeIntakeDIO);
   }
 
   public double getTopArmAngle()

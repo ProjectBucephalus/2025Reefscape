@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.IDConstants;
 
 public class Climber extends SubsystemBase 
 {
@@ -23,7 +24,7 @@ public class Climber extends SubsystemBase
   /** Creates a new Climber. */
   public Climber() 
   { 
-    m_Winch = new TalonFX(Constants.ClimberConstants.winchID);
+    m_Winch = new TalonFX(IDConstants.climberWinchMotorID);
 
     m_Winch.getConfigurator().apply(CTREConfigs.climberWinchFXConfiguration);
 

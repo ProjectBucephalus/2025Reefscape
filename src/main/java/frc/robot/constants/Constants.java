@@ -157,10 +157,6 @@ public final class Constants
 
   public static final class DiffectorConstants
   {
-    public static final int uaMotorID = IDConstants.uaMotorID;
-    public static final int daMotorID = IDConstants.daMotorID;
-    public static final int encoderCanCoderID = IDConstants.encoderCanCoderID;
-
     public static final double diffectorMotorKGEmpty = 0.225;
     public static final double diffectorMotorKSEmpty = 0.1;
     public static final double diffectorMotorKVEmpty = 0.75;
@@ -295,25 +291,18 @@ public final class Constants
 
   public static final class GamePiecesManipulator 
   {
-    public static final int coralMotorID = IDConstants.coralManipulatorID;
-    public static final int algaeMotorID = IDConstants.algaeManipulatorID;
-
-    public static final GeneralPin coralManipulatorDIO1 = IDConstants.coralManipulatorDIOPort;
-    public static final GeneralPin coralManipulatorDIO2 = IDConstants.coralManipulatorDIOStbd;
-    public static final GeneralPin algaeManipulatorDIO  = IDConstants.algaeManipulatorDIO;
-
     /* Coral manipulator speeds */
     public static final double coralManipulatorBaseIntakeSpeed = 0.2;
-    public static final double coralManipulatorMaxIntakeSpeed = 0.4;
-    public static final double coralManipulatorDeliverySpeed = 0.9;
-    public static final double coralManipulatorHoldingVoltage = 0;
+    public static final double coralManipulatorMaxIntakeSpeed  = 0.4;
+    public static final double coralManipulatorDeliverySpeed   = 0.9;
+    public static final double coralManipulatorHoldingVoltage  = 0;
 
     /* Algae manipulator speeds */
-    public static final double algaeManipulatorIntakeSpeed = -0.4;
+    public static final double algaeManipulatorIntakeSpeed    = -0.4;
     public static final double algaeManipulatorHoldingVoltage = 0;
-    public static final double algaeManipulatorNetSpeed = 0.9;
+    public static final double algaeManipulatorNetSpeed       = 0.9;
     public static final double algaeManipulatorProcessorSpeed = 0.5;
-    public static final double algaeManipulatorEmptySpeed = 0;
+    public static final double algaeManipulatorEmptySpeed     = 0;
 
     /* The number of cycles (each cycle is 0.02s) before the holding intake speed reaches max */
     public static final double coralHoldingScalar = 100;
@@ -321,15 +310,6 @@ public final class Constants
 
   public static final class IntakeConstants // TODO: Speeds and Angles must be tuned to the specific robot
   {
-    public static final int algaeIntakeID = IDConstants.algaeIntakeRollerID;
-    public static final int coralIntakeID = IDConstants.coralIntakeRollerID;
-    public static final int algaeArmID = IDConstants.algaeIntakeArmID;
-    public static final int coralArmID = IDConstants.coralIntakeArmID;
-
-    public static final int coralIntakeDIO1 = IDConstants.coralIntakeDIOPort;
-    public static final int coralIntakeDIO2 = IDConstants.coralIntakeDIOStbd;
-    public static final int algaeIntakeDIO  = IDConstants.algaeIntakeDIO;
-
     /* Intake motors speeds */
     public static final double coralIntakeMotorSpeed = 0.8;
     public static final double algaeIntakeMotorSpeed = 0.8;
@@ -342,41 +322,41 @@ public final class Constants
     public static final double algaeTransferMotorSpeed = 0;
 
     /* Top intake arm positions 
-      * TODO: Put in Degrees for the arm top and bottom position in this comment
-      */
-    public static final double topCoralIntakeArmTarget = 0;
-    public static final double topAlgaeIntakeArmTarget = 0;
-    public static final double topCoralEjectArmTarget = 0;
-    public static final double topAlgaeEjectArmTarget = 0;
-    public static final double algaeClimbingArmTarget = 0;
-    public static final double topStandByArmTarget = 0;
-    public static final double topStowedArmTarget = 0;
+     * TODO: Put in Degrees for the arm top and bottom position in this comment
+     */
+    public static final double topCoralIntakeArmTarget   = 0;
+    public static final double topAlgaeIntakeArmTarget   = 0;
+    public static final double topCoralEjectArmTarget    = 0;
+    public static final double topAlgaeEjectArmTarget    = 0;
+    public static final double algaeClimbingArmTarget    = 0;
+    public static final double topStandByArmTarget       = 0;
+    public static final double topStowedArmTarget        = 0;
     public static final double topCoralTransferArmTarget = 0;
     public static final double topAlgaeTransferArmTarget = 0;
 
     /* Bottom intake arm positions */
-    public static final double bottomCoralIntakeArmTarget = 0;
-    public static final double bottomAlgaeIntakeArmTarget = 0;
-    public static final double bottomCoralEjectArmTarget = 0;
-    public static final double bottomAlgaeEjectArmTarget = 0;
-    public static final double coralClimbingArmTarget = 0;
-    public static final double bottomStandByArmTarget = 0;
-    public static final double bottomStowedArmTarget = 0;
+    public static final double bottomCoralIntakeArmTarget   = 0;
+    public static final double bottomAlgaeIntakeArmTarget   = 0;
+    public static final double bottomCoralEjectArmTarget    = 0;
+    public static final double bottomAlgaeEjectArmTarget    = 0;
+    public static final double coralClimbingArmTarget       = 0;
+    public static final double bottomStandByArmTarget       = 0;
+    public static final double bottomStowedArmTarget        = 0;
     public static final double bottomCoralTransferArmTarget = 0;
     public static final double bottomAlgaeTransferArmTarget = 0;
 
-    public static final double coralStowedLowThreshold = 10;  
+    public static final double coralStowedLowThreshold  = 10;  
     public static final double coralStowedHighThreshold = 10;
-    public static final double algaeStowedLowThreshold = 10;
+    public static final double algaeStowedLowThreshold  = 10;
     public static final double algaeStowedHighThreshold = 10;
 
     /* Top arm PID + FeedForward values */
     public static final double topArmSpringKP = 1;
     public static final double topArmSpringKI = 0;
     public static final double topArmSpringKD = 0;
-    public static final double topArmStopKP = 12.5;
-    public static final double topArmStopKI = 0;
-    public static final double topArmStopKD = 0;
+    public static final double topArmStopKP   = 12.5;
+    public static final double topArmStopKI   = 0;
+    public static final double topArmStopKD   = 0;
     
     public static final double topArmKS = 0.15;
     public static final double topArmKG = 0.15;
@@ -388,31 +368,29 @@ public final class Constants
 
     /* Arm MotionMagic values */
     public static final double intakeArmMotionMagicCruise = 0.25;
-    public static final double intakeArmMotionMagicAccel = 0.25;
+    public static final double intakeArmMotionMagicAccel  = 0.25;
 
     /* Arm ratios */
-    public static final double topArmRatio = 16.7;
+    public static final double topArmRatio    = 16.7;
     public static final double bottomArmRatio = 1;
   }
 
   public static final class ClimberConstants
   {
-    public static final int winchID = IDConstants.climberWinchMotorID;
+    public static final double initSpeed   = 0;
+    public static final double deploySpeed = -0.5;
+    public static final double climbSpeed  = 0.8;
 
-    public static final double initSpeed = 0;
-    public static final double deploySpeed = 0.8;
-    public static final double climbSpeed = 0.8;
-
-    public static final double initWinchPos = 0;
+    public static final double initWinchPos   = 0;
     public static final double deployWinchPos = 0;
-    public static final double climbWinchPos = 0;
+    public static final double climbWinchPos  = 0;
 
     public static final double winchKP = 0;
     public static final double winchKI = 0;
     public static final double winchKD = 0;
 
     public static final double winchMotionMagicCruise = 0;
-    public static final double winchMotionMagicAccel = 0;
+    public static final double winchMotionMagicAccel  = 0;
 
     public static final double initWinchThreshold = 10;
   }
