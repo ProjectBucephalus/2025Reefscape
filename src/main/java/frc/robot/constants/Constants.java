@@ -55,8 +55,8 @@ public final class Constants
     public static final double drivebaseWidth = 0.616;
     public static final double initialHeading = 0;
 
-    /* Drive Motor PID Values */
-    public static final double driveKP = 1.8; //TODO: This must be tuned to specific robot
+    /* Drive PID Values */
+    public static final double driveKP = 0.1; //TODO: This must be tuned to specific robot
     public static final double driveKI = 0.0;
     public static final double driveKD = 0.0;
 
@@ -67,7 +67,7 @@ public final class Constants
 
     /* Swerve Limit Values */
     /** Meters per Second */
-    public static final double maxSpeed = 2;
+    public static final double maxSpeed = 8;
     /** Radians per Second */
     public static final double maxAngularVelocity = 4;
   }
@@ -75,9 +75,9 @@ public final class Constants
   public static final class Auto
   {   
   /** m/s */
-    public static final double pathplannerMaxSpeed = 5;
+    public static final double pathplannerMaxSpeed = 2;
     /** m/s^2 */
-    public static final double pathplannerMaxAcceleration = 5.5;
+    public static final double pathplannerMaxAcceleration = 2;
     /** degrees/s */
     public static final double pathplannerMaxAngularSpeed = 720;
     /** degrees/s^2 */
