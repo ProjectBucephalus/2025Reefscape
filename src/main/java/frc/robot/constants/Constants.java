@@ -38,8 +38,15 @@ public final class Constants
 
   public static final class Vision
   {
-    public static final int[] validIDs = {17, 18, 19, 20, 21, 22};
-    public static final String limeLightName = "limelight";
+    public static final int[] validIDs = 
+    {
+      //1, 2, 3,               // Red Human Player Stations
+      //4, 5,                  // Red Barge
+      //6, 7, 8, 9, 10, 11,    // Red Reef
+      12, 13, 16,            // Blue Human Player Stations
+      14, 15,                // Blue Barge
+      17, 18, 19, 20, 21, 22 // Blue Reef
+    };
   }
 
   public static final class Swerve
@@ -58,11 +65,11 @@ public final class Constants
     public static final double rotationKI = 0;
     public static final double rotationKD = 0;
 
-    /* Swerve Profiling Values */
+    /* Swerve Limit Values */
     /** Meters per Second */
-    public static final double maxSpeed = 5; // ERROR: Unsure if this value works as it should
+    public static final double maxSpeed = 2;
     /** Radians per Second */
-    public static final double maxAngularVelocity = 6;
+    public static final double maxAngularVelocity = 4;
   }
 
   public static final class Auto

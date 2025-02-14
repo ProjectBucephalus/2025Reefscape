@@ -62,4 +62,9 @@ public final class IDConstants
   public static final GeneralPin coralManipulatorDIOStbd = GeneralPin.SPI_MOSI_PWM1P;
   public static final GeneralPin algaeManipulatorDIO     = GeneralPin.SPI_MISO_PWM2P;
 
+  /* Vision */
+  /* ______ */
+  public static final String llPortName = "limelight-port";
+  public static final String llStbdName = "limelight-stbd";
+
 }
