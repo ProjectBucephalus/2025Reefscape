@@ -4,58 +4,62 @@
 
 package frc.robot.constants;
 
-/** Add your docs here. */
+import com.ctre.phoenix.CANifier.GeneralPin;
+
 public final class IDConstants 
 {   
-  public static final int pdhID = 0; //0
+  public static final int pdhID = 0;
 
   /* Drive */
   /* _____ */
-  public static final int frontLeftDriveMotorID = 9; //1
-  public static final int frontLeftAngleMotorID = 11; //2
-  public static final int frontLeftCanCoderID = 10; //3
+  public static final int foreStbdDriveMotorID = 1;
+  public static final int foreStbdAngleMotorID = 2;
+  public static final int foreStbdCanCoderID   = 3;
 
-  public static final int frontRightDriveMotorID = 6; //4
-  public static final int frontRightAngleMotorID = 8; //5
-  public static final int frontRightCanCoderID = 7; //6
+  public static final int forePortDriveMotorID = 4;
+  public static final int forePortAngleMotorID = 5;
+  public static final int forePortCanCoderID   = 6;
 
-  public static final int backLeftDriveMotorID = 16; //7
-  public static final int backLeftAngleMotorID = 18; //8
-  public static final int backLeftCanCoderID = 17; //9
+  public static final int aftPortDriveMotorID = 7;
+  public static final int aftPortAngleMotorID = 8;
+  public static final int aftPortCanCoderID   = 9;
 
-  public static final int backRightDriveMotorID = 1; //10
-  public static final int backRightAngleMotorID = 3; //11
-  public static final int backRightCanCoderID = 2; //12
+  public static final int aftStbdDriveMotorID = 10;
+  public static final int aftStbdAngleMotorID = 11;
+  public static final int aftStbdCanCoderID   = 12;
 
-  public static final int pigeonID = 5; //13
+  public static final int pigeonID = 53;
 
   /* Diffector */
   /* _________ */
-  public static final int ucMotorID = 0; //14
-  public static final int uaMotorID = 0; //15
-  public static final int encoderPWMID = 7;
+  public static final int encoderCanCoderID = 13;
+  public static final int uaMotorID    = 14;
+  public static final int daMotorID    = 15;
 
   /* Intake */
   /* ______ */
-  public static final int mTopIntakeID = 0; //16
-  public static final int mBottomIntakeID = 0; //17
-  public static final int mTopArmID = 0; //18
-  public static final int mBottomArmID = 0; //19
+  public static final int algaeIntakeRollerID = 16;
+  public static final int coralIntakeRollerID = 17;
+  public static final int algaeIntakeArmID    = 18;
+  public static final int coralIntakeArmID    = 19;
 
-  public static final int coralIntakeDIO1 = 1;
-  public static final int coralIntakeDIO2 = 2;
-  public static final int algaeIntakeDIO  = 3;
+  public static final int coralIntakeDIOPort = 1;
+  public static final int coralIntakeDIOStbd = 2;
+  public static final int algaeIntakeDIO     = 3;
 
   /* Climber */
   /* _______ */
-  public static final int climberWinchMotorID = 0; //20
+  public static final int climberWinchMotorID = 20;
 
   /* Manipulator */
   /* ___________ */
-  public static final int coralMotorID = 0; //21
-  public static final int algaeMotorID = 0; //22
+  public static final int coralManipulatorID = 21;
+  public static final int algaeManipulatorID = 22;
   
-  public static final int coralManipulatorDIO1 = 4;
-  public static final int coralManipulatorDIO2 = 5;
-  public static final int algaeManipulatorDIO  = 6;
+  public static final int canifierID = 23;
+
+  public static final GeneralPin coralManipulatorDIOPort = GeneralPin.SPI_CLK_PWM0P;
+  public static final GeneralPin coralManipulatorDIOStbd = GeneralPin.SPI_MOSI_PWM1P;
+  public static final GeneralPin algaeManipulatorDIO     = GeneralPin.SPI_MISO_PWM2P;
+
 }

@@ -11,7 +11,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
-import frc.robot.constants.Constants.Diffector.IKGeometry;
+import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
 
 /** Add your docs here. */
 public class ArmCalculator 
@@ -50,8 +50,8 @@ public class ArmCalculator
 
   public ArmCalculator()
   {
-    maxElevation  = Constants.Diffector.maxElevation;
-    minElevation  = Constants.Diffector.minElevation;
+    maxElevation  = Constants.DiffectorConstants.maxElevation;
+    minElevation  = Constants.DiffectorConstants.minElevation;
     projectionAngle = IKGeometry.projectionAngle;
     
     railHeight    = IKGeometry.railHeight;
@@ -238,8 +238,8 @@ public class ArmCalculator
      */
 
     // Starting stow position puts the Algae arm below deck
-    if (angle == Constants.Diffector.startAngle && !RobotContainer.algae)
-      {return Constants.Diffector.startElevation;}
+    if (angle == Constants.DiffectorConstants.startAngle && !RobotContainer.algae)
+      {return Constants.DiffectorConstants.startElevation;}
 
     angle %= 360;
 
