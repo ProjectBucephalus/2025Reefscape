@@ -14,25 +14,25 @@ public final class IDConstants
   /* _____ */
   public static final int foreStbdDriveMotorID = 1;
   public static final int foreStbdAngleMotorID = 2;
-  public static final int foreStbdCanCoderID   = 3;
+  public static final int foreStbdCANcoderID   = 3;
 
   public static final int forePortDriveMotorID = 4;
   public static final int forePortAngleMotorID = 5;
-  public static final int forePortCanCoderID   = 6;
+  public static final int forePortCANcoderID   = 6;
 
   public static final int aftPortDriveMotorID = 7;
   public static final int aftPortAngleMotorID = 8;
-  public static final int aftPortCanCoderID   = 9;
+  public static final int aftPortCANcoderID   = 9;
 
   public static final int aftStbdDriveMotorID = 10;
   public static final int aftStbdAngleMotorID = 11;
-  public static final int aftStbdCanCoderID   = 12;
+  public static final int aftStbdCANcoderID   = 12;
 
-  public static final int pigeonID = 53;
+  public static final int pigeonID = 53; // Pigeon ID hardset to 53, we can't change it
 
   /* Diffector */
   /* _________ */
-  public static final int encoderCanCoderID = 13;
+  public static final int armCANcoderID = 13;
   public static final int uaMotorID    = 14;
   public static final int daMotorID    = 15;
 

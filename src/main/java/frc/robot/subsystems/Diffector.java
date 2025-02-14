@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
+import frc.robot.constants.IDConstants;
 import frc.robot.util.ArmCalculator;
 import frc.robot.util.Conversions;
 
@@ -40,7 +42,7 @@ public class Diffector extends SubsystemBase
   private static TalonFX m_diffectorUA;
   /** portside motor(?), forward direction drives carriage down and anticlockwise */
   private static TalonFX m_diffectorDA;
-  private DutyCycleEncoder encoder;
+  private CANcoder encoder;
 
   private double[] motorTargets = new double[2];
 
@@ -66,12 +68,12 @@ public class Diffector extends SubsystemBase
     rotationRatio = Constants.DiffectorConstants.rotationRatio;
     travelRatio = Constants.DiffectorConstants.travelRatio;
 
-    m_diffectorUA = new TalonFX(Constants.DiffectorConstants.uaMotorID);
-    m_diffectorDA = new TalonFX(Constants.DiffectorConstants.daMotorID);
-    encoder = new DutyCycleEncoder(Constants.DiffectorConstants.encoderCanCoderID);
+    m_diffectorUA = new TalonFX(IDConstants.uaMotorID);
+    m_diffectorDA = new TalonFX(IDConstants.daMotorID);
+    encoder = new CANcoder(IDConstants.armCANcoderID);
 
     targetElevation = Constants.DiffectorConstants.startElevation;
-    targetAngle = 0;
+    targetAngle     = 0;
 
     m_diffectorUA.getConfigurator().apply(motorConfigUA);
     m_diffectorDA.getConfigurator().apply(motorConfigDA);
@@ -97,8 +99,8 @@ public class Diffector extends SubsystemBase
    */
   public double getEncoderPos()
   {
-    // Encoder outputs [0..1] and is geared 1:1 to the arm
-    return (1 - encoder.get()) * 360;
+    // Encoder outputs [-1..1] and is geared 1:1 to the arm
+    return Units.rotationsToDegrees(-encoder.getAbsolutePosition().getValueAsDouble());
   }
 
   /**
