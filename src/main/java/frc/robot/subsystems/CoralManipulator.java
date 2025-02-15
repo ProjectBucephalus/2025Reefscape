@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.IDConstants;
 import frc.robot.util.Conversions;
 
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
@@ -21,7 +22,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
  * @author 5985
  * @author Sebastian Aiello
  */
-public class CoralManipulator extends SubsystemBase {
+public class CoralManipulator extends SubsystemBase 
+{
 
   /* Declaration of the motor controllers */
   private VictorSPX coralMotor;
@@ -50,7 +52,7 @@ public class CoralManipulator extends SubsystemBase {
   public CoralManipulator() 
   {
     coralStatus = CoralManipulatorStatus.DEFAULT;
-    coralMotor = new VictorSPX(Constants.GamePiecesManipulator.coralMotorID);
+    coralMotor = new VictorSPX(IDConstants.coralManipulatorID);
 
     holdErrorTracker = 0;
   }
@@ -80,6 +82,7 @@ public class CoralManipulator extends SubsystemBase {
     {
       case INTAKE:
         setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorBaseIntakeSpeed);
+        
         if (RobotContainer.coral) 
           {coralStatus = CoralManipulatorStatus.DEFAULT; }
         break;

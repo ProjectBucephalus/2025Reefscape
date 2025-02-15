@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.IDConstants;
 
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -47,7 +48,7 @@ public class AlgaeManipulator extends SubsystemBase
   public AlgaeManipulator() 
   {
     algaeStatus = AlgaeManipulatorStatus.EMPTY;
-    algaeMotor = new VictorSPX(Constants.GamePiecesManipulator.algaeMotorID);
+    algaeMotor = new VictorSPX(IDConstants.algaeManipulatorID);
     algaeStatus = AlgaeManipulatorStatus.EMPTY;
   }
 
@@ -74,12 +75,13 @@ public class AlgaeManipulator extends SubsystemBase
     {
       case INTAKE:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorIntakeSpeed);
-        if (RobotContainer.algae) 
+
+        if (RobotContainer.s_Canifier.algaeManiSensor()) 
           {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
         break;
 
       case HOLDING:
-        if (RobotContainer.algae) 
+        if (RobotContainer.s_Canifier.algaeManiSensor()) 
         {
           algaeMotor.set(VictorSPXControlMode.PercentOutput, 0);      
         } 
@@ -89,19 +91,19 @@ public class AlgaeManipulator extends SubsystemBase
 
       case NET:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);
-        if (!RobotContainer.algae) 
-          {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
         break;
 
       case PROCESSOR:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorProcessorSpeed);
-        if (!RobotContainer.algae) 
+
+        if (!RobotContainer.s_Canifier.algaeManiSensor()) 
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
         break;
 
       case EMPTY:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorEmptySpeed);
-        if (RobotContainer.algae) 
+
+        if (RobotContainer.s_Canifier.algaeManiSensor()) 
           {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
         break;
     }

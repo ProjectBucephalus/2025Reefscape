@@ -24,19 +24,19 @@ public class ScoreCoral extends SequentialCommandGroup
     switch(level)
     {
       case 1:
-        diffectorPosCommand = new MoveTo(s_Diffector, ArmPresets.reef4Elevation, ArmPresets.reef4Angle);
+        diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.reef4Elevation, Constants.DiffectorConstants.reef4Angle);
         break;
 
       case 2:
-        diffectorPosCommand = new MoveTo(s_Diffector, ArmPresets.reef3Elevation, ArmPresets.reef3Angle);
+        diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.reef3Elevation, Constants.DiffectorConstants.reef3Angle);
         break;
 
       case 3:
-        diffectorPosCommand = new MoveTo(s_Diffector, ArmPresets.reef2Elevation, ArmPresets.reef2Angle);
+        diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.reef2Elevation, Constants.DiffectorConstants.reef2Angle);
         break;
 
       case 4:
-        diffectorPosCommand = new MoveTo(s_Diffector, ArmPresets.reef1Elevation, ArmPresets.reef1Angle);
+        diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.reef1Elevation, Constants.DiffectorConstants.reef1Angle);
         break;
     }
     addCommands(diffectorPosCommand, new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY));

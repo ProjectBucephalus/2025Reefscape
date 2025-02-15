@@ -13,12 +13,11 @@ import frc.robot.RobotContainer;
 import frc.robot.commands.AlgaeManipulator.IntakeAlgaeSequence;
 import frc.robot.commands.AlgaeManipulator.ScoreAlgae;
 import frc.robot.commands.CoralManipulator.IntakeCoralSequence;
-import frc.robot.subsystems.Diffector.CargoStates;
 import frc.robot.util.FieldUtils;
 
 public final class Constants 
 {
-  public static final class Rumbler 
+  public static final class RumblerConstants 
   {
     public static final double driverDefault = 1;
     public static final double copilotDefault = 1;  
@@ -156,35 +155,34 @@ public final class Constants
     public static final String defaultAuto = "t5,cR5,w3.5,cR5";
   }
 
-  public static final class Diffector
+  public static final class DiffectorConstants
   {
-    public static final int uaMotorID = IDConstants.uaMotorID;
-    public static final int daMotorID = IDConstants.daMotorID;
-    public static final int encoderPWMID = IDConstants.armEncoderID;
-
-    public static final double diffectorMotorKSEmpty = 0;
-    public static final double diffectorMotorKVEmpty = 0;
-    public static final double diffectorMotorKAEmpty = 0;
-    public static final double diffectorMotorKPEmpty = 20;
+    public static final double diffectorMotorKGEmpty = 0.225;
+    public static final double diffectorMotorKSEmpty = 0.1;
+    public static final double diffectorMotorKVEmpty = 0.75;
+    public static final double diffectorMotorKAEmpty = 0.1;
+    public static final double diffectorMotorKPEmpty = 40;
     public static final double diffectorMotorKIEmpty = 0;
     public static final double diffectorMotorKDEmpty = 0;
 
+    public static final double diffectorMotorKGOneItem = 0;
     public static final double diffectorMotorKSOneItem = 0;
     public static final double diffectorMotorKVOneItem = 0;
     public static final double diffectorMotorKAOneItem = 0;
-    public static final double diffectorMotorKPOneItem = 20;
+    public static final double diffectorMotorKPOneItem = 3;
     public static final double diffectorMotorKIOneItem = 0;
     public static final double diffectorMotorKDOneItem = 0;
 
+    public static final double diffectorMotorKGTwoItem = 0;
     public static final double diffectorMotorKSTwoItem = 0;
     public static final double diffectorMotorKVTwoItem = 0;
     public static final double diffectorMotorKATwoItem = 0;
-    public static final double diffectorMotorKPTwoItem = 20;
+    public static final double diffectorMotorKPTwoItem = 3;
     public static final double diffectorMotorKITwoItem = 0;
     public static final double diffectorMotorKDTwoItem = 0;
 
-    public static final double diffectorMotionMagicCruise = 1;
-    public static final double diffectorMotionMagicAccel = 1;
+    public static final double diffectorMotionMagicCruise = 12;
+    public static final double diffectorMotionMagicAccel  = 4;
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;
@@ -193,23 +191,27 @@ public final class Constants
     public static final double climberElevatorLowTheshold = 0;
     public static final double climberElevatorHighThreshold = 0;
 
-    private static final double diffectorGearTeethIn  = 8;
+    private static final double diffectorGearTeethIn = 10;
     private static final double diffectorGearTeethOut = 60;
     private static final double diffectorSprocketTeethIn  = 18;
     private static final double diffectorSprocketTeethOut = 72;
-    /** Gearbox sprocket degrees per motor degree */
-    public static final double gearboxRatio = diffectorGearTeethIn / diffectorGearTeethOut;
-    /** Arm sprocket degrees per Gearbox sprocket degree */
-    public static final double sprocketRatio = diffectorSprocketTeethIn / diffectorSprocketTeethOut;
-    /** Pitch Diameter of the gearbox sprocket, m */
-    public static final double sprocketPitchDiameter = 0.036576; // 1.44 inch, 36.576 mm
-    /** metres/degree of the gearbox sprocket */
-    public static final double sprocketFeedRate = (sprocketPitchDiameter * Math.PI) / 360;
+    /** Output sprocket degrees per motor rotation */
+    public static final double gearboxRatio = 1.25 / (diffectorGearTeethIn / diffectorGearTeethOut); // I have ABSOLUTELY NO IDEA where the 1.25 scale comes from
+    /** Ratio of output sprocket to arm sprocket (output sprocket teeth/arm sprocket teeth) */
+    public static final double sprocketRatio = (diffectorSprocketTeethIn / diffectorSprocketTeethOut);
+    /** Pitch Diameter of the sprocket, in m */
+    public static final double sprocketPitchDiameter = 0.036576;
 
-    /** Number of chain m moved per motor degree */
-    public static final double travelRatio = (sprocketFeedRate);
-    /** Number of arm degrees moved per motor degree of a single motor */
-    public static final double rotationRatio = (sprocketRatio) / 2;
+    /** 
+     * Metres of chain moved per sprocket degree.
+     */
+    public static final double travelRatio = (sprocketPitchDiameter * Math.PI) / 360;
+    /** 
+     * Number of arm degrees moved for one motor degree of a single motor 
+     * Output sprocket rotations per motor rotation * output sprocket to arm sprocket ratio,
+     * divided by 2 to give the contribution of a single motor
+     */
+    public static final double rotationRatio = (sprocketRatio);
 
     public static final boolean startingCoralState = true;
     public static final boolean startingAlgaeState = false;
@@ -231,38 +233,35 @@ public final class Constants
     /** Elevation height check tolerance, m */
     public static final double elevationTolerance = 0.025;
     
-    public static final class ArmPresets
-    {
-      /* Preset arm angles, degrees anticlockwise for Port-side usecase, 0 = coral at top */
-      public static final double startAngle         =   0;
-      public static final double climbAngle         =  90;
-      public static final double netAngle           = 150;
-      public static final double processorAngle     =  45;
-      public static final double reef4Angle         = 340;
-      public static final double reef3Angle         = 330;
-      public static final double reef2Angle         = 320;
-      public static final double reef1Angle         = 300;
-      public static final double coralTransferAngle = 180;
-      public static final double algaeTransferAngle =   0;
-      public static final double coralStationAngle  = 240;
-      public static final double algae2Angle        = 110;
-      public static final double algae1Angle        = 100;
-      
-      /* Preset elevator heights, height of centre of rotation above the ground, metres */
-      public static final double startElevation         = 1.575;
-      public static final double climbElevation         = minElevation;
-      public static final double netElevation           = maxElevation;
-      public static final double processorElevation     = 0.5; 
-      public static final double reef4Elevation         = 1.6;
-      public static final double reef3Elevation         = 1.4;
-      public static final double reef2Elevation         = 1.2;
-      public static final double reef1Elevation         = 1.0;
-      public static final double coralTransferElevation = 1.0;
-      public static final double algaeTransferElevation = 1.5;
-      public static final double coralStationElevation  = 1.0;
-      public static final double algae2Elevation        = 1.5;
-      public static final double algae1Elevation        = 1.3;
-    }
+    /* Preset arm angles, degrees anticlockwise for Port-side usecase, 0 = coral at top */
+    public static final double startAngle         =   0;
+    public static final double climbAngle         =  90;
+    public static final double netAngle           = 150;
+    public static final double processorAngle     =  45;
+    public static final double reef4Angle         = 340;
+    public static final double reef3Angle         = 330;
+    public static final double reef2Angle         = 320;
+    public static final double reef1Angle         = 300;
+    public static final double coralTransferAngle = 180;
+    public static final double algaeTransferAngle =   0;
+    public static final double coralStationAngle  = 240;
+    public static final double algae2Angle        = 110;
+    public static final double algae1Angle        = 100;
+    
+    /* Preset elevator heights, height of centre of rotation above the ground, metres */
+    public static final double startElevation         = 0.9;//0.574;
+    public static final double climbElevation         = minElevation;
+    public static final double netElevation           = maxElevation;
+    public static final double processorElevation     = 0.5; 
+    public static final double reef4Elevation         = 1.6;
+    public static final double reef3Elevation         = 1.4;
+    public static final double reef2Elevation         = 1.2;
+    public static final double reef1Elevation         = 1.0;
+    public static final double coralTransferElevation = 1.0;
+    public static final double algaeTransferElevation = 1.5;
+    public static final double coralStationElevation  = 1.0;
+    public static final double algae2Elevation        = 1.5;
+    public static final double algae1Elevation        = 1.3;
     
     public static final class IKGeometry
     {
@@ -296,41 +295,25 @@ public final class Constants
 
   public static final class GamePiecesManipulator 
   {
-    public static final int coralMotorID = IDConstants.coralManipulatorID;
-    public static final int algaeMotorID = IDConstants.algaeManipulatorID;
-
-    public static final GeneralPin coralManipulatorDIO1 = IDConstants.coralManipulatorDIOPort;
-    public static final GeneralPin coralManipulatorDIO2 = IDConstants.coralManipulatorDIOStbd;
-    public static final GeneralPin algaeManipulatorDIO  = IDConstants.algaeManipulatorDIO;
-
     /* Coral manipulator speeds */
     public static final double coralManipulatorBaseIntakeSpeed = 0.2;
-    public static final double coralManipulatorMaxIntakeSpeed = 0.4;
-    public static final double coralManipulatorDeliverySpeed = 0.9;
-    public static final double coralManipulatorHoldingVoltage = 0;
+    public static final double coralManipulatorMaxIntakeSpeed  = 0.4;
+    public static final double coralManipulatorDeliverySpeed   = 0.9;
+    public static final double coralManipulatorHoldingVoltage  = 0;
 
     /* Algae manipulator speeds */
-    public static final double algaeManipulatorIntakeSpeed = -0.7;
-    public static final double algaeManipulatorHoldingVoltage = 0.1;
-    public static final double algaeManipulatorNetSpeed = 1;
-    public static final double algaeManipulatorProcessorSpeed = 0.6;
-    public static final double algaeManipulatorEmptySpeed = 0;
+    public static final double algaeManipulatorIntakeSpeed    = -0.4;
+    public static final double algaeManipulatorHoldingVoltage = 0;
+    public static final double algaeManipulatorNetSpeed       = 0.9;
+    public static final double algaeManipulatorProcessorSpeed = 0.5;
+    public static final double algaeManipulatorEmptySpeed     = 0;
 
     /* The number of cycles (each cycle is 0.02s) before the holding intake speed reaches max */
     public static final double coralHoldingScalar = 100;
   }
 
-  public static final class Intake // TODO: Speeds and Angles must be tuned to the specific robot
+  public static final class IntakeConstants // TODO: Speeds and Angles must be tuned to the specific robot
   {
-    public static final int algaeIntakeID = IDConstants.algaeIntakeRollerID;
-    public static final int coralIntakeID = IDConstants.coralIntakeRollerID;
-    public static final int algaeArmID = IDConstants.algaeIntakeArmID;
-    public static final int coralArmID = IDConstants.coralIntakeArmID;
-
-    public static final int coralIntakeDIO1 = IDConstants.coralIntakeDIOPort;
-    public static final int coralIntakeDIO2 = IDConstants.coralIntakeDIOStbd;
-    public static final int algaeIntakeDIO  = IDConstants.algaeIntakeDIO;
-
     /* Intake motors speeds */
     public static final double coralIntakeMotorSpeed = 0.8;
     public static final double algaeIntakeMotorSpeed = 0.8;
@@ -343,41 +326,41 @@ public final class Constants
     public static final double algaeTransferMotorSpeed = 0;
 
     /* Top intake arm positions 
-      * TODO: Put in Degrees for the arm top and bottom position in this comment
-      */
-    public static final double topCoralIntakeArmTarget = 0;
-    public static final double topAlgaeIntakeArmTarget = 0;
-    public static final double topCoralEjectArmTarget = 0;
-    public static final double topAlgaeEjectArmTarget = 0;
-    public static final double algaeClimbingArmTarget = 0;
-    public static final double topStandByArmTarget = 0;
-    public static final double topStowedArmTarget = 0;
+     * TODO: Put in Degrees for the arm top and bottom position in this comment
+     */
+    public static final double topCoralIntakeArmTarget   = 0;
+    public static final double topAlgaeIntakeArmTarget   = 0;
+    public static final double topCoralEjectArmTarget    = 0;
+    public static final double topAlgaeEjectArmTarget    = 0;
+    public static final double algaeClimbingArmTarget    = 0;
+    public static final double topStandByArmTarget       = 0;
+    public static final double topStowedArmTarget        = 0;
     public static final double topCoralTransferArmTarget = 0;
     public static final double topAlgaeTransferArmTarget = 0;
 
     /* Bottom intake arm positions */
-    public static final double bottomCoralIntakeArmTarget = 0;
-    public static final double bottomAlgaeIntakeArmTarget = 0;
-    public static final double bottomCoralEjectArmTarget = 0;
-    public static final double bottomAlgaeEjectArmTarget = 0;
-    public static final double coralClimbingArmTarget = 0;
-    public static final double bottomStandByArmTarget = 0;
-    public static final double bottomStowedArmTarget = 0;
+    public static final double bottomCoralIntakeArmTarget   = 0;
+    public static final double bottomAlgaeIntakeArmTarget   = 0;
+    public static final double bottomCoralEjectArmTarget    = 0;
+    public static final double bottomAlgaeEjectArmTarget    = 0;
+    public static final double coralClimbingArmTarget       = 0;
+    public static final double bottomStandByArmTarget       = 0;
+    public static final double bottomStowedArmTarget        = 0;
     public static final double bottomCoralTransferArmTarget = 0;
     public static final double bottomAlgaeTransferArmTarget = 0;
 
-    public static final double coralStowedLowThreshold = 10;  
+    public static final double coralStowedLowThreshold  = 10;  
     public static final double coralStowedHighThreshold = 10;
-    public static final double algaeStowedLowThreshold = 10;
+    public static final double algaeStowedLowThreshold  = 10;
     public static final double algaeStowedHighThreshold = 10;
 
     /* Top arm PID + FeedForward values */
     public static final double topArmSpringKP = 1;
     public static final double topArmSpringKI = 0;
     public static final double topArmSpringKD = 0;
-    public static final double topArmStopKP = 12.5;
-    public static final double topArmStopKI = 0;
-    public static final double topArmStopKD = 0;
+    public static final double topArmStopKP   = 12.5;
+    public static final double topArmStopKI   = 0;
+    public static final double topArmStopKD   = 0;
     
     public static final double topArmKS = 0.15;
     public static final double topArmKG = 0.15;
@@ -389,31 +372,29 @@ public final class Constants
 
     /* Arm MotionMagic values */
     public static final double intakeArmMotionMagicCruise = 0.25;
-    public static final double intakeArmMotionMagicAccel = 0.25;
+    public static final double intakeArmMotionMagicAccel  = 0.25;
 
     /* Arm ratios */
-    public static final double topArmRatio = 16.7;
+    public static final double topArmRatio    = 16.7;
     public static final double bottomArmRatio = 1;
   }
 
-  public static final class Climber
+  public static final class ClimberConstants
   {
-    public static final int winchID = IDConstants.climberWinchMotorID;
+    public static final double initSpeed   = 0;
+    public static final double deploySpeed = -0.5;
+    public static final double climbSpeed  = 0.8;
 
-    public static final double initSpeed = 0;
-    public static final double deploySpeed = 0.8;
-    public static final double climbSpeed = 0.8;
-
-    public static final double initWinchPos = 0;
+    public static final double initWinchPos   = 0;
     public static final double deployWinchPos = 0;
-    public static final double climbWinchPos = 0;
+    public static final double climbWinchPos  = 0;
 
     public static final double winchKP = 0;
     public static final double winchKI = 0;
     public static final double winchKD = 0;
 
     public static final double winchMotionMagicCruise = 0;
-    public static final double winchMotionMagicAccel = 0;
+    public static final double winchMotionMagicAccel  = 0;
 
     public static final double initWinchThreshold = 10;
   }
