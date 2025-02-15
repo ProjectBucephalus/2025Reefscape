@@ -69,7 +69,7 @@ public class Diffector extends SubsystemBase
   public static boolean stowRequested = true;
 
   private static LocalADStar armPathFinder;
-  private double nodeSize = 0.2;
+  private double mapScale = 0.1;
   private PathConstraints armPathConstraints = new PathConstraints(1, 1, 0, 0);
   private GoalEndState armEndState = new GoalEndState(0, new Rotation2d());
   private static ArrayList<Translation2d> plannedPathPoints = new ArrayList<Translation2d>();
@@ -107,8 +107,10 @@ public class Diffector extends SubsystemBase
     motionMagicRequester = new MotionMagicVoltage(0);
 
     ensureInitialized();
-    setStartPosition(fromArmRelative(targetElevation, targetAngle));
-    setGoalPosition(fromArmRelative(targetElevation, targetAngle));
+    setStartPosition(fromArmRelative(elevation, angle));
+    setGoalPosition(fromArmRelative(elevation, angle));
+    plannedPathPoints.clear();
+    plannedPathPoints.add(new Translation2d(elevation, angle));
   }
 
   /**
@@ -178,6 +180,9 @@ public class Diffector extends SubsystemBase
           armPath[2 * i + 1] = plannedPathPoints.get(i).getY();
         }
       }
+
+      goToAngle((Math.random()*720)-360);
+      setElevatorTarget((Math.random()*1.5)+0.3);
     }
 
     SmartDashboard.putNumberArray("pathDump", armPath);
@@ -431,8 +436,8 @@ public class Diffector extends SubsystemBase
  {
     return new Translation2d
     (
-      Math.min((armElevationRotation.getX() - Constants.DiffectorConstants.minElevation), 0) / nodeSize,
-      (armElevationRotation.getY() + maxAbsPos) * nodeSize
+      Math.max((armElevationRotation.getX() - (Constants.DiffectorConstants.minElevation - mapScale)), 0) / mapScale,
+      (armElevationRotation.getY() + maxAbsPos) * mapScale
     );
  }
 
@@ -456,8 +461,8 @@ public class Diffector extends SubsystemBase
  {
     return new Translation2d
     (
-      (pathfinderXY.getX() * nodeSize) + Constants.DiffectorConstants.minElevation,
-      (pathfinderXY.getY() / nodeSize) - maxAbsPos
+      (pathfinderXY.getX() * mapScale) + (Constants.DiffectorConstants.minElevation - mapScale),
+      (pathfinderXY.getY() / mapScale) - maxAbsPos
     );
  }
 
