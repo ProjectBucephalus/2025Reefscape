@@ -336,6 +336,9 @@ public class RobotContainer
     testing.povLeft().whileTrue(new ManualArmControl(s_Diffector, () -> 15));
     testing.povRight().whileTrue(new ManualArmControl(s_Diffector, () -> -15));
 
+    testing.rightBumper().onTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(Constants.DiffectorConstants.maxElevation - 0.25), s_Diffector));
+    testing.leftBumper().onTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(Constants.DiffectorConstants.startElevation), s_Diffector));
+
     testing.x().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE)));
     testing.y().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET))).onFalse(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY)));
     testing.a().onTrue(Commands.runOnce(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DELIVERY))).onFalse(Commands.runOnce(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT)));
