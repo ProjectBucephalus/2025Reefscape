@@ -158,17 +158,15 @@ public final class Constants
   public static final class DiffectorConstants
   {
     public static final double diffectorMotorKGEmpty = 0.225;
-    public static final double diffectorMotorKSEmpty = 0.1;
-    public static final double diffectorMotorKVEmpty = 0.75;
-    public static final double diffectorMotorKAEmpty = 0.1;
-    public static final double diffectorMotorKPEmpty = 40;
+    public static final double diffectorMotorKSEmpty = 0.05;
+    public static final double diffectorMotorKVEmpty = 0.58;
+    public static final double diffectorMotorKPEmpty = 100;
     public static final double diffectorMotorKIEmpty = 0;
     public static final double diffectorMotorKDEmpty = 0;
 
     public static final double diffectorMotorKGOneItem = 0;
     public static final double diffectorMotorKSOneItem = 0;
     public static final double diffectorMotorKVOneItem = 0;
-    public static final double diffectorMotorKAOneItem = 0;
     public static final double diffectorMotorKPOneItem = 3;
     public static final double diffectorMotorKIOneItem = 0;
     public static final double diffectorMotorKDOneItem = 0;
@@ -176,13 +174,14 @@ public final class Constants
     public static final double diffectorMotorKGTwoItem = 0;
     public static final double diffectorMotorKSTwoItem = 0;
     public static final double diffectorMotorKVTwoItem = 0;
-    public static final double diffectorMotorKATwoItem = 0;
     public static final double diffectorMotorKPTwoItem = 3;
     public static final double diffectorMotorKITwoItem = 0;
     public static final double diffectorMotorKDTwoItem = 0;
 
-    public static final double diffectorMotionMagicCruise = 12;
-    public static final double diffectorMotionMagicAccel  = 4;
+    /** Desired cruise speed OF MOTOR, RPS */
+    public static final double diffectorMotionMagicCruise = 100;
+    /** Desired acceleration OF MOTOR, RPS^2 */
+    public static final double diffectorMotionMagicAccel  = 600;
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;
