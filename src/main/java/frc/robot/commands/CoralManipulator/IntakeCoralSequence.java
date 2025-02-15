@@ -6,7 +6,7 @@ package frc.robot.commands.CoralManipulator;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.MoveTo;
-import frc.robot.constants.Constants.Diffector.ArmPresets;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
 

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
+import frc.robot.subsystems.Diffector;
 
 /** Add your docs here. */
 public class ArmCalculator 
@@ -128,14 +129,14 @@ public class ArmCalculator
     ArrayList<Double> waypointList = new ArrayList<Double>();
 
     // Elevation change only
-    if (Math.abs(angleChange) <= Constants.Diffector.angleTolerance)
+    if (Math.abs(angleChange) <= Constants.DiffectorConstants.angleTolerance)
       {return new double[] {checkPosition(elevationTarget, angleTarget), angleTarget};}
 
     // Arm is not vertical:
     else if
     (
-      Conversions.mod(angleRelative, 180) > Constants.Diffector.angleTolerance && 
-      Conversions.mod(angleRelative, 180) < 180 - Constants.Diffector.angleTolerance  
+      Conversions.mod(angleRelative, 180) > Constants.DiffectorConstants.angleTolerance && 
+      Conversions.mod(angleRelative, 180) < 180 - Constants.DiffectorConstants.angleTolerance  
     )
     {
       // Anticlockwise rotation past both verticals:

@@ -7,7 +7,7 @@ package frc.robot.commands.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.MoveTo;
-import frc.robot.constants.Constants.Diffector.ArmPresets;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Diffector;
 import frc.robot.subsystems.Intake.IntakeStatus;

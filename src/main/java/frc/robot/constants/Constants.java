@@ -249,7 +249,7 @@ public final class Constants
     public static final double algae1Angle        = 100;
     
     /* Preset elevator heights, height of centre of rotation above the ground, metres */
-    public static final double startElevation         = 0.9;//0.574;
+    public static final double startElevation         = 0.574;
     public static final double climbElevation         = minElevation;
     public static final double netElevation           = maxElevation;
     public static final double processorElevation     = 0.5; 
