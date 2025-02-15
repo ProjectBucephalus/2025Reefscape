@@ -3,6 +3,9 @@ package frc.robot.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.lang.model.util.ElementScanner14;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -23,9 +26,11 @@ public class LightLayer
   Color colorOff = LEDStrip.defaultBackColor;
   private CommandSwerveDrivetrain s_Swerve;
   private int startLED;
+  private int startSegment;
   private LEDPattern display;
-  public enum Mode {DRIVERFACE, WHOLESTRIP, TARGETFACE, STATICSEGMENT, STBDSEGMENT, PORTSEGMENT}
+  public enum Mode {DRIVERFACE, WHOLESTRIP, TARGETFACE, STATICSEGMENT, NEARSEGMENT, FARSEGMENT}
   public double progress;
+  private boolean reversed;
   private Mode displayMode;
   public enum LEDType {INDIVIDUAL, PROGRESS, STATUS, POINTER, DISCO}
   private LEDType displayType;
@@ -34,6 +39,8 @@ public class LightLayer
   Color[] statusOff = new Color[statusSegments];
   Color[] statusCol = new Color[statusSegments];
   Translation2d target;
+  double robotAngle = 0;
+  double targetAngle = 0;
   int priority=0;
   String name = "Default";
   int width = LEDStrip.viewWidth;
@@ -54,9 +61,9 @@ public class LightLayer
     displayType = LEDType.PROGRESS;
     for (i=0; i<statusSegments; i++)
     {
-      statusOff[i] = Color.kBlack;
-      statusOn[i] = Color.kGold;
-      statusCol[i] = Color.kBlack;
+      statusOff[i] = colorOff;
+      statusOn[i] = colorOn;
+      statusCol[i] = colorOff;
     }
     if (FieldUtils.isRedAlliance())
     {
@@ -87,23 +94,62 @@ public class LightLayer
     statusCol = new Color[newSegments];
     for (i=0; i<statusSegments; i++)
     {
-      statusOff[i] = Color.kBlack;
-      statusOn[i] = Color.kGold;
-      statusCol[i] = Color.kBlack;
-    }  
+      statusOff[i] = colorOff;
+      statusOn[i] = colorOn;
+      statusCol[i] = colorOff;
+    }
   }
 
   public void setProgress (double newProgress)
     {progress = newProgress;}
-  
+
+  public void setReversed (boolean reverse)
+  {
+    if ((reversed != reverse) && (displayType == LEDType.INDIVIDUAL))
+    {
+      Color tempColor;
+      if (displayMode == Mode.WHOLESTRIP)
+      {
+        for (i = 0; i < (width / 2); i++)
+        {
+          tempColor = lightBuff.getLED(i);
+          lightBuff.setLED(i, lightBuff.getLED((width - 1) - i));
+          lightBuff.setLED((width - 1) - i, tempColor);
+        }
+      }
+      else
+      {
+        for (i = 0; i < (width / 2); i++)
+        {
+          tempColor = shortBuff.getLED(i);
+          shortBuff.setLED(i, shortBuff.getLED((width - 1) - i));
+          shortBuff.setLED((width - 1) - i, tempColor);
+        }
+      }
+    }  
+    reversed = reverse;
+  }
 
   public void setTarget (Translation2d newTarget)
     {target = newTarget;}
 
-  public void setWidth (int newWidth)
+  public void setStart(int LEDStart)
+    {startSegment = LEDStart;}
+
+  public boolean setWidth (int newWidth)
   {
-    width = newWidth;
-    shortBuff = new AddressableLEDBuffer(width);
+    int end = startSegment + newWidth;
+    if (end >= LEDStrip.lightsLen) { end -= LEDStrip.lightsLen; }
+    if (end < (Math.max((LEDStrip.stbdLEDsEnd - LEDStrip.stbdLEDsStart),(LEDStrip.portLEDsEnd-LEDStrip.portLEDsStart))))
+    {
+      width = newWidth;
+      shortBuff = new AddressableLEDBuffer(width);
+      return true;
+    }
+    else
+    {
+      return false;
+    }
   }
 
   public int getWidth()
@@ -198,12 +244,26 @@ public class LightLayer
     if (displayMode != Mode.WHOLESTRIP)
     {
       if (shortBuff.getLength()<num) {return false;}
-      shortBuff.setRGB(num, red, green, blue);
+      if (reversed)
+      {
+        shortBuff.setRGB((width - 1) - num, red, green, blue);
+      }
+      else
+      {
+        shortBuff.setRGB(num, red, green, blue);
+      }
     }
     else
     {
       if (lightBuff.getLength()<num) {return false;}
-      lightBuff.setRGB(num, red, green, blue);
+      if (reversed)
+      {
+        lightBuff.setRGB((width - 1) - num, red, green, blue);
+      }
+      else
+      {
+        lightBuff.setRGB(num, red, green, blue);
+      }
     }
     return true;
   }
@@ -216,6 +276,7 @@ public class LightLayer
       display = LEDPattern.steps(Map.of(0,colorOn,progress,colorOff));
       if (displayMode == Mode.WHOLESTRIP)
       {
+        if (reversed) {display = display.reversed();}
         display.applyTo(lightBuff);
       }
       else
@@ -230,11 +291,12 @@ public class LightLayer
       for (i=0; i<statusSegments; i++)
       {
         statDisPat.put(((double) i) / statusSegments, statusCol[i]);
-        SmartDashboard.putNumber(name + "Status " + i, ((double) i) / statusSegments);
+        //SmartDashboard.putNumber(name + "Status " + i, ((double) i) / statusSegments);
       }
       display = LEDPattern.steps(statDisPat);//Map.of(0,StatusCol[0],0.33,StatusCol[1],0.66,StatusCol[2]));
       if (displayMode == Mode.WHOLESTRIP)
       {
+        if (reversed) {display = display.reversed();}
         display.applyTo(lightBuff);
       }
       else
@@ -255,6 +317,7 @@ public class LightLayer
       }
       if (displayMode == Mode.WHOLESTRIP)
       {
+        if (reversed) {display = display.reversed();}
         display.applyTo(lightBuff);
       }
       else
@@ -284,7 +347,14 @@ public class LightLayer
           if (j >= width) {j-=width;}
           if (displayMode == Mode.WHOLESTRIP)
           {
-            lightBuff.setLED(j, disco.shade);
+            if (reversed)
+            {
+              lightBuff.setLED((width - 1) - j, disco.shade);
+            }
+            else
+            {
+              lightBuff.setLED(j, disco.shade);
+            }
           }
           else
           {
@@ -298,13 +368,40 @@ public class LightLayer
       }
     }
 
+    if ((displayMode != Mode.WHOLESTRIP) && (displayMode != Mode.STATICSEGMENT))
+    {
+      robotAngle = s_Swerve.getState().Pose.getRotation().getDegrees();
+      targetAngle = target.minus(s_Swerve.getState().Pose.getTranslation()).getAngle().getDegrees();
+    }
+
+    if (displayMode == Mode.STATICSEGMENT)
+      {startLED = startSegment;}
+
+    if ((displayMode == Mode.DRIVERFACE) || (displayMode == Mode.TARGETFACE))
+    {
+      startLED = (int)Math.floor((robotAngle - targetAngle)/LEDStrip.degreesPerLED) + LEDStrip.startOffset - (width/2);
+    }
+
+    if (displayMode == Mode.NEARSEGMENT)
+    {
+      if ((robotAngle - targetAngle) < 0)
+        { startLED = LEDStrip.stbdLEDsStart + startSegment; }
+      else
+        { startLED = LEDStrip.portLEDsStart + startSegment; }
+    }
+
+    if (displayMode == Mode.FARSEGMENT)
+    {
+      if ((robotAngle - targetAngle) > 0)
+        { startLED = LEDStrip.stbdLEDsStart + startSegment; }
+      else
+        { startLED = LEDStrip.portLEDsStart + startSegment; }
+    }
+
     if (displayMode != Mode.WHOLESTRIP)
     {
       patternBlack.applyTo(lightBuff);
-      double robotAngle = s_Swerve.getState().Pose.getRotation().getDegrees();
-      double targetAngle = target.minus(s_Swerve.getState().Pose.getTranslation()).getAngle().getDegrees();
-      startLED = (int)Math.floor((robotAngle - targetAngle)/LEDStrip.degreesPerLED) + LEDStrip.startOffset - (width/2);
-
+  
       while ((startLED >= LEDStrip.lightsLen)||(startLED < 0))
       {
         if (startLED >= LEDStrip.lightsLen) {startLED -= LEDStrip.lightsLen;}
@@ -317,7 +414,14 @@ public class LightLayer
         if (j >= LEDStrip.lightsLen) {j -= LEDStrip.lightsLen;}
         if (shortBuff.getLED(i) != Color.kBlack)
         {
-          lightBuff.setLED(j, shortBuff.getLED(i));
+          if (reversed)
+          {
+            lightBuff.setLED(j, shortBuff.getLED((width - 1) - i));
+          }
+          else
+          {
+            lightBuff.setLED(j, shortBuff.getLED(i));
+          }
         }
       }
 
@@ -331,16 +435,12 @@ public class LightLayer
         lightBuff.setLED(i, borderColor);
       }
     }
-    int counter = 0;
     for (i=0; i<LEDBuffer.getLength(); i++)
     {
       if (!(lightBuff.getLED(i).equals(Color.kBlack)))
       {
         LEDBuffer.setLED(i, lightBuff.getLED(i));
-        counter++;
       }
     }
-    SmartDashboard.putNumber(name + ": Not Black LED's", (double)counter);
-//     Lights.setData(Light_Buff);
   }
 }

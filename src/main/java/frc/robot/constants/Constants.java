@@ -419,6 +419,10 @@ public final class Constants
     public static final Color displayBorderColor = Color.kBlue;
     public static final int defaultStatusSegments = 3;
     public static final int pointerGradientThreshold = 5;
+    public static final int stbdLEDsStart = 0;
+    public static final int stbdLEDsEnd = 59;
+    public static final int portLEDsStart = 60;
+    public static final int portLEDsEnd = 119;
     public static final int discoMax = 10;
     public static final int discoMin = 3;
     public static final int discoAgeLimit = 2000; //disco layers will randomly die of age between discoAgeLimit and 2x discoAgeLimit cycles
