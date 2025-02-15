@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,6 +71,8 @@ public class Diffector extends SubsystemBase
 
   private static LocalADStar armPathFinder;
   private double mapScale = 0.1;
+  private double nodeSize = 0.2;
+  private int test = -360;
   private PathConstraints armPathConstraints = new PathConstraints(1, 1, 0, 0);
   private GoalEndState armEndState = new GoalEndState(0, new Rotation2d());
   private static ArrayList<Translation2d> plannedPathPoints = new ArrayList<Translation2d>();
@@ -108,7 +111,7 @@ public class Diffector extends SubsystemBase
 
     ensureInitialized();
     setStartPosition(fromArmRelative(elevation, angle));
-    setGoalPosition(fromArmRelative(elevation, angle));
+    setGoalPosition(fromArmRelative(targetElevation, targetAngle, false));
     plannedPathPoints.clear();
     plannedPathPoints.add(new Translation2d(elevation, angle));
   }
@@ -128,7 +131,7 @@ public class Diffector extends SubsystemBase
    */
   public double getAngle()
     {return ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) + Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) * rotationRatio) / 2;}
-    /**
+  /**
    * Arm Rotation as measured from encoder
    * @return Arm rotation, degrees anticlockwise, 0 = coral at top [0..360]
    */
@@ -147,7 +150,7 @@ public class Diffector extends SubsystemBase
 
     if (targetElevation != oldElevation || targetAngle != oldAngle)
     {
-      setGoalPosition(fromArmRelative(targetElevation, targetAngle));
+      setGoalPosition(fromArmRelative(targetElevation, targetAngle, true));
       setStartPosition(fromArmRelative(elevation, angle));
       oldElevation = targetElevation;
       oldAngle = targetAngle;
@@ -182,7 +185,7 @@ public class Diffector extends SubsystemBase
       }
 
       goToAngle((Math.random()*720)-360);
-      setElevatorTarget((Math.random()*1.5)+0.3);
+      setElevatorTarget((Math.random()));
     }
 
     SmartDashboard.putNumberArray("pathDump", armPath);
@@ -326,7 +329,7 @@ public class Diffector extends SubsystemBase
     {return targetAngle;}
 
   public void setElevatorTarget(double newTarget)
-    {targetElevation = newTarget;}
+    {targetElevation = Math.max(newTarget, Constants.DiffectorConstants.minElevation);}
 
   public double getElevatorTarget()
     {return targetElevation;}
@@ -436,20 +439,36 @@ public class Diffector extends SubsystemBase
  {
     return new Translation2d
     (
-      Math.max((armElevationRotation.getX() - (Constants.DiffectorConstants.minElevation - mapScale)), 0) / mapScale,
+      (Math.max((armElevationRotation.getX() - Constants.DiffectorConstants.minElevation), 0) / mapScale),
       (armElevationRotation.getY() + maxAbsPos) * mapScale
     );
  }
 
  /**
-  * Converts from arm-relative coordinates to the coordinates used by the AD* system
+  * Converts from arm-relative coordinates to the coordinates used by the AD* system 
   * @param armElevation metres over ground
   * @param armRotation total degrees anticlockwise
+  * @param protected ensure the elevation is safe for the given rotation (default false)
   * @return pathfinderXY -> arm state-space mapping
   */
   public Translation2d fromArmRelative(double armElevation, double armRotation)
   {
-    return fromArmRelative(new Translation2d(armElevation, armRotation));
+    {return fromArmRelative(new Translation2d(armElevation, armRotation));}
+  }
+
+  /**
+  * Converts from arm-relative coordinates to the coordinates used by the AD* system 
+  * @param armElevation metres over ground
+  * @param armRotation total degrees anticlockwise
+  * @param protect ensure the elevation is safe for the given rotation (default false)
+  * @return pathfinderXY -> arm state-space mapping
+  */
+  public Translation2d fromArmRelative(double armElevation, double armRotation, boolean protect)
+  {
+    if (protect)
+      {return fromArmRelative(new Translation2d(arm.checkPosition(armElevation, armRotation), armRotation));}
+    else
+      {return fromArmRelative(new Translation2d(armElevation, armRotation));}
   }
 
  /**
@@ -461,7 +480,7 @@ public class Diffector extends SubsystemBase
  {
     return new Translation2d
     (
-      (pathfinderXY.getX() * mapScale) + (Constants.DiffectorConstants.minElevation - mapScale),
+      (pathfinderXY.getX() * mapScale) + Constants.DiffectorConstants.minElevation,
       (pathfinderXY.getY() / mapScale) - maxAbsPos
     );
  }
