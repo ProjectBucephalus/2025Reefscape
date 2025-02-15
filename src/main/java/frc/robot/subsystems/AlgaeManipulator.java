@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.IDConstants;
 
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
@@ -47,7 +48,7 @@ public class AlgaeManipulator extends SubsystemBase
   public AlgaeManipulator() 
   {
     algaeStatus = AlgaeManipulatorStatus.EMPTY;
-    algaeMotor = new VictorSPX(Constants.GamePiecesManipulator.algaeMotorID);
+    algaeMotor = new VictorSPX(IDConstants.algaeManipulatorID);
     algaeStatus = AlgaeManipulatorStatus.EMPTY;
   }
 
