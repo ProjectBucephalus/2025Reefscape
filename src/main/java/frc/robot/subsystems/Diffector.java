@@ -142,6 +142,8 @@ public class Diffector extends SubsystemBase
   }
 
   double[] armPath = new double[2];
+  private double projectionElevation = 0.1;
+  private double projectionAngle     = 10;
   private void calculateMotorTargets()
   {
     ensureInitialized();
@@ -176,21 +178,30 @@ public class Diffector extends SubsystemBase
         {
           plannedPathPoints.add(new Translation2d(arm.checkPosition(targetElevation, targetAngle), targetAngle));
         }
-        armPath = new double[2 * plannedPathPoints.size()];
-        for (int i = 0; i < plannedPathPoints.size(); i++)
-        {
-          armPath[2 * i] = plannedPathPoints.get(i).getX();
-          armPath[2 * i + 1] = plannedPathPoints.get(i).getY();
-        }
       }
 
+    }
+
+
+
+    if (plannedPathPoints.size() != 0)
+    {
+      motorTargets = calculateMotorTargets(plannedPathPoints.get(0).getX(), plannedPathPoints.get(0).getY());
+
+      if 
+      (
+        Math.abs(plannedPathPoints.get(0).getX() - elevation) <= projectionElevation &&
+        Math.abs(plannedPathPoints.get(0).getY() - angle) <= projectionAngle
+      )
+      {
+        plannedPathPoints.remove(0);
+      }
+    }
+    else
+    {
       goToAngle((Math.random()*720)-360);
       setElevatorTarget((Math.random()));
     }
-
-    SmartDashboard.putNumberArray("pathDump", armPath);
-    if (armPath[0] != 0)
-      {motorTargets = calculateMotorTargets(plannedPathPoints.get(1).getX(), plannedPathPoints.get(1).getY());}
   }
 
   /**
@@ -212,6 +223,22 @@ public class Diffector extends SubsystemBase
 
     calculatedTargets[0] = (armTarget / rotationRatio) + (elevatorTarget / travelRatio);
     calculatedTargets[1] = (armTarget / rotationRatio) - (elevatorTarget / travelRatio);
+
+    // Both motors should arive at their targets at about the same time, to ensure elevation and rotation are continious between points
+    double dUA = Math.abs(calculatedTargets[0] - m_diffectorUA.getPosition().getValueAsDouble());
+    double dDA = Math.abs(calculatedTargets[1] - m_diffectorDA.getPosition().getValueAsDouble());
+    if (!(dUA <= 1 || dDA <= 1 || Math.ceil(dUA) == Math.ceil(dDA)))
+    {
+      // If one motor has to go half as far as the other, only target half of that (1/4 of the other)
+      if (dDA < dUA)
+      {
+        calculatedTargets[1] -= (calculatedTargets[1] - m_diffectorDA.getPosition().getValueAsDouble()) * (Math.ceil(dUA - dDA) / Math.ceil(dUA));
+      }
+      else
+      {
+        calculatedTargets[0] -= (calculatedTargets[0] - m_diffectorUA.getPosition().getValueAsDouble()) * (Math.ceil(dDA - dUA) / Math.ceil(dDA));
+      }
+    }
 
     return calculatedTargets;
   }
