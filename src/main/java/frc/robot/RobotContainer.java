@@ -8,10 +8,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
 import frc.robot.commands.*;
 import frc.robot.commands.AlgaeManipulator.*;
 import frc.robot.commands.Auto.*;
@@ -49,11 +47,13 @@ public class RobotContainer
   public static final CommandXboxController copilot   = new CommandXboxController(1);
   public static final CommandXboxController buttonBox = new CommandXboxController(2);
   public static final CommandXboxController testing   = new CommandXboxController(3);
+  public static final CommandXboxController sysID     = new CommandXboxController(4);
 
   /* Subsystems */
   public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
-  public static final Limelight s_LimelightPort = new Limelight("limelight-port");
-  public static final Limelight s_LimelightStbd = new Limelight("limelight-stbd");
+  public static final Limelight s_LimelightPort = new Limelight(IDConstants.llPortName);
+  public static final Limelight s_LimelightStbd = new Limelight(IDConstants.llStbdName);
+  
   public static final Diffector s_Diffector = new Diffector();
   public static final Climber s_Climber = new Climber();
   public static final Intake s_Intake = new Intake();
