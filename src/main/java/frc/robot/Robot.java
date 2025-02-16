@@ -92,7 +92,7 @@ public class Robot extends TimedRobot
       if (DriverStation.getAlliance().isPresent()) 
       {
         allianceKnown = true;
-        if (DriverStation.getAlliance().get() == Alliance.Red) 
+        if (DriverStation.getAlliance().get() == Alliance.Blue) 
         {
           RobotContainer.s_Swerve.getPigeon2().setYaw(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble() + 180);
         }
