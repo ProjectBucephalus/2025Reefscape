@@ -58,7 +58,7 @@ public class CoralManipulator extends SubsystemBase
   }
 
   public CoralManipulatorStatus getStatus()
-    {return coralStatus; }
+    {return coralStatus;}
 
   /**
    * Sets the coral manipulator motor speed
@@ -91,7 +91,7 @@ public class CoralManipulator extends SubsystemBase
         if (RobotContainer.s_Diffector.armPos % 360 <= 180)
           {setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed);} 
         else
-          {setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed); }
+          {setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed);}
         if (!RobotContainer.coral) 
           {coralStatus = CoralManipulatorStatus.DEFAULT; }
         break;

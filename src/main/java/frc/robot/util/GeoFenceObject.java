@@ -218,7 +218,7 @@ public class GeoFenceObject
   }
 
   private Translation2d pointDamping(Translation2d point, Translation2d motionXY, double robotR, Translation2d robotXY)
-      {return pointDamping(point.getX(), point.getY(), motionXY, robotR, robotXY);}
+   {return pointDamping(point.getX(), point.getY(), motionXY, robotR, robotXY);}
   
   private Translation2d pointDamping(double pointX, double pointY, Translation2d motionXY, double robotR, Translation2d robotXY)
   {
@@ -375,7 +375,7 @@ public class GeoFenceObject
       case polygon:
         // If the robot is touching (or past) the inscribed circle, process based on that circle
         if (robotXY.getDistance(centre) <= radius)
-            {return pointDamping(centre, motionXY, robotR, robotXY);}
+					{return pointDamping(centre, motionXY, robotR, robotXY);}
         else 
         {
           /* 

@@ -123,9 +123,7 @@ public class Diffector extends SubsystemBase
     elevatorTarget = Math.min(Constants.DiffectorConstants.maxElevation, elevatorTarget);
 
     if (elevatorTarget < elevatorPos && arm.checkAngle(armPos) > elevatorTarget) 
-    {
-      elevatorTarget = Math.min(Constants.DiffectorConstants.maxElevation, elevatorPos);
-    }
+    	{elevatorTarget = Math.min(Constants.DiffectorConstants.maxElevation, elevatorPos);}
 
     calculatedTargets[0] = (armTarget / rotationRatio) + (elevatorTarget / travelRatio);
     calculatedTargets[1] = (armTarget / rotationRatio) - (elevatorTarget / travelRatio);
@@ -302,13 +300,9 @@ public class Diffector extends SubsystemBase
   public void testingOveride(boolean a, double input)
   {
     if (a)
-    {
-      m_diffectorUA.set(input);
-    }
+    	{m_diffectorUA.set(input);}
     else
-    {
-      m_diffectorDA.set(input);
-    }
+    	{m_diffectorDA.set(input);}
   }
 
   private void updateLocalPos()

@@ -82,9 +82,7 @@ public class AlgaeManipulator extends SubsystemBase
 
       case HOLDING:
         if (RobotContainer.s_Canifier.algaeManiSensor()) 
-        {
-          algaeMotor.set(VictorSPXControlMode.PercentOutput, 0);      
-        } 
+        	{algaeMotor.set(VictorSPXControlMode.PercentOutput, 0);} 
         else
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
         break;

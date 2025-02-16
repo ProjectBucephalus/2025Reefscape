@@ -30,9 +30,7 @@ public class Conversions
     * @return Clamped value
     */
   public static double clamp(double value)
-  {
-    return Conversions.clamp(value, -1, 1);
-  }
+  	{return Conversions.clamp(value, -1, 1);}
 
   /**
    * Clamps values to parameters
@@ -42,9 +40,7 @@ public class Conversions
     * @return Clamped value
     */
   public static double clamp(double value, double min, double max)
-  {
-    return Math.min(Math.max(value, Math.min(min,max)), Math.max(min,max));
-  }
+  	{return Math.min(Math.max(value, Math.min(min,max)), Math.max(min,max));}
 
   /**
    * Clamps values to parameters
@@ -54,9 +50,7 @@ public class Conversions
     * @return Clamped value
     */
   public static int clamp(int value, int min, int max)
-  {
-    return (int) Math.min(Math.max(value, Math.min(min,max)), Math.max(min,max));
-  }
+  	{return (int) Math.min(Math.max(value, Math.min(min,max)), Math.max(min,max));}
   
   /**
    * @param wheelRPS Wheel Velocity: (in Rotations per Second)

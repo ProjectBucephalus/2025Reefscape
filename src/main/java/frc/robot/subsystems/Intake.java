@@ -175,20 +175,16 @@ public class Intake extends SubsystemBase {
   public void coralTestingOveride(boolean b, double input)
   {
     if (b)
-    {
-      m_CoralIntake.set(input);
-    } 
+    	{m_CoralIntake.set(input);} 
     else 
-    {
-      m_CoralArm.set(input);
-    }
+    	{m_CoralArm.set(input);}
   }
     
   @Override
   public void periodic()  
   {
     if (getCoralSwitch1State() || getCoralSwitch2State() && status == IntakeStatus.INTAKE_CORAL)
-    {setIntakeStatus(IntakeStatus.TRANSFER_CORAL);}
+    	{setIntakeStatus(IntakeStatus.TRANSFER_CORAL);}
 
     if (!getAlgaeBeamBreakState() && status == IntakeStatus.INTAKE_ALGAE)
       {touchedAlgae = true;}
