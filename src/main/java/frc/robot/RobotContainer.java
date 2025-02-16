@@ -38,6 +38,8 @@ import frc.robot.util.*;
 public class RobotContainer 
 {
   public enum HeadingStates{UNLOCKED, REEF_LOCK, PROCESSOR_LOCK, STATION_LOCK, CAGE_LOCK}
+  
+  private final Telemetry logger = new Telemetry(Constants.Swerve.maxSpeed);
 
   /* Persistent values for tracking systems */
   public static HeadingStates headingState = HeadingStates.UNLOCKED;
@@ -138,6 +140,8 @@ public class RobotContainer
     configureTestBindings();
     configureRumbleBindings();
     configureSysIDBindings();
+
+    s_Swerve.registerTelemetry(logger::telemeterize);
   }
 
   private void configureDriverBindings()

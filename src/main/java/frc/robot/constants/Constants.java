@@ -1,5 +1,7 @@
 package frc.robot.constants;
 
+import static edu.wpi.first.units.Units.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,7 +69,7 @@ public final class Constants
 
     /* Swerve Limit Values */
     /** Meters per Second */
-    public static final double maxSpeed = 8;
+    public static final double maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     /** Radians per Second */
     public static final double maxAngularVelocity = 4;
   }
