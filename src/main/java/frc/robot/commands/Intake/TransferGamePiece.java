@@ -24,12 +24,12 @@ public class TransferGamePiece extends SequentialCommandGroup
   {
     if (isCoral)
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.coralTransferElevation, Constants.Diffector.coralTransferAngle);
+      diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferElevation, Constants.DiffectorConstants.coralTransferAngle);
       intakeCommand = new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_CORAL);
     } 
     else
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.algaeTransferElevation, Constants.Diffector.algaeTransferAngle);
+      diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferElevation, Constants.DiffectorConstants.algaeTransferAngle);
       intakeCommand = new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE);
     }
 

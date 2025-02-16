@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
+import frc.robot.constants.IDConstants;
 
 /**
  * Intake subsystem, handling the intake wheels, and intake arms.
@@ -57,15 +58,18 @@ public class Intake extends SubsystemBase {
     STAND_BY,
     STOWED,
     TRANSFER_CORAL,
-    TRANSFER_ALGAE
+    TRANSFER_ALGAE,
+    TESTING
   };
   
   public Intake() 
   { 
-    m_AlgaeIntake = new TalonFX(Constants.Intake.algaeIntakeID);
-    m_CoralIntake = new TalonFX(Constants.Intake.coralIntakeID);
-    m_AlgaeArm = new TalonFX(Constants.Intake.algaeArmID);
-    m_CoralArm = new TalonFX(Constants.Intake.coralArmID);
+    status = IntakeStatus.TESTING;
+
+    m_AlgaeIntake = new TalonFX(IDConstants.algaeIntakeRollerID);
+    m_CoralIntake = new TalonFX(IDConstants.coralIntakeRollerID);
+    m_AlgaeArm = new TalonFX(IDConstants.algaeIntakeArmID);
+    m_CoralArm = new TalonFX(IDConstants.coralIntakeArmID);
 
     m_AlgaeArm.getConfigurator().apply(CTREConfigs.intakeTopArmFXConfig);
     m_CoralArm.getConfigurator().apply(CTREConfigs.intakeBottomArmFXConfig);
@@ -75,9 +79,9 @@ public class Intake extends SubsystemBase {
 
     motionMagic = new MotionMagicVoltage(0);
 
-    coralLimitSwitch1 = new DigitalInput(Constants.Intake.coralIntakeDIO1);
-    coralLimitSwitch2 = new DigitalInput(Constants.Intake.coralIntakeDIO2);
-    algaeIntakeBeamBreak    = new DigitalInput(Constants.Intake.algaeIntakeDIO);
+    coralLimitSwitch1 = new DigitalInput(IDConstants.coralIntakeDIOPort);
+    coralLimitSwitch2 = new DigitalInput(IDConstants.coralIntakeDIOStbd);
+    algaeIntakeBeamBreak    = new DigitalInput(IDConstants.algaeIntakeDIO);
   }
 
   public double getTopArmAngle()
@@ -133,8 +137,8 @@ public class Intake extends SubsystemBase {
    * @param status Enum corresponds to the intake motor speeds and
    * arms position
    */
-  public void setIntakeStatus(IntakeStatus status)
-    {this.status = status;}
+  public void setIntakeStatus(IntakeStatus status){}
+    //{this.status = status;}
 
   /**
    * Gets the target the Algae arm wants to go to
@@ -153,11 +157,11 @@ public class Intake extends SubsystemBase {
     {return coralArmTarget;}
 
   public boolean isCoralStowed()
-    {return Constants.Intake.coralStowedLowThreshold < getBottomArmAngle() && getBottomArmAngle() < Constants.Intake.coralStowedHighThreshold;}
+    {return Constants.IntakeConstants.coralStowedLowThreshold < getBottomArmAngle() && getBottomArmAngle() < Constants.IntakeConstants.coralStowedHighThreshold;}
  
 
   public boolean isAlgaeStowed()
-    {return Constants.Intake.algaeStowedLowThreshold < getTopArmAngle() && getTopArmAngle() < Constants.Intake.algaeStowedHighThreshold;}
+    {return Constants.IntakeConstants.algaeStowedLowThreshold < getTopArmAngle() && getTopArmAngle() < Constants.IntakeConstants.algaeStowedHighThreshold;}
   
   public boolean getAlgaeState()
     {return algae;}
@@ -166,8 +170,20 @@ public class Intake extends SubsystemBase {
     {return coral;}
 
   public boolean climbReady()
-    {return (m_AlgaeArm.getPosition()).getValueAsDouble() > Constants.Intake.algaeClimbingArmTarget && m_CoralArm.getPosition().getValueAsDouble() > Constants.Intake.coralClimbingArmTarget;}
+    {return (m_AlgaeArm.getPosition()).getValueAsDouble() > Constants.IntakeConstants.algaeClimbingArmTarget && m_CoralArm.getPosition().getValueAsDouble() > Constants.IntakeConstants.coralClimbingArmTarget;}
 
+  public void coralTestingOveride(boolean b, double input)
+  {
+    if (b)
+    {
+      m_CoralIntake.set(input);
+    } 
+    else 
+    {
+      m_CoralArm.set(input);
+    }
+  }
+    
   @Override
   public void periodic()  
   {
@@ -184,67 +200,70 @@ public class Intake extends SubsystemBase {
 
     switch (status)
     {
+      case TESTING:
+        break;
+      
       case INTAKE_CORAL:
-        setAlgaeIntakeSpeed(Constants.Intake.coralIntakeMotorSpeed);
-        setCoralIntakeSpeed(Constants.Intake.coralIntakeMotorSpeed);
-        setAlgaeArmTarget(Constants.Intake.topCoralIntakeArmTarget);
-        setCoralArmTarget(Constants.Intake.bottomCoralIntakeArmTarget);
+        setAlgaeIntakeSpeed(Constants.IntakeConstants.coralIntakeMotorSpeed);
+        setCoralIntakeSpeed(Constants.IntakeConstants.coralIntakeMotorSpeed);
+        setAlgaeArmTarget(Constants.IntakeConstants.topCoralIntakeArmTarget);
+        setCoralArmTarget(Constants.IntakeConstants.bottomCoralIntakeArmTarget);
         break;
 
       case INTAKE_ALGAE:
-        setAlgaeIntakeSpeed(Constants.Intake.algaeIntakeMotorSpeed);
-        setCoralIntakeSpeed(Constants.Intake.algaeIntakeMotorSpeed);
-        setAlgaeArmTarget(Constants.Intake.topAlgaeIntakeArmTarget);
-        setCoralArmTarget(Constants.Intake.bottomAlgaeIntakeArmTarget);
+        setAlgaeIntakeSpeed(Constants.IntakeConstants.algaeIntakeMotorSpeed);
+        setCoralIntakeSpeed(Constants.IntakeConstants.algaeIntakeMotorSpeed);
+        setAlgaeArmTarget(Constants.IntakeConstants.topAlgaeIntakeArmTarget);
+        setCoralArmTarget(Constants.IntakeConstants.bottomAlgaeIntakeArmTarget);
         break;
 
       case EJECT_CORAL:
-        setAlgaeIntakeSpeed(Constants.Intake.algaeEjectMotorSpeed);
-        setCoralIntakeSpeed(Constants.Intake.algaeEjectMotorSpeed);
-        setAlgaeArmTarget(Constants.Intake.topAlgaeEjectArmTarget);
-        setCoralArmTarget(Constants.Intake.bottomAlgaeEjectArmTarget);
+        setAlgaeIntakeSpeed(Constants.IntakeConstants.coralEjectMotorSpeed);
+        setCoralIntakeSpeed(Constants.IntakeConstants.coralEjectMotorSpeed);
+        setAlgaeArmTarget(Constants.IntakeConstants.topCoralEjectArmTarget);
+        setCoralArmTarget(Constants.IntakeConstants.bottomCoralEjectArmTarget);
         break;
 
       case EJECT_ALGAE:
-        setAlgaeIntakeSpeed(Constants.Intake.coralEjectMotorSpeed);
-        setCoralIntakeSpeed(Constants.Intake.coralEjectMotorSpeed);
-        setAlgaeArmTarget(Constants.Intake.topCoralEjectArmTarget);
-        setCoralArmTarget(Constants.Intake.bottomCoralEjectArmTarget);
+        setAlgaeIntakeSpeed(Constants.IntakeConstants.algaeEjectMotorSpeed);
+        setCoralIntakeSpeed(Constants.IntakeConstants.algaeEjectMotorSpeed);
+        setAlgaeArmTarget(Constants.IntakeConstants.topAlgaeEjectArmTarget);
+        setCoralArmTarget(Constants.IntakeConstants.bottomAlgaeEjectArmTarget);
         break;
 
       case CLIMBING:
-        setAlgaeIntakeSpeed(Constants.Intake.climbingIntakeMotorSpeed);
-        setCoralIntakeSpeed(Constants.Intake.climbingIntakeMotorSpeed);
-        setAlgaeArmTarget(Constants.Intake.algaeClimbingArmTarget);
-        setCoralArmTarget(Constants.Intake.coralClimbingArmTarget);
+        setAlgaeIntakeSpeed(Constants.IntakeConstants.climbingIntakeMotorSpeed);
+        setCoralIntakeSpeed(Constants.IntakeConstants.climbingIntakeMotorSpeed);
+        setAlgaeArmTarget(Constants.IntakeConstants.algaeClimbingArmTarget);
+        setCoralArmTarget(Constants.IntakeConstants.coralClimbingArmTarget);
         break;
 
       case STAND_BY:
-        setAlgaeIntakeSpeed(Constants.Intake.standByMotorSpeed);
-        setCoralIntakeSpeed(Constants.Intake.standByMotorSpeed);
-        setAlgaeArmTarget(Constants.Intake.topStandByArmTarget);
-        setCoralArmTarget(Constants.Intake.bottomStandByArmTarget);
+        setAlgaeIntakeSpeed(Constants.IntakeConstants.standByMotorSpeed);
+        setCoralIntakeSpeed(Constants.IntakeConstants.standByMotorSpeed);
+        setAlgaeArmTarget(Constants.IntakeConstants.topStandByArmTarget);
+        setCoralArmTarget(Constants.IntakeConstants.bottomStandByArmTarget);
         break;
 
       case STOWED:
-        setAlgaeIntakeSpeed(Constants.Intake.stowedMotorSpeed);
-        setCoralIntakeSpeed(Constants.Intake.stowedMotorSpeed);
-        setAlgaeArmTarget(Constants.Intake.topStowedArmTarget);
-        setCoralArmTarget(Constants.Intake.bottomStowedArmTarget);
+        setAlgaeIntakeSpeed(Constants.IntakeConstants.stowedMotorSpeed);
+        setCoralIntakeSpeed(Constants.IntakeConstants.stowedMotorSpeed);
+        setAlgaeArmTarget(Constants.IntakeConstants.topStowedArmTarget);
+        setCoralArmTarget(Constants.IntakeConstants.bottomStowedArmTarget);
         break;
 
       case TRANSFER_CORAL:
-        setAlgaeIntakeSpeed(Constants.Intake.coralTransferMotorSpeed);
-        setCoralIntakeSpeed(Constants.Intake.coralTransferMotorSpeed);
-        setAlgaeArmTarget(Constants.Intake.topCoralTransferArmTarget);
-        setCoralArmTarget(Constants.Intake.bottomCoralTransferArmTarget);
+        setAlgaeIntakeSpeed(Constants.IntakeConstants.coralTransferMotorSpeed);
+        setCoralIntakeSpeed(Constants.IntakeConstants.coralTransferMotorSpeed);
+        setAlgaeArmTarget(Constants.IntakeConstants.topCoralTransferArmTarget);
+        setCoralArmTarget(Constants.IntakeConstants.bottomCoralTransferArmTarget);
         break;
 
       case TRANSFER_ALGAE:
-        setAlgaeIntakeSpeed(Constants.Intake.algaeTransferMotorSpeed);
-        setCoralIntakeSpeed(Constants.Intake.algaeTransferMotorSpeed);
-        setAlgaeArmTarget(Constants.Intake.topAlgaeTransferArmTarget);
-        setCoralArmTarget(Constants.Intake.bottomAlgaeTransferArmTarget);
+        setAlgaeIntakeSpeed(Constants.IntakeConstants.algaeTransferMotorSpeed);
+        setCoralIntakeSpeed(Constants.IntakeConstants.algaeTransferMotorSpeed);
+        setAlgaeArmTarget(Constants.IntakeConstants.topAlgaeTransferArmTarget);
+        setCoralArmTarget(Constants.IntakeConstants.bottomAlgaeTransferArmTarget);
         break;
     }
 

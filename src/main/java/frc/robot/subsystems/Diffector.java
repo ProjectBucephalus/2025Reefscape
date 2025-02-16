@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
@@ -18,7 +19,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
+import frc.robot.constants.IDConstants;
 import frc.robot.util.ArmCalculator;
+import frc.robot.util.Conversions;
 
 public class Diffector extends SubsystemBase 
 {
@@ -28,17 +31,18 @@ public class Diffector extends SubsystemBase
   private final MotionMagicVoltage motionMagicRequester;
   private final double rotationRatio;
   private final double travelRatio;
-  private final TalonFXConfiguration motorConfig;
-  private final double maxAbsPos = Constants.Diffector.maxAbsPos;
-  private final double turnBackThreshold = Constants.Diffector.turnBackThreshold;
-  private final double stowThreshold = Constants.Diffector.angleTolerance;
+  private final TalonFXConfiguration motorConfigUA;
+  private final TalonFXConfiguration motorConfigDA;
+  private final double maxAbsPos = Constants.DiffectorConstants.maxAbsPos;
+  private final double turnBackThreshold = Constants.DiffectorConstants.turnBackThreshold;
+  private final double stowThreshold = Constants.DiffectorConstants.angleTolerance;
   
   /* Name is effect of motor when running clockwise/positive (e.g. elevator Up, arm Clockwise) */
-  /** starboardside motor(?), forward direction drives carriage up and clockwise */
-  private static TalonFX m_diffectorUC;
-  /** portside motor(?), forward direction drives carriage down and clockwise */
-  private static TalonFX m_diffectorDC;
-  private DutyCycleEncoder encoder;
+  /** starboardside motor(?), forward direction drives carriage up and anticlockwise */
+  private static TalonFX m_diffectorUA;
+  /** portside motor(?), forward direction drives carriage down and anticlockwise */
+  private static TalonFX m_diffectorDA;
+  private CANcoder encoder;
 
   private double[] motorTargets = new double[2];
 
@@ -47,32 +51,38 @@ public class Diffector extends SubsystemBase
 
   private double offset;
   private double reverseOffset;
-  private double armPos;
-  private double elevatorPos;
+  public double armPos;
+  public double elevatorPos;
   private static ArmCalculator arm;
 
   /** Creates a new Diffector. */
   public Diffector() 
   {
     arm = new ArmCalculator();
-    motorConfig = CTREConfigs.diffectorFXConfig;
-    rotationRatio = Constants.Diffector.rotationRatio;
-    travelRatio = Constants.Diffector.travelRatio;
+    motorConfigUA = CTREConfigs.diffectorFXConfig;
+    motorConfigDA = motorConfigUA;
+    motorConfigDA.Slot0.kG = -motorConfigUA.Slot0.kG;
+    motorConfigDA.Slot1.kG = -motorConfigUA.Slot1.kG;
+    motorConfigDA.Slot2.kG = -motorConfigUA.Slot2.kG;
 
-    m_diffectorUC = new TalonFX(Constants.Diffector.ucMotorID);
-    m_diffectorDC = new TalonFX(Constants.Diffector.uaMotorID);
-    encoder = new DutyCycleEncoder(Constants.Diffector.encoderPWMID);
+    rotationRatio = Constants.DiffectorConstants.rotationRatio;
+    travelRatio = Constants.DiffectorConstants.travelRatio;
 
-    targetElevation = Constants.Diffector.startElevation;
-    targetAngle = 0;
+    m_diffectorUA = new TalonFX(IDConstants.uaMotorID);
+    m_diffectorDA = new TalonFX(IDConstants.daMotorID);
+    encoder = new CANcoder(IDConstants.armCANcoderID);
 
-    m_diffectorUC.getConfigurator().apply(motorConfig);
-    m_diffectorDC.getConfigurator().apply(motorConfig);
+    targetElevation = Constants.DiffectorConstants.startElevation;
+    targetAngle     = 0;
 
-    m_diffectorUC.setPosition((Constants.Diffector.startAngle / rotationRatio) + (Constants.Diffector.startElevation / travelRatio));
-    m_diffectorDC.setPosition((Constants.Diffector.startAngle / rotationRatio) - (Constants.Diffector.startElevation / travelRatio));
+    m_diffectorUA.getConfigurator().apply(motorConfigUA);
+    m_diffectorDA.getConfigurator().apply(motorConfigDA);
+
+    m_diffectorUA.setPosition(Units.degreesToRotations((Constants.DiffectorConstants.startAngle / rotationRatio) + (Constants.DiffectorConstants.startElevation / travelRatio)));
+    m_diffectorDA.setPosition(Units.degreesToRotations((Constants.DiffectorConstants.startAngle / rotationRatio) - (Constants.DiffectorConstants.startElevation / travelRatio)));
 
     cargoState = updateCargoState();
+    updateLocalPos();
 
     motionMagicRequester = new MotionMagicVoltage(0);
   }
@@ -82,16 +92,15 @@ public class Diffector extends SubsystemBase
    * @return Arm rotation, degrees clockwise, 0 = algae at top
    */
   public double getArmPos()
-    {return (m_diffectorUC.getPosition().getValueAsDouble() + m_diffectorDC.getPosition().getValueAsDouble()) * rotationRatio;}
-
+    {return ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) + Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) * rotationRatio) / 2;}
     /**
    * Arm Rotation as measured from encoder
    * @return Arm rotation, degrees clockwise, 0 = coral at top
    */
   public double getEncoderPos()
   {
-    // Encoder outputs [0..1] and is geared 1:1 to the arm
-    return (1 - encoder.get()) * 360;
+    // Encoder outputs [-1..1] and is geared 1:1 to the arm
+    return Units.rotationsToDegrees(-encoder.getAbsolutePosition().getValueAsDouble());
   }
 
   /**
@@ -99,7 +108,7 @@ public class Diffector extends SubsystemBase
    * @return Elevator height in m
    */
   public double getElevatorPos()
-    {return ((m_diffectorUC.getPosition().getValueAsDouble() - m_diffectorDC.getPosition().getValueAsDouble()) * travelRatio);}
+    {return ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) - Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) / 2) * travelRatio;}
 
   /**
    * Calculates the position to drive each motor to, based on the target positions for the elevator and arm
@@ -109,31 +118,38 @@ public class Diffector extends SubsystemBase
    */
   public double[] calculateMotorTargets(double elevatorTarget, double armTarget)
   {
-    // IK projection and object avoidance
-    double[] projectedTargets = arm.pathfindArm(elevatorTarget, armTarget, elevatorPos, armPos);
-
     double[] calculatedTargets = new double[2];
 
-    calculatedTargets[0] = (projectedTargets[1] / rotationRatio) + (projectedTargets[0] / travelRatio);
-    calculatedTargets[1] = (projectedTargets[1] / rotationRatio) - (projectedTargets[0] / travelRatio);
+    elevatorTarget = Math.min(Constants.DiffectorConstants.maxElevation, elevatorTarget);
+
+    if (elevatorTarget < elevatorPos && arm.checkAngle(armPos) > elevatorTarget) 
+    {
+      elevatorTarget = Math.min(Constants.DiffectorConstants.maxElevation, elevatorPos);
+    }
+
+    calculatedTargets[0] = (armTarget / rotationRatio) + (elevatorTarget / travelRatio);
+    calculatedTargets[1] = (armTarget / rotationRatio) - (elevatorTarget / travelRatio);
 
     return calculatedTargets;
   }
 
   private void calculateMotorTargets()
-    {motorTargets = calculateMotorTargets(targetElevation, targetAngle);}
+  {
+    targetElevation = Math.min(Constants.DiffectorConstants.maxElevation, targetElevation);
+    motorTargets = calculateMotorTargets(targetElevation, targetAngle);
+  }
 
   /** Returns true if the diffector is at its current target angle */
   public boolean armAtAngle()
-    {return Math.abs(getArmPos() - targetAngle) < Constants.Diffector.angleTolerance;}
+    {return Math.abs(armPos - targetAngle) < Constants.DiffectorConstants.angleTolerance;}
 
   /** Returns true if the diffector is at its current target elevation */
   public boolean elevatorAtElevation()
-    {return Math.abs(getElevatorPos() - targetElevation) < Constants.Diffector.elevationTolerance;}
+    {return Math.abs(elevatorPos - targetElevation) < Constants.DiffectorConstants.elevationTolerance;}
 
   /** Returns true if the diffector is safely in climb position */
   public boolean climbReady()
-    {return (targetElevation == Constants.Diffector.climbElevation && elevatorAtElevation());}
+    {return (targetElevation == Constants.DiffectorConstants.climbElevation && elevatorAtElevation());}
 
   /** 
    * Sets the Diffector arm to unwind to starting position 
@@ -141,7 +157,7 @@ public class Diffector extends SubsystemBase
    */
   public boolean unwind()
   {
-    targetAngle = Constants.Diffector.startAngle;
+    targetAngle = Constants.DiffectorConstants.startAngle;
     return (Math.abs(armPos) < stowThreshold);
   }
 
@@ -149,10 +165,10 @@ public class Diffector extends SubsystemBase
    * Sets the Diffector arm to rotate the shortest path to the target angle, with protection against over-rotation
    * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public void goShortest(double targetAngle)
+  public void goShortest(double newTarget)
   {
-    targetAngle %= 360;
-    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
+    newTarget %= 360;
+    offset = MathUtil.inputModulus(newTarget - (armPos % 360), -180, 180);
 
     if (armPos + offset > maxAbsPos)
       {targetAngle = (armPos + offset - 360);}
@@ -168,10 +184,10 @@ public class Diffector extends SubsystemBase
    * Sets the Diffector arm to rotate Clockwise (viewed from bow) to the target angle, with protection against over-rotation
    * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public void goClockwise(double targetAngle)
+  public void goClockwise(double newTarget)
   {
-    targetAngle %= 360;
-    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -360, 0);
+    newTarget %= 360;
+    offset = MathUtil.inputModulus(newTarget - (armPos % 360), -360, 0);
 
     if (armPos + offset > maxAbsPos)
       {targetAngle = (armPos + offset - 360);}
@@ -187,10 +203,10 @@ public class Diffector extends SubsystemBase
    * Sets the Diffector arm to rotate Anticlockwise (viewed from bow) to the target angle, with protection against over-rotation
    * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public void goAnticlockwise(double targetAngle)
+  public void goAnticlockwise(double newTarget)
   {
-    targetAngle %= 360;
-    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), 0, 360);
+    newTarget %= 360;
+    offset = MathUtil.inputModulus(newTarget - (armPos % 360), 0, 360);
 
     if (armPos + offset > maxAbsPos)
       {targetAngle = (armPos + offset - 360);}
@@ -207,10 +223,10 @@ public class Diffector extends SubsystemBase
    * Below a threshold will go shortest path, otherwise will minimise total rotations
    * @param targetAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public void goToAngle(double targetAngle)
+  public void goToAngle(double newTarget)
   {
-    targetAngle %= 360;
-    offset = MathUtil.inputModulus(targetAngle - (armPos % 360), -180, 180);
+    newTarget %= 360;
+    offset = MathUtil.inputModulus(newTarget - (armPos % 360), -180, 180);
 
     if (Math.abs(offset) >= turnBackThreshold)
     {
@@ -243,20 +259,20 @@ public class Diffector extends SubsystemBase
 
   public boolean safeToMoveCoral()
   {
-    return Constants.Diffector.coralElevatorLowTheshold < getElevatorPos() 
-    && getElevatorPos() < Constants.Diffector.coralElevatorHighThreshold;
+    return Constants.DiffectorConstants.coralElevatorLowTheshold < elevatorPos 
+    && elevatorPos < Constants.DiffectorConstants.coralElevatorHighThreshold;
   }
 
   public boolean safeToMoveAlgae()
   {
-    return Constants.Diffector.algaeElevatorLowTheshold < getElevatorPos() 
-    && getElevatorPos() < Constants.Diffector.algaeElevatorHighThreshold;
+    return Constants.DiffectorConstants.algaeElevatorLowTheshold < elevatorPos 
+    && elevatorPos < Constants.DiffectorConstants.algaeElevatorHighThreshold;
   }
 
   public boolean safeToMoveClimber()
   {
-    return Constants.Diffector.climberElevatorLowTheshold < getElevatorPos() 
-    && getElevatorPos() < Constants.Diffector.climberElevatorHighThreshold;
+    return Constants.DiffectorConstants.climberElevatorLowTheshold < elevatorPos 
+    && elevatorPos < Constants.DiffectorConstants.climberElevatorHighThreshold;
   }
 
   /** Returns the ID of the motor control slot to use */
@@ -283,20 +299,41 @@ public class Diffector extends SubsystemBase
       {return CargoStates.EMPTY;}
   }
 
+  public void testingOveride(boolean a, double input)
+  {
+    if (a)
+    {
+      m_diffectorUA.set(input);
+    }
+    else
+    {
+      m_diffectorDA.set(input);
+    }
+  }
+
+  private void updateLocalPos()
+  {
+    armPos = getArmPos();
+    elevatorPos = getElevatorPos();
+  }
+
   @Override
   public void periodic() 
   { 
+    updateLocalPos();
+
     cargoState = updateCargoState(); // TODO: Don't need to call this in periodic, only needs to be called when state changes
 
     calculateMotorTargets();
 
-    m_diffectorUC.setControl(motionMagicRequester.withPosition(motorTargets[0]).withSlot(getSlot()));
-    m_diffectorDC.setControl(motionMagicRequester.withPosition(motorTargets[1]).withSlot(getSlot()));
+    m_diffectorUA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[0])).withSlot(0));//getSlot()));
+    m_diffectorDA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])).withSlot(0));//getSlot()));
 
-    armPos = getArmPos();
-    elevatorPos = getElevatorPos();
-
-    SmartDashboard.putNumber("Elevator Height", getElevatorPos());
-    SmartDashboard.putNumber("Arm Rotation", getArmPos());
+    SmartDashboard.putNumber("UA Error", motorTargets[0] - Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()));
+    SmartDashboard.putNumber("DA Error", motorTargets[1] - Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble()));
+    SmartDashboard.putNumber("Elevator Height", elevatorPos);
+    SmartDashboard.putNumber("Elevator Target", targetElevation);
+    SmartDashboard.putNumber("Arm Rotation", armPos);
+    SmartDashboard.putNumber("Arm Target", targetAngle);
   }
 }
