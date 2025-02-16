@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
@@ -91,7 +92,7 @@ public class TeleopSwerve extends Command
       {
         SmartDashboard.putString("Drive State", "Fenced");
 
-        robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
+        robotSpeed = Math.hypot(RobotContainer.state.Speeds.vxMetersPerSecond, RobotContainer.state.Speeds.vyMetersPerSecond);
         if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
           {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
         else
@@ -105,7 +106,7 @@ public class TeleopSwerve extends Command
         // Outer wall is index 0, so has highest authority by being processed last
         for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
         {
-          Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
+          Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.state.Pose.getTranslation(), motionXY, robotRadius);
           motionXY = inputDamping;
         }
 
