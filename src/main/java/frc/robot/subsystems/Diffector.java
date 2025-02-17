@@ -73,7 +73,7 @@ public class Diffector extends SubsystemBase
   private double mapScale = 0.1;
   private double nodeSize = 0.2;
   private int test = -360;
-  private PathConstraints armPathConstraints = new PathConstraints(1, 1, 0, 0);
+  private PathConstraints armPathConstraints = new PathConstraints(30, 10, 0, 0);
   private GoalEndState armEndState = new GoalEndState(0, new Rotation2d());
   private static ArrayList<Translation2d> plannedPathPoints = new ArrayList<Translation2d>();
 
@@ -103,8 +103,8 @@ public class Diffector extends SubsystemBase
     m_diffectorUA.setPosition(Units.degreesToRotations((Constants.DiffectorConstants.startAngle / rotationRatio) + (Constants.DiffectorConstants.startElevation / travelRatio)));
     m_diffectorDA.setPosition(Units.degreesToRotations((Constants.DiffectorConstants.startAngle / rotationRatio) - (Constants.DiffectorConstants.startElevation / travelRatio)));
 
-    angle = getAngle();
-    elevation = getElevation();
+    calculateAngle();
+    calculateElevation();
     cargoState = updateCargoState();
 
     motionMagicRequester = new MotionMagicVoltage(0);
@@ -117,20 +117,35 @@ public class Diffector extends SubsystemBase
   }
 
   /**
-   * Calculates elevator height based on motor positions
-   * @return Elevator height in m
+   * @return Height of elevator measured from arm-axis to ground, metres
    */
   public double getElevation()
   {
-    {return ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) - Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) / 2) * travelRatio;}
+    {return elevation;}
   }
 
   /**
-   * Calculates arm rotation based on motor positions
-   * @return Arm rotation, degrees anticlockwise, 0 = algae at top
+   * Calculates elevator height based on motor positions
+   * @return Elevator height in m
+   */
+  private double calculateElevation()
+  {
+    {return elevation = ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) - Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) / 2) * travelRatio;}
+  }
+
+  /**
+   * @return Arm rotation, degrees anticlockwise as seen from the front, 0 = coral at top
    */
   public double getAngle()
-    {return ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) + Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) * rotationRatio) / 2;}
+    {return angle;}
+  
+  /**
+   * Calculates arm rotation based on motor positions
+   * @return Arm rotation, degrees anticlockwise, 0 = coral at top
+   */
+  private double calculateAngle()
+    {return angle = ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) + Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) * rotationRatio) / 2;}
+  
   /**
    * Arm Rotation as measured from encoder
    * @return Arm rotation, degrees anticlockwise, 0 = coral at top [0..360]
@@ -162,10 +177,10 @@ public class Diffector extends SubsystemBase
     {
       PathPlannerPath plannedPath = getCurrentPath(armPathConstraints, armEndState);
 
+      plannedPathPoints.clear();
       if (plannedPath != null)
       { 
         List<Waypoint> plannedPathWaypoints = getCurrentPath(armPathConstraints, armEndState).getWaypoints();
-        plannedPathPoints.clear();
         
         if (plannedPathWaypoints != null)
         {
@@ -179,10 +194,7 @@ public class Diffector extends SubsystemBase
           plannedPathPoints.add(new Translation2d(arm.checkPosition(targetElevation, targetAngle), targetAngle));
         }
       }
-
     }
-
-
 
     if (plannedPathPoints.size() != 0)
     {
@@ -200,7 +212,7 @@ public class Diffector extends SubsystemBase
     else
     {
       goToAngle((Math.random()*720)-360);
-      setElevatorTarget((Math.random()));
+      setElevatorTarget((Math.random()*1.3)+0.4);
     }
   }
 
@@ -418,10 +430,10 @@ public class Diffector extends SubsystemBase
   @Override
   public void periodic() 
   { 
-    angle = getAngle();
-    elevation = getElevation();
-    cargoState = updateCargoState(); // TODO: Don't need to call this in periodic, only needs to be called when state changes
- 
+    calculateAngle();
+    calculateElevation();
+    cargoState = updateCargoState();
+
     calculateMotorTargets();
 
     m_diffectorUA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[0])).withSlot(0));//getSlot()));
