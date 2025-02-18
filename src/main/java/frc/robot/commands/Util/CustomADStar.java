@@ -1,11 +1,15 @@
-package com.pathplanner.lib.pathfinding;
+package frc.robot.commands.Util;
 
 import com.pathplanner.lib.path.*;
+import com.pathplanner.lib.pathfinding.Pathfinder;
+
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -22,7 +26,7 @@ import org.json.simple.parser.JSONParser;
  * <p>I would like to apologize to anyone trying to understand this code. The implementation I
  * translated it from was much worse.
  */
-public class LocalADStar implements Pathfinder 
+public class CustomADStar implements Pathfinder 
 {
   private static final double SMOOTHING_ANCHOR_PCT = 0.8;
   private static final double EPS = 2.5;
@@ -64,14 +68,17 @@ public class LocalADStar implements Pathfinder
   private List<GridPosition> currentPathFull = new ArrayList<>();
 
   /** Create a new pathfinder that runs AD* locally in a background thread */
-  public LocalADStar()
+  public CustomADStar()
   {
     this("pathplanner/navgrid.json");
+    SmartDashboard.putBoolean("Existance 1", true);
   }
 
   /** Create a new pathfinder that runs AD* locally in a background thread */
-  public LocalADStar(String navGridFilePath) 
+  public CustomADStar(String navGridFilePath) 
   {
+    SmartDashboard.putBoolean("Existance 2", true);
+
     planningThread = new Thread(this::runThread);
 
     requestStart = new GridPosition(0, 0);

@@ -186,9 +186,9 @@ public final class Constants
     public static final double diffectorMotorKDTwoItem = 0;
 
     /** Desired cruise speed OF MOTOR, RPS */
-    public static final double diffectorMotionMagicCruise = 100;
+    public static final double diffectorMotionMagicCruise = 15; //100
     /** Desired acceleration OF MOTOR, RPS^2 */
-    public static final double diffectorMotionMagicAccel  = 600;
+    public static final double diffectorMotionMagicAccel  = 100; //600
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;

@@ -16,7 +16,6 @@ import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
-import com.pathplanner.lib.pathfinding.LocalADStar;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
@@ -28,6 +27,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.commands.Util.CustomADStar;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IDConstants;
@@ -69,7 +69,7 @@ public class Diffector extends SubsystemBase
   private static ArmCalculator arm;
   public static boolean stowRequested = true;
 
-  private static LocalADStar armPathFinder;
+  private static CustomADStar armPathFinder;
   private double mapScale = 0.1;
   private double nodeSize = 0.2;
   private int test = -360;
@@ -95,13 +95,15 @@ public class Diffector extends SubsystemBase
     encoder = new CANcoder(IDConstants.armCANcoderID);
 
     targetElevation = Constants.DiffectorConstants.startElevation;
-    targetAngle     = 0;
+    targetAngle     = Constants.DiffectorConstants.startAngle;
 
     m_diffectorUA.getConfigurator().apply(motorConfigUA);
     m_diffectorDA.getConfigurator().apply(motorConfigDA);
 
     m_diffectorUA.setPosition(Units.degreesToRotations((Constants.DiffectorConstants.startAngle / rotationRatio) + (Constants.DiffectorConstants.startElevation / travelRatio)));
     m_diffectorDA.setPosition(Units.degreesToRotations((Constants.DiffectorConstants.startAngle / rotationRatio) - (Constants.DiffectorConstants.startElevation / travelRatio)));
+    
+    motorTargets = calculateMotorTargets(targetElevation, targetAngle);
 
     calculateAngle();
     calculateElevation();
@@ -161,20 +163,22 @@ public class Diffector extends SubsystemBase
   private double projectionAngle     = 10;
   private void calculateMotorTargets()
   {
-    ensureInitialized();
-
     targetElevation = Math.min(Constants.DiffectorConstants.maxElevation, targetElevation);
 
     if (targetElevation != oldElevation || targetAngle != oldAngle)
     {
+      targetElevation = arm.checkPosition(targetElevation, targetAngle);
       setGoalPosition(fromArmRelative(targetElevation, targetAngle, true));
       setStartPosition(fromArmRelative(elevation, angle));
       oldElevation = targetElevation;
       oldAngle = targetAngle;
+      SmartDashboard.putBoolean("Existance 1", false);
     }
 
     if (isNewPathAvailable())
     {
+      SmartDashboard.putBoolean("Existance 1", true);
+      
       PathPlannerPath plannedPath = getCurrentPath(armPathConstraints, armEndState);
 
       plannedPathPoints.clear();
@@ -198,6 +202,7 @@ public class Diffector extends SubsystemBase
 
     if (plannedPathPoints.size() != 0)
     {
+      SmartDashboard.putNumberArray("target Point", new double[]{plannedPathPoints.get(0).getX(), plannedPathPoints.get(0).getY()});
       motorTargets = calculateMotorTargets(plannedPathPoints.get(0).getX(), plannedPathPoints.get(0).getY());
 
       if 
@@ -212,7 +217,7 @@ public class Diffector extends SubsystemBase
     else
     {
       goToAngle((Math.random()*720)-360);
-      setElevatorTarget((Math.random()*1.3)+0.4);
+      setElevatorTarget((Math.random()*1.3)-0.4);
     }
   }
 
@@ -235,7 +240,7 @@ public class Diffector extends SubsystemBase
 
     calculatedTargets[0] = (armTarget / rotationRatio) + (elevatorTarget / travelRatio);
     calculatedTargets[1] = (armTarget / rotationRatio) - (elevatorTarget / travelRatio);
-
+/*
     // Both motors should arive at their targets at about the same time, to ensure elevation and rotation are continious between points
     double dUA = Math.abs(calculatedTargets[0] - m_diffectorUA.getPosition().getValueAsDouble());
     double dDA = Math.abs(calculatedTargets[1] - m_diffectorDA.getPosition().getValueAsDouble());
@@ -251,7 +256,7 @@ public class Diffector extends SubsystemBase
         calculatedTargets[0] -= (calculatedTargets[0] - m_diffectorUA.getPosition().getValueAsDouble()) * (Math.ceil(dDA - dUA) / Math.ceil(dDA));
       }
     }
-
+*/
     return calculatedTargets;
   }
 
@@ -453,6 +458,7 @@ public class Diffector extends SubsystemBase
     SmartDashboard.putNumber("UA Error", motorTargets[0] - Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()));
     SmartDashboard.putNumber("DA Error", motorTargets[1] - Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble()));
 
+    SmartDashboard.putNumber("Height over deck", elevation - arm.checkAngle(angle));
   }
 
 
@@ -478,7 +484,7 @@ public class Diffector extends SubsystemBase
  {
     return new Translation2d
     (
-      (Math.max((armElevationRotation.getX() - Constants.DiffectorConstants.minElevation), 0) / mapScale),
+      (Math.max((armElevationRotation.getX() - Constants.DiffectorConstants.minElevation), 0) / mapScale) + (nodeSize),
       (armElevationRotation.getY() + maxAbsPos) * mapScale
     );
  }
@@ -519,7 +525,7 @@ public class Diffector extends SubsystemBase
  {
     return new Translation2d
     (
-      (pathfinderXY.getX() * mapScale) + Constants.DiffectorConstants.minElevation,
+      ((pathfinderXY.getX() - (nodeSize)) * mapScale) + Constants.DiffectorConstants.minElevation,
       (pathfinderXY.getY() / mapScale) - maxAbsPos
     );
  }
@@ -530,7 +536,9 @@ public class Diffector extends SubsystemBase
     if (armPathFinder == null) 
     {
       // Hasn't been initialized yet, use the default implementation
-      armPathFinder = new LocalADStar("armplanner/diffector_navgrid.json");
+      SmartDashboard.putBoolean("Existance 1", false);
+      SmartDashboard.putBoolean("Existance 2", false);
+      armPathFinder = new CustomADStar("armplanner/diffector_navgrid.json");
     }
   }
 
