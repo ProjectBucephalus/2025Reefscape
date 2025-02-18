@@ -161,6 +161,7 @@ public class Diffector extends SubsystemBase
   double[] armPath = new double[2];
   private double projectionElevation = 0.1;
   private double projectionAngle     = 10;
+  private boolean needNewPath = true;
   private void calculateMotorTargets()
   {
     targetElevation = Math.min(Constants.DiffectorConstants.maxElevation, targetElevation);
@@ -200,6 +201,7 @@ public class Diffector extends SubsystemBase
       }
     }
 
+    SmartDashboard.putNumber("pathPoints", plannedPathPoints.size());
     if (plannedPathPoints.size() != 0)
     {
       SmartDashboard.putNumberArray("target Point", new double[]{plannedPathPoints.get(0).getX(), plannedPathPoints.get(0).getY()});
@@ -212,12 +214,14 @@ public class Diffector extends SubsystemBase
       )
       {
         plannedPathPoints.remove(0);
+        needNewPath = true;
       }
     }
-    else
+    else if (needNewPath)
     {
       goToAngle((Math.random()*720)-360);
-      setElevatorTarget((Math.random()*1.3)-0.4);
+      setElevatorTarget((Math.random()*1.3)+0.4);
+      needNewPath = false;
     }
   }
 
