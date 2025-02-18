@@ -162,6 +162,18 @@ public class Diffector extends SubsystemBase
   private double projectionElevation = 0.1;
   private double projectionAngle     = 10;
   private boolean needNewPath = true;
+  int index = 0;
+  private double[] testPoints = new double[]
+  {
+    1.5, 180,
+    0, 90,
+    0, -90,
+    0, 45,
+    1.15, 150,
+    0.4, 0,
+    0.4, 180,
+    0, 0
+  };
   private void calculateMotorTargets()
   {
     targetElevation = Math.min(Constants.DiffectorConstants.maxElevation, targetElevation);
@@ -219,8 +231,9 @@ public class Diffector extends SubsystemBase
     }
     else if (needNewPath)
     {
-      goToAngle((Math.random()*720)-360);
-      setElevatorTarget((Math.random()*1.3)+0.4);
+      setElevatorTarget(testPoints[2 * index]);
+      goToAngle(testPoints[(2 * index) + 1]);
+      if (index < (testPoints.length / 2) -1) index++;
       needNewPath = false;
     }
   }
