@@ -39,7 +39,7 @@ public class DynamicAuto
     ArrayList<Command> commandList = new ArrayList<>();
     
     AutoMapping autoMapValue;
-    Translation2d prevEndPoint = RobotContainer.s_Swerve.getState().Pose.getTranslation();
+    Translation2d prevEndPoint = RobotContainer.state.Pose.getTranslation();
     PathPlannerPath nextPath;
 
     // For each command phrase, adds the associated path and then the associated command to the command list

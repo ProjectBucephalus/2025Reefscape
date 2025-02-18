@@ -1,5 +1,7 @@
 package frc.robot.constants;
 
+import static edu.wpi.first.units.Units.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +27,7 @@ public final class Constants
 
   public static final class Control
   {
-    public static final double stickDeadband = 0.1;
+    public static final double stickDeadband = 0.15;
     /** Normal maximum robot speed, relative to maximum uncapped speed */
     public static final double maxThrottle = 1;
     /** Minimum robot speed when braking, relative to maximum uncapped speed */
@@ -38,8 +40,15 @@ public final class Constants
 
   public static final class Vision
   {
-    public static final int[] validIDs = {17, 18, 19, 20, 21, 22};
-    public static final String limeLightName = "limelight";
+    public static final int[] validIDs = 
+    {
+      //1, 2, 3,               // Red Human Player Stations
+      //4, 5,                  // Red Barge
+      //6, 7, 8, 9, 10, 11,    // Red Reef
+      12, 13, 16,            // Blue Human Player Stations
+      14, 15,                // Blue Barge
+      17, 18, 19, 20, 21, 22 // Blue Reef
+    };
   }
 
   public static final class Swerve
@@ -48,8 +57,8 @@ public final class Constants
     public static final double drivebaseWidth = 0.616;
     public static final double initialHeading = 0;
 
-    /* Drive Motor PID Values */
-    public static final double driveKP = 1.8; //TODO: This must be tuned to specific robot
+    /* Drive PID Values */
+    public static final double driveKP = 5.4; //TODO: This must be tuned to specific robot
     public static final double driveKI = 0.0;
     public static final double driveKD = 0.0;
 
@@ -58,19 +67,19 @@ public final class Constants
     public static final double rotationKI = 0;
     public static final double rotationKD = 0;
 
-    /* Swerve Profiling Values */
+    /* Swerve Limit Values */
     /** Meters per Second */
-    public static final double maxSpeed = 5; // ERROR: Unsure if this value works as it should
+    public static final double maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     /** Radians per Second */
-    public static final double maxAngularVelocity = 6;
+    public static final double maxAngularVelocity = 4;
   }
 
   public static final class Auto
   {   
   /** m/s */
-    public static final double pathplannerMaxSpeed = 5;
+    public static final double pathplannerMaxSpeed = 2;
     /** m/s^2 */
-    public static final double pathplannerMaxAcceleration = 5.5;
+    public static final double pathplannerMaxAcceleration = 2;
     /** degrees/s */
     public static final double pathplannerMaxAngularSpeed = 720;
     /** degrees/s^2 */

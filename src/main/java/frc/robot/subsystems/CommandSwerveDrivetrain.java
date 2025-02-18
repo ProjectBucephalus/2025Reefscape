@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TunerConstants.TunerSwerveDrivetrain;
 
@@ -224,9 +225,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       var config = RobotConfig.fromGUISettings();
       AutoBuilder.configure
       (
-        () -> getState().Pose,   // Supplier of current robot pose
+        () -> RobotContainer.state.Pose,   // Supplier of current robot pose
         this::resetPose,         // Consumer for seeding pose against auto
-        () -> getState().Speeds, // Supplier of current robot speeds
+        () -> RobotContainer.state.Speeds, // Supplier of current robot speeds
         // Consumer of ChassisSpeeds and feedforwards to drive the robot
         (speeds, feedforwards) -> setControl
         (
@@ -325,8 +326,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
       );
     }
-    field.setRobotPose(getState().Pose);
-    SmartDashboard.putNumber("Robot Speed", Math.hypot(getState().Speeds.vxMetersPerSecond, getState().Speeds.vyMetersPerSecond));
+    field.setRobotPose(RobotContainer.state.Pose);
+    SmartDashboard.putNumber("Robot Speed", RobotContainer.state.Speeds.vxMetersPerSecond);
   }
 
   private void startSimThread() 

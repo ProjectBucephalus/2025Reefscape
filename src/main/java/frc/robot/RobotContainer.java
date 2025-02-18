@@ -1,5 +1,8 @@
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -11,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
 import frc.robot.commands.AlgaeManipulator.*;
 import frc.robot.commands.Auto.*;
@@ -38,21 +41,26 @@ import frc.robot.util.*;
 public class RobotContainer 
 {
   public enum HeadingStates{UNLOCKED, REEF_LOCK, PROCESSOR_LOCK, STATION_LOCK, CAGE_LOCK}
+  
+  private final Telemetry logger = new Telemetry(Constants.Swerve.maxSpeed);
 
   /* Persistent values for tracking systems */
   public static HeadingStates headingState = HeadingStates.UNLOCKED;
   public static boolean coral = Constants.DiffectorConstants.startingCoralState;
   public static boolean algae = Constants.DiffectorConstants.startingAlgaeState;
+  public static SwerveDriveState state;
 
   /* Controllers */
   public static final CommandXboxController driver = new CommandXboxController(0);
   public static final CommandXboxController copilot = new CommandXboxController(1);
   public static final CommandXboxController testing = new CommandXboxController(3);
+  public static final CommandXboxController sysID = new CommandXboxController(4);
 
   /* Subsystems */
   public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
-  public static final Limelight s_LimelightPort = new Limelight("limelight-port");
-  public static final Limelight s_LimelightStbd = new Limelight("limelight-stbd");
+  public static final Limelight s_LimelightPort = new Limelight(IDConstants.llPortName);
+  public static final Limelight s_LimelightStbd = new Limelight(IDConstants.llStbdName);
+  
   public static final Diffector s_Diffector = new Diffector();
   public static final Climber s_Climber = new Climber();
   public static final Intake s_Intake = new Intake();
@@ -85,6 +93,8 @@ public class RobotContainer
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() 
   {
+    state = s_Swerve.getState();
+
     SmartDashboard.putBoolean("IgnoreFence", false);
     s_Swerve.setDefaultCommand
     (
@@ -124,7 +134,7 @@ public class RobotContainer
           builder.addDoubleProperty("Back Right Angle", () -> s_Swerve.getModule(3).getCurrentState().angle.getRadians(), null);
           builder.addDoubleProperty("Back Right Velocity", () -> s_Swerve.getModule(3).getCurrentState().speedMetersPerSecond, null);
 
-          builder.addDoubleProperty("Robot Angle", () -> s_Swerve.getState().Pose.getRotation().getRadians(), null);
+          builder.addDoubleProperty("Robot Angle", () -> state.Pose.getRotation().getRadians(), null);
         }
       }
     );
@@ -135,6 +145,9 @@ public class RobotContainer
     configureCopilotBindings();
     configureTestBindings();
     configureRumbleBindings();
+    configureSysIDBindings();
+
+    s_Swerve.registerTelemetry(logger::telemeterize);
   }
 
   private void configureDriverBindings()
@@ -148,7 +161,7 @@ public class RobotContainer
 
     /* Scoring and game piece management controls */
     driver.rightBumper().whileTrue(new DropGamePiece(s_AlgaeManipulator, s_CoralManipulator));
-    driver.back().onTrue(new AutoScoreSequence(s_Diffector, s_AlgaeManipulator, s_CoralManipulator, s_Swerve, () -> s_Swerve.getState().Pose.getTranslation()));
+    driver.back().onTrue(new AutoScoreSequence(s_Diffector, s_AlgaeManipulator, s_CoralManipulator, s_Swerve, () -> state.Pose.getTranslation()));
   }
 
   private void configureAutoDriveBindings()
@@ -172,9 +185,9 @@ public class RobotContainer
       * Station pathfinding controls 
       * Drives to the nearest coral station when the station heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    stationDriveTrigger.and(driver.povUp()).onTrue(new PathfindToStation(5, () -> s_Swerve.getState().Pose.getY(), s_Swerve));
-    stationDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToStation(2, () -> s_Swerve.getState().Pose.getY(), s_Swerve));
-    stationDriveTrigger.and(driver.povRight()).onTrue(new PathfindToStation(8, () -> s_Swerve.getState().Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povUp()).onTrue(new PathfindToStation(5, () -> state.Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToStation(2, () -> state.Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povRight()).onTrue(new PathfindToStation(8, () -> state.Pose.getY(), s_Swerve));
 
     /* 
       * Processor pathfinding control 
@@ -186,9 +199,9 @@ public class RobotContainer
       * Reef pathfinding controls 
       * Drives to the nearest reef face when the reef heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    reefDriveTrigger.and(driver.povUp()).onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
-    reefDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
-    reefDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
+    reefDriveTrigger.and(driver.povUp()).onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> state.Pose.getTranslation(), s_Swerve));
+    reefDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, () -> state.Pose.getTranslation(), s_Swerve));
+    reefDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> state.Pose.getTranslation(), s_Swerve));
 
     /* 
       * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed
@@ -217,7 +230,7 @@ public class RobotContainer
         new TargetHeadingStation
         (
           s_Swerve, 
-          () -> s_Swerve.getState().Pose.getY(),
+          () -> state.Pose.getY(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
           () -> driver.getRawAxis(brakeAxis),
@@ -245,7 +258,7 @@ public class RobotContainer
         new TargetHeadingReef
         (
           s_Swerve, 
-          () -> s_Swerve.getState().Pose.getTranslation(),
+          () -> state.Pose.getTranslation(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
           () -> driver.getRawAxis(brakeAxis),
@@ -350,6 +363,15 @@ public class RobotContainer
     /* Copilot rumble bindings */
     copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_LEFT, "Transfer Ready"));
     copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
+  }
+
+  private void configureSysIDBindings()
+  {
+    sysID.povUp().whileTrue(s_Swerve.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    sysID.povLeft().whileTrue(s_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    sysID.povDown().whileTrue(s_Swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    sysID.povRight().whileTrue(s_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    sysID.leftStick().onTrue(Commands.runOnce(() -> SignalLogger.stop()));
   }
 
   public Command getAutoCommand()
