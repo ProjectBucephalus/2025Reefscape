@@ -25,8 +25,6 @@ import frc.robot.util.GeoFenceObject;
 public class TargetHeadingReef extends Command 
 {
   private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
-    .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
-    .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
     .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
@@ -49,6 +47,7 @@ public class TargetHeadingReef extends Command
   private int nearestReefFace;
   private Translation2d robotPos;
   private Rotation2d targetHeading;
+  private double deadband = Constants.Control.stickDeadband;
 
   public TargetHeadingReef(CommandSwerveDrivetrain s_Swerve, Supplier<Translation2d> posSup, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
@@ -86,6 +85,9 @@ public class TargetHeadingReef extends Command
     strafeVal = strafeSup.getAsDouble();
     brakeVal = brakeSup.getAsDouble();
     motionXY = new Translation2d(translationVal, strafeVal);
+
+    /* Apply deadbands */
+    if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
 
     if (SmartDashboard.getBoolean("Reef Snap Updating", true)) 
       {updateTargetHeading();}

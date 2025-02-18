@@ -20,15 +20,11 @@ public class TeleopSwerve extends Command
 {    
   private final SwerveRequest.FieldCentric driveRequest = new SwerveRequest
     .FieldCentric()
-    .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
-    .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
     .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
   private final SwerveRequest.RobotCentric driveRequestRoboCentric = new SwerveRequest
     .RobotCentric()
-    .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
-    .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
     .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
@@ -48,6 +44,7 @@ public class TeleopSwerve extends Command
     private double brakeVal;
     private GeoFenceObject[] fieldGeoFence;
     private boolean redAlliance;
+    private double deadband = Constants.Control.stickDeadband;
 
   public TeleopSwerve(CommandSwerveDrivetrain s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fieldCentricSup, BooleanSupplier fencedSup) 
   {
@@ -76,13 +73,18 @@ public class TeleopSwerve extends Command
   @Override
   public void execute() 
   {
-    /* Get Values and apply Deadband*/
+    /* Get values */
     rotationVal = rotationSup.getAsDouble();
     translationVal = translationSup.getAsDouble();
     strafeVal = strafeSup.getAsDouble();
     brakeVal = brakeSup.getAsDouble();
     motionXY = new Translation2d(translationVal, strafeVal);
 
+    /* Apply deadbands */
+    if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
+    if (Math.abs(rotationVal) <= deadband) {rotationVal = 0;}
+
+    /* Apply braking */
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     rotationVal *= (Constants.Control.maxRotThrottle - ((Constants.Control.maxRotThrottle - Constants.Control.minRotThrottle) * brakeVal));
     

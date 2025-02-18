@@ -23,8 +23,6 @@ import frc.robot.util.GeoFenceObject;
 public class TargetHeading extends Command 
 {
   private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
-    .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
-    .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
     .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
@@ -44,6 +42,7 @@ public class TargetHeading extends Command
   private double brakeVal;
   
   private Rotation2d targetHeading;
+  private double deadband = Constants.Control.stickDeadband;
 
   public TargetHeading(CommandSwerveDrivetrain s_Swerve, Rotation2d targetHeading, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
@@ -70,8 +69,6 @@ public class TargetHeading extends Command
       {fieldGeoFence = FieldUtils.GeoFencing.fieldBlueGeoFence;}
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
@@ -79,6 +76,9 @@ public class TargetHeading extends Command
     strafeVal = strafeSup.getAsDouble();
     brakeVal = brakeSup.getAsDouble();
     motionXY = new Translation2d(translationVal, strafeVal);
+
+    /* Apply deadbands */
+    if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     
