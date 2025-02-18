@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -370,6 +371,7 @@ public class RobotContainer
     sysID.povLeft().whileTrue(s_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     sysID.povDown().whileTrue(s_Swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse));
     sysID.povRight().whileTrue(s_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    sysID.leftStick().onTrue(Commands.runOnce(() -> SignalLogger.stop()));
   }
 
   public Command getAutoCommand()

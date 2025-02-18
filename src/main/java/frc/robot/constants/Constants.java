@@ -58,7 +58,7 @@ public final class Constants
     public static final double initialHeading = 0;
 
     /* Drive PID Values */
-    public static final double driveKP = 0.1; //TODO: This must be tuned to specific robot
+    public static final double driveKP = 5.4; //TODO: This must be tuned to specific robot
     public static final double driveKI = 0.0;
     public static final double driveKD = 0.0;
 
