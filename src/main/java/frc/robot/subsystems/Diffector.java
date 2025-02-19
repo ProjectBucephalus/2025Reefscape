@@ -169,10 +169,7 @@ public class Diffector extends SubsystemBase
         
         if (plannedPathWaypoints != null)
         {
-          for (Waypoint waypoint : plannedPathWaypoints) 
-          {
-            plannedPathPoints.add(ArmPathPlanner.toArmRelative(waypoint.anchor()));
-          }
+          plannedPathPoints.addAll(plannedPathWaypoints.stream().map(waypoint -> ArmPathPlanner.toArmRelative(waypoint.anchor())).toList());
         }
         else
         {
