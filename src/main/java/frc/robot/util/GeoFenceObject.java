@@ -255,8 +255,7 @@ public class GeoFenceObject
     ArrayList<Translation2d> centresList = new ArrayList<Translation2d>();
     if (objectType == ObjectTypes.polygon) 
     {
-      for(int i = 0; i < edgeLines.size(); i++)
-        {centresList.add(edgeLines.get(i).centre);}
+      centresList.addAll(edgeLines.stream().map(edgeLine -> edgeLine.centre).toList());
     }
     centresList.add(centre);
     return centresList;
