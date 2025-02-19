@@ -255,6 +255,8 @@ public final class Constants
     public static final double coralStationAngle  = 240;
     public static final double algae2Angle        = 110;
     public static final double algae1Angle        = 100;
+    public static final double algaeStowAngle     = 0;
+    public static final double coralStowAngle     = 180;
     
     /* Preset elevator heights, height of centre of rotation above the ground, metres */
     public static final double startElevation         = 0.574;
@@ -270,6 +272,8 @@ public final class Constants
     public static final double coralStationElevation  = 1.0;
     public static final double algae2Elevation        = 1.5;
     public static final double algae1Elevation        = 1.3;
+    public static final double algaeStowElevation     = 1.0;
+    public static final double coralStowElevation     = 0.75;
     
     public static final class IKGeometry
     {

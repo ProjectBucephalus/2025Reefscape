@@ -277,7 +277,7 @@ public class RobotContainer
     copilot.x().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(3, s_Diffector, s_CoralManipulator));   //L3 scoring
     copilot.y().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(4, s_Diffector, s_CoralManipulator));   //L4 scoring
         
-    /* Algae scoring controls */
+    /* Algae scoring/intaking controls */
     copilot.a().and(copilot.rightTrigger()).onTrue(new ScoreAlgaeSequence(false, s_Diffector, s_AlgaeManipulator));           //Processor scoring
     copilot.b().and(copilot.rightTrigger()).onTrue(new IntakeAlgaeSequence(true, s_Diffector, s_AlgaeManipulator));  //L2 pick up
     copilot.x().and(copilot.rightTrigger()).onTrue(new IntakeAlgaeSequence(false, s_Diffector, s_AlgaeManipulator)); //L3 pick up
@@ -297,9 +297,9 @@ public class RobotContainer
 
     /* Stow position controls */
     copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));          //Intake to stow algae
-    copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE));                //Algae manipulator to stowed
+    copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeStowElevation, Constants.DiffectorConstants.algaeStowAngle));                //Algae manipulator to stowed
     copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED)); //Intake to stow coral
-    copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.INTAKE));       //Coral manipulator to stowed
+    copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralStowElevation, Constants.DiffectorConstants.coralStowAngle));       //Coral manipulator to stowed
 
     // Intake from coral station
     copilot.povLeft().onTrue(new IntakeCoralSequence(s_Diffector, s_CoralManipulator)); //Coral to manipulator from coral station
