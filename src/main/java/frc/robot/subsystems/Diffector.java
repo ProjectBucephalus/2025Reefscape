@@ -131,16 +131,25 @@ public class Diffector extends SubsystemBase
    * @return Arm rotation, degrees anticlockwise, 0 = coral at top
    */
   private double calculateAngle()
-    {return angle = ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) + Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) * rotationRatio) / 2;}
+  {
+    angle = ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) + Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) * rotationRatio) / 2;
+    if (Math.floor(angle) != Math.floor(getEncoderPos()))
+    {
+      angle = getEncoderPos();
+      m_diffectorUA.setPosition(Units.degreesToRotations((angle / rotationRatio) + (elevation / travelRatio)));
+      m_diffectorDA.setPosition(Units.degreesToRotations((angle / rotationRatio) - (elevation / travelRatio)));
+    }
+    return angle;
+  }
   
   /**
    * Arm Rotation as measured from encoder
-   * @return Arm rotation, degrees anticlockwise, 0 = coral at top [0..360]
+   * @return Arm rotation, degrees anticlockwise, 0 = coral at top
    */
   public double getEncoderPos()
   {
-    // Encoder outputs [-1..1] and is geared 1:1 to the arm
-    return Units.rotationsToDegrees(-encoder.getAbsolutePosition().getValueAsDouble());
+    // Encoder outputs is geared 1:1 to the arm, so output is inverted
+    return Units.rotationsToDegrees(-encoder.getPosition().getValueAsDouble());
   }
 
   private void calculatePath()
@@ -308,8 +317,8 @@ public class Diffector extends SubsystemBase
   @Override
   public void periodic() 
   { 
-    calculateAngle();
     calculateElevation();
+    calculateAngle();
     cargoState = updateCargoState();
 
     calculatePath();
@@ -329,6 +338,7 @@ public class Diffector extends SubsystemBase
     SmartDashboard.putNumber("DA Error", motorTargets[1] - Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble()));
 
     SmartDashboard.putNumber("Height over deck", elevation - arm.checkAngle(angle));
+    SmartDashboard.putNumber("Encoder Reading", getEncoderPos());
   }
 
 }
