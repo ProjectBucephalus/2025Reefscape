@@ -6,8 +6,8 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.commands.AlgaeManipulator.EjectAlgae;
-import frc.robot.commands.CoralManipulator.EjectCoral;
+import frc.robot.commands.AlgaeManipulator.*;
+import frc.robot.commands.CoralManipulator.*;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
@@ -41,10 +41,10 @@ public class DropGamePiece extends Command
       if (RobotContainer.copilot.rightTrigger().getAsBoolean())
         {new EjectAlgae(s_AlgaeManipulator).schedule();}
       else
-        {new EjectCoral(s_CoralManipulator).schedule();}
+        {new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY).schedule();}
     }
     else if (coral)
-      {new EjectCoral(s_CoralManipulator).schedule();}
+      {new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY).schedule();}
     else if (algae)
       {new EjectAlgae(s_AlgaeManipulator).schedule();}
   }

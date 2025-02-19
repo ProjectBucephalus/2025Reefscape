@@ -34,7 +34,7 @@ public class EjectAlgae extends Command
     if (Math.abs(RobotContainer.s_Diffector.getEncoderPos()) < 60) 
       {cancel = true;}
     else
-      {s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET);}
+      {s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.PROCESSOR);}
   }
 
   // Returns true when the command should end.

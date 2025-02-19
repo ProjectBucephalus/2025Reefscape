@@ -13,7 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.commands.AlgaeManipulator.IntakeAlgaeSequence;
-import frc.robot.commands.AlgaeManipulator.ScoreAlgae;
+import frc.robot.commands.AlgaeManipulator.ScoreAlgaeSequence;
 import frc.robot.commands.CoralManipulator.IntakeCoralSequence;
 import frc.robot.util.FieldUtils;
 
@@ -151,10 +151,10 @@ public final class Constants
         put("a4" , new AutoMapping("a4" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
         put("a5" , new AutoMapping("a5" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
         put("a6" , new AutoMapping("a6" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-        put("b1" , new AutoMapping("b1" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-        put("b2" , new AutoMapping("b2" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-        put("b3" , new AutoMapping("b3" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-        put("p"  , new AutoMapping("p"  , () -> new ScoreAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+        put("b1" , new AutoMapping("b1" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+        put("b2" , new AutoMapping("b2" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+        put("b3" , new AutoMapping("b3" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+        put("p"  , new AutoMapping("p"  , () -> new ScoreAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
       }
     };
 
@@ -306,7 +306,7 @@ public final class Constants
     /* Coral manipulator speeds */
     public static final double coralManipulatorBaseIntakeSpeed = 0.2;
     public static final double coralManipulatorMaxIntakeSpeed  = 0.4;
-    public static final double coralManipulatorDeliverySpeed   = 0.9;
+    public static final double coralManipulatorDeliverySpeed   = 0.7;
     public static final double coralManipulatorHoldingVoltage  = 0;
 
     /* Algae manipulator speeds */
