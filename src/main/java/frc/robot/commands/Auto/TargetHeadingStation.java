@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
@@ -23,10 +24,10 @@ import frc.robot.util.GeoFenceObject;
 public class TargetHeadingStation extends Command 
 {
   private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
-    .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
-    .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
     .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+
+  private double deadband = Constants.Control.stickDeadband;
 
   private CommandSwerveDrivetrain s_Swerve;    
   private DoubleSupplier translationSup;
@@ -84,6 +85,9 @@ public class TargetHeadingStation extends Command
     brakeVal = brakeSup.getAsDouble();
     motionXY = new Translation2d(translationVal, strafeVal);
 
+    /* Apply deadbands */
+    if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
+
     if (SmartDashboard.getBoolean("Reef Snap Updating", true)) 
       {updateTargetHeading();}
 
@@ -93,7 +97,7 @@ public class TargetHeadingStation extends Command
     {
       SmartDashboard.putString("Drive State", "Fenced");
 
-      robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
+      robotSpeed = Math.hypot(RobotContainer.state.Speeds.vxMetersPerSecond, RobotContainer.state.Speeds.vyMetersPerSecond);
       if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
         {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
       else
@@ -107,7 +111,7 @@ public class TargetHeadingStation extends Command
       // Outer wall is index 0, so has highest authority by being processed last
       for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
       {
-        Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
+        Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.state.Pose.getTranslation(), motionXY, robotRadius);
         motionXY = inputDamping;
       }
 

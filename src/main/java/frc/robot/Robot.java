@@ -63,12 +63,14 @@ public class Robot extends TimedRobot
   @Override
   public void robotPeriodic() 
   {
-    CommandScheduler.getInstance().run();
+    robotPose = RobotContainer.state.Pose;
 
-    robotPose = RobotContainer.s_Swerve.getState().Pose;
-
-    if (robotPose.getX() < 0.75 && robotPose.getY() < 0.75) 
+    if (robotPose.getX() == 0 && robotPose.getY() == 0) 
       {RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, 1, robotPose.getRotation()));}
+
+    RobotContainer.state = RobotContainer.s_Swerve.getState();
+
+    CommandScheduler.getInstance().run();
 
     SmartDashboard.putBoolean("Unlock Heading Trigger", RobotContainer.unlockHeadingTrigger.getAsBoolean());
     SmartDashboard.putString("Heading State", RobotContainer.headingState.toString());

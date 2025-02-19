@@ -1,5 +1,7 @@
 package frc.robot.constants;
 
+import static edu.wpi.first.units.Units.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +27,7 @@ public final class Constants
 
   public static final class Control
   {
-    public static final double stickDeadband = 0.1;
+    public static final double stickDeadband = 0.15;
     /** Normal maximum robot speed, relative to maximum uncapped speed */
     public static final double maxThrottle = 1;
     /** Minimum robot speed when braking, relative to maximum uncapped speed */
@@ -56,7 +58,7 @@ public final class Constants
     public static final double initialHeading = 0;
 
     /* Drive PID Values */
-    public static final double driveKP = 0.1; //TODO: This must be tuned to specific robot
+    public static final double driveKP = 5.4; //TODO: This must be tuned to specific robot
     public static final double driveKI = 0.0;
     public static final double driveKD = 0.0;
 
@@ -67,7 +69,7 @@ public final class Constants
 
     /* Swerve Limit Values */
     /** Meters per Second */
-    public static final double maxSpeed = 8;
+    public static final double maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     /** Radians per Second */
     public static final double maxAngularVelocity = 4;
   }

@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
@@ -19,15 +20,11 @@ public class TeleopSwerve extends Command
 {    
   private final SwerveRequest.FieldCentric driveRequest = new SwerveRequest
     .FieldCentric()
-    .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
-    .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
     .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
   private final SwerveRequest.RobotCentric driveRequestRoboCentric = new SwerveRequest
     .RobotCentric()
-    .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
-    .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
     .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
@@ -47,6 +44,7 @@ public class TeleopSwerve extends Command
     private double brakeVal;
     private GeoFenceObject[] fieldGeoFence;
     private boolean redAlliance;
+    private double deadband = Constants.Control.stickDeadband;
 
   public TeleopSwerve(CommandSwerveDrivetrain s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fieldCentricSup, BooleanSupplier fencedSup) 
   {
@@ -75,13 +73,18 @@ public class TeleopSwerve extends Command
   @Override
   public void execute() 
   {
-    /* Get Values and apply Deadband*/
+    /* Get values */
     rotationVal = rotationSup.getAsDouble();
     translationVal = translationSup.getAsDouble();
     strafeVal = strafeSup.getAsDouble();
     brakeVal = brakeSup.getAsDouble();
     motionXY = new Translation2d(translationVal, strafeVal);
 
+    /* Apply deadbands */
+    if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
+    if (Math.abs(rotationVal) <= deadband) {rotationVal = 0;}
+
+    /* Apply braking */
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     rotationVal *= (Constants.Control.maxRotThrottle - ((Constants.Control.maxRotThrottle - Constants.Control.minRotThrottle) * brakeVal));
     
@@ -91,7 +94,7 @@ public class TeleopSwerve extends Command
       {
         SmartDashboard.putString("Drive State", "Fenced");
 
-        robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
+        robotSpeed = Math.hypot(RobotContainer.state.Speeds.vxMetersPerSecond, RobotContainer.state.Speeds.vyMetersPerSecond);
         if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
           {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
         else
@@ -105,7 +108,7 @@ public class TeleopSwerve extends Command
         // Outer wall is index 0, so has highest authority by being processed last
         for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
         {
-          Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
+          Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.state.Pose.getTranslation(), motionXY, robotRadius);
           motionXY = inputDamping;
         }
 

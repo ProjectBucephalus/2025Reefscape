@@ -96,7 +96,7 @@ public class CoralManipulator extends SubsystemBase
           {coralStatus = CoralManipulatorStatus.DEFAULT; }
         break;
 
-      case DEFAULT:
+      case DEFAULT: // TODO Loop overrun
         intakeSpeedError = Conversions.clamp
         (
           (1 + Conversions.clamp(holdErrorTracker / Constants.GamePiecesManipulator.coralHoldingScalar)) 
