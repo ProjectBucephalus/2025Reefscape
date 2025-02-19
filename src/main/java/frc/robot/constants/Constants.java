@@ -224,7 +224,7 @@ public final class Constants
 
     public static final double maxRotation = 1;
     /** Maximum total angle the arm is allowed to rotate away from centre */
-    public static final double maxAbsPos = maxRotation * 360;
+    public static final double maxAbsAngle = maxRotation * 360;
     /** Above this angle, the arm can turn towards centre even if it's a longer path */
     public static final double turnBackThreshold = 135;
 
