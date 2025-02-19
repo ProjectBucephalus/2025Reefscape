@@ -62,8 +62,8 @@ public class Diffector extends SubsystemBase
   /** Elevation is scaled up and Rotation is scaled down by this factor for the pathplanner map */
   private double projectionElevation = 0.1;
   private double projectionAngle     = 10;
-  private PathConstraints armPathConstraints = new PathConstraints(30, 10, 0, 0);
-  private GoalEndState armEndState = new GoalEndState(0, new Rotation2d());
+  //private PathConstraints armPathConstraints = new PathConstraints(1, 1, 0, 0);
+  //private GoalEndState armEndState = new GoalEndState(0, Rotation2d.kZero);
   private static ArrayList<Translation2d> plannedPathPoints = new ArrayList<Translation2d>();
 
   /** Creates a new Diffector. */
@@ -150,13 +150,15 @@ public class Diffector extends SubsystemBase
     if (targetElevation != oldElevation || targetAngle != oldAngle)
     {
       targetElevation = arm.checkPosition(targetElevation, targetAngle);
-      ArmPathPlanner.setGoalPosition(ArmPathPlanner.fromArmRelative(targetElevation, targetAngle, true));
-      ArmPathPlanner.setStartPosition(ArmPathPlanner.fromArmRelative(elevation, angle));
+      //ArmPathPlanner.setGoalPosition(ArmPathPlanner.fromArmRelative(targetElevation, targetAngle, true));
+      //ArmPathPlanner.setStartPosition(ArmPathPlanner.fromArmRelative(elevation, angle));
       oldElevation = targetElevation;
       oldAngle = targetAngle;
+
+      plannedPathPoints = arm.pathfindArm(targetElevation, targetAngle, elevation, angle);
     }
 
-    if (ArmPathPlanner.isNewPathAvailable())
+    /*if (ArmPathPlanner.isNewPathAvailable())
     {      
       PathPlannerPath plannedPath = ArmPathPlanner.getCurrentPath(armPathConstraints, armEndState);
 
@@ -174,7 +176,7 @@ public class Diffector extends SubsystemBase
           plannedPathPoints.add(new Translation2d(arm.checkPosition(targetElevation, targetAngle), targetAngle));
         }
       }
-    }
+    }*/
 
     if (plannedPathPoints.size() != 0)
     {
@@ -212,23 +214,6 @@ public class Diffector extends SubsystemBase
     calculatedTargets[0] = (angleTarget / rotationRatio) + (elevationTarget / travelRatio);
     calculatedTargets[1] = (angleTarget / rotationRatio) - (elevationTarget / travelRatio);
 
-/* // TODO: Test this feature
-    // Both motors should arive at their targets at about the same time, to ensure elevation and rotation are continious between points
-    double dUA = Math.abs(calculatedTargets[0] - m_diffectorUA.getPosition().getValueAsDouble());
-    double dDA = Math.abs(calculatedTargets[1] - m_diffectorDA.getPosition().getValueAsDouble());
-    if (!(dUA <= 1 || dDA <= 1 || Math.ceil(dUA) == Math.ceil(dDA)))
-    {
-      // If one motor has to go half as far as the other, only target half of that (1/4 of the other)
-      if (dDA < dUA)
-      {
-        calculatedTargets[1] -= (calculatedTargets[1] - m_diffectorDA.getPosition().getValueAsDouble()) * (Math.ceil(dUA - dDA) / Math.ceil(dUA));
-      }
-      else
-      {
-        calculatedTargets[0] -= (calculatedTargets[0] - m_diffectorUA.getPosition().getValueAsDouble()) * (Math.ceil(dDA - dUA) / Math.ceil(dDA));
-      }
-    }
-*/
     return calculatedTargets;
   }
 

@@ -27,19 +27,19 @@ public class GoToCoralScorePos extends Command
   {
     switch (level)
     {
-      case 1:
+      case 4:
         moveCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.reef4Elevation, Constants.DiffectorConstants.reef4Angle);
         break;
 
-      case 2:
+      case 3:
         moveCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.reef3Elevation, Constants.DiffectorConstants.reef3Angle);
         break;
 
-      case 3:
+      case 2:
         moveCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.reef2Elevation, Constants.DiffectorConstants.reef2Angle);
         break;
 
-      case 4:
+      case 1:
         moveCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.reef1Elevation, Constants.DiffectorConstants.reef1Angle);
         break;
     }

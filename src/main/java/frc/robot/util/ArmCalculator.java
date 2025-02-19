@@ -119,24 +119,31 @@ public class ArmCalculator
    * @param angleCurrent current angle of the arm, degrees anticlockwise, 0 = unwound with coral at top
    * @return double array containing the projected path, elevation/angle pairs
    */
-  public double[] pathfindArm(double elevationTarget, double angleTarget, double elevationCurrent, double angleCurrent)
+  public ArrayList<Translation2d> pathfindArm(double elevationTarget, double angleTarget, double elevationCurrent, double angleCurrent)
   {
     elevationCurrent = Conversions.clamp(elevationCurrent,minElevation,maxElevation);
     elevationTarget  = Conversions.clamp(elevationTarget,minElevation,maxElevation);
 
+    ArrayList<Translation2d> pathOutput = new ArrayList<Translation2d>();
+
     // Full intended path of arm is above safe limits, path is safe as given
     if (elevationCurrent >= safeElevation && elevationTarget >= safeElevation)
-      {return new double[] {elevationTarget, angleTarget};}
+    {
+      pathOutput.add(new Translation2d(elevationTarget, angleTarget));
+      return pathOutput;
+    }
 
     double angleChange = angleTarget - angleCurrent;
     double angleRelative = Conversions.mod(angleCurrent, 360);
 
-    double[] waypoints;
     ArrayList<Double> waypointList = new ArrayList<Double>();
 
     // Elevation change only
     if (Math.abs(angleChange) <= Constants.DiffectorConstants.angleTolerance)
-      {return new double[] {checkPosition(elevationTarget, angleTarget), angleTarget};}
+    {
+      pathOutput.add(new Translation2d(checkPosition(elevationTarget, angleTarget), angleTarget));
+      return pathOutput;
+    }
 
     // Arm is not vertical:
     else if
@@ -230,11 +237,10 @@ public class ArmCalculator
       waypointList.add(1, (angleCurrent + waypointHold) / 2);
     }
 
-    // Convert waypoint ArrayList to double primative array to return
-    waypoints = new double[waypointList.size()];
-    for (int i = 0; i < waypointList.size(); i++) 
-      {waypoints[i] = (double) waypointList.get(i);}
-    return waypoints;
+    // Convert waypoint ArrayList to Translation2d array to return
+    for (int i = 0; i < waypointList.size() / 2; i++) 
+      {pathOutput.add(new Translation2d(waypointList.get(2 * i), waypointList.get((2 * i) + 1)));}
+    return pathOutput;
   }
 
   /**

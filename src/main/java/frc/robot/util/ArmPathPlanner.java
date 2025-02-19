@@ -48,7 +48,7 @@ public class ArmPathPlanner
  {
     return new Translation2d
     (
-      (Math.max((armElevationRotation.getX() - minElevation), 0) / mapScale) + (nodeSize),
+      (Math.max((armElevationRotation.getX() - minElevation), 0) / mapScale) + (2 * nodeSize),
       (armElevationRotation.getY() + maxAbsAngle) * mapScale
     );
  }
@@ -89,7 +89,7 @@ public class ArmPathPlanner
  {
     return new Translation2d
     (
-      ((pathfinderXY.getX() - (nodeSize)) * mapScale) + minElevation,
+      ((pathfinderXY.getX() - (2 * nodeSize)) * mapScale) + minElevation,
       (pathfinderXY.getY() / mapScale) - maxAbsAngle
     );
  }
