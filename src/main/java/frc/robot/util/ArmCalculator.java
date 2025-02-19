@@ -6,12 +6,15 @@ package frc.robot.util;
 
 import java.util.ArrayList;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
+import frc.robot.subsystems.Diffector;
 
 /** Add your docs here. */
 public class ArmCalculator 
@@ -20,6 +23,8 @@ public class ArmCalculator
   private double maxElevation;
   private double safeElevation;
   private double projectionAngle;
+  private double projectionElevation;
+  private double waypointHold;
 
   private double railHeight;
   private double railLateral;
@@ -36,6 +41,11 @@ public class ArmCalculator
   private double algaeClawLength;
   private double algaeInnerLength;
   private double algaeInnerAngle;
+  private double offset;
+  private double angle; 
+  private double maxAbsPos;
+  private double reverseOffset;
+  private double turnBackThreshold;
 
   private Translation2d coralA, coralC;
   private Translation2d algaeOuterA, algaeOuterC;
@@ -53,6 +63,7 @@ public class ArmCalculator
     maxElevation  = Constants.DiffectorConstants.maxElevation;
     minElevation  = Constants.DiffectorConstants.minElevation;
     projectionAngle = IKGeometry.projectionAngle;
+    projectionElevation = IKGeometry.projectionElevation;
     
     railHeight    = IKGeometry.railHeight;
     railLateral   = IKGeometry.railLateral;
@@ -97,7 +108,7 @@ public class ArmCalculator
       algaeWheelC  // [9] // Clockwise limit of Algae wheel
     };
     
-    armGeometryRotated = armGeometry;
+    armGeometryRotated = armGeometry.clone();
   }
 
   /**
@@ -118,92 +129,105 @@ public class ArmCalculator
       {return new double[] {elevationTarget, angleTarget};}
 
     double angleChange = angleTarget - angleCurrent;
-    double angleRelative = angleCurrent % 360;
+    double angleRelative = Conversions.mod(angleCurrent, 360);
 
     double[] waypoints;
     ArrayList<Double> waypointList = new ArrayList<Double>();
 
     // Elevation change only
-    if (angleChange == 0)
+    if (Math.abs(angleChange) <= Constants.DiffectorConstants.angleTolerance)
       {return new double[] {checkPosition(elevationTarget, angleTarget), angleTarget};}
 
-    // Anticlockwise rotation past both verticals:
-    if 
+    // Arm is not vertical:
+    else if
     (
-      // Angle change greater than one rotation
-      angleChange >= 360 ||
-      // Or relative angle change goes past both verticals
-      (angleRelative < 180 && angleRelative + angleChange >= 360)
+      Conversions.mod(angleRelative, 180) > Constants.DiffectorConstants.angleTolerance && 
+      Conversions.mod(angleRelative, 180) < 180 - Constants.DiffectorConstants.angleTolerance  
     )
     {
-      // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
-      waypointList.add(safeElevation);
-      waypointList.add(angleTarget - (angleTarget % 180));
-    }
+      // Anticlockwise rotation past both verticals:
+      if 
+      (
+        // Angle change greater than one rotation
+        angleChange >= 360 ||
+        // Or relative angle change goes past both verticals
+        (angleRelative < 180 && angleRelative + angleChange >= 360)
+      )
+      {
+        // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
+        waypointList.add(safeElevation);
+        waypointList.add(angleTarget - Conversions.mod(angleTarget, 180));
+      }
 
-    // Clockwise rotation past both verticals:
-    else if 
-    (
-      // Angle change greater than one rotation
-      angleChange <= -360 ||
-      // Or relative angle change goes past both verticals
-      (angleRelative > 180 && angleRelative + angleChange <= 0)
-    )
-    {
-      // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
-      waypointList.add(safeElevation);
-      waypointList.add(angleTarget + (-angleTarget % 180));
-    }
+      // Clockwise rotation past both verticals:
+      else if 
+      (
+        // Angle change greater than one rotation
+        angleChange <= -360 ||
+        // Or relative angle change goes past both verticals
+        (angleRelative > 180 && angleRelative + angleChange <= 0)
+      )
+      {
+        // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
+        waypointList.add(safeElevation);
+        waypointList.add(angleTarget + Conversions.mod(-angleTarget, 180));
+      }
 
-    // Anticlockwise rotation taking the arm past vertical:
-    else if 
-    ( // Relative angle change goes past upright
-      angleRelative + angleChange >= 360 || 
-      // Or relative angle change goes past upside-down
-      (angleRelative < 180 && angleRelative + angleChange >= 180)
-    )
-    {
-      // Intermediate waypoint: Safe elevation for the last vertical point before the target
-      waypointList.add(checkPosition(elevationTarget, angleTarget - (angleTarget % 180)));
-      waypointList.add(angleTarget - (angleTarget % 180));
-    }
-    
-    // Clockwise rotation taking the arm past vertical:
-    else if 
-    ( // Relative angle change goes past upright
-      angleRelative + angleChange <= 360 || 
-      // Or relative angle change goes past upside-down
-      (angleRelative > 180 && angleRelative + angleChange <= 180)
-    )
-    {
-      // Intermediate waypoint: Safe elevation for the last vertical point before the target
-      waypointList.add(checkPosition(elevationTarget, angleTarget + (-angleTarget % 180)));
-      waypointList.add(angleTarget + (-angleTarget % 180));
-    }
+      // Anticlockwise rotation taking the arm past vertical:
+      else if 
+      ( // Relative angle change goes past upright
+        angleRelative + angleChange >= 360 || 
+        // Or relative angle change goes past upside-down
+        (angleRelative < 180 && angleRelative + angleChange >= 180)
+      )
+      {
+        // Intermediate waypoint: Safe elevation for the last vertical point before the target
+        waypointList.add(checkPosition(elevationTarget, angleTarget - Conversions.mod(angleTarget, 180)));
+        waypointList.add(angleTarget - Conversions.mod(angleTarget, 180));
+      }
+      
+      // Clockwise rotation taking the arm past vertical:
+      else if 
+      ( // Relative angle change goes past upright
+        angleRelative + angleChange <= 0 || 
+        // Or relative angle change goes past upside-down
+        (angleRelative > 180 && angleRelative + angleChange <= 180)
+      )
+      {
+        // Intermediate waypoint: Safe elevation for the last vertical point before the target
+        waypointList.add(checkPosition(elevationTarget, angleTarget + Conversions.mod(-angleTarget, 180)));
+        waypointList.add(angleTarget + Conversions.mod(-angleTarget, 180));
+      }
 
-    // else: Angle change does not take arm past vertical
-    //       therefore the safe height is greatest at one end
-    //       and no intermediate waypoint is needed
+      // else: Angle change does not take arm past vertical
+      //       therefore the safe height is greatest at one end
+      //       and no intermediate waypoint is needed
+    }
+    // Unless stowed, ensure the arm is safe before moving from vertical
+    else if (!Diffector.stowRequested && elevationCurrent <= checkAngle(angleCurrent))
+    {
+      waypointList.add(checkAngle(angleCurrent) + projectionAngle);
+      waypointList.add(angleCurrent);
+    }
 
     // Add Target waypoint:
     waypointList.add(checkPosition(elevationTarget, angleTarget));
     waypointList.add(angleTarget);
 
     // Immediate path projection to protect against dangerous elevation/rotation sequencing
-    if (Math.abs(angleChange) > projectionAngle)
-    {
-      // Immediate rotation would cause collision:
-      if (checkAngle(angleCurrent + Math.copySign(projectionAngle, angleChange)) > elevationCurrent)
-      { // Set initial waypoint halfway between initial and first waypoint elevations without rotating
-        waypointList.add(0, (elevationCurrent + waypointList.get(0)) / 2);
-        waypointList.add(1, angleCurrent);
-      }
-      // Immediate drop in elevation would cause collision:
-      else if (checkAngle(angleCurrent + Math.copySign(projectionAngle, angleChange)) > waypointList.get(2))
-      { // Set initial waypoint halfway between initial and first waypoint rotations without elevating
-        waypointList.add(0, elevationCurrent);
-        waypointList.add(1, (angleCurrent + waypointList.get(2) / 2));
-      }
+    // Immediate rotation would cause collision:
+    if (checkAngle(angleCurrent + Math.copySign(Math.min(projectionAngle, Math.abs(angleChange)), angleChange)) > elevationCurrent)
+    { // Set initial waypoint halfway between initial and first waypoint elevations without rotating
+      waypointHold = waypointList.get(0);
+      waypointList.add(0, Math.max(Math.max((elevationCurrent + waypointHold) / 2, elevationCurrent), waypointHold));
+      waypointList.add(1, angleCurrent);
+    }
+    // Immediate drop in elevation would cause collision:
+    else if (waypointList.get(0) < elevationCurrent && checkAngle(angleCurrent) > elevationCurrent - projectionElevation)
+    { // Set initial waypoint halfway between initial and first waypoint rotations without elevating
+      waypointHold = waypointList.get(1);
+      waypointList.add(0, elevationCurrent);
+      waypointList.add(1, (angleCurrent + waypointHold) / 2);
     }
 
     // Convert waypoint ArrayList to double primative array to return
@@ -220,7 +244,7 @@ public class ArmCalculator
    * @return maximum of the intended elevation and the safe elevation for the given angle
    */
   public double checkPosition(double elevation, double angle)
-    {return Math.max(elevation, checkAngle(angle));}
+    {return Conversions.clamp(elevation, checkAngle(angle), maxElevation);}
 
   /**
    * Returns the minimum safe arm height for a given angle
@@ -241,7 +265,7 @@ public class ArmCalculator
     if (angle == Constants.DiffectorConstants.startAngle && !RobotContainer.algae)
       {return Constants.DiffectorConstants.startElevation;}
 
-    angle %= 360;
+    angle = Conversions.mod(angle, 360);
 
     /*  
      *  Rotating the virtual arm reference points to allow for position calculations
@@ -296,7 +320,7 @@ public class ArmCalculator
       }
     }
 
-    else if (angle < 90 || angle < 270) // Algae arm down:
+    else if (angle < 90 || angle > 270) // Algae arm down:
     {
     /*
      *  Algae manipulator:
@@ -316,12 +340,12 @@ public class ArmCalculator
       if ((angle <= harpoonAngle || angle >= 360 - harpoonAngle) && RobotContainer.algae) // Holding algae & angle is within range of the harpoon:
         {return algaeArmLength + deckHeight + harpoonHeight;} // Keep algae above the harpoon
       
-      if (armGeometryRotated[2].getX() >= 0 && armGeometryRotated[3].getX() <= 0) // Algae arm extends to either side of the mast:
+      if (armGeometryRotated[2].getX() >= -0 && armGeometryRotated[3].getX() <= 0) // Algae arm extends to either side of the mast:
         {return algaeArmLength + deckHeight;} // Keep carriage above the deck by the length of the arm
       
       if (armGeometryRotated[2].getX() < 0) // Anticlockwise Algae limit is Starbord/Clockwise of the mast:
       {
-        if (armGeometryRotated[2].getX() >= railMedial) // Anticlockwise Algae limit is within the rail:
+        if (armGeometryRotated[2].getX() >= -railMedial) // Anticlockwise Algae limit is within the Starboard rail:
         {
           {
             return Math.max
@@ -375,4 +399,115 @@ public class ArmCalculator
     else // Arm is horizontal
       {return minElevation;}
   }
+
+  public Translation2d pathFollow(ArrayList<Translation2d> pathPoints, Translation2d currentPoint)
+  {
+    if (pathPoints.size() == 0)
+      {return currentPoint;}
+    if (pathPoints.size() == 1)
+      {return pathPoints.get(0);}
+    int pathIndex = 0;
+    while (pathIndex < pathPoints.size() - 1)
+    {
+      if (pathPoints.get(pathIndex).getDistance(currentPoint) > pathPoints.get(pathIndex + 1).getDistance(currentPoint))
+      {
+        pathIndex++;
+      }
+      else
+      {
+        break;
+      }
+    }
+
+
+    return pathPoints.get(pathIndex);
+  }
+
+  /**
+   * Sets the Diffector arm to rotate the safest path to the target angle, with protection against over-rotation. 
+   * Below a threshold will go shortest path, otherwise will minimise total rotations
+   * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
+   */
+  public double goToAngle(double newAngle)
+  {
+    newAngle = Conversions.mod(newAngle, 360);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), -180, 180);
+
+    if (Math.abs(offset) >= turnBackThreshold)
+    {
+      reverseOffset = offset - Math.copySign(360, offset);
+
+      if (Math.abs(angle + offset) > Math.abs(angle + reverseOffset))
+        {return (angle + reverseOffset);}
+      
+      else 
+        {return (angle + offset);}
+    }
+    else if (angle + offset > maxAbsPos)
+      {return (angle + offset - 360);}
+
+    else if (angle + offset < -maxAbsPos)
+      {return (angle + offset + 360);}
+
+    else
+      {return (angle + offset);}
+  }
+
+  /**
+   * Sets the Diffector arm to rotate the shortest path to the target angle, with protection against over-rotation
+   * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
+   */
+  public double goShortest(double newAngle)
+  {
+    newAngle = Conversions.mod(newAngle, 360);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), -180, 180);
+
+    if (angle + offset > maxAbsPos)
+      {return (angle + offset - 360);}
+
+    else if (angle + offset < -maxAbsPos)
+      {return (angle + offset + 360);}
+
+    else
+      {return (angle + offset);}
+  }
+
+  /**
+   * Sets the Diffector arm to rotate Clockwise (viewed from bow) to the target angle, with protection against over-rotation
+   * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
+   */
+  public double goClockwise(double newAngle)
+  {
+    newAngle = Conversions.mod(newAngle, 360);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), -360, 0);
+
+    if (angle + offset > maxAbsPos)
+      {return (angle + offset - 360);}
+
+    else if (angle + offset < -maxAbsPos)
+      {return (angle + offset + 360);}
+
+    else
+      {return (angle + offset);}
+  }
+
+  /**
+   * Sets the Diffector arm to rotate Anticlockwise (viewed from bow) to the target angle, with protection against over-rotation
+   * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
+   */
+  public double goAnticlockwise(double newAngle)
+  {
+    newAngle = Conversions.mod(newAngle, 360);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), 0, 360);
+
+    if (angle + offset > maxAbsPos)
+      {return (angle + offset - 360);}
+
+    else if (angle + offset < -maxAbsPos)
+      {return (angle + offset + 360);}
+
+    else
+      {return (angle + offset);}
+  }
+
 }

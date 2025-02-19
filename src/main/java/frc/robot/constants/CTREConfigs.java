@@ -20,7 +20,6 @@ public final class CTREConfigs
     diffectorFXConfig.Slot0.kG = Constants.DiffectorConstants.diffectorMotorKGEmpty;
     diffectorFXConfig.Slot0.kS = Constants.DiffectorConstants.diffectorMotorKSEmpty;
     diffectorFXConfig.Slot0.kV = Constants.DiffectorConstants.diffectorMotorKVEmpty;
-    diffectorFXConfig.Slot0.kA = Constants.DiffectorConstants.diffectorMotorKAEmpty;
     diffectorFXConfig.Slot0.kP = Constants.DiffectorConstants.diffectorMotorKPEmpty;
     diffectorFXConfig.Slot0.kI = Constants.DiffectorConstants.diffectorMotorKIEmpty;
     diffectorFXConfig.Slot0.kD = Constants.DiffectorConstants.diffectorMotorKDEmpty;
@@ -29,7 +28,6 @@ public final class CTREConfigs
     diffectorFXConfig.Slot1.kG = Constants.DiffectorConstants.diffectorMotorKGOneItem;
     diffectorFXConfig.Slot1.kS = Constants.DiffectorConstants.diffectorMotorKSOneItem;
     diffectorFXConfig.Slot1.kV = Constants.DiffectorConstants.diffectorMotorKVOneItem;
-    diffectorFXConfig.Slot1.kA = Constants.DiffectorConstants.diffectorMotorKAOneItem;
     diffectorFXConfig.Slot1.kP = Constants.DiffectorConstants.diffectorMotorKPOneItem;
     diffectorFXConfig.Slot1.kI = Constants.DiffectorConstants.diffectorMotorKIOneItem;
     diffectorFXConfig.Slot1.kD = Constants.DiffectorConstants.diffectorMotorKDOneItem;        
@@ -38,14 +36,13 @@ public final class CTREConfigs
     diffectorFXConfig.Slot2.kG = Constants.DiffectorConstants.diffectorMotorKGTwoItem;
     diffectorFXConfig.Slot2.kS = Constants.DiffectorConstants.diffectorMotorKSTwoItem;
     diffectorFXConfig.Slot2.kV = Constants.DiffectorConstants.diffectorMotorKVTwoItem;
-    diffectorFXConfig.Slot2.kA = Constants.DiffectorConstants.diffectorMotorKATwoItem;
     diffectorFXConfig.Slot2.kP = Constants.DiffectorConstants.diffectorMotorKPTwoItem;
     diffectorFXConfig.Slot2.kI = Constants.DiffectorConstants.diffectorMotorKITwoItem;
     diffectorFXConfig.Slot2.kD = Constants.DiffectorConstants.diffectorMotorKDTwoItem;
 
     /* Diffector MotionMagic Config */
-    diffectorFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.DiffectorConstants.diffectorMotionMagicCruise;
-    diffectorFXConfig.MotionMagic.MotionMagicAcceleration = Constants.DiffectorConstants.diffectorMotionMagicAccel;
+    diffectorFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.DiffectorConstants.diffectorMotionMagicCruise / Constants.DiffectorConstants.gearboxRatio;
+    diffectorFXConfig.MotionMagic.MotionMagicAcceleration = Constants.DiffectorConstants.diffectorMotionMagicAccel / Constants.DiffectorConstants.gearboxRatio;
 
     /* Intake Top Arm PID Config, Spring Behaviour */
     intakeTopArmFXConfig.Slot0.kP = Constants.IntakeConstants.topArmSpringKP;

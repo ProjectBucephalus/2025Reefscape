@@ -22,7 +22,7 @@ public class EjectAlgae extends Command
     addRequirements(s_AlgaeManipulator);
   }
 
-    // Called when the command is initially scheduled.
+  // Called when the command is initially scheduled.
   @Override
   public void initialize() 
     {cancel = false;}
@@ -31,7 +31,7 @@ public class EjectAlgae extends Command
   @Override
   public void execute() 
   {
-    if (Math.abs(RobotContainer.s_Diffector.armPos) < 60) 
+    if (Math.abs(RobotContainer.s_Diffector.getEncoderPos()) < 60) 
       {cancel = true;}
     else
       {s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET);}
@@ -40,5 +40,5 @@ public class EjectAlgae extends Command
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
-    {return RobotContainer.algae || cancel;}
+    {return !RobotContainer.algae || cancel;}
 }

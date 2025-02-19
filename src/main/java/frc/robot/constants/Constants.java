@@ -167,17 +167,15 @@ public final class Constants
   public static final class DiffectorConstants
   {
     public static final double diffectorMotorKGEmpty = 0.225;
-    public static final double diffectorMotorKSEmpty = 0.1;
-    public static final double diffectorMotorKVEmpty = 0.75;
-    public static final double diffectorMotorKAEmpty = 0.1;
-    public static final double diffectorMotorKPEmpty = 40;
+    public static final double diffectorMotorKSEmpty = 0.05;
+    public static final double diffectorMotorKVEmpty = 0.58;
+    public static final double diffectorMotorKPEmpty = 100;
     public static final double diffectorMotorKIEmpty = 0;
     public static final double diffectorMotorKDEmpty = 0;
 
     public static final double diffectorMotorKGOneItem = 0;
     public static final double diffectorMotorKSOneItem = 0;
     public static final double diffectorMotorKVOneItem = 0;
-    public static final double diffectorMotorKAOneItem = 0;
     public static final double diffectorMotorKPOneItem = 3;
     public static final double diffectorMotorKIOneItem = 0;
     public static final double diffectorMotorKDOneItem = 0;
@@ -185,13 +183,14 @@ public final class Constants
     public static final double diffectorMotorKGTwoItem = 0;
     public static final double diffectorMotorKSTwoItem = 0;
     public static final double diffectorMotorKVTwoItem = 0;
-    public static final double diffectorMotorKATwoItem = 0;
     public static final double diffectorMotorKPTwoItem = 3;
     public static final double diffectorMotorKITwoItem = 0;
     public static final double diffectorMotorKDTwoItem = 0;
 
-    public static final double diffectorMotionMagicCruise = 12;
-    public static final double diffectorMotionMagicAccel  = 4;
+    /** Desired cruise speed OF MOTOR, RPS */
+    public static final double diffectorMotionMagicCruise = 15; //100
+    /** Desired acceleration OF MOTOR, RPS^2 */
+    public static final double diffectorMotionMagicAccel  = 100; //600
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;
@@ -202,7 +201,7 @@ public final class Constants
 
     private static final double diffectorGearTeethIn = 10;
     private static final double diffectorGearTeethOut = 60;
-    private static final double diffectorSprocketTeethIn = 18;
+    private static final double diffectorSprocketTeethIn  = 18;
     private static final double diffectorSprocketTeethOut = 72;
     /** Output sprocket degrees per motor rotation */
     public static final double gearboxRatio = 1.25 / (diffectorGearTeethIn / diffectorGearTeethOut); // I have ABSOLUTELY NO IDEA where the 1.25 scale comes from
@@ -227,7 +226,7 @@ public final class Constants
 
     public static final double maxRotation = 1;
     /** Maximum total angle the arm is allowed to rotate away from centre */
-    public static final double maxAbsPos = maxRotation * 360;
+    public static final double maxAbsAngle = maxRotation * 360;
     /** Above this angle, the arm can turn towards centre even if it's a longer path */
     public static final double turnBackThreshold = 135;
 
@@ -240,7 +239,7 @@ public final class Constants
     public static final double angleTolerance = 1;
     
     /** Elevation height check tolerance, m */
-    public static final double elevationTolerance = 0.05;
+    public static final double elevationTolerance = 0.025;
     
     /* Preset arm angles, degrees anticlockwise for Port-side usecase, 0 = coral at top */
     public static final double startAngle         =   0;
@@ -258,7 +257,7 @@ public final class Constants
     public static final double algae1Angle        = 100;
     
     /* Preset elevator heights, height of centre of rotation above the ground, metres */
-    public static final double startElevation         = 0.9;//0.574;
+    public static final double startElevation         = 0.574;
     public static final double climbElevation         = minElevation;
     public static final double netElevation           = maxElevation;
     public static final double processorElevation     = 0.5; 
@@ -292,9 +291,13 @@ public final class Constants
       public static final double harpoonHeight = 0.1;
       public static final double harpoonAngle  = 17;
 
-      /** For IK, angle the arm is projected to test for immediate collisions */
+      /** For IK, angle the arm is projected to test for immediate collisions, degrees */
       public static final double projectionAngle = 5;
-      public static final double projectionDistance = 0.1;
+      /** For IK, distance the arm is projected down to test for immediate collisions, m */
+      public static final double projectionElevation = 0.1;
+
+      /** For pathfollowing, elevation/rotation "distance" to set the dynamic target position at */
+      public static final Translation2d unitTravel = new Translation2d(projectionElevation, projectionAngle);
     }
   }
 

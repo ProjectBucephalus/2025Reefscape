@@ -4,35 +4,32 @@
 
 package frc.robot.commands.Diffector;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Diffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class MoveTo extends Command 
+public class ManualArmControl extends Command 
 {
-  double height;
-  double angle;
-  Diffector s_Diffector;
+  private final Diffector s_Diffector;
+  private final DoubleSupplier deltaAngle;
 
-  public MoveTo(Diffector s_Diffector, double height, double angle) 
+  public ManualArmControl(Diffector s_Diffector, DoubleSupplier deltaAngle) 
   {
-    this.height = height;
-    this.angle = angle;
     this.s_Diffector = s_Diffector;
-
-    addRequirements(s_Diffector);
+    this.deltaAngle = deltaAngle;
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
-    s_Diffector.setElevatorTarget(height);
-    s_Diffector.goToAngle(angle);
+    s_Diffector.goToAngle(s_Diffector.getAngle() + deltaAngle.getAsDouble());
   }
 
-  // Returns true when the command should end.
   @Override
-  public boolean isFinished() 
-    {return true;}
+  public boolean isFinished()
+  {
+    return false;
+  }
 }

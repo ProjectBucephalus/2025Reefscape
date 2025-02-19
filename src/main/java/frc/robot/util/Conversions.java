@@ -9,14 +9,27 @@ import edu.wpi.first.math.geometry.Translation2d;
  */
 public class Conversions 
 {
+  /**
+   * Mathematical modulus opperation, correcting the Java implimentation that incorrectly returns negative vaues
+   * @param value input value
+   * @param base base value of modulus
+   * @return e.g. mod(8,10) == mod(18,10) == mod(-2,10) == 8
+   */
+  public static double mod(double value, double base)
+  {
+    value %= base;
+    if (value < 0) {value += base;}
+    return value;
+  }
+
   public static int wrap(int value, int min, int max)
   {
-    if(value < min)
+    if (value < min)
     {
       value += ((max-min) + 1);
       value = wrap(value, min, max);
     }
-    else if(value > max)
+    else if (value > max)
     {
       value -= ((max-min) + 1);
       value = wrap(value,min,max);
@@ -26,9 +39,9 @@ public class Conversions
 
   /**
    * Clamps value [-1..1]
-    * @param value Value to clamp
-    * @return Clamped value
-    */
+   * @param value Value to clamp
+   * @return Clamped value
+   */
   public static double clamp(double value)
   {
     return clamp(value, -1, 1);
@@ -36,11 +49,11 @@ public class Conversions
 
   /**
    * Clamps values to parameters
-    * @param value Value to clamp
-    * @param min Minimum value
-    * @param max Maximum value
-    * @return Clamped value
-    */
+   * @param value Value to clamp
+   * @param min Minimum value
+   * @param max Maximum value
+   * @return Clamped value
+   */
   public static double clamp(double value, double min, double max)
   {
     return Math.min(Math.max(value, Math.min(min,max)), Math.max(min,max));
@@ -48,11 +61,11 @@ public class Conversions
 
   /**
    * Clamps values to parameters
-    * @param value Value to clamp
-    * @param min Minimum value
-    * @param max Maximum value
-    * @return Clamped value
-    */
+   * @param value Value to clamp
+   * @param min Minimum value
+   * @param max Maximum value
+   * @return Clamped value
+   */
   public static int clamp(int value, int min, int max)
   {
     return (int) Math.min(Math.max(value, Math.min(min,max)), Math.max(min,max));
@@ -60,9 +73,9 @@ public class Conversions
   
   /**
    * @param wheelRPS Wheel Velocity: (in Rotations per Second)
-    * @param circumference Wheel Circumference: (in Meters)
-    * @return Wheel Velocity: (in Meters per Second)
-    */
+   * @param circumference Wheel Circumference: (in Meters)
+   * @return Wheel Velocity: (in Meters per Second)
+   */
   public static double RPSToMPS(double wheelRPS, double circumference)
   {
     double wheelMPS = wheelRPS * circumference;
@@ -71,9 +84,9 @@ public class Conversions
 
   /**
    * @param wheelMPS Wheel Velocity: (in Meters per Second)
-    * @param circumference Wheel Circumference: (in Meters)
-    * @return Wheel Velocity: (in Rotations per Second)
-    */
+   * @param circumference Wheel Circumference: (in Meters)
+   * @return Wheel Velocity: (in Rotations per Second)
+   */
   public static double MPSToRPS(double wheelMPS, double circumference)
   {
     double wheelRPS = wheelMPS / circumference;
@@ -82,9 +95,9 @@ public class Conversions
 
   /**
    * @param wheelRotations Wheel Position: (in Rotations)
-    * @param circumference Wheel Circumference: (in Meters)
-    * @return Wheel Distance: (in Meters)
-    */
+   * @param circumference Wheel Circumference: (in Meters)
+   * @return Wheel Distance: (in Meters)
+   */
   public static double rotationsToMeters(double wheelRotations, double circumference)
   {
     double wheelMeters = wheelRotations * circumference;
@@ -93,9 +106,9 @@ public class Conversions
 
   /**
    * @param wheelMeters Wheel Distance: (in Meters)
-    * @param circumference Wheel Circumference: (in Meters)
-    * @return Wheel Position: (in Rotations)
-    */
+   * @param circumference Wheel Circumference: (in Meters)
+   * @return Wheel Position: (in Rotations)
+   */
   public static double metersToRotations(double wheelMeters, double circumference)
   {
     double wheelRotations = wheelMeters / circumference;

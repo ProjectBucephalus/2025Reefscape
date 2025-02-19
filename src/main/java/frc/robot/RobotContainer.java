@@ -11,10 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
 import frc.robot.commands.AlgaeManipulator.*;
 import frc.robot.commands.Auto.*;
@@ -51,10 +49,11 @@ public class RobotContainer
   public static SwerveDriveState state;
 
   /* Controllers */
-  public static final CommandXboxController driver = new CommandXboxController(0);
-  public static final CommandXboxController copilot = new CommandXboxController(1);
-  public static final CommandXboxController testing = new CommandXboxController(3);
-  public static final CommandXboxController sysID = new CommandXboxController(4);
+  public static final CommandXboxController driver    = new CommandXboxController(0);
+  public static final CommandXboxController copilot   = new CommandXboxController(1);
+  public static final CommandXboxController buttonBox = new CommandXboxController(2);
+  public static final CommandXboxController testing   = new CommandXboxController(3);
+  public static final CommandXboxController sysID     = new CommandXboxController(4);
 
   /* Subsystems */
   public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
@@ -145,7 +144,6 @@ public class RobotContainer
     configureCopilotBindings();
     configureTestBindings();
     configureRumbleBindings();
-    configureSysIDBindings();
 
     s_Swerve.registerTelemetry(logger::telemeterize);
   }
@@ -343,15 +341,18 @@ public class RobotContainer
 
   private void configureTestBindings()
   {
-    testing.povUp().whileTrue(new InstantCommand(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() + 0.2), s_Diffector));
-    testing.povDown().whileTrue(new InstantCommand(() -> s_Diffector.setElevatorTarget(s_Diffector.getElevatorTarget() - 0.2), s_Diffector));
+    testing.povUp().whileTrue(new ManualElevatorControl(s_Diffector, () -> 0.1));
+    testing.povDown().whileTrue(new ManualElevatorControl(s_Diffector, () -> -0.1));
 
-    testing.povLeft().whileTrue(new InstantCommand(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() + 45), s_Diffector));
-    testing.povRight().whileTrue(new InstantCommand(() -> s_Diffector.goToAngle(s_Diffector.getArmTarget() - 45), s_Diffector));
+    testing.povLeft().whileTrue(new ManualArmControl(s_Diffector, () -> 15));
+    testing.povRight().whileTrue(new ManualArmControl(s_Diffector, () -> -15));
 
-    testing.x().onTrue(new InstantCommand(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE)));
-    testing.y().onTrue(new InstantCommand(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET))).onFalse(new InstantCommand(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY)));
-    testing.a().onTrue(new InstantCommand(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DELIVERY))).onFalse(new InstantCommand(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT)));
+    testing.rightBumper().onTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(Constants.DiffectorConstants.maxElevation - 0.25), s_Diffector));
+    testing.leftBumper().onTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(Constants.DiffectorConstants.startElevation), s_Diffector));
+
+    testing.x().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE)));
+    testing.y().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET))).onFalse(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY)));
+    testing.a().onTrue(Commands.runOnce(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DELIVERY))).onFalse(Commands.runOnce(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT)));
   }
 
   private void configureRumbleBindings()
@@ -365,14 +366,17 @@ public class RobotContainer
     copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
   }
 
-  private void configureSysIDBindings()
-  {
-    sysID.povUp().whileTrue(s_Swerve.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    sysID.povLeft().whileTrue(s_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    sysID.povDown().whileTrue(s_Swerve.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    sysID.povRight().whileTrue(s_Swerve.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    sysID.leftStick().onTrue(Commands.runOnce(() -> SignalLogger.stop()));
-  }
+  private void configureButtonBoxBindings()
+  {}
+
+  public CommandSwerveDrivetrain getSwerve()
+    {return s_Swerve;}
+
+  public Limelight getLimelightPort()
+    {return s_LimelightPort;}
+
+  public Limelight getLimelightStbd()
+    {return s_LimelightStbd;}
 
   public Command getAutoCommand()
   {
