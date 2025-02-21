@@ -33,6 +33,7 @@ public class TargetHeadingStation extends Command
   private DoubleSupplier translationSup;
   private DoubleSupplier strafeSup;
   private DoubleSupplier brakeSup;
+  private Rotation2d rotationOffset;
   private BooleanSupplier fencedSup;
   private Translation2d motionXY;
   private DoubleSupplier ySup;
@@ -48,7 +49,7 @@ public class TargetHeadingStation extends Command
   private double robotY;
   private Rotation2d targetHeading;
 
-  public TargetHeadingStation(CommandSwerveDrivetrain s_Swerve, DoubleSupplier ySup, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  public TargetHeadingStation(CommandSwerveDrivetrain s_Swerve, Rotation2d rotationOffset, DoubleSupplier ySup, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
     SmartDashboard.putBoolean("Station Snap Updating", true);
 
@@ -127,7 +128,7 @@ public class TargetHeadingStation extends Command
       driveRequest
       .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
       .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
-      .withTargetDirection(targetHeading)
+      .withTargetDirection(targetHeading.plus(rotationOffset))
     );
   }
 

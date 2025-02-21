@@ -32,6 +32,7 @@ public class TargetHeadingReef extends Command
   private DoubleSupplier translationSup;
   private DoubleSupplier strafeSup;
   private DoubleSupplier brakeSup;
+  private Rotation2d rotationOffset;
   private BooleanSupplier fencedSup;
   private Supplier<Translation2d> posSup;
   private Translation2d motionXY;
@@ -49,7 +50,7 @@ public class TargetHeadingReef extends Command
   private Rotation2d targetHeading;
   private double deadband = Constants.Control.stickDeadband;
 
-  public TargetHeadingReef(CommandSwerveDrivetrain s_Swerve, Supplier<Translation2d> posSup, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  public TargetHeadingReef(CommandSwerveDrivetrain s_Swerve, Rotation2d rotationOffset, Supplier<Translation2d> posSup, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
     SmartDashboard.putBoolean("Reef Snap Updating", true);
 
@@ -61,6 +62,7 @@ public class TargetHeadingReef extends Command
     this.brakeSup = brakeSup;
     this.fencedSup = fencedSup;
     this.posSup = posSup;
+    this.rotationOffset = rotationOffset;
 
     driveRequest.HeadingController.setPID(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
   }
@@ -128,7 +130,7 @@ public class TargetHeadingReef extends Command
           driveRequest
           .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
           .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
-          .withTargetDirection(targetHeading)
+          .withTargetDirection(targetHeading.plus(rotationOffset))
         );
   }
 

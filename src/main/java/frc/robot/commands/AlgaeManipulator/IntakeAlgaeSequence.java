@@ -7,6 +7,7 @@ package frc.robot.commands.AlgaeManipulator;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.GoToAlgaeIntakePos;
 import frc.robot.subsystems.AlgaeManipulator;
+import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.Diffector;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -15,5 +16,5 @@ import frc.robot.subsystems.Diffector;
 public class IntakeAlgaeSequence extends SequentialCommandGroup 
 { 
   public IntakeAlgaeSequence(boolean level2, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator) 
-    {addCommands(new GoToAlgaeIntakePos(level2, s_Diffector), new IntakeAlgae(s_AlgaeManipulator));}
+    {addCommands(new GoToAlgaeIntakePos(level2, s_Diffector), new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE));}
 }

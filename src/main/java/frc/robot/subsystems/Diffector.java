@@ -11,6 +11,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -88,8 +89,8 @@ public class Diffector extends SubsystemBase
     
     motorTargets = calculateMotorTargets(targetElevation, targetAngle);
 
-    calculateAngle();
     calculateElevation();
+    calculateAngle();
     cargoState = updateCargoState();
 
     motionMagicRequester = new MotionMagicVoltage(0);
@@ -127,12 +128,20 @@ public class Diffector extends SubsystemBase
   private double calculateAngle()
   {
     angle = ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) + Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) * rotationRatio) / 2;
-    if (Math.floor(angle) != Math.floor(getEncoderPos()))
+    
+    if (atAngle() && atElevation()) 
     {
-      angle = getEncoderPos();
-      m_diffectorUA.setPosition(Units.degreesToRotations((angle / rotationRatio) + (elevation / travelRatio)));
-      m_diffectorDA.setPosition(Units.degreesToRotations((angle / rotationRatio) - (elevation / travelRatio)));
+      if (!MathUtil.isNear(getEncoderPos(), angle, Constants.DiffectorConstants.angleTolerance))
+      {
+        angle = getEncoderPos();
+        m_diffectorUA.setPosition(Units.degreesToRotations((angle / rotationRatio) + (elevation / travelRatio)));
+        m_diffectorDA.setPosition(Units.degreesToRotations((angle / rotationRatio) - (elevation / travelRatio)));
+        SmartDashboard.putBoolean("encoder overide", true);
+      }
+      else
+        SmartDashboard.putBoolean("encoder overide", false);
     }
+
     return angle;
   }
   
@@ -143,7 +152,7 @@ public class Diffector extends SubsystemBase
   public double getEncoderPos()
   {
     // Encoder outputs is geared 1:1 to the arm, so output is inverted
-    return Units.rotationsToDegrees(-encoder.getPosition().getValueAsDouble());
+    return Units.rotationsToDegrees(encoder.getPosition().getValueAsDouble());
   }
 
   private void calculatePath()
@@ -213,16 +222,16 @@ public class Diffector extends SubsystemBase
   }
 
   /** Returns true if the diffector is at its current target angle */
-  public boolean armAtAngle()
+  public boolean atAngle()
     {return Math.abs(angle - targetAngle) < Constants.DiffectorConstants.angleTolerance;}
 
   /** Returns true if the diffector is at its current target elevation */
-  public boolean elevatorAtElevation()
+  public boolean atElevation()
     {return Math.abs(elevation - targetElevation) < Constants.DiffectorConstants.elevationTolerance;}
 
   /** Returns true if the diffector is safely in climb position */
   public boolean climbReady()
-    {return (targetElevation == Constants.DiffectorConstants.climbElevation && elevatorAtElevation());}
+    {return (targetElevation == Constants.DiffectorConstants.climbElevation && atElevation());}
 
   /** 
    * Sets the Diffector arm to unwind to starting position 
@@ -321,6 +330,7 @@ public class Diffector extends SubsystemBase
 
     SmartDashboard.putNumber("Height over deck", elevation - arm.checkAngle(angle));
     SmartDashboard.putNumber("Encoder Reading", getEncoderPos());
+    SmartDashboard.putNumber("Offset", angle - getEncoderPos());
   }
 
 }

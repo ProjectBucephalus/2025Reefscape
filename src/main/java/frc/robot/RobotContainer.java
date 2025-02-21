@@ -212,7 +212,8 @@ public class RobotContainer
       (
         new TargetHeading
         (
-          s_Swerve, 
+          s_Swerve,
+          Rotation2d.kZero, 
           Rotation2d.kZero,
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
@@ -227,6 +228,7 @@ public class RobotContainer
         new TargetHeadingStation
         (
           s_Swerve, 
+          Rotation2d.kCW_90deg,
           () -> state.Pose.getY(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
@@ -240,7 +242,8 @@ public class RobotContainer
       (
         new TargetHeading
         (
-          s_Swerve, 
+          s_Swerve,
+          Rotation2d.kCW_90deg, 
           Rotation2d.kCW_90deg,
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
@@ -255,6 +258,7 @@ public class RobotContainer
         new TargetHeadingReef
         (
           s_Swerve, 
+          Rotation2d.kCW_90deg,
           () -> state.Pose.getTranslation(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
@@ -276,11 +280,11 @@ public class RobotContainer
     copilot.x().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(3, s_Diffector, s_CoralManipulator));   //L3 scoring
     copilot.y().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(4, s_Diffector, s_CoralManipulator));   //L4 scoring
         
-    /* Algae scoring controls */
-    copilot.a().and(copilot.rightTrigger()).onTrue(new ScoreAlgae(false, s_Diffector, s_AlgaeManipulator));           //Processor scoring
+    /* Algae scoring/intaking controls */
+    copilot.a().and(copilot.rightTrigger()).onTrue(new ScoreAlgaeSequence(false, s_Diffector, s_AlgaeManipulator));           //Processor scoring
     copilot.b().and(copilot.rightTrigger()).onTrue(new IntakeAlgaeSequence(true, s_Diffector, s_AlgaeManipulator));  //L2 pick up
     copilot.x().and(copilot.rightTrigger()).onTrue(new IntakeAlgaeSequence(false, s_Diffector, s_AlgaeManipulator)); //L3 pick up
-    copilot.y().and(copilot.rightTrigger()).onTrue(new ScoreAlgae(true, s_Diffector, s_AlgaeManipulator));            //Net scoring
+    copilot.y().and(copilot.rightTrigger()).onTrue(new ScoreAlgaeSequence(true, s_Diffector, s_AlgaeManipulator));            //Net scoring
 
     /* Game piece transfer positions controls*/
     copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE));                                                                                      //Intake to algae hadover position
@@ -296,24 +300,24 @@ public class RobotContainer
 
     /* Stow position controls */
     copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));          //Intake to stow algae
-    copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new IntakeAlgae(s_AlgaeManipulator));                //Algae manipulator to stowed
+    copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeStowElevation, Constants.DiffectorConstants.algaeStowAngle));                //Algae manipulator to stowed
     copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED)); //Intake to stow coral
-    copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new IntakeCoral(s_CoralManipulator));       //Coral manipulator to stowed
+    copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralStowElevation, Constants.DiffectorConstants.coralStowAngle));       //Coral manipulator to stowed
 
     // Intake from coral station
     copilot.povLeft().onTrue(new IntakeCoralSequence(s_Diffector, s_CoralManipulator)); //Coral to manipulator from coral station
 
     /* Game piece intake controls */
     copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_ALGAE));          //Intakes algae from intake
-    copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new IntakeAlgae(s_AlgaeManipulator));                      //Intakes algae from manipulator
+    copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE));                      //Intakes algae from manipulator
     copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_CORAL)); //Intakes coral from intake
-    copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new IntakeCoral(s_CoralManipulator));             //Intakes coral from manipulator
+    copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.INTAKE));             //Intakes coral from manipulator
 
     /* Game piece outtake controls */
     copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.EJECT_ALGAE));          //Ejects algae from intake
     copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new EjectAlgae(s_AlgaeManipulator));                      //Ejects algae from manipulator
     copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.EJECT_CORAL)); //Ejects coral from intake
-    copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new EjectCoral(s_CoralManipulator));             //Ejects coral from manipulator
+    copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY));             //Ejects coral from manipulator
 
     /* Modifier controls for testing only */
     copilot.rightTrigger().onTrue(new Test("algaeModifier", "on")).onFalse(new Test("algaeModifier", "off"));

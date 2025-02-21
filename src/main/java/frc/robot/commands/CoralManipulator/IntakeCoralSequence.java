@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.MoveTo;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CoralManipulator;
+import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 import frc.robot.subsystems.Diffector;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -16,5 +17,5 @@ import frc.robot.subsystems.Diffector;
 public class IntakeCoralSequence extends SequentialCommandGroup 
 {
   public IntakeCoralSequence(Diffector s_Diffector, CoralManipulator s_CoralManipulator) 
-    {addCommands(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralStationElevation, Constants.DiffectorConstants.coralStationAngle), new IntakeCoral(s_CoralManipulator));}
+    {addCommands(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralStationElevation, Constants.DiffectorConstants.coralStationAngle), new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.INTAKE));}
 }

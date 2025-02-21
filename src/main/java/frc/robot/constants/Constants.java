@@ -12,7 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.commands.AlgaeManipulator.IntakeAlgaeSequence;
-import frc.robot.commands.AlgaeManipulator.ScoreAlgae;
+import frc.robot.commands.AlgaeManipulator.ScoreAlgaeSequence;
 import frc.robot.commands.CoralManipulator.IntakeCoralSequence;
 import frc.robot.util.FieldUtils;
 
@@ -150,10 +150,10 @@ public final class Constants
         put("a4" , new AutoMapping("a4" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
         put("a5" , new AutoMapping("a5" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
         put("a6" , new AutoMapping("a6" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-        put("b1" , new AutoMapping("b1" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-        put("b2" , new AutoMapping("b2" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-        put("b3" , new AutoMapping("b3" , () -> new ScoreAlgae(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-        put("p"  , new AutoMapping("p"  , () -> new ScoreAlgae(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+        put("b1" , new AutoMapping("b1" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+        put("b2" , new AutoMapping("b2" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+        put("b3" , new AutoMapping("b3" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+        put("p"  , new AutoMapping("p"  , () -> new ScoreAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
       }
     };
 
@@ -235,7 +235,7 @@ public final class Constants
     public static final double minElevation = 0.444;
     
     /** Arm rotation check tollerance, degrees */
-    public static final double angleTolerance = 1;
+    public static final double angleTolerance = 2;
     
     /** Elevation height check tolerance, m */
     public static final double elevationTolerance = 0.025;
@@ -243,32 +243,36 @@ public final class Constants
     /* Preset arm angles, degrees anticlockwise for Port-side usecase, 0 = coral at top */
     public static final double startAngle         =   0;
     public static final double climbAngle         =  90;
-    public static final double netAngle           = 150;
-    public static final double processorAngle     =  45;
-    public static final double reef4Angle         = 340;
-    public static final double reef3Angle         = 330;
-    public static final double reef2Angle         = 320;
-    public static final double reef1Angle         = 300;
-    public static final double coralTransferAngle = 180;
+    public static final double netAngle           = 225;
+    public static final double processorAngle     = 270;
+    public static final double reef4Angle         = 45;
+    public static final double reef3Angle         = 30;
+    public static final double reef2Angle         = 30;
+    public static final double reef1Angle         = 135;
+    public static final double coralTransferAngle = 180; 
     public static final double algaeTransferAngle =   0;
-    public static final double coralStationAngle  = 240;
-    public static final double algae2Angle        = 110;
-    public static final double algae1Angle        = 100;
+    public static final double coralStationAngle  = 240; //TODO
+    public static final double algae2Angle        = 270;
+    public static final double algae1Angle        = 270; 
+    public static final double algaeStowAngle     = 180; 
+    public static final double coralStowAngle     = 0;
     
     /* Preset elevator heights, height of centre of rotation above the ground, metres */
-    public static final double startElevation         = 0.574;
+    public static final double startElevation         = 0.574; 
     public static final double climbElevation         = minElevation;
     public static final double netElevation           = maxElevation;
-    public static final double processorElevation     = 0.5; 
-    public static final double reef4Elevation         = 1.6;
-    public static final double reef3Elevation         = 1.4;
-    public static final double reef2Elevation         = 1.2;
-    public static final double reef1Elevation         = 1.0;
-    public static final double coralTransferElevation = 1.0;
-    public static final double algaeTransferElevation = 1.5;
-    public static final double coralStationElevation  = 1.0;
-    public static final double algae2Elevation        = 1.5;
-    public static final double algae1Elevation        = 1.3;
+    public static final double processorElevation     = minElevation; 
+    public static final double reef4Elevation         = maxElevation;
+    public static final double reef3Elevation         = 1.28;
+    public static final double reef2Elevation         = 0.9;
+    public static final double reef1Elevation         = 0.8;
+    public static final double coralTransferElevation = 1.2; //TODO
+    public static final double algaeTransferElevation = 1.2; //TODO
+    public static final double coralStationElevation  = 1.0; //TODO
+    public static final double algae2Elevation        = 1.13;
+    public static final double algae1Elevation        = 0.92;
+    public static final double algaeStowElevation     = 0.8; //TODO
+    public static final double coralStowElevation     = 0.8; //TODO
     
     public static final class IKGeometry
     {
@@ -305,7 +309,7 @@ public final class Constants
     /* Coral manipulator speeds */
     public static final double coralManipulatorBaseIntakeSpeed = 0.2;
     public static final double coralManipulatorMaxIntakeSpeed  = 0.4;
-    public static final double coralManipulatorDeliverySpeed   = 0.9;
+    public static final double coralManipulatorDeliverySpeed   = 0.7;
     public static final double coralManipulatorHoldingVoltage  = 0;
 
     /* Algae manipulator speeds */
