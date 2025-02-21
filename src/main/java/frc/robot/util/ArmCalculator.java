@@ -5,6 +5,7 @@
 package frc.robot.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -279,8 +280,8 @@ public class ArmCalculator
      *    Some on the relative translation of certain reference points
      */
     Rotation2d rotation = new Rotation2d(Units.degreesToRadians(angle));
-    for(int i = 0; i < armGeometry.length; i++)
-      {armGeometryRotated[i] = armGeometry[i].rotateBy(rotation);}
+    
+    armGeometryRotated = (Translation2d[])Arrays.stream(armGeometry).map(geometryPoint -> geometryPoint.rotateBy(rotation)).toArray(Translation2d[]::new);
 
     if(angle > 90 && angle < 270) // Coral arm down:
     { 
