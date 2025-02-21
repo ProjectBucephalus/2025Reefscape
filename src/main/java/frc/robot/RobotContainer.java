@@ -60,7 +60,6 @@ public class RobotContainer
   public static final Limelight s_LimelightStbd = new Limelight(IDConstants.llStbdName);
   
   public static final Diffector s_Diffector = new Diffector();
-  public static final Climber s_Climber = new Climber();
   public static final Intake s_Intake = new Intake();
   public static final CoralManipulator s_CoralManipulator = new CoralManipulator();
   public static final AlgaeManipulator s_AlgaeManipulator = new AlgaeManipulator();
@@ -85,7 +84,7 @@ public class RobotContainer
               s_Intake.getAlgaeState() && (s_Diffector.getEncoderPos() > 135 && s_Diffector.getEncoderPos() < 225));
   //private final Trigger driverRightRumblTrigger = new Trigger(() -> )
   // TODO: Ready to score rumble
-  private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.climbReady() && s_Climber.climbReady() && s_Diffector.climbReady() );
+  //private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.climbReady() && s_Climber.climbReady() && s_Diffector.climbReady() );
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() 
@@ -323,8 +322,8 @@ public class RobotContainer
     copilot.rightBumper().onTrue(new Test("intakeModifier", "on")).onFalse(new Test("intakeModifier", "off"));
     
     /* Manual winch controls */
-    copilot.axisGreaterThan(0, 0.85).and(copilot.back()).whileTrue(Commands.runOnce(() -> s_Climber.setClimbTargets(s_Climber.getClimbTargets() + 0.5), s_Climber)); //Spool winch
-    copilot.axisLessThan(0, -0.85).and(copilot.back()).whileTrue(Commands.runOnce(() -> s_Climber.setClimbTargets(s_Climber.getClimbTargets() - 0.5), s_Climber));             //Unspool winch
+    //copilot.axisGreaterThan(0, 0.85).and(copilot.back()).whileTrue(Commands.runOnce(() -> s_Climber.setClimbTargets(s_Climber.getClimbTargets() + 0.5), s_Climber)); //Spool winch
+    //copilot.axisLessThan(0, -0.85).and(copilot.back()).whileTrue(Commands.runOnce(() -> s_Climber.setClimbTargets(s_Climber.getClimbTargets() - 0.5), s_Climber));             //Unspool winch
     
     /* Manual intake controls */
     copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger()).onTrue(Commands.runOnce(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() + 0.05), s_Intake));                      //Algae intake arm up
@@ -365,7 +364,7 @@ public class RobotContainer
     
     /* Copilot rumble bindings */
     copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_LEFT, "Transfer Ready"));
-    copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
+    //copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
   }
 
   private void configureButtonBoxBindings()
