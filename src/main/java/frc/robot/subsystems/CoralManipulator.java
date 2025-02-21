@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -13,7 +12,6 @@ import frc.robot.util.Conversions;
 
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
  * Coral manipulator subsystem, handing the intake, out-take,
@@ -42,12 +40,7 @@ public class CoralManipulator extends SubsystemBase
    * And if the arm position is more than 180 degrees, then the speed is set to negitive, 
    * And while holding, if one of the beam breaks don't see the coral, then coral moves to that beam break till they both see them)
    */
-  public enum CoralManipulatorStatus
-  {
-    INTAKE,
-    DELIVERY,
-    DEFAULT
-  }
+  public enum CoralManipulatorStatus {INTAKE, DELIVERY, DEFAULT}
 
   public CoralManipulator() 
   {
@@ -58,7 +51,7 @@ public class CoralManipulator extends SubsystemBase
   }
 
   public CoralManipulatorStatus getStatus()
-    {return coralStatus; }
+    {return coralStatus;}
 
   /**
    * Sets the coral manipulator motor speed
@@ -85,7 +78,7 @@ public class CoralManipulator extends SubsystemBase
         
         if (RobotContainer.coral) 
           {coralStatus = CoralManipulatorStatus.DEFAULT; }
-        break;
+          break;
 
       case DELIVERY:
         if (RobotContainer.s_Diffector.getEncoderPos() <= 180)
@@ -94,7 +87,7 @@ public class CoralManipulator extends SubsystemBase
           {setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed); }
         if (!RobotContainer.coral) 
           {coralStatus = CoralManipulatorStatus.DEFAULT; }
-        break;
+          break;
 
       case DEFAULT: // TODO Loop overrun
         intakeSpeedError = Conversions.clamp

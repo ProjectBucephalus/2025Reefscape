@@ -247,8 +247,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this // Subsystem for requirements
       );
-    } catch (Exception ex) 
-      {DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());}
+    } 
+      catch (Exception ex) 
+        {DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());}
   }
 
   @Override

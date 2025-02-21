@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -12,7 +11,6 @@ import frc.robot.constants.IDConstants;
 
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
  * Algae manipulator Subsystem, handling the intake and out-take
@@ -78,16 +76,14 @@ public class AlgaeManipulator extends SubsystemBase
 
         if (!RobotContainer.s_Canifier.algaeManiSensor()) 
           {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
-        break;
+          break;
 
       case HOLDING:
         if (RobotContainer.s_Canifier.algaeManiSensor()) 
-        {
-          algaeMotor.set(VictorSPXControlMode.PercentOutput, 0);      
-        } 
+          {algaeMotor.set(VictorSPXControlMode.PercentOutput, 0);} 
         else
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
-        break;
+          break;
 
       case NET:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);
@@ -98,14 +94,14 @@ public class AlgaeManipulator extends SubsystemBase
 
         if (!RobotContainer.s_Canifier.algaeManiSensor()) 
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
-        break;
+          break;
 
       case EMPTY:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorEmptySpeed);
 
         if (RobotContainer.s_Canifier.algaeManiSensor()) 
           {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
-        break;
+          break;
     }
   }
 }

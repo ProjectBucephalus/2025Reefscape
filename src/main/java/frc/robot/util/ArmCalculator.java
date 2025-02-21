@@ -10,7 +10,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
@@ -416,13 +415,9 @@ public class ArmCalculator
     while (pathIndex < pathPoints.size() - 1)
     {
       if (pathPoints.get(pathIndex).getDistance(currentPoint) > pathPoints.get(pathIndex + 1).getDistance(currentPoint))
-      {
-        pathIndex++;
-      }
+        {pathIndex++;}
       else
-      {
-        break;
-      }
+        {break;}
     }
 
 

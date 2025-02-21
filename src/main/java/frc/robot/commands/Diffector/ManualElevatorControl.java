@@ -25,13 +25,9 @@ public class ManualElevatorControl extends Command
 
   @Override
   public void execute() 
-  {
-    s_Diffector.setElevatorTarget(s_Diffector.getElevation() + deltaHeight.getAsDouble());
-  }
+    {s_Diffector.setElevatorTarget(s_Diffector.getElevation() + deltaHeight.getAsDouble());}
 
   @Override
   public boolean isFinished()
-  {
-    return false;
-  }
+    {return false;}
 }

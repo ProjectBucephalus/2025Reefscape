@@ -23,13 +23,9 @@ public class ManualArmControl extends Command
 
   @Override
   public void execute() 
-  {
-    s_Diffector.goToAngle(s_Diffector.getAngle() + deltaAngle.getAsDouble());
-  }
+    {s_Diffector.goToAngle(s_Diffector.getAngle() + deltaAngle.getAsDouble());}
 
   @Override
   public boolean isFinished()
-  {
-    return false;
-  }
+    {return false;}
 }
