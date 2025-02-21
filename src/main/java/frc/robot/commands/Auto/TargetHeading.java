@@ -114,12 +114,12 @@ public class TargetHeading extends Command
       {SmartDashboard.putString("Drive State", "Non-Fenced");}
     
     s_Swerve.setControl
-    (
-      driveRequest
-      .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
-      .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
-      .withTargetDirection(targetHeading.plus(rotationOffset))
-    );
+      (
+        driveRequest
+        .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
+        .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
+        .withTargetDirection(targetHeading.plus(rotationOffset))
+      );
   }
 
   // Returns true when the command should end.

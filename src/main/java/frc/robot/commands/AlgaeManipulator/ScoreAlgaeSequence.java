@@ -26,7 +26,8 @@ public class ScoreAlgaeSequence extends SequentialCommandGroup
     {
       diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.netElevation, Constants.DiffectorConstants.netAngle);
       algaeManipulatorCommand = new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.NET);
-    } else 
+    } 
+    else 
     {
       diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.processorElevation, Constants.DiffectorConstants.processorAngle);
       algaeManipulatorCommand = new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.PROCESSOR);

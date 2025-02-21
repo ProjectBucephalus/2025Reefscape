@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import com.pathplanner.lib.path.PathConstraints;
-import com.ctre.phoenix.CANifier.GeneralPin;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;

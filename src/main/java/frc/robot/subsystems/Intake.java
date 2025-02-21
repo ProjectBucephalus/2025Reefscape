@@ -21,7 +21,8 @@ import frc.robot.constants.IDConstants;
  * @author 5985
  * @author Sebastian Aiello 
  */
-public class Intake extends SubsystemBase {
+public class Intake extends SubsystemBase 
+{
 
   /* Declarations of all the motor controllers */
   private TalonFX m_AlgaeIntake;
@@ -175,13 +176,9 @@ public class Intake extends SubsystemBase {
   public void coralTestingOveride(boolean b, double input)
   {
     if (b)
-    {
-      m_CoralIntake.set(input);
-    } 
+      {m_CoralIntake.set(input);} 
     else 
-    {
-      m_CoralArm.set(input);
-    }
+      {m_CoralArm.set(input);}
   }
     
   @Override
