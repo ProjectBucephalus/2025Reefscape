@@ -30,6 +30,7 @@ public class TargetHeading extends Command
   private DoubleSupplier translationSup;
   private DoubleSupplier strafeSup;
   private DoubleSupplier brakeSup;
+  private Rotation2d rotationOffset;
   private BooleanSupplier fencedSup;
   private Translation2d motionXY;
   private GeoFenceObject[] fieldGeoFence;
@@ -44,7 +45,7 @@ public class TargetHeading extends Command
   private Rotation2d targetHeading;
   private double deadband = Constants.Control.stickDeadband;
 
-  public TargetHeading(CommandSwerveDrivetrain s_Swerve, Rotation2d targetHeading, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  public TargetHeading(CommandSwerveDrivetrain s_Swerve, Rotation2d rotationOffset, Rotation2d targetHeading, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
     this.s_Swerve = s_Swerve;
     addRequirements(s_Swerve);
@@ -54,6 +55,7 @@ public class TargetHeading extends Command
     this.brakeSup = brakeSup;
     this.fencedSup = fencedSup;
     this.targetHeading = targetHeading;
+    this.rotationOffset = rotationOffset;
 
     driveRequest.HeadingController.setPID(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
   }
@@ -116,7 +118,7 @@ public class TargetHeading extends Command
       driveRequest
       .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
       .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
-      .withTargetDirection(targetHeading)
+      .withTargetDirection(targetHeading.plus(rotationOffset))
     );
   }
 
