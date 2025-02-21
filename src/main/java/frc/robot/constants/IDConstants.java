@@ -39,9 +39,7 @@ public final class IDConstants
   /* Intake */
   /* ______ */
   public static final int algaeIntakeRollerID = 16;
-  public static final int coralIntakeRollerID = 17;
   public static final int algaeIntakeArmID    = 18;
-  public static final int coralIntakeArmID    = 19;
 
   public static final int coralIntakeDIOPort = 1;
   public static final int coralIntakeDIOStbd = 2;
