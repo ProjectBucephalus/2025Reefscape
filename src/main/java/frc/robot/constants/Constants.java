@@ -274,11 +274,11 @@ public final class Constants
     public static final double algaeStowElevation     = 0.8; //TODO
     public static final double coralStowElevation     = 0.8; //TODO
     
-    public static final class IKGeometry
+    public static final class  IKGeometry
     {
       /* Manipulator arm geometry */
-      public static final double coralArmLength   = 0.5;
-      public static final double coralArmAngle    = 64/2;
+      public static final double coralArmLength   = 0.53;
+      public static final double coralArmAngle    = 36/2;
       public static final double algaeArmLength   = 0.6;
       public static final double algaeArmAngle    = 60/2;
       public static final double algaeWheelLength = 0.54;
@@ -287,12 +287,10 @@ public final class Constants
       public static final double algaeInnerAngle  = 108/2;
 
       /* Deck obstruction geometry */
-      public static final double railHeight    = 0.23;
+      public static final double railHeight    = 0.2;
       public static final double railLateral   = 0.38;
-      public static final double railMedial    = 0.27;
-      public static final double deckHeight    = 0.18;
-      public static final double harpoonHeight = 0.1;
-      public static final double harpoonAngle  = 17;
+      public static final double railMedial    = 0.37;
+      public static final double deckHeight    = 0.13;
 
       /** For IK, angle the arm is projected to test for immediate collisions, degrees */
       public static final double projectionAngle = 5;
