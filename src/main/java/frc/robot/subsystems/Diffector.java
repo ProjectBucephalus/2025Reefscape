@@ -5,18 +5,12 @@
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.Waypoint;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -177,13 +171,9 @@ public class Diffector extends SubsystemBase
         List<Waypoint> plannedPathWaypoints = ArmPathPlanner.getCurrentPath(armPathConstraints, armEndState).getWaypoints();
         
         if (plannedPathWaypoints != null)
-        {
-          plannedPathPoints.addAll(plannedPathWaypoints.stream().map(waypoint -> ArmPathPlanner.toArmRelative(waypoint.anchor())).toList());
-        }
+          {plannedPathPoints.addAll(plannedPathWaypoints.stream().map(waypoint -> ArmPathPlanner.toArmRelative(waypoint.anchor())).toList());}
         else
-        {
-          plannedPathPoints.add(new Translation2d(arm.checkPosition(targetElevation, targetAngle), targetAngle));
-        }
+          {plannedPathPoints.add(new Translation2d(arm.checkPosition(targetElevation, targetAngle), targetAngle));}
       }
     }*/
 
@@ -197,9 +187,7 @@ public class Diffector extends SubsystemBase
         Math.abs(plannedPathPoints.get(0).getX() - elevation) <= projectionElevation &&
         Math.abs(plannedPathPoints.get(0).getY() - angle) <= projectionAngle
       )
-      {
-        plannedPathPoints.remove(0);
-      }
+        {plannedPathPoints.remove(0);}
     }
   }
 
@@ -216,9 +204,7 @@ public class Diffector extends SubsystemBase
     elevationTarget = Math.min(Constants.DiffectorConstants.maxElevation, elevationTarget);
 
     if (elevationTarget < elevation && arm.checkAngle(angle) > elevationTarget) 
-    {
-      elevationTarget = Math.min(Constants.DiffectorConstants.maxElevation, elevation);
-    }
+      {elevationTarget = Math.min(Constants.DiffectorConstants.maxElevation, elevation);}
 
     calculatedTargets[0] = (angleTarget / rotationRatio) + (elevationTarget / travelRatio);
     calculatedTargets[1] = (angleTarget / rotationRatio) - (elevationTarget / travelRatio);
@@ -302,13 +288,9 @@ public class Diffector extends SubsystemBase
   public void testingOveride(boolean a, double input)
   {
     if (a)
-    {
-      m_diffectorUA.set(input);
-    }
+      {m_diffectorUA.set(input);}
     else
-    {
-      m_diffectorDA.set(input);
-    }
+      {m_diffectorDA.set(input);}
   }
 
   public void goToAngle(double newTarget) 

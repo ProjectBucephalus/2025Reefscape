@@ -61,9 +61,7 @@ public class ArmPathPlanner
   * @return pathfinderXY -> arm state-space mapping
   */
   public static Translation2d fromArmRelative(double armElevation, double armRotation)
-  {
-    {return fromArmRelative(new Translation2d(armElevation, armRotation));}
-  }
+    {{return fromArmRelative(new Translation2d(armElevation, armRotation));}}
 
   /**
   * Converts from arm-relative coordinates to the coordinates used by the AD* system 
