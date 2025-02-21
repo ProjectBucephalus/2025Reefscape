@@ -230,7 +230,7 @@ public final class Constants
     public static final double turnBackThreshold = 135;
 
     /** Physical upper limit of the elevator, metres above the ground */
-    public static final double maxElevation = 1.709;
+    public static final double maxElevation = 1.734;
     /** Physical lower limit of the elevator, metres above the ground */
     public static final double minElevation = 0.444;
     
@@ -242,7 +242,7 @@ public final class Constants
     
     /* Preset arm angles, degrees anticlockwise for Port-side usecase, 0 = coral at top */
     public static final double startAngle         =   0;
-    public static final double climbAngle         =  90;
+    public static final double climbAngle         =  97;
     public static final double netAngle           = 225;
     public static final double processorAngle     = 270;
     public static final double reef4Angle         = 45;
@@ -258,7 +258,7 @@ public final class Constants
     public static final double coralStowAngle     = 0;
     
     /* Preset elevator heights, height of centre of rotation above the ground, metres */
-    public static final double startElevation         = 0.574; 
+    public static final double startElevation         = 0.55; 
     public static final double climbElevation         = minElevation;
     public static final double netElevation           = maxElevation;
     public static final double processorElevation     = minElevation; 
