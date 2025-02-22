@@ -84,7 +84,7 @@ public class TargetHeading extends Command
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     
-    if (fencedSup.getAsBoolean())
+    if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", true))
     {
       SmartDashboard.putString("Drive State", "Fenced");
 
