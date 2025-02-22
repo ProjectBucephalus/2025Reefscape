@@ -33,8 +33,8 @@ public final class IDConstants
   /* Diffector */
   /* _________ */
   public static final int armCANcoderID = 13;
-  public static final int uaMotorID    = 14;
-  public static final int daMotorID    = 15;
+  public static final int uaMotorID    = 14; // Port
+  public static final int daMotorID    = 15; // Stbd
 
   /* Intake */
   /* ______ */

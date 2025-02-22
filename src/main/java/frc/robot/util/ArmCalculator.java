@@ -80,7 +80,7 @@ public class ArmCalculator
     algaeInnerLength = IKGeometry.algaeInnerLength;
     algaeInnerAngle  = IKGeometry.algaeInnerAngle;
 
-    safeElevation = deckHeight + Math.max(coralArmLength, algaeArmLength + harpoonHeight);
+    safeElevation = deckHeight + Math.max(coralArmLength, algaeArmLength);
     
     coralA      = new Translation2d(0,coralArmLength)  .rotateBy(new Rotation2d(Units.degreesToRadians(coralArmAngle)));
     coralC      = new Translation2d(0,coralArmLength)  .rotateBy(new Rotation2d(Units.degreesToRadians(-coralArmAngle)));
@@ -286,15 +286,15 @@ public class ArmCalculator
     { 
     /*
      *  Coral manipulator:
-     *    64 degree arc, centred on 0
-     *    0.5m radius
+     *    36 degree arc, centred on 0
+     *    0.53m radius
      */
 
       if (MathUtil.isNear(180, angle, harpoonAngle) && !RobotContainer.coral) // Holding coral & angle is within range of the harpoon:
         {return coralArmLength + deckHeight - harpoonHeight;} // Keep coral above the harpoon
 
       if (armGeometryRotated[0].getX() >= 0 && armGeometryRotated[1].getX() <= 0) // Coral arm extends to either side of the mast:
-        {return coralArmLength + deckHeight;} // Keep carriage above the deck by the length of the arm
+        {return -Math.min(armGeometryRotated[0].getY(), armGeometryRotated[1].getY()) + deckHeight;} // Keep carriage above the deck by the length of the arm
 
       if (armGeometryRotated[0].getX() < 0) // Anticlockwise Coral limit is Starbord/Clockwise of the mast:
       {
@@ -340,9 +340,6 @@ public class ArmCalculator
      *        108 degree arc, centred on 180
      *        0.3m radius, then projected paralel to arm
      *      Outerpoint of wheels halfway between the limits of the primary span, and the point where the Claw meets the primary span
-     *  Harpoon:
-     *    Extends from the deck behind the plane of rotation, such that if algae is held,
-     *    the minimum safe height is increased by 0.1m, 17 degrees either side of mast
      */
       
       if (armGeometryRotated[2].getX() >= -0 && armGeometryRotated[3].getX() <= 0) // Algae arm extends to either side of the mast:
