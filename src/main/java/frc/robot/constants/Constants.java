@@ -230,9 +230,9 @@ public final class Constants
     public static final double turnBackThreshold = 135;
 
     /** Physical upper limit of the elevator, metres above the ground */
-    public static final double maxElevation = 1.734;
+    public static final double maxElevation = 1.725;
     /** Physical lower limit of the elevator, metres above the ground */
-    public static final double minElevation = 0.444;
+    public static final double minElevation = 0.44;
     
     /** Arm rotation check tollerance, degrees */
     public static final double angleTolerance = 2;
@@ -259,7 +259,7 @@ public final class Constants
     
     /* Preset elevator heights, height of centre of rotation above the ground, metres */
     public static final double startElevation         = 0.55; 
-    public static final double climbElevation         = minElevation;
+    public static final double climbElevation         = 0.4;
     public static final double netElevation           = maxElevation;
     public static final double processorElevation     = minElevation; 
     public static final double reef4Elevation         = maxElevation;

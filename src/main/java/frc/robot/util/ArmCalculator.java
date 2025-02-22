@@ -291,7 +291,7 @@ public class ArmCalculator
      */
 
       if (MathUtil.isNear(180, angle, harpoonAngle) && !RobotContainer.coral) // Holding coral & angle is within range of the harpoon:
-        {return coralArmLength + deckHeight - harpoonHeight;} // Keep coral above the harpoon
+        {return -Math.min(armGeometryRotated[0].getY(), armGeometryRotated[1].getY()) + deckHeight - harpoonHeight;} // Keep coral above the harpoon
 
       if (armGeometryRotated[0].getX() >= 0 && armGeometryRotated[1].getX() <= 0) // Coral arm extends to either side of the mast:
         {return -Math.min(armGeometryRotated[0].getY(), armGeometryRotated[1].getY()) + deckHeight;} // Keep carriage above the deck by the length of the arm
