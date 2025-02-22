@@ -28,7 +28,7 @@ public final class Constants
   {
     public static final double stickDeadband = 0.15;
     /** Normal maximum robot speed, relative to maximum uncapped speed */
-    public static final double maxThrottle = 1;
+    public static final double maxThrottle = 0.6;
     /** Minimum robot speed when braking, relative to maximum uncapped speed */
     public static final double minThrottle = 0.1;
     /** Normal maximum rotational robot speed, relative to maximum uncapped rotational speed */
@@ -230,9 +230,9 @@ public final class Constants
     public static final double turnBackThreshold = 135;
 
     /** Physical upper limit of the elevator, metres above the ground */
-    public static final double maxElevation = 1.709;
+    public static final double maxElevation = 1.725;
     /** Physical lower limit of the elevator, metres above the ground */
-    public static final double minElevation = 0.444;
+    public static final double minElevation = 0.44;
     
     /** Arm rotation check tollerance, degrees */
     public static final double angleTolerance = 2;
@@ -242,7 +242,7 @@ public final class Constants
     
     /* Preset arm angles, degrees anticlockwise for Port-side usecase, 0 = coral at top */
     public static final double startAngle         =   0;
-    public static final double climbAngle         =  90;
+    public static final double climbAngle         =  97;
     public static final double netAngle           = 225;
     public static final double processorAngle     = 270;
     public static final double reef4Angle         = 45;
@@ -258,8 +258,8 @@ public final class Constants
     public static final double coralStowAngle     = 0;
     
     /* Preset elevator heights, height of centre of rotation above the ground, metres */
-    public static final double startElevation         = 0.574; 
-    public static final double climbElevation         = minElevation;
+    public static final double startElevation         = 0.55; 
+    public static final double climbElevation         = 0.4;
     public static final double netElevation           = maxElevation;
     public static final double processorElevation     = minElevation; 
     public static final double reef4Elevation         = maxElevation;
@@ -274,11 +274,11 @@ public final class Constants
     public static final double algaeStowElevation     = 0.8; //TODO
     public static final double coralStowElevation     = 0.8; //TODO
     
-    public static final class IKGeometry
+    public static final class  IKGeometry
     {
       /* Manipulator arm geometry */
-      public static final double coralArmLength   = 0.5;
-      public static final double coralArmAngle    = 64/2;
+      public static final double coralArmLength   = 0.53;
+      public static final double coralArmAngle    = 36/2;
       public static final double algaeArmLength   = 0.6;
       public static final double algaeArmAngle    = 60/2;
       public static final double algaeWheelLength = 0.54;
@@ -287,12 +287,12 @@ public final class Constants
       public static final double algaeInnerAngle  = 108/2;
 
       /* Deck obstruction geometry */
-      public static final double railHeight    = 0.23;
+      public static final double railHeight    = 0.2;
       public static final double railLateral   = 0.38;
-      public static final double railMedial    = 0.27;
-      public static final double deckHeight    = 0.18;
-      public static final double harpoonHeight = 0.1;
-      public static final double harpoonAngle  = 17;
+      public static final double railMedial    = 0.37;
+      public static final double deckHeight    = 0.13;
+      public static final double harpoonHeight = 0.05;
+      public static final double harpoonAngle  = 2;
 
       /** For IK, angle the arm is projected to test for immediate collisions, degrees */
       public static final double projectionAngle = 5;
@@ -326,42 +326,23 @@ public final class Constants
   public static final class IntakeConstants // TODO: Speeds and Angles must be tuned to the specific robot
   {
     /* Intake motors speeds */
-    public static final double coralIntakeMotorSpeed = 0.8;
     public static final double algaeIntakeMotorSpeed = 0.8;
-    public static final double coralEjectMotorSpeed = -0.8;
     public static final double algaeEjectMotorSpeed = -0.8;
     public static final double climbingIntakeMotorSpeed = 0;
     public static final double standByMotorSpeed = 0;
     public static final double stowedMotorSpeed = 0;
-    public static final double coralTransferMotorSpeed = 0;
     public static final double algaeTransferMotorSpeed = 0;
 
     /* Top intake arm positions 
      * TODO: Put in Degrees for the arm top and bottom position in this comment
      */
-    public static final double topCoralIntakeArmTarget   = 0;
     public static final double topAlgaeIntakeArmTarget   = 0;
-    public static final double topCoralEjectArmTarget    = 0;
     public static final double topAlgaeEjectArmTarget    = 0;
     public static final double algaeClimbingArmTarget    = 0;
     public static final double topStandByArmTarget       = 0;
     public static final double topStowedArmTarget        = 0;
-    public static final double topCoralTransferArmTarget = 0;
     public static final double topAlgaeTransferArmTarget = 0;
 
-    /* Bottom intake arm positions */
-    public static final double bottomCoralIntakeArmTarget   = 0;
-    public static final double bottomAlgaeIntakeArmTarget   = 0;
-    public static final double bottomCoralEjectArmTarget    = 0;
-    public static final double bottomAlgaeEjectArmTarget    = 0;
-    public static final double coralClimbingArmTarget       = 0;
-    public static final double bottomStandByArmTarget       = 0;
-    public static final double bottomStowedArmTarget        = 0;
-    public static final double bottomCoralTransferArmTarget = 0;
-    public static final double bottomAlgaeTransferArmTarget = 0;
-
-    public static final double coralStowedLowThreshold  = 10;  
-    public static final double coralStowedHighThreshold = 10;
     public static final double algaeStowedLowThreshold  = 10;
     public static final double algaeStowedHighThreshold = 10;
 
@@ -376,18 +357,12 @@ public final class Constants
     public static final double topArmKS = 0.15;
     public static final double topArmKG = 0.15;
 
-    /* Bottom arm PID values */
-    public static final double bottomArmKP = 1;
-    public static final double bottomArmKI = 0;
-    public static final double bottomArmKD = 0.25;
-
     /* Arm MotionMagic values */
     public static final double intakeArmMotionMagicCruise = 0.25;
     public static final double intakeArmMotionMagicAccel  = 0.25;
 
     /* Arm ratios */
     public static final double topArmRatio    = 16.7;
-    public static final double bottomArmRatio = 1;
   }
 
   public static final class ClimberConstants
