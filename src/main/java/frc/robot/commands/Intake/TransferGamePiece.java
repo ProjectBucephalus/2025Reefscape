@@ -4,6 +4,8 @@
 
 package frc.robot.commands.Intake;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.MoveTo;
@@ -17,22 +19,20 @@ import frc.robot.subsystems.Intake.IntakeStatus;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class TransferGamePiece extends SequentialCommandGroup 
 {
-  Command diffectorPosCommand;
-  Command intakeCommand;
+  ArrayList<Command> commandSet;
 
   public TransferGamePiece(Diffector s_Diffector, Intake s_Intake, boolean isCoral) 
   {
     if (isCoral)
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferElevation, Constants.DiffectorConstants.coralTransferAngle);
-      intakeCommand = new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_CORAL);
+      commandSet.add(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferElevation, Constants.DiffectorConstants.coralTransferAngle));
     } 
     else
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferElevation, Constants.DiffectorConstants.algaeTransferAngle);
-      intakeCommand = new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE);
+      commandSet.add(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferElevation, Constants.DiffectorConstants.algaeTransferAngle));
+      commandSet.add(new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE));
     }
 
-    addCommands(diffectorPosCommand, intakeCommand);
+    addCommands(commandSet.toArray(Command[]::new));
   }
 }

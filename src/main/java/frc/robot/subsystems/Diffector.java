@@ -19,9 +19,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
 import frc.robot.constants.IDConstants;
 import frc.robot.util.ArmCalculator;
 import frc.robot.util.ArmPathPlanner;
+import frc.robot.util.Conversions;
 
 public class Diffector extends SubsystemBase 
 {
@@ -52,7 +54,7 @@ public class Diffector extends SubsystemBase
   public double angle;
   private double elevation;
   public static ArmCalculator arm;
-  public static boolean stowRequested = true;
+  public static boolean transferRequested = true;
 
   /** Elevation is scaled up and Rotation is scaled down by this factor for the pathplanner map */
   private double projectionElevation = 0.1;
@@ -241,7 +243,7 @@ public class Diffector extends SubsystemBase
   public boolean unwind()
   {
     targetAngle = Constants.DiffectorConstants.startAngle;
-    return (stowRequested = Math.abs(angle) < stowThreshold);
+    return (transferRequested = Math.abs(angle) < stowThreshold);
   }
 
   public double getArmTarget()
@@ -318,8 +320,8 @@ public class Diffector extends SubsystemBase
     m_diffectorUA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[0])).withSlot(0));//getSlot()));
     m_diffectorDA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])).withSlot(0));//getSlot()));
     
-    if (stowRequested && (Math.abs(angle) > stowThreshold || Math.abs(targetAngle) > stowThreshold))
-     {stowRequested = false;}
+    if (transferRequested && MathUtil.isNear(0, Conversions.mod(angle, 360), IKGeometry.harpoonAngle))
+     {transferRequested = false;}
 
     SmartDashboard.putNumber("Elevator Target", targetElevation);
     SmartDashboard.putNumber("Arm Target", targetAngle);
