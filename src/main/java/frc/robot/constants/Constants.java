@@ -223,7 +223,7 @@ public final class Constants
     public static final boolean startingCoralState = true;
     public static final boolean startingAlgaeState = false;
 
-    public static final double maxRotation = 1;
+    public static final double maxRotation = 5;
     /** Maximum total angle the arm is allowed to rotate away from centre */
     public static final double maxAbsAngle = maxRotation * 360;
     /** Above this angle, the arm can turn towards centre even if it's a longer path */
@@ -347,10 +347,10 @@ public final class Constants
     public static final double algaeStowedHighThreshold = 10;
 
     /* Top arm PID + FeedForward values */
-    public static final double topArmSpringKP = 1;
+    public static final double topArmSpringKP = 0; //1
     public static final double topArmSpringKI = 0;
     public static final double topArmSpringKD = 0;
-    public static final double topArmStopKP   = 12.5;
+    public static final double topArmStopKP   = 0; //12.5
     public static final double topArmStopKI   = 0;
     public static final double topArmStopKD   = 0;
     
@@ -362,26 +362,6 @@ public final class Constants
     public static final double intakeArmMotionMagicAccel  = 0.25;
 
     /* Arm ratios */
-    public static final double topArmRatio    = 16.7;
-  }
-
-  public static final class ClimberConstants
-  {
-    public static final double initSpeed   = 0;
-    public static final double deploySpeed = -0.5;
-    public static final double climbSpeed  = 0.8;
-
-    public static final double initWinchPos   = 0;
-    public static final double deployWinchPos = 0;
-    public static final double climbWinchPos  = 0;
-
-    public static final double winchKP = 0;
-    public static final double winchKI = 0;
-    public static final double winchKD = 0;
-
-    public static final double winchMotionMagicCruise = 0;
-    public static final double winchMotionMagicAccel  = 0;
-
-    public static final double initWinchThreshold = 10;
+    public static final double topArmRatio    = 90;
   }
 }
