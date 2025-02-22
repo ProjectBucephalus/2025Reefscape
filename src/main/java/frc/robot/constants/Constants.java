@@ -165,10 +165,10 @@ public final class Constants
 
   public static final class DiffectorConstants
   {
-    public static final double diffectorMotorKGEmpty = 0.15; //0.225
+    public static final double diffectorMotorKGEmpty = 0.225; //0.225
     public static final double diffectorMotorKSEmpty = 0.05;
     public static final double diffectorMotorKVEmpty = 0.58;
-    public static final double diffectorMotorKPEmpty = 70; //100
+    public static final double diffectorMotorKPEmpty = 100; //100
     public static final double diffectorMotorKIEmpty = 0;
     public static final double diffectorMotorKDEmpty = 0;
 
@@ -187,9 +187,9 @@ public final class Constants
     public static final double diffectorMotorKDTwoItem = 0;
 
     /** Desired cruise speed OF MOTOR, RPS */
-    public static final double diffectorMotionMagicCruise = 20; //100
+    public static final double diffectorMotionMagicCruise = 100; //100
     /** Desired acceleration OF MOTOR, RPS^2 */
-    public static final double diffectorMotionMagicAccel  = 100; //600
+    public static final double diffectorMotionMagicAccel  = 600; //600
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;
