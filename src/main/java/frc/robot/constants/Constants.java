@@ -243,8 +243,8 @@ public final class Constants
     /* Preset arm angles, degrees anticlockwise for Port-side usecase, 0 = coral at top */
     public static final double startAngle         =   0;
     public static final double climbAngle         =  97;
-    public static final double netAngle           = 225;
-    public static final double processorAngle     = 270;
+    public static final double netAngle           = 135;
+    public static final double processorAngle     = 90;
     public static final double reef4Angle         = 45;
     public static final double reef3Angle         = 30;
     public static final double reef2Angle         = 30;
@@ -252,8 +252,8 @@ public final class Constants
     public static final double coralTransferAngle = 180; 
     public static final double algaeTransferAngle =   0;
     public static final double coralStationAngle  = 240; //TODO
-    public static final double algae2Angle        = 270;
-    public static final double algae1Angle        = 270; 
+    public static final double algae2Angle        = 90;
+    public static final double algae1Angle        = 90; 
     public static final double algaeStowAngle     = 180; 
     public static final double coralStowAngle     = 0;
     
@@ -272,7 +272,7 @@ public final class Constants
     public static final double algae2Elevation        = 1.13;
     public static final double algae1Elevation        = 0.92;
     public static final double algaeStowElevation     = 0.8; //TODO
-    public static final double coralStowElevation     = 0.8; //TODO
+    public static final double coralStowElevation     = startElevation; //TODO 0.8
     
     public static final class  IKGeometry
     {

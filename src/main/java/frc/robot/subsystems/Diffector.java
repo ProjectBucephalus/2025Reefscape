@@ -170,6 +170,7 @@ public class Diffector extends SubsystemBase
       oldAngle = targetAngle;
 
       plannedPathPoints = arm.pathfindArm(targetElevation, targetAngle, elevation, angle);
+      SmartDashboard.putNumberArray("pathDump", plannedPathPoints.stream().mapMultiToDouble((point, consumer) -> {consumer.accept(point.getX()); consumer.accept(point.getY());}).toArray());
     }
 
     /*if (ArmPathPlanner.isNewPathAvailable())
