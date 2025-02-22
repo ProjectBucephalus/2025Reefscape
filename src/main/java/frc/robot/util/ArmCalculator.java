@@ -342,8 +342,8 @@ public class ArmCalculator
      *    the minimum safe height is increased by 0.1m, 17 degrees either side of mast
      */
 
-      if ((angle <= harpoonAngle || angle >= 360 - harpoonAngle) && RobotContainer.algae) // Holding algae & angle is within range of the harpoon:
-        {return algaeArmLength + deckHeight + harpoonHeight;} // Keep algae above the harpoon
+      if (MathUtil.isNear(0, angle, harpoonAngle) && !RobotContainer.coral) // Holding algae & angle is within range of the harpoon:
+        {return coralArmLength + deckHeight - harpoonHeight;} // Keep algae above the harpoon
       
       if (armGeometryRotated[2].getX() >= -0 && armGeometryRotated[3].getX() <= 0) // Algae arm extends to either side of the mast:
         {return algaeArmLength + deckHeight;} // Keep carriage above the deck by the length of the arm

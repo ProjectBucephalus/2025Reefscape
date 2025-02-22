@@ -291,8 +291,8 @@ public final class Constants
       public static final double railLateral   = 0.38;
       public static final double railMedial    = 0.27;
       public static final double deckHeight    = 0.18;
-      public static final double harpoonHeight = 0.1;
-      public static final double harpoonAngle  = 17;
+      public static final double harpoonHeight = 0.05;
+      public static final double harpoonAngle  = 2;
 
       /** For IK, angle the arm is projected to test for immediate collisions, degrees */
       public static final double projectionAngle = 5;
