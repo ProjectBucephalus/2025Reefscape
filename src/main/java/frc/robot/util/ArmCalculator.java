@@ -210,7 +210,7 @@ public class ArmCalculator
       //       and no intermediate waypoint is needed
     }
     // Unless stowed, ensure the arm is safe before moving from vertical
-    else if (!Diffector.stowRequested && elevationCurrent <= checkAngle(angleCurrent))
+    else if (!Diffector.transferRequested && elevationCurrent <= checkAngle(angleCurrent))
     {
       waypointList.add(checkAngle(angleCurrent) + projectionAngle);
       waypointList.add(angleCurrent);
@@ -290,6 +290,9 @@ public class ArmCalculator
      *    0.5m radius
      */
 
+      if (MathUtil.isNear(180, angle, harpoonAngle) && !RobotContainer.coral) // Holding coral & angle is within range of the harpoon:
+        {return coralArmLength + deckHeight - harpoonHeight;} // Keep coral above the harpoon
+
       if (armGeometryRotated[0].getX() >= 0 && armGeometryRotated[1].getX() <= 0) // Coral arm extends to either side of the mast:
         {return coralArmLength + deckHeight;} // Keep carriage above the deck by the length of the arm
 
@@ -341,9 +344,6 @@ public class ArmCalculator
      *    Extends from the deck behind the plane of rotation, such that if algae is held,
      *    the minimum safe height is increased by 0.1m, 17 degrees either side of mast
      */
-
-      if (MathUtil.isNear(0, angle, harpoonAngle) && !RobotContainer.coral) // Holding algae & angle is within range of the harpoon:
-        {return coralArmLength + deckHeight - harpoonHeight;} // Keep algae above the harpoon
       
       if (armGeometryRotated[2].getX() >= -0 && armGeometryRotated[3].getX() <= 0) // Algae arm extends to either side of the mast:
         {return algaeArmLength + deckHeight;} // Keep carriage above the deck by the length of the arm
