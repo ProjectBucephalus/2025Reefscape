@@ -165,10 +165,10 @@ public final class Constants
 
   public static final class DiffectorConstants
   {
-    public static final double diffectorMotorKGEmpty = 0.225; //0.225
+    public static final double diffectorMotorKGEmpty = 0.225;
     public static final double diffectorMotorKSEmpty = 0.05;
     public static final double diffectorMotorKVEmpty = 0.58;
-    public static final double diffectorMotorKPEmpty = 100; //100
+    public static final double diffectorMotorKPEmpty = 100;
     public static final double diffectorMotorKIEmpty = 0;
     public static final double diffectorMotorKDEmpty = 0;
 
