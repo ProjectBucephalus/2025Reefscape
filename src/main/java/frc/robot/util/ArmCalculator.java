@@ -29,6 +29,8 @@ public class ArmCalculator
   private double railLateral;
   private double railMedial;
   private double deckHeight;
+  private double harpoonHeight;
+  private double harpoonAngle;
   
   private double coralArmLength;
   private double coralArmAngle;
@@ -66,6 +68,8 @@ public class ArmCalculator
     railLateral   = IKGeometry.railLateral;
     railMedial    = IKGeometry.railMedial;
     deckHeight    = IKGeometry.deckHeight;
+    harpoonHeight = IKGeometry.harpoonHeight;
+    harpoonAngle  = IKGeometry.harpoonAngle;
     
     coralArmLength   = IKGeometry.coralArmLength;
     coralArmAngle    = IKGeometry.coralArmAngle;
@@ -206,7 +210,7 @@ public class ArmCalculator
       //       and no intermediate waypoint is needed
     }
     // Unless stowed, ensure the arm is safe before moving from vertical
-    else if (!Diffector.stowRequested && elevationCurrent <= checkAngle(angleCurrent))
+    else if (!Diffector.transferRequested && elevationCurrent <= checkAngle(angleCurrent))
     {
       waypointList.add(checkAngle(angleCurrent) + projectionAngle);
       waypointList.add(angleCurrent);
@@ -285,6 +289,9 @@ public class ArmCalculator
      *    36 degree arc, centred on 0
      *    0.53m radius
      */
+
+      if (MathUtil.isNear(180, angle, harpoonAngle) && !RobotContainer.coral) // Holding coral & angle is within range of the harpoon:
+        {return coralArmLength + deckHeight - harpoonHeight;} // Keep coral above the harpoon
 
       if (armGeometryRotated[0].getX() >= 0 && armGeometryRotated[1].getX() <= 0) // Coral arm extends to either side of the mast:
         {return -Math.min(armGeometryRotated[0].getY(), armGeometryRotated[1].getY()) + deckHeight;} // Keep carriage above the deck by the length of the arm

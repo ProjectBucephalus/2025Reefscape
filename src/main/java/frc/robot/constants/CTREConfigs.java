@@ -58,11 +58,6 @@ public final class CTREConfigs
     intakeTopArmFXConfig.Slot1.kS = Constants.IntakeConstants.topArmKS;
     intakeTopArmFXConfig.Slot1.kG = Constants.IntakeConstants.topArmKG;
 
-    /* Intake Bottom Arm PID Config */
-    intakeBottomArmFXConfig.Slot0.kP = Constants.IntakeConstants.bottomArmKP;
-    intakeBottomArmFXConfig.Slot0.kI = Constants.IntakeConstants.bottomArmKI;
-    intakeBottomArmFXConfig.Slot0.kD = Constants.IntakeConstants.bottomArmKD;
-
     /* Intake Arm MotionMagic Values */
     intakeTopArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.IntakeConstants.intakeArmMotionMagicAccel;
     intakeTopArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.IntakeConstants.intakeArmMotionMagicCruise;
@@ -71,7 +66,6 @@ public final class CTREConfigs
 
     /* Intake Arm Ratios */
     intakeTopArmFXConfig.Feedback.SensorToMechanismRatio = Constants.IntakeConstants.topArmRatio;
-    intakeBottomArmFXConfig.Feedback.SensorToMechanismRatio = Constants.IntakeConstants.bottomArmRatio;
     
     /* Climber Winch Values */
     climberWinchFXConfiguration.Slot0.kP = Constants.ClimberConstants.winchKP;
