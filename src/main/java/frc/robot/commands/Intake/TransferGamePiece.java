@@ -19,7 +19,7 @@ import frc.robot.subsystems.Intake.IntakeStatus;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class TransferGamePiece extends SequentialCommandGroup 
 {
-  ArrayList<Command> commandSet;
+  private ArrayList<Command> commandSet = new ArrayList<Command>();
 
   public TransferGamePiece(Diffector s_Diffector, Intake s_Intake, boolean isCoral) 
   {
