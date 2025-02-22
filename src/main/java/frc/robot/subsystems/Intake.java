@@ -77,7 +77,7 @@ public class Intake extends SubsystemBase
    * 
    * @param speed Algae intake motor speed [-1..1]
    */
-  private void setAlgaeIntakeSpeed(double speed)
+  public void setAlgaeIntakeSpeed(double speed)
     {m_AlgaeIntake.set(speed);}
 
   /**
