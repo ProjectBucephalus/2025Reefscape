@@ -29,13 +29,13 @@ public class GoToAlgaeIntakePos extends Command
   {
     if (level2)
     {
-      elevation = Constants.DiffectorConstants.algae2Elevation;
-      angle = Constants.DiffectorConstants.algae2Angle;
+      elevation = Constants.DiffectorConstants.algae3Elevation;
+      angle = Constants.DiffectorConstants.algae3Angle;
     }
     else
     {
-      elevation = Constants.DiffectorConstants.algae1Elevation;
-      angle = Constants.DiffectorConstants.algae1Angle;
+      elevation = Constants.DiffectorConstants.algae2Elevation;
+      angle = Constants.DiffectorConstants.algae2Angle;
     }
 
     moveCommand = new MoveTo(s_Diffector, elevation, angle);

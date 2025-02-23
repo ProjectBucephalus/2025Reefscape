@@ -4,20 +4,19 @@
 
 package frc.robot.commands.Diffector;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Diffector;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class MoveTo extends Command 
 {
-  double height;
-  double angle;
+  Translation2d targetPosition;
   Diffector s_Diffector;
 
-  public MoveTo(Diffector s_Diffector, double height, double angle) 
+  public MoveTo(Diffector s_Diffector, Translation2d targetPosition) 
   {
-    this.height = height;
-    this.angle = angle;
+    this.targetPosition = targetPosition;
     this.s_Diffector = s_Diffector;
 
     addRequirements(s_Diffector);
@@ -27,8 +26,8 @@ public class MoveTo extends Command
   @Override
   public void execute() 
   {
-    s_Diffector.setElevatorTarget(height);
-    s_Diffector.goToAngle(angle);
+    s_Diffector.setElevationTarget(targetPosition.getX());
+    s_Diffector.goToAngle(targetPosition.getY());
   }
 
   // Returns true when the command should end.

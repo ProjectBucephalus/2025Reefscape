@@ -30,8 +30,8 @@ public class ArmCalculator
   private double railLateral;
   private double railMedial;
   private double deckHeight;
-  private double harpoonHeight;
-  private double harpoonAngle;
+  private double latchDepth;
+  private double latchAngle;
   
   private double coralArmLength;
   private double coralArmAngle;
@@ -60,8 +60,8 @@ public class ArmCalculator
 
   public ArmCalculator()
   {
-    maxElevation  = Constants.DiffectorConstants.maxElevation;
-    minElevation  = Constants.DiffectorConstants.minElevation;
+    maxElevation  = Constants.DiffectorConstants.maxZ;
+    minElevation  = Constants.DiffectorConstants.minZ;
     projectionAngle = IKGeometry.projectionAngle;
     projectionElevation = IKGeometry.projectionElevation;
     
@@ -69,8 +69,8 @@ public class ArmCalculator
     railLateral   = IKGeometry.railLateral;
     railMedial    = IKGeometry.railMedial;
     deckHeight    = IKGeometry.deckHeight;
-    harpoonHeight = IKGeometry.harpoonHeight;
-    harpoonAngle  = IKGeometry.harpoonAngle;
+    latchDepth = IKGeometry.latchDepth;
+    latchAngle  = IKGeometry.latchAngle;
     
     coralArmLength   = IKGeometry.coralArmLength;
     coralArmAngle    = IKGeometry.coralArmAngle;
@@ -119,29 +119,26 @@ public class ArmCalculator
    * @param angleCurrent current angle of the arm, degrees anticlockwise, 0 = unwound with coral at top
    * @return double array containing the projected path, elevation/angle pairs
    */
-  public ArrayList<Translation2d> pathfindArm(double elevationTarget, double angleTarget, double elevationCurrent, double angleCurrent)
+  public ArrayList<Translation2d> pathfindArm(Translation2d targetPosition, Translation2d startPosition)
   {
-    elevationCurrent = Conversions.clamp(elevationCurrent,minElevation,maxElevation);
-    elevationTarget  = Conversions.clamp(elevationTarget,minElevation,maxElevation);
-
     ArrayList<Translation2d> pathOutput = new ArrayList<Translation2d>();
 
     // Full intended path of arm is above safe limits, path is safe as given
-    if (elevationCurrent >= safeElevation && elevationTarget >= safeElevation)
+    if (startPosition.getX() >= safeElevation && targetPosition.getX() >= safeElevation)
     {
-      pathOutput.add(new Translation2d(elevationTarget, angleTarget));
+      pathOutput.add(new Translation2d(targetPosition.getX(), targetPosition.getY()));
       return pathOutput;
     }
 
-    double angleChange = angleTarget - angleCurrent;
-    double angleRelative = Conversions.mod(angleCurrent, 360);
+    double angleChange = targetPosition.getY() - startPosition.getY();
+    double angleRelative = Conversions.mod(startPosition.getY(), 360);
 
     ArrayList<Double> waypointList = new ArrayList<Double>();
 
     // Elevation change only
     if (Math.abs(angleChange) <= Constants.DiffectorConstants.angleTolerance)
     {
-      pathOutput.add(new Translation2d(checkPosition(elevationTarget, angleTarget), angleTarget));
+      pathOutput.add(new Translation2d(checkPosition(targetPosition.getX(), targetPosition.getY()), targetPosition.getY()));
       return pathOutput;
     }
 
@@ -163,7 +160,7 @@ public class ArmCalculator
       {
         // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
         waypointList.add(safeElevation);
-        waypointList.add(angleTarget - Conversions.mod(angleTarget, 180));
+        waypointList.add(targetPosition.getY() - Conversions.mod(targetPosition.getY(), 180));
       }
 
       // Clockwise rotation past both verticals:
@@ -177,7 +174,7 @@ public class ArmCalculator
       {
         // Intermediate waypoint: Safe elevation, rotated to the last vertical point before the target
         waypointList.add(safeElevation);
-        waypointList.add(angleTarget + Conversions.mod(-angleTarget, 180));
+        waypointList.add(targetPosition.getY() + Conversions.mod(-targetPosition.getY(), 180));
       }
 
       // Anticlockwise rotation taking the arm past vertical:
@@ -189,8 +186,8 @@ public class ArmCalculator
       )
       {
         // Intermediate waypoint: Safe elevation for the last vertical point before the target
-        waypointList.add(checkPosition(elevationTarget, angleTarget - Conversions.mod(angleTarget, 180)));
-        waypointList.add(angleTarget - Conversions.mod(angleTarget, 180));
+        waypointList.add(checkPosition(targetPosition.getX(), targetPosition.getY() - Conversions.mod(targetPosition.getY(), 180)));
+        waypointList.add(targetPosition.getY() - Conversions.mod(targetPosition.getY(), 180));
       }
       
       // Clockwise rotation taking the arm past vertical:
@@ -202,8 +199,8 @@ public class ArmCalculator
       )
       {
         // Intermediate waypoint: Safe elevation for the last vertical point before the target
-        waypointList.add(checkPosition(elevationTarget, angleTarget + Conversions.mod(-angleTarget, 180)));
-        waypointList.add(angleTarget + Conversions.mod(-angleTarget, 180));
+        waypointList.add(checkPosition(targetPosition.getX(), targetPosition.getY() + Conversions.mod(-targetPosition.getY(), 180)));
+        waypointList.add(targetPosition.getY() + Conversions.mod(-targetPosition.getY(), 180));
       }
 
       // else: Angle change does not take arm past vertical
@@ -211,30 +208,30 @@ public class ArmCalculator
       //       and no intermediate waypoint is needed
     }
     // Unless stowed, ensure the arm is safe before moving from vertical
-    else if (!Diffector.transferRequested && elevationCurrent <= checkAngle(angleCurrent))
+    else if (!Diffector.transferRequested && startPosition.getX() <= checkAngle(startPosition.getY()))
     {
-      waypointList.add(checkAngle(angleCurrent) + projectionAngle);
-      waypointList.add(angleCurrent);
+      waypointList.add(checkAngle(startPosition.getY()) + projectionAngle);
+      waypointList.add(startPosition.getY());
     }
 
     // Add Target waypoint:
-    waypointList.add(checkPosition(elevationTarget, angleTarget));
-    waypointList.add(angleTarget);
+    waypointList.add(checkPosition(targetPosition.getX(), targetPosition.getY()));
+    waypointList.add(targetPosition.getY());
 
     // Immediate path projection to protect against dangerous elevation/rotation sequencing
     // Immediate rotation would cause collision:
-    if (checkAngle(angleCurrent + Math.copySign(Math.min(projectionAngle, Math.abs(angleChange)), angleChange)) > elevationCurrent)
+    if (checkAngle(startPosition.getY() + Math.copySign(Math.min(projectionAngle, Math.abs(angleChange)), angleChange)) > startPosition.getX())
     { // Set initial waypoint halfway between initial and first waypoint elevations without rotating
       waypointHold = waypointList.get(0);
-      waypointList.add(0, Math.max(Math.max((elevationCurrent + waypointHold) / 2, elevationCurrent), waypointHold));
-      waypointList.add(1, angleCurrent);
+      waypointList.add(0, Math.max(Math.max((startPosition.getX() + waypointHold) / 2, startPosition.getX()), waypointHold));
+      waypointList.add(1, startPosition.getY());
     }
     // Immediate drop in elevation would cause collision:
-    else if (waypointList.get(0) < elevationCurrent && checkAngle(angleCurrent) > elevationCurrent - projectionElevation)
+    else if (waypointList.get(0) < startPosition.getX() && checkAngle(startPosition.getY()) > startPosition.getX() - projectionElevation)
     { // Set initial waypoint halfway between initial and first waypoint rotations without elevating
       waypointHold = waypointList.get(1);
-      waypointList.add(0, elevationCurrent);
-      waypointList.add(1, (angleCurrent + waypointHold) / 2);
+      waypointList.add(0, startPosition.getX());
+      waypointList.add(1, (startPosition.getY() + waypointHold) / 2);
     }
 
     // Convert waypoint ArrayList to Translation2d array to return
@@ -249,6 +246,9 @@ public class ArmCalculator
    * @param angle the angle of the arm to check
    * @return maximum of the intended elevation and the safe elevation for the given angle
    */
+  public double checkPosition(Translation2d position)
+    {return Conversions.clamp(position.getX(), checkAngle(position.getY()), maxElevation);}
+
   public double checkPosition(double elevation, double angle)
     {return Conversions.clamp(elevation, checkAngle(angle), maxElevation);}
 
@@ -268,8 +268,8 @@ public class ArmCalculator
      */
 
     // Starting stow position puts the Algae arm below deck
-    if (angle == Constants.DiffectorConstants.startAngle && !RobotContainer.algae)
-      {return Constants.DiffectorConstants.startElevation;}
+    if (angle == Constants.DiffectorConstants.startPosition.getY() && !RobotContainer.algae) // TODO: Might not be needed if handled properly in pathfinding
+      {return Constants.DiffectorConstants.startPosition.getX();}
 
     angle = Conversions.mod(angle, 360);
 
@@ -291,8 +291,8 @@ public class ArmCalculator
      *    0.53m radius
      */
 
-      if (MathUtil.isNear(180, angle, harpoonAngle) && !RobotContainer.coral) // Holding coral & angle is within range of the harpoon:
-        {return -Math.min(armGeometryRotated[0].getY(), armGeometryRotated[1].getY()) + deckHeight - harpoonHeight;} // Keep coral above the harpoon
+      if (MathUtil.isNear(180, angle, latchAngle) && !RobotContainer.coral) // Holding coral & angle is within range of the harpoon:
+        {return -Math.min(armGeometryRotated[0].getY(), armGeometryRotated[1].getY()) + deckHeight - latchDepth;} // Allow arm low enough for coral transfer
 
       if (armGeometryRotated[0].getX() >= 0 && armGeometryRotated[1].getX() <= 0) // Coral arm extends to either side of the mast:
         {return -Math.min(armGeometryRotated[0].getY(), armGeometryRotated[1].getY()) + deckHeight;} // Keep carriage above the deck by the length of the arm
@@ -401,25 +401,6 @@ public class ArmCalculator
 
     else // Arm is horizontal
       {return minElevation;}
-  }
-
-  public Translation2d pathFollow(ArrayList<Translation2d> pathPoints, Translation2d currentPoint)
-  {
-    if (pathPoints.size() == 0)
-      {return currentPoint;}
-    if (pathPoints.size() == 1)
-      {return pathPoints.get(0);}
-    int pathIndex = 0;
-    while (pathIndex < pathPoints.size() - 1)
-    {
-      if (pathPoints.get(pathIndex).getDistance(currentPoint) > pathPoints.get(pathIndex + 1).getDistance(currentPoint))
-        {pathIndex++;}
-      else
-        {break;}
-    }
-
-
-    return pathPoints.get(pathIndex);
   }
 
   /**
