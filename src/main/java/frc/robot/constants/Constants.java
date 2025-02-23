@@ -367,12 +367,8 @@ public final class Constants
 
   public static final class ClimberConstants
   {
-    public static final double initSpeed   = 0;
-    public static final double deploySpeed = -0.5;
-    public static final double climbSpeed  = 0.8;
-
-    public static final double initWinchPos   = 0;
-    public static final double deployWinchPos = 0;
+    public static final double lockedWinchPos   = 0;
+    public static final double activeWinchPos = 0;
     public static final double climbWinchPos  = 0;
 
     public static final double winchKP = 0;
