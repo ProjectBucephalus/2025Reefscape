@@ -11,6 +11,7 @@ import frc.robot.constants.IDConstants;
 
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
  * Algae manipulator Subsystem, handling the intake and out-take
@@ -23,7 +24,7 @@ public class AlgaeManipulator extends SubsystemBase
 {
 
   /* Declaration of the motor controllers */
-  private VictorSPX algaeMotor;
+  private TalonFX algaeMotor;
 
   /* Declaration of the enum variable */
   private AlgaeManipulatorStatus algaeStatus;
@@ -46,7 +47,7 @@ public class AlgaeManipulator extends SubsystemBase
   public AlgaeManipulator() 
   {
     algaeStatus = AlgaeManipulatorStatus.EMPTY;
-    algaeMotor = new VictorSPX(IDConstants.algaeManipulatorID);
+    algaeMotor = new TalonFX(IDConstants.algaeManipulatorID);
     algaeStatus = AlgaeManipulatorStatus.EMPTY;
   }
 
@@ -56,7 +57,7 @@ public class AlgaeManipulator extends SubsystemBase
    * @param speed Algae manipulator motor speed, positive to eject [-1..1]
    */
   public void setAlgaeManipulatorSpeed(double speed)
-    {algaeMotor.set(VictorSPXControlMode.PercentOutput, speed);}
+    {algaeMotor.set(speed);}
 
   public void setAlgaeManipulatorStatus(AlgaeManipulatorStatus status)
     {algaeStatus = status;}
@@ -80,7 +81,7 @@ public class AlgaeManipulator extends SubsystemBase
 
       case HOLDING:
         if (RobotContainer.algae) 
-          {algaeMotor.set(VictorSPXControlMode.PercentOutput, 0);} 
+          {algaeMotor.set(0);} 
         else
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
           break;
