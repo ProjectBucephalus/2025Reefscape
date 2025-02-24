@@ -205,9 +205,9 @@ public final class Constants
     public static final double diffectorMotorKDTwoItem = 0;
 
     /** Desired cruise speed OF MOTOR, RPS */
-    public static final double diffectorMotionMagicCruise = 10; //80
+    public static final double diffectorMotionMagicCruise = 40; //80
     /** Desired acceleration OF MOTOR, RPS^2 */
-    public static final double diffectorMotionMagicAccel  = 6; //60
+    public static final double diffectorMotionMagicAccel  = 20; //60
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;
@@ -273,7 +273,7 @@ public final class Constants
     public static final Translation2d reef3Position         = new Translation2d(1.28,  30);
     public static final Translation2d reef2Position         = new Translation2d(0.90,  30);
     public static final Translation2d reef1Position         = new Translation2d(0.80, 135);
-    public static final Translation2d coralTransferPosition = new Translation2d(  minZ, 180); 
+    public static final Translation2d coralTransferPosition = new Translation2d(0.75, 180); 
     public static final Translation2d coralIntakePosition   = new Translation2d(1.20, 180); //TODO
     public static final Translation2d algaeTransferPosition = new Translation2d(1.20,   0); //TODO
     public static final Translation2d algaeIntakePosition   = new Translation2d(  minZ, 270); //TODO
@@ -314,7 +314,7 @@ public final class Constants
   public static final class GamePiecesManipulator 
   {
     /* Coral manipulator speeds */
-    public static final double coralManipulatorBaseIntakeSpeed = 0.2;
+    public static final double coralManipulatorBaseIntakeSpeed = 0.1;
     public static final double coralManipulatorMaxIntakeSpeed  = 0.4;
     public static final double coralManipulatorDeliverySpeed   = 0.7;
     public static final double coralManipulatorHoldingVoltage  = 0;
@@ -323,7 +323,7 @@ public final class Constants
     public static final double algaeManipulatorIntakeSpeed    = 0.4;
     public static final double algaeManipulatorHoldingVoltage = 0;
     public static final double algaeManipulatorNetSpeed       = -0.9;
-    public static final double algaeManipulatorProcessorSpeed = -1;
+    public static final double algaeManipulatorProcessorSpeed = -0.4;
     public static final double algaeManipulatorEmptySpeed     = 0;
 
     /* The number of cycles (each cycle is 0.02s) before the holding intake speed reaches max */
