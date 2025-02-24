@@ -51,7 +51,7 @@ public class TargetHeadingStation extends Command
 
   public TargetHeadingStation(CommandSwerveDrivetrain s_Swerve, Rotation2d rotationOffset, DoubleSupplier ySup, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
-    SmartDashboard.putBoolean("Station Snap Updating", true);
+    SmartDashboard.putBoolean("Heading Snap Updating", true);
 
     this.s_Swerve = s_Swerve;
     addRequirements(s_Swerve);
@@ -89,7 +89,7 @@ public class TargetHeadingStation extends Command
     /* Apply deadbands */
     if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
 
-    if (SmartDashboard.getBoolean("Reef Snap Updating", true)) 
+    if (SmartDashboard.getBoolean("Heading Snap Updating", true)) 
       {updateTargetHeading();}
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
