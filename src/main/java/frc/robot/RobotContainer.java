@@ -270,7 +270,17 @@ public class RobotContainer
   {
     /* Climb controls */
     //copilot.start().and(copilot.back()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbElevation, Constants.DiffectorConstants.climbAngle)); //Starts climber
-    //copilot.back().onTrue(new Test("climber", "deploy"));                                                                                           //Deploys the climber
+    //copilot.back().onTrue(new Test("climber", "deploy"));   //Deploys the climber
+
+    /** TODO: Add Co-Driver Controls
+     *    - Coral Left
+     *    _ Coral Right
+     *    _ Reset Arm
+     *    - Activate Climb
+     *    - Prepare Climb
+     *    - Climber Up
+     *    - Climber Down
+     */
 
     /* Coral scoring controls */
     copilot.y().and(copilot.rightTrigger().negate()).onTrue(new GoToCoralScorePos(4, s_Diffector));   //L4 scoring
@@ -324,16 +334,18 @@ public class RobotContainer
     //copilot.rightTrigger().onTrue(new Test("algaeModifier", "on")).onFalse(new Test("algaeModifier", "off"));
     copilot.rightBumper().and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, 1, 180));
     copilot.rightBumper().and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, 1, 0));
+    // TODO: /\ Remove testing controls
     
     /* Manual intake controls */
     copilot.axisLessThan(XboxController.Axis.kLeftY.value, -Constants.Control.stickDeadband)
       .onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TESTING))
       .whileTrue(Commands.run(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() - 5), s_Intake));                      //Algae intake arm down
+      // TODO: /\ Needs to be Climber Down/Up
 
     copilot.axisGreaterThan(XboxController.Axis.kLeftY.value, Constants.Control.stickDeadband)
       .onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TESTING))
       .whileTrue(Commands.run(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() + 5), s_Intake));          // Algae intake arm up
-
+      // TODO: /\ Needs to be Climber Down/Up
 
     /* Manual arm controls */
     copilot.axisGreaterThan(XboxController.Axis.kRightX.value, Constants.Control.stickDeadband)
@@ -377,10 +389,11 @@ public class RobotContainer
     /* Driver rumble bindings */
     
     driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_RIGHT, "Intake Full"));
-    
+    // TODO: Driver Rightside Rumble: Ready To Score
+
     /* Copilot rumble bindings */
     copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_LEFT, "Transfer Ready"));
-    //copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
+    // TODO: copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
   }
 
   private void configureButtonBoxBindings()
