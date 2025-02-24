@@ -12,7 +12,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.commands.Util.CustomADStar;
 import frc.robot.constants.Constants;
 import frc.robot.util.ArmPathPlanner;
 import frc.robot.subsystems.Diffector;
@@ -32,7 +31,7 @@ public class ArmPathPlanner
 {
 
   private final static double maxAbsAngle = Constants.DiffectorConstants.maxAbsAngle;
-  private final static double minElevation = Constants.DiffectorConstants.minElevation; 
+  private final static double minElevation = Constants.DiffectorConstants.minZ; 
 
   private static double mapScale = 0.1;
   private static double nodeSize = 0.2;
@@ -52,6 +51,32 @@ public class ArmPathPlanner
       (armElevationRotation.getY() + maxAbsAngle) * mapScale
     );
  }
+
+ /**
+  * Converts from arm-relative coordinates to the coordinates used by the AD* system
+  * @param armElevationRotation metres over ground | total degrees anticlockwise
+  * @param protect ensure the elevation is safe for the given rotation (default false)
+  * @return pathfinderXY -> arm state-space mapping
+  */
+  public static Translation2d fromArmRelative(Translation2d armElevationRotation, boolean protect)
+  {
+    if (protect)
+    {
+      return new Translation2d
+      (
+        (Math.max((Diffector.arm.checkPosition(armElevationRotation) - minElevation), 0) / mapScale) + (2 * nodeSize),
+        (armElevationRotation.getY() + maxAbsAngle) * mapScale
+      );
+    }
+    else
+    {
+      return new Translation2d
+      (
+        (Math.max((armElevationRotation.getX() - minElevation), 0) / mapScale) + (2 * nodeSize),
+        (armElevationRotation.getY() + maxAbsAngle) * mapScale
+      );
+    }
+  }
 
  /**
   * Converts from arm-relative coordinates to the coordinates used by the AD* system 

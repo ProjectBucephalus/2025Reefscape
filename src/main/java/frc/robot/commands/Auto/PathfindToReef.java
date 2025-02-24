@@ -85,7 +85,4 @@ public class PathfindToReef extends Command
   @Override
   public boolean isFinished() 
     {return pathfindingCommand.isFinished();}
-
-  public int getNearestReefFace()
-    {return nearestReefFace;}
 }

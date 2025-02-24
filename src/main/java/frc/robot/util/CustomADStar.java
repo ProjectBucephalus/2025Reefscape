@@ -1,4 +1,4 @@
-package frc.robot.commands.Util;
+package frc.robot.util;
 
 import com.pathplanner.lib.path.*;
 import com.pathplanner.lib.pathfinding.Pathfinder;

@@ -19,7 +19,7 @@ import frc.robot.constants.IDConstants;
  * Intake subsystem, handling the intake wheels, and intake arms.
  * 
  * @author 5985
- * @author Sebastian Aiello 
+ * @depricated
  */
 public class Intake extends SubsystemBase 
 {
@@ -77,7 +77,7 @@ public class Intake extends SubsystemBase
    * 
    * @param speed Algae intake motor speed [-1..1]
    */
-  private void setAlgaeIntakeSpeed(double speed)
+  public void setAlgaeIntakeSpeed(double speed)
     {m_AlgaeIntake.set(speed);}
 
   /**
@@ -171,7 +171,7 @@ public class Intake extends SubsystemBase
     }
     else
     {
-      if (RobotContainer.s_Diffector.safeToMoveAlgae())
+      if (RobotContainer.s_Diffector.atPosition())
       {
         // Runs arm with PID slot for hardstop behaviour
         m_AlgaeArm.setControl(motionMagic.withPosition(algaeArmTarget / 360).withSlot(1));

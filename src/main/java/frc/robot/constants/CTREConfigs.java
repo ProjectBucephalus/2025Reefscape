@@ -5,9 +5,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public final class CTREConfigs 
 {
-  public static final TalonFXConfiguration climberWinchFXConfiguration = new TalonFXConfiguration();
   public static final TalonFXConfiguration intakeTopArmFXConfig = new TalonFXConfiguration();
-  public static final TalonFXConfiguration intakeBottomArmFXConfig = new TalonFXConfiguration();
   public static final TalonFXConfiguration diffectorFXConfig = new TalonFXConfiguration();
 
   public CTREConfigs()
@@ -58,20 +56,13 @@ public final class CTREConfigs
     intakeTopArmFXConfig.Slot1.kS = Constants.IntakeConstants.topArmKS;
     intakeTopArmFXConfig.Slot1.kG = Constants.IntakeConstants.topArmKG;
 
+    intakeTopArmFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
     /* Intake Arm MotionMagic Values */
     intakeTopArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.IntakeConstants.intakeArmMotionMagicAccel;
     intakeTopArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.IntakeConstants.intakeArmMotionMagicCruise;
-    intakeBottomArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.IntakeConstants.intakeArmMotionMagicAccel;
-    intakeBottomArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.IntakeConstants.intakeArmMotionMagicCruise;
 
     /* Intake Arm Ratios */
-    intakeTopArmFXConfig.Feedback.SensorToMechanismRatio = Constants.IntakeConstants.topArmRatio;
-    
-    /* Climber Winch Values */
-    climberWinchFXConfiguration.Slot0.kP = Constants.ClimberConstants.winchKP;
-    climberWinchFXConfiguration.Slot0.kI = Constants.ClimberConstants.winchKI;
-    climberWinchFXConfiguration.Slot0.kD = Constants.ClimberConstants.winchKD;
-    climberWinchFXConfiguration.MotionMagic.MotionMagicCruiseVelocity = Constants.ClimberConstants.winchMotionMagicCruise;
-    climberWinchFXConfiguration.MotionMagic.MotionMagicAcceleration = Constants.ClimberConstants.winchMotionMagicAccel; 
+    intakeTopArmFXConfig.Feedback.SensorToMechanismRatio = Constants.IntakeConstants.algaeIntakeArmRatio;
   }
 }

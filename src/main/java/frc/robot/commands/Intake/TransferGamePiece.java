@@ -19,17 +19,17 @@ import frc.robot.subsystems.Intake.IntakeStatus;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class TransferGamePiece extends SequentialCommandGroup 
 {
-  ArrayList<Command> commandSet;
+  private ArrayList<Command> commandSet = new ArrayList<Command>();
 
   public TransferGamePiece(Diffector s_Diffector, Intake s_Intake, boolean isCoral) 
   {
     if (isCoral)
     {
-      commandSet.add(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferElevation, Constants.DiffectorConstants.coralTransferAngle));
+      commandSet.add(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferPosition));
     } 
     else
     {
-      commandSet.add(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferElevation, Constants.DiffectorConstants.algaeTransferAngle));
+      commandSet.add(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferPosition));
       commandSet.add(new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE));
     }
 

@@ -30,7 +30,7 @@ public class Limelight extends SubsystemBase
   {
     limelightName = name;
     
-    SmartDashboard.putBoolean("Use Limelight", true);
+    SmartDashboard.putBoolean("Use Limelight", false);
   }
 
   public void setIMUMode(int mode)
@@ -42,7 +42,7 @@ public class Limelight extends SubsystemBase
     headingDeg = RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble();
     omegaRps = Units.radiansToRotations(RobotContainer.state.Speeds.omegaRadiansPerSecond);
     
-    if (SmartDashboard.getBoolean("Use Limelight", true))
+    if (SmartDashboard.getBoolean("Use Limelight", false))
     {
       LimelightHelpers.SetRobotOrientation(limelightName, headingDeg, 0, 0, 0, 0, 0);
       
