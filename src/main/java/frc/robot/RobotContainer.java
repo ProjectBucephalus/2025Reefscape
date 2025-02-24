@@ -20,7 +20,6 @@ import frc.robot.commands.CoralManipulator.*;
 import frc.robot.commands.Diffector.*;
 import frc.robot.commands.Intake.*;
 import frc.robot.commands.Rumble.*;
-import frc.robot.commands.Util.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
@@ -82,7 +81,7 @@ public class RobotContainer
   private final Trigger copilotLeftRumbleTrigger = new Trigger(
               () -> s_Intake.getAlgaeState() && (s_Diffector.getEncoderPos() > 45 && s_Diffector.getEncoderPos() < 315) ||
               s_Intake.getAlgaeState() && (s_Diffector.getEncoderPos() > 135 && s_Diffector.getEncoderPos() < 225));
-  //private final Trigger driverRightRumblTrigger = new Trigger(() -> )
+  //private final Trigger driverRightRumblTrigger = new Trigger(() -> );
   // TODO: Ready to score rumble
   //private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.climbReady() && s_Climber.climbReady() && s_Diffector.climbReady() );
 
@@ -137,7 +136,7 @@ public class RobotContainer
 
     // Configure button bindings
     configureDriverBindings();
-    //configureAutoDriveBindings();
+    configureAutoDriveBindings();
     configureCopilotBindings();
     //configureTestBindings();
     configureRumbleBindings();
@@ -148,7 +147,8 @@ public class RobotContainer
   private void configureDriverBindings()
   {
     // Heading reset
-    driver.start().onTrue(Commands.runOnce(() -> s_Swerve.getPigeon2().setYaw(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble() + (FieldUtils.isRedAlliance() ? 180 : 0))));
+    driver.start().onTrue(Commands.runOnce(() -> s_Swerve.getPigeon2()
+      .setYaw(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble() + (FieldUtils.isRedAlliance() ? 180 : 0))));
 
     /* Intake controls */
     driver.leftTrigger().whileTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY));
@@ -273,32 +273,52 @@ public class RobotContainer
     //copilot.back().onTrue(new Test("climber", "deploy"));                                                                                           //Deploys the climber
 
     /* Coral scoring controls */
-    copilot.a().and(copilot.rightTrigger().negate()).onTrue(new GoToCoralScorePos(1, s_Diffector));   //L1 scoring
-    copilot.b().and(copilot.rightTrigger().negate()).onTrue(new GoToCoralScorePos(2, s_Diffector));   //L2 scoring
-    copilot.x().and(copilot.rightTrigger().negate()).onTrue(new GoToCoralScorePos(3, s_Diffector));   //L3 scoring
     copilot.y().and(copilot.rightTrigger().negate()).onTrue(new GoToCoralScorePos(4, s_Diffector));   //L4 scoring
+    copilot.x().and(copilot.rightTrigger().negate()).onTrue(new GoToCoralScorePos(3, s_Diffector));   //L3 scoring
+    copilot.b().and(copilot.rightTrigger().negate()).onTrue(new GoToCoralScorePos(2, s_Diffector));   //L2 scoring
+    copilot.a().and(copilot.rightTrigger().negate()).onTrue(new GoToCoralScorePos(1, s_Diffector));   //L1 scoring
         
     /* Algae scoring/intaking controls */
-    copilot.a().and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.processorElevation, Constants.DiffectorConstants.processorAngle));           //Processor scoring
-    copilot.b().and(copilot.rightTrigger()).onTrue(new GoToAlgaeIntakePos(true, s_Diffector));  //L2 pick up
+    
+    copilot.y().and(copilot.rightTrigger())
+    .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.netElevation, Constants.DiffectorConstants.netAngle));            //Net scoring
     copilot.x().and(copilot.rightTrigger()).onTrue(new GoToAlgaeIntakePos(false, s_Diffector)); //L3 pick up
-    copilot.y().and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.netElevation, Constants.DiffectorConstants.netAngle));            //Net scoring
+    copilot.b().and(copilot.rightTrigger()).onTrue(new GoToAlgaeIntakePos(true, s_Diffector));  //L2 pick up
+    copilot.a().and(copilot.rightTrigger())
+    .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.processorElevation, Constants.DiffectorConstants.processorAngle));           //Processor scoring
 
     /* Stow pos*/
-    copilot.povUp().and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeStowElevation, Constants.DiffectorConstants.algaeStowAngle));  //algae stow
-    copilot.povUp().and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralStowElevation, Constants.DiffectorConstants.coralStowAngle)); //coral stow
+    copilot.povUp().and(copilot.rightTrigger())
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeStowElevation, Constants.DiffectorConstants.algaeStowAngle));  //algae stow
+
+    copilot.povUp().and(copilot.rightTrigger().negate())
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralStowElevation, Constants.DiffectorConstants.coralStowAngle)); //coral stow
+
 
     /* Transfer pos */
-    copilot.povDown().and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferElevation, Constants.DiffectorConstants.algaeTransferAngle));                         //agae transer
-    copilot.povDown().and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferElevation, Constants.DiffectorConstants.coralTransferAngle));                //coral transfer
+    copilot.povDown().and(copilot.rightTrigger())
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferElevation, Constants.DiffectorConstants.algaeTransferAngle));                         //agae transer
+
+    copilot.povDown().and(copilot.rightTrigger()
+      .negate()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferElevation, Constants.DiffectorConstants.coralTransferAngle));                //coral transfer
 
     /* Game piece intake controls */
-    copilot.leftTrigger().and(copilot.rightTrigger()).onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE));          //Intake algae through manipulator
-    copilot.leftTrigger().and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TESTING)).onTrue(Commands.runOnce(() -> s_Intake.setAlgaeIntakeSpeed(Constants.IntakeConstants.algaeIntakeMotorSpeed), s_Intake)).onFalse(Commands.runOnce(() -> s_Intake.setAlgaeIntakeSpeed(0), s_Intake)); //intake algae from intake
+    copilot.leftTrigger().and(copilot.rightTrigger())
+      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE));          //Intake algae through manipulator
+
+    copilot.leftTrigger().and(copilot.rightTrigger()
+      .negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TESTING))
+      .onTrue(Commands.runOnce(() -> s_Intake.setAlgaeIntakeSpeed(Constants.IntakeConstants.algaeIntakeMotorSpeed), s_Intake))
+      .onFalse(Commands.runOnce(() -> s_Intake.setAlgaeIntakeSpeed(0), s_Intake)); //intake algae from intake
 
     /* Game piece outtake controls */
-    copilot.leftBumper().and(copilot.rightTrigger()).onTrue(new EjectAlgae(s_AlgaeManipulator)); //Ejects algae from manipulator
-    copilot.leftBumper().and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TESTING)).onTrue(Commands.runOnce(() -> s_Intake.setAlgaeIntakeSpeed(Constants.IntakeConstants.algaeEjectMotorSpeed), s_Intake)).onFalse(Commands.runOnce(() -> s_Intake.setAlgaeIntakeSpeed(0), s_Intake)); //Ejects algae from intake
+    copilot.leftBumper().and(copilot.rightTrigger())
+      .onTrue(new EjectAlgae(s_AlgaeManipulator)); //Ejects algae from manipulator
+
+    copilot.leftBumper().and(copilot.rightTrigger()
+      .negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TESTING))
+      .onTrue(Commands.runOnce(() -> s_Intake.setAlgaeIntakeSpeed(Constants.IntakeConstants.algaeEjectMotorSpeed), s_Intake))
+      .onFalse(Commands.runOnce(() -> s_Intake.setAlgaeIntakeSpeed(0), s_Intake)); //Ejects algae from intake
 
     /* Modifier controls for testing only */
     //copilot.rightTrigger().onTrue(new Test("algaeModifier", "on")).onFalse(new Test("algaeModifier", "off"));
@@ -306,16 +326,30 @@ public class RobotContainer
     copilot.rightBumper().and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, 1, 0));
     
     /* Manual intake controls */
-    copilot.axisLessThan(XboxController.Axis.kLeftY.value, -Constants.Control.stickDeadband).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TESTING)).whileTrue(Commands.run(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() - 5), s_Intake));                      //Algae intake arm down
-    copilot.axisGreaterThan(XboxController.Axis.kLeftY.value, Constants.Control.stickDeadband).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TESTING)).whileTrue(Commands.run(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() + 5), s_Intake));          // Algae intake arm up
+    copilot.axisLessThan(XboxController.Axis.kLeftY.value, -Constants.Control.stickDeadband)
+      .onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TESTING))
+      .whileTrue(Commands.run(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() - 5), s_Intake));                      //Algae intake arm down
+
+    copilot.axisGreaterThan(XboxController.Axis.kLeftY.value, Constants.Control.stickDeadband)
+      .onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TESTING))
+      .whileTrue(Commands.run(() -> s_Intake.setAlgaeArmTarget(s_Intake.getAlgaeArmTarget() + 5), s_Intake));          // Algae intake arm up
+
 
     /* Manual arm controls */
-    copilot.axisGreaterThan(XboxController.Axis.kRightX.value, Constants.Control.stickDeadband).whileTrue(new ManualArmControl(s_Diffector, () -> 5)); //Arm clockwise
-    copilot.axisLessThan(XboxController.Axis.kRightX.value, -Constants.Control.stickDeadband).whileTrue(new ManualArmControl(s_Diffector, () -> -5));             //Arm anticlockwise
+    copilot.axisGreaterThan(XboxController.Axis.kRightX.value, Constants.Control.stickDeadband)
+      .whileTrue(new ManualArmControl(s_Diffector, () -> 5)); //Arm clockwise
+
+    copilot.axisLessThan(XboxController.Axis.kRightX.value, -Constants.Control.stickDeadband)
+      .whileTrue(new ManualArmControl(s_Diffector, () -> -5));             //Arm anticlockwise
+
   
     /* Manual elevator controls */
-    copilot.axisLessThan(XboxController.Axis.kRightY.value, -Constants.Control.stickDeadband).whileTrue(new ManualElevatorControl(s_Diffector, () -> -0.05));             //Elevator up
-    copilot.axisGreaterThan(XboxController.Axis.kRightY.value, Constants.Control.stickDeadband).whileTrue(new ManualElevatorControl(s_Diffector, () -> 0.05)); //Elevator down
+    copilot.axisLessThan(XboxController.Axis.kRightY.value, -Constants.Control.stickDeadband)
+      .whileTrue(new ManualElevatorControl(s_Diffector, () -> -0.05));             //Elevator up
+
+    copilot.axisGreaterThan(XboxController.Axis.kRightY.value, Constants.Control.stickDeadband)
+      .whileTrue(new ManualElevatorControl(s_Diffector, () -> 0.05)); //Elevator down
+
   }
 
   private void configureTestBindings()
@@ -330,15 +364,19 @@ public class RobotContainer
     testing.leftBumper().onTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(Constants.DiffectorConstants.startElevation), s_Diffector));
 
     testing.x().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE)));
-    testing.y().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET))).onFalse(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY)));
-    testing.a().onTrue(Commands.runOnce(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DELIVERY))).onFalse(Commands.runOnce(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT)));
+    testing.y().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET)))
+      .onFalse(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY)));
+
+    testing.a().onTrue(Commands.runOnce(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DELIVERY)))
+      .onFalse(Commands.runOnce(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT)));
+
   }
 
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
     
-    driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_LEFT, "Intake Full"));
+    driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_RIGHT, "Intake Full"));
     
     /* Copilot rumble bindings */
     copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_LEFT, "Transfer Ready"));
