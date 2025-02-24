@@ -12,7 +12,6 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.commands.Util.CustomADStar;
 import frc.robot.constants.Constants;
 import frc.robot.util.ArmPathPlanner;
 import frc.robot.subsystems.Diffector;
