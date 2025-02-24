@@ -15,6 +15,7 @@ import frc.robot.commands.Auto.PathfindToReef.DpadOptions;
 import frc.robot.commands.Diffector.GoToCoralScorePos;
 import frc.robot.commands.CoralManipulator.SetCoralStatus;
 import frc.robot.commands.Diffector.MoveTo;
+import frc.robot.constants.Constants;
 import frc.robot.subsystems.Diffector;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -108,7 +109,7 @@ public class AutoScoreSequence extends SequentialCommandGroup
 
         new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY),
 
-        new MoveTo(s_Diffector, 0, 0) //replace with stow once IK done
+        new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeStowPosition)
       );
     }
   }

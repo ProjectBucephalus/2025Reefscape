@@ -248,9 +248,9 @@ public final class Constants
     public static final double turnBackThreshold = 135;
 
     /** Physical upper limit of the elevator, metres above the ground */
-    public static final double maxElevation = 1.725;
-    /** Physical lower limit of the elevator, metres above the ground */
-    public static final double minElevation = 0.44;
+    public static final double maxZ = 1.725;
+    /** Physical lower limit of the elevator when horizontal, metres above the ground */
+    public static final double minZ = 0.44;
     
     /** Arm rotation check tollerance, degrees */
     public static final double angleTolerance = 2;
@@ -258,40 +258,29 @@ public final class Constants
     /** Elevation height check tolerance, m */
     public static final double elevationTolerance = 0.025;
     
-    /* Preset arm angles, degrees anticlockwise for Port-side usecase, 0 = coral at top */
-    public static final double startAngle         =   0;
-    public static final double climbAngle         =  97;
-    public static final double netAngle           = 135;
-    public static final double processorAngle     = 90;
-    public static final double reef4Angle         = 45;
-    public static final double reef3Angle         = 30;
-    public static final double reef2Angle         = 30;
-    public static final double reef1Angle         = 135;
-    public static final double coralTransferAngle = 180; 
-    public static final double algaeTransferAngle =   0;
-    public static final double coralStationAngle  = 240; //TODO
-    public static final double algae2Angle        = 90;
-    public static final double algae1Angle        = 90; 
-    public static final double algaeStowAngle     = 180; 
-    public static final double coralStowAngle     = 0;
-    
-    /* Preset elevator heights, height of centre of rotation above the ground, metres */
-    public static final double startElevation         = 0.55; 
-    public static final double climbElevation         = 0.4;
-    public static final double netElevation           = maxElevation;
-    public static final double processorElevation     = minElevation; 
-    public static final double reef4Elevation         = maxElevation;
-    public static final double reef3Elevation         = 1.28;
-    public static final double reef2Elevation         = 0.9;
-    public static final double reef1Elevation         = 0.8;
-    public static final double coralTransferElevation = 0.7; //TODO
-    public static final double algaeTransferElevation = 1; //TODO
-    public static final double coralStationElevation  = 1.0; //TODO
-    public static final double algae2Elevation        = 1.13;
-    public static final double algae1Elevation        = 0.92;
-    public static final double algaeStowElevation     = 0.8; //TODO
-    public static final double coralStowElevation     = 0.8; //TODO 0.8
-    
+    /* 
+     * Preset arm positions:
+     * height of centre of rotation above the ground, metres
+     * degrees anticlockwise for Port-side usecase, 0 = coral at top 
+     */
+    public static final Translation2d startPosition         = new Translation2d(0.55,   0);
+    public static final Translation2d climbPosition         = new Translation2d(0.40,  97);
+    public static final Translation2d netPosition           = new Translation2d(  maxZ, 135); // TODO: Make this dynamic
+    public static final Translation2d algae3Position        = new Translation2d(1.13,  90);
+    public static final Translation2d algae2Position        = new Translation2d(0.92,  90); 
+    public static final Translation2d processorPosition     = new Translation2d(  minZ,  90);
+    public static final Translation2d reef4Position         = new Translation2d(  maxZ,  45);
+    public static final Translation2d reef3Position         = new Translation2d(1.28,  30);
+    public static final Translation2d reef2Position         = new Translation2d(0.90,  30);
+    public static final Translation2d reef1Position         = new Translation2d(0.80, 135);
+    public static final Translation2d coralTransferPosition = new Translation2d(  minZ, 180); 
+    public static final Translation2d coralIntakePosition   = new Translation2d(1.20, 180); //TODO
+    public static final Translation2d algaeTransferPosition = new Translation2d(1.20,   0); //TODO
+    public static final Translation2d algaeIntakePosition   = new Translation2d(  minZ, 270); //TODO
+    public static final Translation2d coralStationPosition  = new Translation2d(1.00, 240); //TODO
+    public static final Translation2d algaeStowPosition     = new Translation2d(0.80, 180); 
+    public static final Translation2d coralStowPosition     = new Translation2d(0.80,   0);
+        
     public static final class  IKGeometry
     {
       /* Manipulator arm geometry */
@@ -305,12 +294,12 @@ public final class Constants
       public static final double algaeInnerAngle  = 108/2;
 
       /* Deck obstruction geometry */
-      public static final double railHeight    = 0.3;
-      public static final double railLateral   = 0.45;
-      public static final double railMedial    = 0.37;
-      public static final double deckHeight    = 0.13;
-      public static final double harpoonHeight = 0.05;
-      public static final double harpoonAngle  = 2;
+      public static final double railHeight  = 0.3;
+      public static final double railLateral = 0.45;
+      public static final double railMedial  = 0.3;
+      public static final double deckHeight  = 0.13;
+      public static final double latchDepth  = 0.05;
+      public static final double latchAngle  = 2;
 
       /** For IK, angle the arm is projected to test for immediate collisions, degrees */
       public static final double projectionAngle = 5;
