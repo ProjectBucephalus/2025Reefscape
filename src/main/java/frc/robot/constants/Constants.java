@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import com.pathplanner.lib.path.PathConstraints;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
@@ -159,6 +160,23 @@ public final class Constants
 
     public static final ArrayList<Translation2d> reefBlueMidPoints = FieldUtils.GeoFencing.reefBlue.getMidPoints();
     public static final ArrayList<Translation2d> reefRedMidPoints = FieldUtils.GeoFencing.reefRed.getMidPoints();
+
+    public static final ArrayList<Translation2d> blueBargePoints = new ArrayList<Translation2d>()
+    {
+      {
+        add(new Translation2d(FieldUtils.fieldLength / 2, 5.08));
+        add(new Translation2d(FieldUtils.fieldLength / 2, 6.169));
+        add(new Translation2d(FieldUtils.fieldLength / 2, 7.261));
+      }
+    };
+
+    public static final ArrayList<Translation2d> redBargePoints = new ArrayList<Translation2d>(blueBargePoints)
+    {
+      {
+        forEach(point -> point.rotateAround(new Translation2d(FieldUtils.fieldLength / 2, FieldUtils.fieldWidth / 2), Rotation2d.k180deg));
+      }
+    };
+
 
     public static final String defaultAuto = "t5,cR5,w3.5,cR5";
   }
@@ -321,6 +339,9 @@ public final class Constants
 
     /* The number of cycles (each cycle is 0.02s) before the holding intake speed reaches max */
     public static final double coralHoldingScalar = 100;
+
+    /** Algae net shooting range, m */
+    public static final double algaeRange = 2;
   }
 
   public static final class IntakeConstants // TODO: Speeds and Angles must be tuned to the specific robot

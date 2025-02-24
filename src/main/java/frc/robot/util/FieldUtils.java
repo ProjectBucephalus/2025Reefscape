@@ -57,6 +57,25 @@ public class FieldUtils
     return nearestReefFace;
   }
 
+  public static Translation2d getNearestBargePoint(Translation2d robotPos)
+  {
+    Translation2d nearestBargePoint;
+    ArrayList<Translation2d> localList;
+
+    if (isRedAlliance()) 
+    {   
+      localList = Constants.Auto.redBargePoints;
+    }
+    else
+    {
+      localList = Constants.Auto.blueBargePoints;
+    }
+
+    nearestBargePoint = robotPos.nearest(localList); 
+    
+    return nearestBargePoint;
+  }
+
   public static PathPlannerPath loadPath(String pathName) 
   {
     try {
