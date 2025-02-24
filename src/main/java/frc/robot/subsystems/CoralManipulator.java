@@ -70,7 +70,7 @@ public class CoralManipulator extends SubsystemBase
   {
     RobotContainer.coral = !RobotContainer.s_Canifier.coralManiPortSensor() || !RobotContainer.s_Canifier.coralManiStbdSensor();
 
-    intakeSpeedError = Constants.GamePiecesManipulator.coralManipulatorBaseIntakeSpeed;
+    //intakeSpeedError = Constants.GamePiecesManipulator.coralManipulatorBaseIntakeSpeed;
 
     switch(coralStatus)
     {
@@ -91,33 +91,33 @@ public class CoralManipulator extends SubsystemBase
           break;
 
       case DEFAULT: // TODO Loop overrun
-        intakeSpeedError = Conversions.clamp
-        (
-          (1 + Conversions.clamp(holdErrorTracker / Constants.GamePiecesManipulator.coralHoldingScalar)) 
-          * Constants.GamePiecesManipulator.coralManipulatorBaseIntakeSpeed,
-          Constants.GamePiecesManipulator.coralManipulatorBaseIntakeSpeed, 
-          Constants.GamePiecesManipulator.coralManipulatorMaxIntakeSpeed
-        );
+        //intakeSpeedError = Conversions.clamp
+        //(
+        //  (1 + Conversions.clamp(holdErrorTracker / Constants.GamePiecesManipulator.coralHoldingScalar)) 
+        //  * Constants.GamePiecesManipulator.coralManipulatorBaseIntakeSpeed,
+        //  Constants.GamePiecesManipulator.coralManipulatorBaseIntakeSpeed, 
+        //  Constants.GamePiecesManipulator.coralManipulatorMaxIntakeSpeed
+        //);
 
         if (RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor())
         {
           setCoralManipulatorSpeed(0);
-          holdErrorTracker = 0;
+          //holdErrorTracker = 0;
         } 
         else if (RobotContainer.s_Canifier.coralManiPortSensor() && !RobotContainer.s_Canifier.coralManiStbdSensor())
         {
-          setCoralManipulatorSpeed(intakeSpeedError);
-          holdErrorTracker++;
+          setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorBaseIntakeSpeed);
+          //holdErrorTracker++;
         } 
         else if (!RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor()) 
         {
-          setCoralManipulatorSpeed(-intakeSpeedError);
-          holdErrorTracker++;
+          setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorBaseIntakeSpeed);
+          //holdErrorTracker++;
         } 
         else if (!RobotContainer.s_Canifier.coralManiPortSensor() && !RobotContainer.s_Canifier.coralManiStbdSensor()) 
         {
           setCoralManipulatorSpeed(0);
-          holdErrorTracker = 0;
+          //holdErrorTracker = 0;
         }
         break;
     }

@@ -86,6 +86,7 @@ public class Diffector extends SubsystemBase
     targetPosition  = Constants.DiffectorConstants.startPosition;
     targetElevation = targetPosition.getX();
     targetAngle     = targetPosition.getY();
+    oldTarget       = targetPosition;
 
     m_diffectorUA.getConfigurator().apply(motorConfigUA);
     m_diffectorDA.getConfigurator().apply(motorConfigDA);
@@ -100,9 +101,9 @@ public class Diffector extends SubsystemBase
 
     motionMagicRequester = new MotionMagicVoltage(0);
 
-    ArmPathPlanner.ensureInitialized();
-    ArmPathPlanner.setStartPosition(ArmPathPlanner.fromArmRelative(armPosition));
-    ArmPathPlanner.setGoalPosition(ArmPathPlanner.fromArmRelative(targetPosition, false));
+    //ArmPathPlanner.ensureInitialized();
+    //ArmPathPlanner.setStartPosition(ArmPathPlanner.fromArmRelative(armPosition));
+    //ArmPathPlanner.setGoalPosition(ArmPathPlanner.fromArmRelative(targetPosition, false));
     plannedPathPoints.clear();
     plannedPathPoints.add(armPosition);
   }
@@ -128,7 +129,7 @@ public class Diffector extends SubsystemBase
     elevation = ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) - Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) / 2) * travelRatio;
     angle = ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) + Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) * rotationRatio) / 2;
     
-    if (atAngle() && atElevation()) 
+    if (atAngle() && atElevation() && false) 
     {
       if (!MathUtil.isNear(getEncoderPos(), angle, Constants.DiffectorConstants.angleTolerance))
       {

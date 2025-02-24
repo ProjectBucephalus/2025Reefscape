@@ -205,9 +205,9 @@ public final class Constants
     public static final double diffectorMotorKDTwoItem = 0;
 
     /** Desired cruise speed OF MOTOR, RPS */
-    public static final double diffectorMotionMagicCruise = 100; //100
+    public static final double diffectorMotionMagicCruise = 10; //80
     /** Desired acceleration OF MOTOR, RPS^2 */
-    public static final double diffectorMotionMagicAccel  = 600; //600
+    public static final double diffectorMotionMagicAccel  = 6; //60
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;
@@ -216,12 +216,12 @@ public final class Constants
     public static final double climberElevatorLowTheshold = 0;
     public static final double climberElevatorHighThreshold = 0;
 
-    private static final double diffectorGearTeethIn = 10;
+    private static final double diffectorGearTeethIn = 8;
     private static final double diffectorGearTeethOut = 60;
     private static final double diffectorSprocketTeethIn  = 18;
     private static final double diffectorSprocketTeethOut = 72;
     /** Output sprocket degrees per motor rotation */
-    public static final double gearboxRatio = 1.25 / (diffectorGearTeethIn / diffectorGearTeethOut); // I have ABSOLUTELY NO IDEA where the 1.25 scale comes from
+    public static final double gearboxRatio = (diffectorGearTeethOut / diffectorGearTeethIn);
     /** Ratio of output sprocket to arm sprocket (output sprocket teeth/arm sprocket teeth) */
     public static final double sprocketRatio = (diffectorSprocketTeethIn / diffectorSprocketTeethOut);
     /** Pitch Diameter of the sprocket, in m */
