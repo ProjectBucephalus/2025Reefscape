@@ -25,13 +25,14 @@ public class Climber extends SubsystemBase
   private final MotionMagicVoltage motionMagic;
   private double climberCurrentPos;
   private double climberTargetPos;
+  private double speed;
+  private double manualScale = 0.5;
 
   public enum ClimberStatus 
   {
     ACTIVE,
     LOCKED,
-    EXTEND,
-    RETRACT,
+    MANUAL,
     CLIMB
   };
 
@@ -63,9 +64,22 @@ public class Climber extends SubsystemBase
   public void setClimberTarget(double newTarget)
     {climberTargetPos = newTarget;}
 
+  public boolean manualOveride(double motorSpeed)
+  {
+    speed = motorSpeed;
+    if (status == ClimberStatus.LOCKED)
+      {return false;}
+
+    status = ClimberStatus.MANUAL;
+    return true;
+  }
+
   @Override
   public void periodic()
   {
+
+    climberCurrentPos = m_ClimberWinch.getPosition().getValueAsDouble();
+
     switch (status)
     {
       case LOCKED:
@@ -80,10 +94,11 @@ public class Climber extends SubsystemBase
         setClimberTarget(Constants.ClimberConstants.climbWinchPos);
         break;
 
-      case RETRACT:
-        //TODO
-      case EXTEND:
-        //TODO
+      case MANUAL:
+        if (speed != 0)
+          {m_ClimberWinch.set(speed * manualScale);}
+        else
+          {m_ClimberWinch.setControl(motionMagic.withPosition(climberCurrentPos));}
     }
   }
 }
