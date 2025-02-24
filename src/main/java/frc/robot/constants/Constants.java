@@ -266,13 +266,13 @@ public final class Constants
     public static final double reef3Elevation         = 1.28;
     public static final double reef2Elevation         = 0.9;
     public static final double reef1Elevation         = 0.8;
-    public static final double coralTransferElevation = 1.2; //TODO
-    public static final double algaeTransferElevation = 1.2; //TODO
+    public static final double coralTransferElevation = 0.7; //TODO
+    public static final double algaeTransferElevation = 1; //TODO
     public static final double coralStationElevation  = 1.0; //TODO
     public static final double algae2Elevation        = 1.13;
     public static final double algae1Elevation        = 0.92;
     public static final double algaeStowElevation     = 0.8; //TODO
-    public static final double coralStowElevation     = startElevation; //TODO 0.8
+    public static final double coralStowElevation     = 0.8; //TODO 0.8
     
     public static final class  IKGeometry
     {
@@ -287,8 +287,8 @@ public final class Constants
       public static final double algaeInnerAngle  = 108/2;
 
       /* Deck obstruction geometry */
-      public static final double railHeight    = 0.2;
-      public static final double railLateral   = 0.38;
+      public static final double railHeight    = 0.3;
+      public static final double railLateral   = 0.45;
       public static final double railMedial    = 0.37;
       public static final double deckHeight    = 0.13;
       public static final double harpoonHeight = 0.05;
@@ -313,10 +313,10 @@ public final class Constants
     public static final double coralManipulatorHoldingVoltage  = 0;
 
     /* Algae manipulator speeds */
-    public static final double algaeManipulatorIntakeSpeed    = -0.4;
+    public static final double algaeManipulatorIntakeSpeed    = 0.4;
     public static final double algaeManipulatorHoldingVoltage = 0;
-    public static final double algaeManipulatorNetSpeed       = 0.9;
-    public static final double algaeManipulatorProcessorSpeed = 0.5;
+    public static final double algaeManipulatorNetSpeed       = -0.9;
+    public static final double algaeManipulatorProcessorSpeed = -1;
     public static final double algaeManipulatorEmptySpeed     = 0;
 
     /* The number of cycles (each cycle is 0.02s) before the holding intake speed reaches max */
@@ -347,10 +347,10 @@ public final class Constants
     public static final double algaeStowedHighThreshold = 10;
 
     /* Top arm PID + FeedForward values */
-    public static final double topArmSpringKP = 0; //1
+    public static final double topArmSpringKP = 1; //1
     public static final double topArmSpringKI = 0;
     public static final double topArmSpringKD = 0;
-    public static final double topArmStopKP   = 0; //12.5
+    public static final double topArmStopKP   = 12.5; //12.5
     public static final double topArmStopKI   = 0;
     public static final double topArmStopKD   = 0;
     
