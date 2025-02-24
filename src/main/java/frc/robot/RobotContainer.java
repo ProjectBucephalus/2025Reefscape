@@ -20,7 +20,6 @@ import frc.robot.commands.CoralManipulator.*;
 import frc.robot.commands.Diffector.*;
 import frc.robot.commands.Intake.*;
 import frc.robot.commands.Rumble.*;
-import frc.robot.commands.Util.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
@@ -75,7 +74,7 @@ public class RobotContainer
   /* Triggers */
   public static final Trigger unlockHeadingTrigger = new Trigger(() -> Math.abs(driver.getRawAxis(rotationAxis)) > Constants.Control.stickDeadband);
   private final Trigger cageDriveTrigger = new Trigger(() -> headingState == HeadingStates.CAGE_LOCK);
-  private final Trigger reefDriveTrigger = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
+  private final Trigger scoreDriveTrigger = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
   private final Trigger stationDriveTrigger = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
   private final Trigger processorDriveTrigger = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
   private final Trigger driverLeftRumbleTrigger = new Trigger(() -> s_Intake.getAlgaeState());
@@ -137,7 +136,7 @@ public class RobotContainer
 
     // Configure button bindings
     configureDriverBindings();
-    //configureAutoDriveBindings();
+    configureAutoDriveBindings();
     configureCopilotBindings();
     //configureTestBindings();
     configureRumbleBindings();
@@ -194,9 +193,15 @@ public class RobotContainer
       * Reef pathfinding controls 
       * Drives to the nearest reef face when the reef heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    reefDriveTrigger.and(driver.povUp()).onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> state.Pose.getTranslation(), s_Swerve));
-    reefDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, () -> state.Pose.getTranslation(), s_Swerve));
-    reefDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> state.Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povUp()).onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> state.Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, () -> state.Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> state.Pose.getTranslation(), s_Swerve));
+
+    /* 
+      * Net pathfinding controls 
+      * Drives to the nearest net position when the scoring heading lock is active and down is pressed on the dpad
+      */ 
+    scoreDriveTrigger.and(driver.povDown()).onTrue(new PathfindToBarge(() -> state.Pose.getTranslation(), s_Swerve));
 
     /* 
       * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed
@@ -250,13 +255,13 @@ public class RobotContainer
         )
       );
 
-    reefDriveTrigger.and(driver.povCenter())
+    scoreDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetHeadingReef
+        new TargetHeadingScore
         (
           s_Swerve, 
-          Rotation2d.kCW_90deg,
+          90,
           () -> state.Pose.getTranslation(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 

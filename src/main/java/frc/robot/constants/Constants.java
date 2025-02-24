@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import com.pathplanner.lib.path.PathConstraints;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
@@ -160,6 +161,23 @@ public final class Constants
     public static final ArrayList<Translation2d> reefBlueMidPoints = FieldUtils.GeoFencing.reefBlue.getMidPoints();
     public static final ArrayList<Translation2d> reefRedMidPoints = FieldUtils.GeoFencing.reefRed.getMidPoints();
 
+    public static final ArrayList<Translation2d> blueBargePoints = new ArrayList<Translation2d>()
+    {
+      {
+        add(new Translation2d(FieldUtils.fieldLength / 2, 5.08));
+        add(new Translation2d(FieldUtils.fieldLength / 2, 6.169));
+        add(new Translation2d(FieldUtils.fieldLength / 2, 7.261));
+      }
+    };
+
+    public static final ArrayList<Translation2d> redBargePoints = new ArrayList<Translation2d>(blueBargePoints)
+    {
+      {
+        forEach(point -> point.rotateAround(new Translation2d(FieldUtils.fieldLength / 2, FieldUtils.fieldWidth / 2), Rotation2d.k180deg));
+      }
+    };
+
+
     public static final String defaultAuto = "t5,cR5,w3.5,cR5";
   }
 
@@ -276,7 +294,7 @@ public final class Constants
       public static final double algaeInnerAngle  = 108/2;
 
       /* Deck obstruction geometry */
-      public static final double railHeight  = 0.2;
+      public static final double railHeight  = 0.3;
       public static final double railLateral = 0.45;
       public static final double railMedial  = 0.3;
       public static final double deckHeight  = 0.13;
@@ -302,14 +320,17 @@ public final class Constants
     public static final double coralManipulatorHoldingVoltage  = 0;
 
     /* Algae manipulator speeds */
-    public static final double algaeManipulatorIntakeSpeed    = -0.4;
+    public static final double algaeManipulatorIntakeSpeed    = 0.4;
     public static final double algaeManipulatorHoldingVoltage = 0;
-    public static final double algaeManipulatorNetSpeed       = 0.9;
-    public static final double algaeManipulatorProcessorSpeed = 0.5;
+    public static final double algaeManipulatorNetSpeed       = -0.9;
+    public static final double algaeManipulatorProcessorSpeed = -1;
     public static final double algaeManipulatorEmptySpeed     = 0;
 
     /* The number of cycles (each cycle is 0.02s) before the holding intake speed reaches max */
     public static final double coralHoldingScalar = 100;
+
+    /** Algae net shooting range, m */
+    public static final double algaeRange = 2;
   }
 
   public static final class IntakeConstants // TODO: Speeds and Angles must be tuned to the specific robot
@@ -336,10 +357,10 @@ public final class Constants
     public static final double algaeStowedHighThreshold = 10;
 
     /* Top arm PID + FeedForward values */
-    public static final double topArmSpringKP = 0; //1
+    public static final double topArmSpringKP = 1; //1
     public static final double topArmSpringKI = 0;
     public static final double topArmSpringKD = 0;
-    public static final double topArmStopKP   = 0; //12.5
+    public static final double topArmStopKP   = 12.5; //12.5
     public static final double topArmStopKI   = 0;
     public static final double topArmStopKD   = 0;
     
