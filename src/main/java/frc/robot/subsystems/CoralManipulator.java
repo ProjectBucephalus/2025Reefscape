@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -56,7 +57,7 @@ public class CoralManipulator extends SubsystemBase
 
   private void setCoralManipulatorSpeedFeedforward(double speed)
   {
-    coralMotor.set(speed + Math.sin(RobotContainer.s_Diffector.getAngle()) * Constants.GamePiecesManipulator.coralHoldingkG);
+    coralMotor.set(speed + Math.sin(Units.degreesToRadians(RobotContainer.s_Diffector.getAngle())) * Constants.GamePiecesManipulator.coralHoldingkG);
   }
 
   public void setCoralManipulatorStatus(CoralManipulatorStatus status)
@@ -73,8 +74,8 @@ public class CoralManipulator extends SubsystemBase
         setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
         
         if (RobotContainer.coral) 
-          {coralStatus = CoralManipulatorStatus.DEFAULT; }
-          break;
+          {coralStatus = CoralManipulatorStatus.DEFAULT;}
+        break;
 
       case DELIVERY_LEFT:
       case DELIVERY_RIGHT:
