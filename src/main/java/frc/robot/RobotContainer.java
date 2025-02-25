@@ -363,7 +363,6 @@ public class RobotContainer
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
-    
     driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_RIGHT, "Intake Full"));
     // TODO: Driver Rightside Rumble: Ready To Score
     

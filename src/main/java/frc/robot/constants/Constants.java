@@ -207,9 +207,9 @@ public final class Constants
     public static final double diffectorMotorKDTwoItem = 0;
 
     /** Desired cruise speed OF MOTOR, RPS */
-    public static final double diffectorMotionMagicCruise = 100; //100
+    public static final double diffectorMotionMagicCruise = 90;
     /** Desired acceleration OF MOTOR, RPS^2 */
-    public static final double diffectorMotionMagicAccel  = 600; //600
+    public static final double diffectorMotionMagicAccel  = 45;
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;
@@ -275,7 +275,7 @@ public final class Constants
     public static final Translation2d reef3Position         = new Translation2d(1.28,  30);
     public static final Translation2d reef2Position         = new Translation2d(0.90,  30);
     public static final Translation2d reef1Position         = new Translation2d(0.80, 135);
-    public static final Translation2d coralTransferPosition = new Translation2d(  minZ, 180); 
+    public static final Translation2d coralTransferPosition = new Translation2d(0.60, 180); 
     public static final Translation2d coralIntakePosition   = new Translation2d(1.20, 180); //TODO
     public static final Translation2d algaeTransferPosition = new Translation2d(1.20,   0); //TODO
     public static final Translation2d algaeIntakePosition   = new Translation2d(  minZ, 270); //TODO
@@ -299,8 +299,8 @@ public final class Constants
       public static final double railHeight  = 0.3;
       public static final double railLateral = 0.45;
       public static final double railMedial  = 0.3;
-      public static final double deckHeight  = 0.13;
-      public static final double latchDepth  = 0.05;
+      public static final double deckHeight  = 0.2;
+      public static final double latchDepth  = 0.1;
       public static final double latchAngle  = 2;
 
       /** For IK, angle the arm is projected to test for immediate collisions, degrees */
