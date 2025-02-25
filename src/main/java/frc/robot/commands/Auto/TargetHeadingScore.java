@@ -134,7 +134,7 @@ public class TargetHeadingScore extends Command
           driveRequest
           .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
           .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
-          .withTargetDirection(new Rotation2d(Units.degreesToRadians(targetHeading + rotationOffset)))
+          .withTargetDirection(new Rotation2d(Units.degreesToRadians(targetHeading)))
         );
   }
 
@@ -160,27 +160,27 @@ public class TargetHeadingScore extends Command
       switch (nearestReefFace) 
       {
         case 1:
-          targetHeading = 0;
+          targetHeading = 0 + rotationOffset;
           break;
 
         case 2:
-          targetHeading = 60;
+          targetHeading = 60 + rotationOffset;
           break;
 
         case 3:
-          targetHeading = 120;
+          targetHeading = 120 + rotationOffset;
           break;
 
         case 4:
-          targetHeading = 180;
+          targetHeading = 180 - rotationOffset;
           break;
 
         case 5:
-          targetHeading = -120;
+          targetHeading = -120 - rotationOffset;
           break;
 
         case 6:
-          targetHeading = -60;
+          targetHeading = -60 - rotationOffset;
           break;
         default:
           break;
