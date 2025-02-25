@@ -35,9 +35,11 @@ public class AlgaeManipulator extends SubsystemBase
    */
   public enum AlgaeManipulatorStatus
   {
+    INTAKE,
     INTAKE_REEF,
     INTAKE_GROUND,
     HOLDING,
+    DELIVERY,
     NET,
     PROCESSOR,
     EMPTY
@@ -70,6 +72,7 @@ public class AlgaeManipulator extends SubsystemBase
 
     switch(algaeStatus)
     {
+      case INTAKE:
       case INTAKE_GROUND:
       case INTAKE_REEF:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorIntakeSpeed);
@@ -85,6 +88,7 @@ public class AlgaeManipulator extends SubsystemBase
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
           break;
 
+      case DELIVERY:
       case NET:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);
         break;

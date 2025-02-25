@@ -159,7 +159,7 @@ public class RobotContainer
       .onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_ALGAE))
       .onFalse(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));
     driver.back()
-      .onTrue(new AutoScoreSequence(s_Diffector, s_AlgaeManipulator, s_CoralManipulator, s_Swerve, () -> state.Pose.getTranslation()));
+      .onTrue(new AutoScoreSequence(s_Diffector, s_AlgaeManipulator, s_CoralManipulator, s_Swerve, () -> swerveState.Pose.getTranslation()));
   }
 
   private void configureAutoDriveBindings()
@@ -198,10 +198,10 @@ public class RobotContainer
       * Drives to the nearest reef face when the reef heading lock is active and a corresponding dpad direction is pressed 
       * Drives to the nearest net position when the scoring heading lock is active and down is pressed on the dpad
       */ 
-    scoreDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> state.Pose.getTranslation(), s_Swerve));
-    scoreDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToReef(DpadOptions.LEFT, () -> state.Pose.getTranslation(), s_Swerve));
-    scoreDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> state.Pose.getTranslation(), s_Swerve));
-    scoreDriveTrigger.and(driver.povDown()) .onTrue(new PathfindToBarge(() -> state.Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> swerveState.Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToReef(DpadOptions.LEFT, () -> swerveState.Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> swerveState.Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povDown()) .onTrue(new PathfindToBarge(() -> swerveState.Pose.getTranslation(), s_Swerve));
 
     /* 
       * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed
@@ -361,24 +361,7 @@ public class RobotContainer
   }
 
   private void configureTestBindings()
-  {
-    testing.povUp().whileTrue(new ManualElevatorControl(s_Diffector, () -> 0.1));
-    testing.povDown().whileTrue(new ManualElevatorControl(s_Diffector, () -> -0.1));
-
-    testing.povLeft().whileTrue(new ManualArmControl(s_Diffector, () -> 15));
-    testing.povRight().whileTrue(new ManualArmControl(s_Diffector, () -> -15));
-
-    testing.rightBumper().onTrue(Commands.runOnce(() -> s_Diffector.setElevationTarget(Constants.DiffectorConstants.maxZ - 0.25), s_Diffector));
-    testing.leftBumper().onTrue(Commands.runOnce(() -> s_Diffector.setElevationTarget(Constants.DiffectorConstants.startPosition.getX()), s_Diffector));
-
-    testing.x().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE)));
-    testing.y().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET)))
-      .onFalse(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY)));
-
-    testing.a().onTrue(Commands.runOnce(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DELIVERY)))
-      .onFalse(Commands.runOnce(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT)));
-
-  }
+  {}
 
   private void configureRumbleBindings()
   {
