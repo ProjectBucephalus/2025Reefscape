@@ -141,6 +141,7 @@ public class RobotContainer
     configureCopilotBindings();
     //configureTestBindings();
     configureRumbleBindings();
+    configureManualBindings();
 
     s_Swerve.registerTelemetry(logger::telemeterize);
   }
@@ -319,6 +320,23 @@ public class RobotContainer
     copilot.povDown().and(copilot.rightTrigger().negate())
       .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferPosition)); //coral transfer
 
+    /* Game piece intake position controls */
+    copilot.rightBumper().and(copilot.rightTrigger().negate())
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralIntakePosition));
+    copilot.rightBumper().and(copilot.rightTrigger())
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeIntakePosition));
+  }
+
+  private void configureManualBindings()
+  {
+    /* Manual climber controls */ // TODO
+    //copilot.axisMagnitudeGreaterThan(XboxController.Axis.kLeftY.value, Constants.Control.stickDeadband)
+    //  .whileTrue(Commands.runOnce(() -> s_Climber.manualOveride(copilot.getRawAxis(XboxController.Axis.kLeftY.value))));
+
+    /* Manual arm controls */
+    copilot.axisMagnitudeGreaterThan(rotationAxis, Constants.Control.stickDeadband).or(copilot.axisMagnitudeGreaterThan(translationAxis, Constants.Control.stickDeadband))
+      .whileTrue(new ManualDiffectorControl(s_Diffector, () -> copilot.getRawAxis(rotationAxis), () -> copilot.getRawAxis(translationAxis)));
+
     /* Coral outtake controls */
     copilot.povLeft()
       .onTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT))
@@ -330,34 +348,8 @@ public class RobotContainer
     /* Algae intake/outtake controls */
     copilot.leftTrigger()
       .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE)); //Intake algae through manipulator
-    copilot.leftBumper()
-      .onTrue(new EjectAlgae(s_AlgaeManipulator)); //Ejects algae from manipulator
-
-    /* Game piece intake position controls */
-    copilot.rightBumper().and(copilot.rightTrigger().negate())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralIntakePosition));
-    copilot.rightBumper().and(copilot.rightTrigger())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeIntakePosition));
-    
-    /* Manual climber controls */ // TODO
-    //copilot.axisMagnitudeGreaterThan(XboxController.Axis.kLeftY.value, Constants.Control.stickDeadband)
-    //  .whileTrue(Commands.runOnce(() -> s_Climber.manualOveride(copilot.getRawAxis(XboxController.Axis.kLeftY.value))));
-
-    /* Manual arm controls */ // TODO
-    copilot.axisGreaterThan(XboxController.Axis.kRightX.value, Constants.Control.stickDeadband)
-      .whileTrue(new ManualArmControl(s_Diffector, () -> 5)); //Arm clockwise
-
-    copilot.axisLessThan(XboxController.Axis.kRightX.value, -Constants.Control.stickDeadband)
-      .whileTrue(new ManualArmControl(s_Diffector, () -> -5)); //Arm anticlockwise
-
-  
-    /* Manual elevator controls */ // TODO
-    copilot.axisLessThan(XboxController.Axis.kRightY.value, -Constants.Control.stickDeadband)
-      .whileTrue(new ManualElevatorControl(s_Diffector, () -> -0.05)); //Elevator up
-
-    copilot.axisGreaterThan(XboxController.Axis.kRightY.value, Constants.Control.stickDeadband)
-      .whileTrue(new ManualElevatorControl(s_Diffector, () -> 0.05)); //Elevator down
-
+     copilot.leftBumper()
+      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT)); //Ejects algae from manipulator
   }
 
   private void configureRumbleBindings()

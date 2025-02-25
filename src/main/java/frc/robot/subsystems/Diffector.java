@@ -8,12 +8,14 @@ import java.util.ArrayList;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -30,6 +32,10 @@ public class Diffector extends SubsystemBase
 {
   public enum CargoStates{EMPTY, ONE_ITEM, TWO_ITEM}
   private CargoStates cargoState;
+
+  private boolean manualControl;
+  private double manualElevation;
+  private double manualRotation;
 
   private final MotionMagicVoltage motionMagicRequester;
   private final double rotationRatio;
@@ -70,6 +76,7 @@ public class Diffector extends SubsystemBase
   /** Creates a new Diffector. */
   public Diffector() 
   {
+    manualControl = false;
     arm = new ArmCalculator();
     motorConfigUA = CTREConfigs.diffectorFXConfig;
     motorConfigDA = motorConfigUA;
@@ -292,12 +299,14 @@ public class Diffector extends SubsystemBase
       {return CargoStates.EMPTY;}
   }
 
-  public void testingOveride(boolean a, double input)
+  public void setManualDiffectorValues(double newManualElevation, double newManualRotation)
   {
-    if (a)
-      {m_diffectorUA.set(input);}
-    else
-      {m_diffectorDA.set(input);}
+    if (newManualElevation != 0 || newManualRotation != 0) 
+    {
+      manualControl = true;
+    }
+    manualElevation = newManualElevation;
+    manualRotation = newManualRotation;
   }
 
   public void goToAngle(double newTarget) 
@@ -309,10 +318,42 @@ public class Diffector extends SubsystemBase
     calculatePosition();
     cargoState = updateCargoState();
 
-    calculatePath();
+    if (manualControl)
+    {
+      if (manualElevation != 0) 
+      {
+        if (arm.checkAngle(angle) > elevation + Math.copySign(projectionElevation, manualElevation)) 
+        {
+          manualElevation = 0;
+        }
+      }
+      if (manualRotation != 0)
+      {
+        if (arm.checkAngle(angle + Math.copySign(projectionAngle, manualRotation)) > elevation) 
+        {
+          manualRotation = 0;
+        }
+      }
+      if (manualElevation == 0 && manualRotation == 0)
+      {
+        goToAngle(angle);
+        setElevationTarget(elevation);
+        manualControl = false;
+      }
+    }
 
-    m_diffectorUA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[0])).withSlot(0));//getSlot()));
-    m_diffectorDA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])).withSlot(0));//getSlot()));
+    if (manualControl)
+    {
+      m_diffectorUA.setVoltage((manualRotation + manualElevation) * Constants.Control.manualDiffectorScalar);
+      m_diffectorDA.setVoltage((manualRotation - manualElevation) * Constants.Control.manualDiffectorScalar);
+    }
+    else
+    {
+      calculatePath();
+
+      m_diffectorUA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[0])).withSlot(0));//getSlot()));
+      m_diffectorDA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])).withSlot(0));//getSlot()));
+    }
     if (transferRequested && !MathUtil.isNear(180, getRelativeRotation(), DiffectorConstants.angleTolerance))
      {transferRequested = false;}
     if (transferRequested && !MathUtil.isNear(0, angle, DiffectorConstants.angleTolerance))
