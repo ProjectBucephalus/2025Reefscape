@@ -12,9 +12,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
-import frc.robot.commands.AlgaeManipulator.IntakeAlgaeSequence;
-import frc.robot.commands.AlgaeManipulator.ScoreAlgaeSequence;
-import frc.robot.commands.CoralManipulator.IntakeCoralSequence;
+import frc.robot.commands.Manipulator.IntakeAlgaeSequence;
+import frc.robot.commands.Manipulator.IntakeCoralSequence;
+import frc.robot.commands.Manipulator.ScoreAlgaeSequence;
 import frc.robot.util.FieldUtils;
 
 public final class Constants 
