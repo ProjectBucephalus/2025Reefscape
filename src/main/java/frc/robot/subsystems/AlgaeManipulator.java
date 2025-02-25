@@ -99,7 +99,7 @@ public class AlgaeManipulator extends SubsystemBase
           break;
 
       case EMPTY:
-        setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorEmptySpeed);
+        setAlgaeManipulatorSpeed(0);
 
         if (RobotContainer.algae) 
           {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
