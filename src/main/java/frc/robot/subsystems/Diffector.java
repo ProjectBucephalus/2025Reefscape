@@ -66,7 +66,6 @@ public class Diffector extends SubsystemBase
   public static boolean transferRequested = false;
   public static boolean stowRequested = true;
 
-  /** Elevation is scaled up and Rotation is scaled down by this factor for the pathplanner map */
   private double projectionElevation = 0.1;
   private double projectionAngle     = 10;
   //private PathConstraints armPathConstraints = new PathConstraints(1, 1, 0, 0);
@@ -175,17 +174,14 @@ public class Diffector extends SubsystemBase
 
   private void calculatePath()
   {
-    targetElevation = Math.min(Constants.DiffectorConstants.maxZ, targetElevation);
-
     targetPosition = new Translation2d(targetElevation, targetAngle);
 
     if (!targetPosition.equals(oldTarget))
     {
-      targetElevation = arm.checkPosition(targetPosition);
       oldTarget = targetPosition;
 
       plannedPathPoints = arm.pathfindArm(targetPosition, armPosition);
-      SmartDashboard.putNumberArray("pathDump", plannedPathPoints.stream().mapMultiToDouble((point, consumer) -> {consumer.accept(point.getX()); consumer.accept(point.getY());}).toArray());
+      //SmartDashboard.putNumberArray("pathDump", plannedPathPoints.stream().mapMultiToDouble((point, consumer) -> {consumer.accept(point.getX()); consumer.accept(point.getY());}).toArray());
     }
 
     /*if (ArmPathPlanner.isNewPathAvailable())
@@ -206,13 +202,13 @@ public class Diffector extends SubsystemBase
 
     if (plannedPathPoints.size() != 0)
     {
-      SmartDashboard.putNumberArray("target Point", new double[]{plannedPathPoints.get(0).getX(), plannedPathPoints.get(0).getY()});
+      //SmartDashboard.putNumberArray("target Point", new double[]{plannedPathPoints.get(0).getX(), plannedPathPoints.get(0).getY()});
       motorTargets = calculateMotorTargets(plannedPathPoints.get(0));
 
       if 
       (
-        plannedPathPoints.get(0).getX() == elevation &&
-        plannedPathPoints.get(0).getY() == angle
+        MathUtil.isNear(plannedPathPoints.get(0).getX(), elevation, Constants.DiffectorConstants.elevationTolerance) &&
+        MathUtil.isNear(plannedPathPoints.get(0).getY(), angle, Constants.DiffectorConstants.angleTolerance)
       )
         {plannedPathPoints.remove(0);}
     }

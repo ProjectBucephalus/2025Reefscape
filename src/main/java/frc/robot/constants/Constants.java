@@ -260,7 +260,7 @@ public final class Constants
     public static final double angleTolerance = 2;
     
     /** Elevation height check tolerance, m */
-    public static final double elevationTolerance = 0.025;
+    public static final double elevationTolerance = 0.01;
     
     /* 
      * Preset arm positions:
@@ -361,21 +361,21 @@ public final class Constants
     public static final double algaeStowedHighThreshold = 10;
 
     /* Top arm PID + FeedForward values */
-    public static final double topArmSpringKP = 1; //1
-    public static final double topArmSpringKI = 0;
-    public static final double topArmSpringKD = 0;
+    public static final double algaeIntakeArmSpringKP = 1; //1
+    public static final double algaeIntakeArmSpringKI = 0;
+    public static final double algaeIntakeArmSpringKD = 0;
     public static final double topArmStopKP   = 12.5; //12.5
     public static final double topArmStopKI   = 0;
     public static final double topArmStopKD   = 0;
     
-    public static final double topArmKS = 0.15;
-    public static final double topArmKG = 0.15;
+    public static final double algaeIntakeArmKS = 0.15;
+    public static final double algaeIntakeArmKG = 0.15;
 
     /* Arm MotionMagic values */
     public static final double intakeArmMotionMagicCruise = 0.25;
     public static final double intakeArmMotionMagicAccel  = 0.25;
 
     /* Arm ratios */
-    public static final double topArmRatio    = 90;
+    public static final double algaeIntakeArmRatio    = 90;
   }
 }

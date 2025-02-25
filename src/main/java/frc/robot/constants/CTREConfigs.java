@@ -5,7 +5,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public final class CTREConfigs 
 {
-  public static final TalonFXConfiguration intakeTopArmFXConfig = new TalonFXConfiguration();
+  public static final TalonFXConfiguration algaeIntakeArmFXConfig = new TalonFXConfiguration();
   public static final TalonFXConfiguration diffectorFXConfig = new TalonFXConfiguration();
 
   public CTREConfigs()
@@ -42,27 +42,27 @@ public final class CTREConfigs
     diffectorFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.DiffectorConstants.diffectorMotionMagicCruise / Constants.DiffectorConstants.gearboxRatio;
     diffectorFXConfig.MotionMagic.MotionMagicAcceleration = Constants.DiffectorConstants.diffectorMotionMagicAccel / Constants.DiffectorConstants.gearboxRatio;
 
-    /* Intake Top Arm PID Config, Spring Behaviour */
-    intakeTopArmFXConfig.Slot0.kP = Constants.IntakeConstants.topArmSpringKP;
-    intakeTopArmFXConfig.Slot0.kI = Constants.IntakeConstants.topArmSpringKI;
-    intakeTopArmFXConfig.Slot0.kD = Constants.IntakeConstants.topArmSpringKD;
-    intakeTopArmFXConfig.Slot0.kS = Constants.IntakeConstants.topArmKS;
-    intakeTopArmFXConfig.Slot0.kG = -Constants.IntakeConstants.topArmKG;
+    /* Algae Intake Arm PID Config, Spring Behaviour */
+    algaeIntakeArmFXConfig.Slot0.kP = Constants.IntakeConstants.algaeIntakeArmSpringKP;
+    algaeIntakeArmFXConfig.Slot0.kI = Constants.IntakeConstants.algaeIntakeArmSpringKI;
+    algaeIntakeArmFXConfig.Slot0.kD = Constants.IntakeConstants.algaeIntakeArmSpringKD;
+    algaeIntakeArmFXConfig.Slot0.kS = Constants.IntakeConstants.algaeIntakeArmKS;
+    algaeIntakeArmFXConfig.Slot0.kG = -Constants.IntakeConstants.algaeIntakeArmKG;
 
-    /* Intake Top Arm PID Config, Stop Behaviour */
-    intakeTopArmFXConfig.Slot1.kP = Constants.IntakeConstants.topArmStopKP;
-    intakeTopArmFXConfig.Slot1.kI = Constants.IntakeConstants.topArmStopKI;
-    intakeTopArmFXConfig.Slot1.kD = Constants.IntakeConstants.topArmStopKD;
-    intakeTopArmFXConfig.Slot1.kS = Constants.IntakeConstants.topArmKS;
-    intakeTopArmFXConfig.Slot1.kG = Constants.IntakeConstants.topArmKG;
+    /* Algae Intake Arm PID Config, Stop Behaviour */
+    algaeIntakeArmFXConfig.Slot1.kP = Constants.IntakeConstants.topArmStopKP;
+    algaeIntakeArmFXConfig.Slot1.kI = Constants.IntakeConstants.topArmStopKI;
+    algaeIntakeArmFXConfig.Slot1.kD = Constants.IntakeConstants.topArmStopKD;
+    algaeIntakeArmFXConfig.Slot1.kS = Constants.IntakeConstants.algaeIntakeArmKS;
+    algaeIntakeArmFXConfig.Slot1.kG = Constants.IntakeConstants.algaeIntakeArmKG;
 
-    intakeTopArmFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    algaeIntakeArmFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
     /* Intake Arm MotionMagic Values */
-    intakeTopArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.IntakeConstants.intakeArmMotionMagicAccel;
-    intakeTopArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.IntakeConstants.intakeArmMotionMagicCruise;
+    algaeIntakeArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.IntakeConstants.intakeArmMotionMagicAccel;
+    algaeIntakeArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.IntakeConstants.intakeArmMotionMagicCruise;
 
     /* Intake Arm Ratios */
-    intakeTopArmFXConfig.Feedback.SensorToMechanismRatio = Constants.IntakeConstants.topArmRatio;
+    algaeIntakeArmFXConfig.Feedback.SensorToMechanismRatio = Constants.IntakeConstants.algaeIntakeArmRatio;
   }
 }

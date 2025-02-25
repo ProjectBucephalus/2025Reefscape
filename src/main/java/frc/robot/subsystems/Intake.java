@@ -60,7 +60,7 @@ public class Intake extends SubsystemBase
     m_AlgaeIntake = new TalonFX(IDConstants.algaeIntakeRollerID);
     m_AlgaeArm = new TalonFX(IDConstants.algaeIntakeArmID);
 
-    m_AlgaeArm.getConfigurator().apply(CTREConfigs.intakeTopArmFXConfig);
+    m_AlgaeArm.getConfigurator().apply(CTREConfigs.algaeIntakeArmFXConfig);
     
     algaeArmTarget = 0;
 
