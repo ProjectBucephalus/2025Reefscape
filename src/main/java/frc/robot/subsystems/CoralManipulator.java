@@ -10,8 +10,6 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.IDConstants;
 import frc.robot.util.Conversions;
 
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
@@ -34,6 +32,8 @@ public class CoralManipulator extends SubsystemBase
 
   private double intakeSpeedError;
 
+  private double speed;
+
   /**
    * Enum representing the status this manipulator is in
    * (Keeps speed at zero while intaking,
@@ -41,7 +41,7 @@ public class CoralManipulator extends SubsystemBase
    * And if the arm position is more than 180 degrees, then the speed is set to negitive, 
    * And while holding, if one of the beam breaks don't see the coral, then coral moves to that beam break till they both see them)
    */
-  public enum CoralManipulatorStatus {INTAKE, DELIVERY, DEFAULT}
+  public enum CoralManipulatorStatus {INTAKE, DELIVERY_LEFT, DELIVERY_RIGHT, DEFAULT}
 
   public CoralManipulator() 
   {
@@ -81,13 +81,24 @@ public class CoralManipulator extends SubsystemBase
           {coralStatus = CoralManipulatorStatus.DEFAULT; }
           break;
 
-      case DELIVERY:
-        if (RobotContainer.s_Diffector.getEncoderPos() <= 180)
-          {setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed);} 
-        else
-          {setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed); }
+      case DELIVERY_LEFT:
+      case DELIVERY_RIGHT:
+        double speed = Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed;
+
+        double armPos = RobotContainer.s_Diffector.getRelativeRotation();
+        double robotPos = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
+
+        if (coralStatus == CoralManipulatorStatus.DELIVERY_RIGHT) 
+          {speed = -speed;}
+        if (armPos > 90 && armPos <= 270)
+          {speed = -speed;}
+        if (robotPos > 90 + Constants.Control.driverVisionTolerance && robotPos <= 270 - Constants.Control.driverVisionTolerance) 
+          {speed = -speed;}
+
+        setCoralManipulatorSpeed(speed);
+
         if (!RobotContainer.coral) 
-          {coralStatus = CoralManipulatorStatus.DEFAULT; }
+          {coralStatus = CoralManipulatorStatus.DEFAULT;}
           break;
 
       case DEFAULT: // TODO Loop overrun

@@ -9,8 +9,6 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IDConstants;
 
-import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
@@ -37,7 +35,8 @@ public class AlgaeManipulator extends SubsystemBase
    */
   public enum AlgaeManipulatorStatus
   {
-    INTAKE,
+    INTAKE_REEF,
+    INTAKE_GROUND,
     HOLDING,
     NET,
     PROCESSOR,
@@ -48,7 +47,6 @@ public class AlgaeManipulator extends SubsystemBase
   {
     algaeStatus = AlgaeManipulatorStatus.EMPTY;
     algaeMotor = new TalonFX(IDConstants.algaeManipulatorID);
-    algaeStatus = AlgaeManipulatorStatus.EMPTY;
   }
 
   /**
@@ -72,7 +70,8 @@ public class AlgaeManipulator extends SubsystemBase
 
     switch(algaeStatus)
     {
-      case INTAKE:
+      case INTAKE_GROUND:
+      case INTAKE_REEF:
         setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorIntakeSpeed);
 
         if (RobotContainer.algae) 
