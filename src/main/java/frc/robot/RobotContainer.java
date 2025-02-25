@@ -13,12 +13,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
-import frc.robot.commands.AlgaeManipulator.*;
 import frc.robot.commands.Auto.*;
 import frc.robot.commands.Auto.PathfindToReef.DpadOptions;
-import frc.robot.commands.CoralManipulator.*;
+import frc.robot.commands.Manipulator.*;
 import frc.robot.commands.Diffector.*;
 import frc.robot.commands.Intake.*;
+import frc.robot.commands.Manipulator.SetAlgaeStatus;
+import frc.robot.commands.Manipulator.SetCoralStatus;
 import frc.robot.commands.Rumble.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.*;
@@ -155,10 +156,9 @@ public class RobotContainer
     driver.leftTrigger().whileTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT));
     driver.leftBumper().whileTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT));
 
-    /* Scoring and game piece management controls */
+    /* Smart Intake and Auto Score controls */
     driver.rightBumper() // TODO: Intake is now part of Diffector system
-      .onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_ALGAE))
-      .onFalse(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));
+      .whileTrue(new SmartIntake(s_AlgaeManipulator, s_Diffector));
     driver.back()
       .onTrue(new AutoScoreSequence(s_Diffector, s_AlgaeManipulator, s_CoralManipulator, s_Swerve, () -> swerveState.Pose.getTranslation()));
   }
@@ -352,20 +352,19 @@ public class RobotContainer
       .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT)); //Ejects algae from manipulator
   }
 
-  private void configureTestBindings()
-  {}
-
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
-    
     driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_RIGHT, "Intake Full"));
     // TODO: Driver Rightside Rumble: Ready To Score
-
+    
     /* Copilot rumble bindings */
     copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_LEFT, "Transfer Ready"));
     // TODO: copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
   }
+  
+  private void configureTestBindings()
+  {}
 
   private void configureButtonBoxBindings()
   {}
