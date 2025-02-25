@@ -12,6 +12,7 @@ import frc.robot.util.Conversions;
 
 import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
  * Coral manipulator subsystem, handing the intake, out-take,
@@ -24,7 +25,7 @@ public class CoralManipulator extends SubsystemBase
 {
 
   /* Declaration of the motor controllers */
-  private VictorSPX coralMotor;
+  private TalonFX coralMotor;
 
   /* Declaration of the enum variable */
   private CoralManipulatorStatus coralStatus;
@@ -45,7 +46,7 @@ public class CoralManipulator extends SubsystemBase
   public CoralManipulator() 
   {
     coralStatus = CoralManipulatorStatus.DEFAULT;
-    coralMotor = new VictorSPX(IDConstants.coralManipulatorID);
+    coralMotor = new TalonFX(IDConstants.coralManipulatorID);
 
     holdErrorTracker = 0;
   }
@@ -59,7 +60,7 @@ public class CoralManipulator extends SubsystemBase
    * @param speed Coral manipulator motor speed, positive to eject [-1..1]
    */
   public void setCoralManipulatorSpeed(double speed)
-    {coralMotor.set(VictorSPXControlMode.PercentOutput, speed);}
+    {coralMotor.set(speed);}
 
   public void setCoralManipulatorStatus(CoralManipulatorStatus status)
     {coralStatus = status;}

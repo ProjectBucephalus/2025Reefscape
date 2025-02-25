@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Diffector;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Diffector;
@@ -11,8 +12,7 @@ import frc.robot.subsystems.Diffector;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class GoToAlgaeIntakePos extends Command 
 {
-  double elevation;
-  double angle;
+  Translation2d target;
   boolean level2;
   Diffector s_Diffector;
   Command moveCommand;
@@ -29,16 +29,14 @@ public class GoToAlgaeIntakePos extends Command
   {
     if (level2)
     {
-      elevation = Constants.DiffectorConstants.algae2Elevation;
-      angle = Constants.DiffectorConstants.algae2Angle;
+      target = Constants.DiffectorConstants.algae3Position;
     }
     else
     {
-      elevation = Constants.DiffectorConstants.algae1Elevation;
-      angle = Constants.DiffectorConstants.algae1Angle;
+      target = Constants.DiffectorConstants.algae2Position;
     }
 
-    moveCommand = new MoveTo(s_Diffector, elevation, angle);
+    moveCommand = new MoveTo(s_Diffector, target);
     moveCommand.schedule();
   }
 

@@ -74,7 +74,7 @@ public class RobotContainer
   /* Triggers */
   public static final Trigger unlockHeadingTrigger = new Trigger(() -> Math.abs(driver.getRawAxis(rotationAxis)) > Constants.Control.stickDeadband);
   private final Trigger cageDriveTrigger = new Trigger(() -> headingState == HeadingStates.CAGE_LOCK);
-  private final Trigger reefDriveTrigger = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
+  private final Trigger scoreDriveTrigger = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
   private final Trigger stationDriveTrigger = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
   private final Trigger processorDriveTrigger = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
   private final Trigger driverLeftRumbleTrigger = new Trigger(() -> s_Intake.getAlgaeState());
@@ -194,9 +194,15 @@ public class RobotContainer
       * Reef pathfinding controls 
       * Drives to the nearest reef face when the reef heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    reefDriveTrigger.and(driver.povUp()).onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> state.Pose.getTranslation(), s_Swerve));
-    reefDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, () -> state.Pose.getTranslation(), s_Swerve));
-    reefDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> state.Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povUp()).onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> state.Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, () -> state.Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> state.Pose.getTranslation(), s_Swerve));
+
+    /* 
+      * Net pathfinding controls 
+      * Drives to the nearest net position when the scoring heading lock is active and down is pressed on the dpad
+      */ 
+    scoreDriveTrigger.and(driver.povDown()).onTrue(new PathfindToBarge(() -> state.Pose.getTranslation(), s_Swerve));
 
     /* 
       * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed
@@ -250,13 +256,13 @@ public class RobotContainer
         )
       );
 
-    reefDriveTrigger.and(driver.povCenter())
+    scoreDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetHeadingReef
+        new TargetHeadingScore
         (
           s_Swerve, 
-          Rotation2d.kCW_90deg,
+          90,
           () -> state.Pose.getTranslation(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
@@ -289,28 +295,18 @@ public class RobotContainer
     copilot.a().and(copilot.rightTrigger().negate()).onTrue(new GoToCoralScorePos(1, s_Diffector));   //L1 scoring
         
     /* Algae scoring/intaking controls */
-    
-    copilot.y().and(copilot.rightTrigger())
-    .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.netElevation, Constants.DiffectorConstants.netAngle));            //Net scoring
-    copilot.x().and(copilot.rightTrigger()).onTrue(new GoToAlgaeIntakePos(false, s_Diffector)); //L3 pick up
+    copilot.a().and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.processorPosition));           //Processor scoring
     copilot.b().and(copilot.rightTrigger()).onTrue(new GoToAlgaeIntakePos(true, s_Diffector));  //L2 pick up
-    copilot.a().and(copilot.rightTrigger())
-    .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.processorElevation, Constants.DiffectorConstants.processorAngle));           //Processor scoring
+    copilot.x().and(copilot.rightTrigger()).onTrue(new GoToAlgaeIntakePos(false, s_Diffector)); //L3 pick up
+    copilot.y().and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition));            //Net scoring
 
     /* Stow pos*/
-    copilot.povUp().and(copilot.rightTrigger())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeStowElevation, Constants.DiffectorConstants.algaeStowAngle));  //algae stow
-
-    copilot.povUp().and(copilot.rightTrigger().negate())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralStowElevation, Constants.DiffectorConstants.coralStowAngle)); //coral stow
-
+    copilot.povUp().and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeStowPosition));  //algae stow
+    copilot.povUp().and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralStowPosition)); //coral stow
 
     /* Transfer pos */
-    copilot.povDown().and(copilot.rightTrigger())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferElevation, Constants.DiffectorConstants.algaeTransferAngle));                         //agae transer
-
-    copilot.povDown().and(copilot.rightTrigger()
-      .negate()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferElevation, Constants.DiffectorConstants.coralTransferAngle));                //coral transfer
+    copilot.povDown().and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferPosition));                         //agae transer
+    copilot.povDown().and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferPosition));                //coral transfer
 
     /* Game piece intake controls */
     copilot.leftTrigger().and(copilot.rightTrigger())
@@ -332,9 +328,8 @@ public class RobotContainer
 
     /* Modifier controls for testing only */
     //copilot.rightTrigger().onTrue(new Test("algaeModifier", "on")).onFalse(new Test("algaeModifier", "off"));
-    copilot.rightBumper().and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, 1, 180));
-    copilot.rightBumper().and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, 1, 0));
-    // TODO: /\ Remove testing controls
+    copilot.rightBumper().and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralIntakePosition));
+    copilot.rightBumper().and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeIntakePosition));
     
     /* Manual intake controls */
     copilot.axisLessThan(XboxController.Axis.kLeftY.value, -Constants.Control.stickDeadband)
@@ -372,8 +367,8 @@ public class RobotContainer
     testing.povLeft().whileTrue(new ManualArmControl(s_Diffector, () -> 15));
     testing.povRight().whileTrue(new ManualArmControl(s_Diffector, () -> -15));
 
-    testing.rightBumper().onTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(Constants.DiffectorConstants.maxElevation - 0.25), s_Diffector));
-    testing.leftBumper().onTrue(Commands.runOnce(() -> s_Diffector.setElevatorTarget(Constants.DiffectorConstants.startElevation), s_Diffector));
+    testing.rightBumper().onTrue(Commands.runOnce(() -> s_Diffector.setElevationTarget(Constants.DiffectorConstants.maxZ - 0.25), s_Diffector));
+    testing.leftBumper().onTrue(Commands.runOnce(() -> s_Diffector.setElevationTarget(Constants.DiffectorConstants.startPosition.getX()), s_Diffector));
 
     testing.x().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE)));
     testing.y().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET)))
