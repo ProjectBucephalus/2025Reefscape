@@ -155,6 +155,15 @@ public class Diffector extends SubsystemBase
     return Units.rotationsToDegrees(encoder.getPosition().getValueAsDouble());
   }
 
+  /**
+   * Gets absolute arm rotation
+   * @return Arm rotation, wrapped, degrees anticlockwise, 0 = coral at top, [0..360]
+   */
+  public double getRelativeRotation()
+  {
+    return Conversions.mod(angle, 360);
+  }
+
   private void calculatePath()
   {
     targetElevation = Math.min(Constants.DiffectorConstants.maxZ, targetElevation);

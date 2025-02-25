@@ -44,7 +44,7 @@ public class RobotContainer
   public static HeadingStates headingState = HeadingStates.UNLOCKED;
   public static boolean coral = Constants.DiffectorConstants.startingCoralState;
   public static boolean algae = Constants.DiffectorConstants.startingAlgaeState;
-  public static SwerveDriveState state;
+  public static SwerveDriveState swerveState;
 
   /* Controllers */
   public static final CommandXboxController driver    = new CommandXboxController(0);
@@ -79,8 +79,8 @@ public class RobotContainer
   private final Trigger processorDriveTrigger      = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
   private final Trigger driverLeftRumbleTrigger    = new Trigger(() -> s_Intake.getAlgaeState());
   private final Trigger copilotLeftRumbleTrigger   = new Trigger(
-              () -> s_Intake.getAlgaeState() && (s_Diffector.getEncoderPos() > 45 && s_Diffector.getEncoderPos() < 315) ||
-              s_Intake.getAlgaeState() && (s_Diffector.getEncoderPos() > 135 && s_Diffector.getEncoderPos() < 225));
+              () -> s_Intake.getAlgaeState() && (s_Diffector.getRelativeRotation() > 45 && s_Diffector.getRelativeRotation() < 315) ||
+              s_Intake.getAlgaeState() && (s_Diffector.getRelativeRotation() > 135 && s_Diffector.getRelativeRotation() < 225));
   //private final Trigger driverRightRumblTrigger = new Trigger(() -> );
   // TODO: Ready to score rumble
   //private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.climbReady() && s_Climber.climbReady() && s_Diffector.climbReady() );
@@ -88,7 +88,7 @@ public class RobotContainer
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() 
   {
-    state = s_Swerve.getState();
+    swerveState = s_Swerve.getState();
 
     SmartDashboard.putBoolean("IgnoreFence", true);
     s_Swerve.setDefaultCommand
@@ -129,7 +129,7 @@ public class RobotContainer
           builder.addDoubleProperty("Back Right Angle", () -> s_Swerve.getModule(3).getCurrentState().angle.getRadians(), null);
           builder.addDoubleProperty("Back Right Velocity", () -> s_Swerve.getModule(3).getCurrentState().speedMetersPerSecond, null);
 
-          builder.addDoubleProperty("Robot Angle", () -> state.Pose.getRotation().getRadians(), null);
+          builder.addDoubleProperty("Robot Angle", () -> swerveState.Pose.getRotation().getRadians(), null);
         }
       }
     );
@@ -151,8 +151,8 @@ public class RobotContainer
       .setYaw((FieldUtils.isRedAlliance() ? 180 : 0))));
 
     /* Intake controls */
-    driver.leftTrigger().whileTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY));
-    driver.leftBumper().whileTrue(new EjectAlgae(s_AlgaeManipulator));
+    driver.leftTrigger().whileTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT));
+    driver.leftBumper().whileTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.PROCESSOR));
 
     /* Scoring and game piece management controls */
     driver.rightBumper() // TODO: Intake is now part of Diffector system
@@ -183,9 +183,9 @@ public class RobotContainer
       * Station pathfinding controls 
       * Drives to the nearest coral station when the station heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    stationDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToStation(5, () -> state.Pose.getY(), s_Swerve));
-    stationDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToStation(2, () -> state.Pose.getY(), s_Swerve));
-    stationDriveTrigger.and(driver.povRight()).onTrue(new PathfindToStation(8, () -> state.Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToStation(5, () -> swerveState.Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToStation(2, () -> swerveState.Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povRight()).onTrue(new PathfindToStation(8, () -> swerveState.Pose.getY(), s_Swerve));
 
     /* 
       * Processor pathfinding control 
@@ -232,7 +232,7 @@ public class RobotContainer
         (
           s_Swerve, 
           Rotation2d.kCW_90deg,
-          () -> state.Pose.getY(),
+          () -> swerveState.Pose.getY(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
           () -> driver.getRawAxis(brakeAxis),
@@ -262,7 +262,7 @@ public class RobotContainer
         (
           s_Swerve, 
           90,
-          () -> state.Pose.getTranslation(),
+          () -> swerveState.Pose.getTranslation(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
           () -> driver.getRawAxis(brakeAxis),

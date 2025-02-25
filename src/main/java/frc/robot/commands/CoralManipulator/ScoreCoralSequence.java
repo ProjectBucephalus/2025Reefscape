@@ -16,5 +16,5 @@ import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 public class ScoreCoralSequence extends SequentialCommandGroup 
 {
   public ScoreCoralSequence(int level, Diffector s_Diffector, CoralManipulator s_CoralManipulator) 
-    {addCommands(new GoToCoralScorePos(level, s_Diffector), new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY));}
+    {addCommands(new GoToCoralScorePos(level, s_Diffector), new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT));}
 }
