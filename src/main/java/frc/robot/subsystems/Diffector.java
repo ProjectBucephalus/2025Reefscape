@@ -102,8 +102,8 @@ public class Diffector extends SubsystemBase
     m_diffectorUA.getConfigurator().apply(motorConfigUA);
     m_diffectorDA.getConfigurator().apply(motorConfigDA);
 
-    m_diffectorUA.setPosition(Units.degreesToRotations((Constants.DiffectorConstants.startPosition.getY() / rotationRatio) + (Constants.DiffectorConstants.startPosition.getX() / travelRatio)));
-    m_diffectorDA.setPosition(Units.degreesToRotations((Constants.DiffectorConstants.startPosition.getY() / rotationRatio) - (Constants.DiffectorConstants.startPosition.getX() / travelRatio)));
+    m_diffectorUA.setPosition(Units.degreesToRotations((targetPosition.getY() / rotationRatio) + (targetPosition.getX() / travelRatio)));
+    m_diffectorDA.setPosition(Units.degreesToRotations((targetPosition.getY() / rotationRatio) - (targetPosition.getX() / travelRatio)));
     
     motorTargets = calculateMotorTargets(targetPosition);
 
@@ -112,11 +112,11 @@ public class Diffector extends SubsystemBase
 
     motionMagicRequester = new MotionMagicVoltage(0);
 
-    ArmPathPlanner.ensureInitialized();
-    ArmPathPlanner.setStartPosition(ArmPathPlanner.fromArmRelative(armPosition));
-    ArmPathPlanner.setGoalPosition(ArmPathPlanner.fromArmRelative(targetPosition, false));
+    //ArmPathPlanner.ensureInitialized();
+    //ArmPathPlanner.setStartPosition(ArmPathPlanner.fromArmRelative(armPosition));
+    //ArmPathPlanner.setGoalPosition(ArmPathPlanner.fromArmRelative(targetPosition, false));
     plannedPathPoints.clear();
-    plannedPathPoints.add(armPosition);
+    plannedPathPoints.add(targetPosition);
   }
 
   /**

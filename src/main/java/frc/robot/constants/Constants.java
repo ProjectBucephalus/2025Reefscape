@@ -39,7 +39,7 @@ public final class Constants
     /** Angle tolerance to consider something as "facing" the drivers, degrees */
     public static final double driverVisionTolerance = 5;
     /** Scalar for manual diffector control */
-    public static final double manualDiffectorScalar = 6;
+    public static final double manualDiffectorScalar = 4;
   }
 
   public static final class Vision
@@ -187,7 +187,7 @@ public final class Constants
 
   public static final class DiffectorConstants
   {
-    public static final double motorStallCurrent = 200;
+    public static final double motorStallCurrent = 100; // TODO: Tune this to the point that it will reliably prevent stalls
 
     public static final double diffectorMotorKGEmpty = 0.225;
     public static final double diffectorMotorKSEmpty = 0.05;
