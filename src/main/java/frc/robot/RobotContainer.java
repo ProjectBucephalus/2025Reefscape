@@ -334,8 +334,8 @@ public class RobotContainer
     //  .whileTrue(Commands.runOnce(() -> s_Climber.manualOveride(copilot.getRawAxis(XboxController.Axis.kLeftY.value))));
 
     /* Manual arm controls */
-    copilot.axisMagnitudeGreaterThan(rotationAxis, Constants.Control.stickDeadband).or(copilot.axisMagnitudeGreaterThan(translationAxis, Constants.Control.stickDeadband))
-      .whileTrue(new ManualDiffectorControl(s_Diffector, () -> copilot.getRawAxis(rotationAxis), () -> copilot.getRawAxis(translationAxis)));
+    copilot.axisMagnitudeGreaterThan(XboxController.Axis.kRightY.value, Constants.Control.stickDeadband).or(copilot.axisMagnitudeGreaterThan(XboxController.Axis.kRightY.value, Constants.Control.stickDeadband))
+      .whileTrue(new ManualDiffectorControl(s_Diffector, () -> -copilot.getRawAxis(XboxController.Axis.kRightY.value), () -> -copilot.getRawAxis(XboxController.Axis.kRightY.value)));
 
     /* Coral outtake controls */
     copilot.povLeft()
