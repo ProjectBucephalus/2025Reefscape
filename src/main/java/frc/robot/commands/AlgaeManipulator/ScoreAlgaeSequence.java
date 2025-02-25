@@ -18,20 +18,17 @@ import frc.robot.constants.*;
 public class ScoreAlgaeSequence extends SequentialCommandGroup 
 {
   Command diffectorPosCommand;
-  Command algaeManipulatorCommand;
 
   public ScoreAlgaeSequence(boolean toNet, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator) 
   {
     if (toNet)
     {
       diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition);
-      algaeManipulatorCommand = new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.NET);
     } 
     else 
     {
       diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.processorPosition);
-      algaeManipulatorCommand = new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.PROCESSOR);
     }
-    addCommands(diffectorPosCommand, algaeManipulatorCommand);
+    addCommands(diffectorPosCommand, new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT));
   }
 }

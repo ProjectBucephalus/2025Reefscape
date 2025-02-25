@@ -107,7 +107,7 @@ public class AutoScoreSequence extends SequentialCommandGroup
         new PathfindToReef(postSide, posSup, s_Swerve)
         .alongWith(new GoToCoralScorePos(coralLevel, s_Diffector)),
 
-        new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY),
+        new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT),
 
         new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeStowPosition)
       );
