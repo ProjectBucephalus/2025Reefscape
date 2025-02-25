@@ -38,8 +38,7 @@ public class AlgaeManipulator extends SubsystemBase
     INTAKE_REEF,
     INTAKE_GROUND,
     HOLDING,
-    NET,
-    PROCESSOR,
+    EJECT,
     EMPTY
   }
 
@@ -85,13 +84,18 @@ public class AlgaeManipulator extends SubsystemBase
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
           break;
 
-      case NET:
-        setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);
-        break;
+      case EJECT:
+        double armPos = RobotContainer.s_Diffector.getRelativeRotation();
 
-      case PROCESSOR:
-        setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorProcessorSpeed);
-
+        if (armPos > 90 && armPos <= 270)
+        {
+          setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);
+        }
+        else
+        {
+          setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorProcessorSpeed);
+        }
+        
         if (!RobotContainer.algae) 
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
           break;

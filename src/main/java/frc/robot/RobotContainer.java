@@ -151,7 +151,7 @@ public class RobotContainer
 
     /* Intake controls */
     driver.leftTrigger().whileTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT));
-    driver.leftBumper().whileTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.PROCESSOR));
+    driver.leftBumper().whileTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT));
 
     /* Scoring and game piece management controls */
     driver.rightBumper().onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_ALGAE)).onFalse(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));
@@ -302,7 +302,7 @@ public class RobotContainer
     copilot.leftTrigger().and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TESTING)).onTrue(Commands.runOnce(() -> s_Intake.setAlgaeIntakeSpeed(Constants.IntakeConstants.algaeIntakeMotorSpeed), s_Intake)).onFalse(Commands.runOnce(() -> s_Intake.setAlgaeIntakeSpeed(0), s_Intake)); //intake algae from intake
 
     /* Game piece outtake controls */
-    copilot.leftBumper().and(copilot.rightTrigger()).onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.PROCESSOR)); //Ejects algae from manipulator
+    copilot.leftBumper().and(copilot.rightTrigger()).onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT)); //Ejects algae from manipulator
     copilot.leftBumper().and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TESTING)).onTrue(Commands.runOnce(() -> s_Intake.setAlgaeIntakeSpeed(Constants.IntakeConstants.algaeEjectMotorSpeed), s_Intake)).onFalse(Commands.runOnce(() -> s_Intake.setAlgaeIntakeSpeed(0), s_Intake)); //Ejects algae from intake
 
     /* Modifier controls for testing only */
@@ -335,7 +335,7 @@ public class RobotContainer
     testing.leftBumper().onTrue(Commands.runOnce(() -> s_Diffector.setElevationTarget(Constants.DiffectorConstants.startPosition.getX()), s_Diffector));
 
     testing.x().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE_REEF)));
-    testing.y().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.NET))).onFalse(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY)));
+    testing.y().onTrue(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EJECT))).onFalse(Commands.runOnce(() -> s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY)));
     testing.a().onTrue(Commands.runOnce(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DELIVERY_LEFT))).onFalse(Commands.runOnce(() -> s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT)));
   }
 

@@ -39,14 +39,14 @@ public class DropGamePiece extends Command
     if (coral && algae)
     {
       if (RobotContainer.copilot.rightTrigger().getAsBoolean())
-        {new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.PROCESSOR).schedule();}
+        {new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT).schedule();}
       else
         {new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT).schedule();}
     }
     else if (coral)
       {new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT).schedule();}
     else if (algae)
-      {new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.PROCESSOR).schedule();}
+      {new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT).schedule();}
   }
 
   // Returns true when the command should end.
