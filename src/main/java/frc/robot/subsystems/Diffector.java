@@ -153,6 +153,20 @@ public class Diffector extends SubsystemBase
         SmartDashboard.putBoolean("encoder overide", false);
     }*/
 
+    if 
+    (
+      targetPosition.equals(DiffectorConstants.startPosition) ||
+      targetPosition.equals(DiffectorConstants.coralTransferPosition) ||
+      targetPosition.equals(DiffectorConstants.algaeIntakePosition) ||
+      targetPosition.equals(DiffectorConstants.climbPosition)
+    )
+    {
+      if (elevation < targetElevation - DiffectorConstants.elevationTolerance)
+        {eStop = true;}
+    }
+    else if (elevation < arm.checkPosition(armPosition) - DiffectorConstants.elevationTolerance)
+      {eStop = true;}
+
     armPosition = new Translation2d(elevation, angle);
     return armPosition;
   }
