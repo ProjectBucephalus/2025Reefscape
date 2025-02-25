@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
 import frc.robot.subsystems.Diffector;
 
@@ -64,6 +65,7 @@ public class ArmCalculator
     minElevation  = Constants.DiffectorConstants.minZ;
     projectionAngle = IKGeometry.projectionAngle;
     projectionElevation = IKGeometry.projectionElevation;
+    turnBackThreshold = DiffectorConstants.turnBackThreshold;
     
     railHeight    = IKGeometry.railHeight;
     railLateral   = IKGeometry.railLateral;

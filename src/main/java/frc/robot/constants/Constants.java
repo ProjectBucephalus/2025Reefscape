@@ -187,6 +187,8 @@ public final class Constants
 
   public static final class DiffectorConstants
   {
+    public static final double motorStallCurrent = 200;
+
     public static final double diffectorMotorKGEmpty = 0.225;
     public static final double diffectorMotorKSEmpty = 0.05;
     public static final double diffectorMotorKVEmpty = 0.58;

@@ -30,6 +30,8 @@ import frc.robot.util.Conversions;
 
 public class Diffector extends SubsystemBase 
 {
+  private boolean eStop;
+
   public enum CargoStates{EMPTY, ONE_ITEM, TWO_ITEM}
   private CargoStates cargoState;
 
@@ -75,6 +77,8 @@ public class Diffector extends SubsystemBase
   /** Creates a new Diffector. */
   public Diffector() 
   {
+    eStop = false;
+    SmartDashboard.putBoolean("Diffector E-Stop", eStop);
     manualControl = false;
     arm = new ArmCalculator();
     motorConfigUA = CTREConfigs.diffectorFXConfig;
@@ -313,48 +317,71 @@ public class Diffector extends SubsystemBase
   { 
     calculatePosition();
     cargoState = updateCargoState();
-
-    if (manualControl)
+    
+    if 
+    (
+      Math.abs(m_diffectorUA.getTorqueCurrent().getValueAsDouble()) > Constants.DiffectorConstants.motorStallCurrent ||
+      Math.abs(m_diffectorDA.getTorqueCurrent().getValueAsDouble()) > Constants.DiffectorConstants.motorStallCurrent
+    )
     {
-      if (manualElevation != 0) 
-      {
-        if (arm.checkAngle(angle) > elevation + Math.copySign(projectionElevation, manualElevation)) 
-        {
-          manualElevation = 0;
-        }
-      }
-      if (manualRotation != 0)
-      {
-        if (arm.checkAngle(angle + Math.copySign(projectionAngle, manualRotation)) > elevation) 
-        {
-          manualRotation = 0;
-        }
-      }
-      if (manualElevation == 0 && manualRotation == 0)
-      {
-        goToAngle(angle);
-        setElevationTarget(elevation);
-        manualControl = false;
-      }
-    }
-
-    if (manualControl)
-    {
-      m_diffectorUA.setVoltage((manualRotation + manualElevation) * Constants.Control.manualDiffectorScalar);
-      m_diffectorDA.setVoltage((manualRotation - manualElevation) * Constants.Control.manualDiffectorScalar);
+      eStop = true;
+      SmartDashboard.putBoolean("Diffector E-Stop", eStop);
     }
     else
     {
-      calculatePath();
-
-      m_diffectorUA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[0])).withSlot(0));//getSlot()));
-      m_diffectorDA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])).withSlot(0));//getSlot()));
+      eStop = SmartDashboard.getBoolean("Diffector E-Stop", false);
     }
-    if (transferRequested && !MathUtil.isNear(180, getRelativeRotation(), DiffectorConstants.angleTolerance))
-     {transferRequested = false;}
-    if (transferRequested && !MathUtil.isNear(0, angle, DiffectorConstants.angleTolerance))
-    {stowRequested = false;}
+    
+    if (eStop)
+    {
+      m_diffectorUA.set(0);
+      m_diffectorDA.set(0);
+      eStop = SmartDashboard.getBoolean("Diffector E-Stop", true);
+    }
+    else
+    {
+      if (manualControl)
+      {
+        if (manualElevation != 0) 
+        {
+          if (arm.checkAngle(angle) > elevation + Math.copySign(projectionElevation, manualElevation)) 
+          {
+            manualElevation = 0;
+          }
+        }
+        if (manualRotation != 0)
+        {
+          if (arm.checkAngle(angle + Math.copySign(projectionAngle, manualRotation)) > elevation) 
+          {
+            manualRotation = 0;
+          }
+        }
+        if (manualElevation == 0 && manualRotation == 0)
+        {
+          goToAngle(angle);
+          setElevationTarget(elevation);
+          manualControl = false;
+        }
+      }
 
+      if (manualControl)
+      {
+        m_diffectorUA.setVoltage((manualRotation + manualElevation) * Constants.Control.manualDiffectorScalar);
+        m_diffectorDA.setVoltage((manualRotation - manualElevation) * Constants.Control.manualDiffectorScalar);
+      }
+      else
+      {
+        calculatePath();
+
+        m_diffectorUA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[0])).withSlot(0));//getSlot()));
+        m_diffectorDA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])).withSlot(0));//getSlot()));
+      }
+      if (transferRequested && !MathUtil.isNear(180, getRelativeRotation(), DiffectorConstants.angleTolerance))
+      {transferRequested = false;}
+      if (transferRequested && !MathUtil.isNear(0, angle, DiffectorConstants.angleTolerance))
+      {stowRequested = false;}
+
+    }
     SmartDashboard.putNumber("Elevator Target", targetElevation);
     SmartDashboard.putNumber("Arm Target", targetAngle);
     SmartDashboard.putNumber("Elevator Height", elevation);
@@ -367,5 +394,4 @@ public class Diffector extends SubsystemBase
     SmartDashboard.putNumber("Encoder Reading", getEncoderPos());
     SmartDashboard.putNumber("Offset", angle - getEncoderPos());
   }
-
 }
