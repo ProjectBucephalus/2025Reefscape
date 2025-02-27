@@ -377,16 +377,17 @@ public final class Constants
 
   public static final class ClimberConstants
   {
-    public static final double lockedWinchPos   = 0;
-    public static final double activeWinchPos = 0;
-    public static final double climbWinchPos  = 0;
+    public static final double lockedWinchPos = 0;
+    public static final double activeWinchPos = 10;
+    public static final double climbWinchPos  = -10;
 
-    public static final double winchKP = 0;
+    public static final double winchKP = 1;
     public static final double winchKI = 0;
     public static final double winchKD = 0;
 
-    public static final double winchMotionMagicCruise = 0;
-    public static final double winchMotionMagicAccel  = 0;
+    public static final double winchGearRatio = 90;
+    public static final double winchMotionMagicCruise = 10;
+    public static final double winchMotionMagicAccel  = 5;
 
     public static final double initWinchThreshold = 10;
   }

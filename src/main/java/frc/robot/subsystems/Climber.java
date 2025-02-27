@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -9,24 +11,20 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IDConstants;
-import frc.robot.subsystems.Intake.IntakeStatus;
-
 
 public class Climber extends SubsystemBase
 {
     /* Declarations of all the motor controllers */
   private TalonFX m_ClimberWinch;
-  boolean climbActive;
+  private boolean climbActive;
   private ClimberStatus status;
 
-  private DigitalInput dio;
+  //private DigitalInput dio;
 
   /* Declarations of all the motion magic variables */
   private final MotionMagicVoltage motionMagic;
-  private double climberCurrentPos;
-  private double climberTargetPos;
   private double speed;
-  private double manualScale = 0.5;
+  private double manualScale;
 
   public enum ClimberStatus 
   {
@@ -40,17 +38,17 @@ public class Climber extends SubsystemBase
   { 
     this.status = ClimberStatus.LOCKED;
 
-    m_ClimberWinch = new TalonFX(IDConstants.algaeIntakeRollerID);
+    m_ClimberWinch = new TalonFX(IDConstants.climberWinchMotorID);
+    m_ClimberWinch.getConfigurator().apply(CTREConfigs.climberWinchFXConfig);
+    m_ClimberWinch.setPosition(Constants.ClimberConstants.lockedWinchPos / 360);
     
-    climberCurrentPos = 0;
+    manualScale = 0.25;
 
     motionMagic = new MotionMagicVoltage(0);
-
-    dio = new DigitalInput(IDConstants.algaeIntakeDIO); // TODO: Correct Constants ID + Is it actually being used?
   }
 
   public double getClimberPos()
-    {return climberCurrentPos;}
+    {return m_ClimberWinch.getPosition().getValueAsDouble();}
   
   public ClimberStatus getClimberStatus()
     {return status;}
@@ -60,9 +58,6 @@ public class Climber extends SubsystemBase
 
   public boolean isUnlocked()
     {return climbActive;}
-
-  public void setClimberTarget(double newTarget)
-    {climberTargetPos = newTarget;}
 
   public boolean manualOveride(double motorSpeed)
   {
@@ -77,28 +72,27 @@ public class Climber extends SubsystemBase
   @Override
   public void periodic()
   {
-
-    climberCurrentPos = m_ClimberWinch.getPosition().getValueAsDouble();
-
     switch (status)
     {
       case LOCKED:
-        setClimberTarget(Constants.ClimberConstants.lockedWinchPos);
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.lockedWinchPos / 360));
         break;
 
       case ACTIVE:
-        setClimberTarget(Constants.ClimberConstants.activeWinchPos);
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos / 360));
         break;
 
       case CLIMB:
-        setClimberTarget(Constants.ClimberConstants.climbWinchPos);
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.climbWinchPos / 360));
         break;
 
       case MANUAL:
+        if (getClimberPos() > Constants.ClimberConstants.activeWinchPos || getClimberPos() < Constants.ClimberConstants.climbWinchPos)
+          {speed = 0;}
         if (speed != 0)
           {m_ClimberWinch.set(speed * manualScale);}
         else
-          {m_ClimberWinch.setControl(motionMagic.withPosition(climberCurrentPos));}
+          {m_ClimberWinch.setControl(motionMagic.withPosition(getClimberPos()));}
     }
   }
 }

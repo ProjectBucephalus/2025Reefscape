@@ -6,6 +6,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 public final class CTREConfigs 
 {
   public static final TalonFXConfiguration intakeTopArmFXConfig = new TalonFXConfiguration();
+  public static final TalonFXConfiguration climberWinchFXConfig = new TalonFXConfiguration();
   public static final TalonFXConfiguration diffectorFXConfig = new TalonFXConfiguration();
 
   public CTREConfigs()
@@ -64,5 +65,13 @@ public final class CTREConfigs
 
     /* Intake Arm Ratios */
     intakeTopArmFXConfig.Feedback.SensorToMechanismRatio = Constants.IntakeConstants.algaeIntakeArmRatio;
+
+    /* Climber Values */
+    climberWinchFXConfig.Feedback.SensorToMechanismRatio = Constants.ClimberConstants.winchGearRatio;
+    climberWinchFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.ClimberConstants.winchMotionMagicCruise;
+    climberWinchFXConfig.MotionMagic.MotionMagicAcceleration = Constants.ClimberConstants.winchMotionMagicAccel;
+    climberWinchFXConfig.Slot0.kP = Constants.ClimberConstants.winchKP;
+    climberWinchFXConfig.Slot0.kI = Constants.ClimberConstants.winchKI;
+    climberWinchFXConfig.Slot0.kD = Constants.ClimberConstants.winchKD;
   }
 }
