@@ -10,11 +10,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.commands.Diffector.GoToAlgaeIntakePos;
-import frc.robot.commands.AlgaeManipulator.*;
 import frc.robot.commands.Auto.PathfindToReef.DpadOptions;
 import frc.robot.commands.Diffector.GoToCoralScorePos;
-import frc.robot.commands.CoralManipulator.SetCoralStatus;
 import frc.robot.commands.Diffector.MoveTo;
+import frc.robot.commands.Manipulator.*;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Diffector;
 import frc.robot.subsystems.AlgaeManipulator;
@@ -107,7 +106,7 @@ public class AutoScoreSequence extends SequentialCommandGroup
         new PathfindToReef(postSide, posSup, s_Swerve)
         .alongWith(new GoToCoralScorePos(coralLevel, s_Diffector)),
 
-        new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY),
+        new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT),
 
         new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeStowPosition)
       );

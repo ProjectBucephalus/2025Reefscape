@@ -225,9 +225,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       var config = RobotConfig.fromGUISettings();
       AutoBuilder.configure
       (
-        () -> RobotContainer.state.Pose,   // Supplier of current robot pose
+        () -> RobotContainer.swerveState.Pose,   // Supplier of current robot pose
         this::resetPose,         // Consumer for seeding pose against auto
-        () -> RobotContainer.state.Speeds, // Supplier of current robot speeds
+        () -> RobotContainer.swerveState.Speeds, // Supplier of current robot speeds
         // Consumer of ChassisSpeeds and feedforwards to drive the robot
         (speeds, feedforwards) -> setControl
         (
@@ -327,8 +327,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
       );
     }
-    field.setRobotPose(RobotContainer.state.Pose);
-    SmartDashboard.putNumber("Robot Speed", RobotContainer.state.Speeds.vxMetersPerSecond);
+    field.setRobotPose(RobotContainer.swerveState.Pose);
+    SmartDashboard.putNumber("Robot Speed", RobotContainer.swerveState.Speeds.vxMetersPerSecond);
   }
 
   private void startSimThread() 

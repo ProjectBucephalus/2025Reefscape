@@ -14,7 +14,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
-import frc.robot.commands.CoralManipulator.ScoreCoralSequence;
+import frc.robot.commands.Manipulator.ScoreCoralSequence;
 import frc.robot.commands.Util.WaitUntilAutoTime;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Auto.AutoMapping;
@@ -39,7 +39,7 @@ public class DynamicAuto
     ArrayList<Command> commandList = new ArrayList<>();
     
     AutoMapping autoMapValue;
-    Translation2d prevEndPoint = RobotContainer.state.Pose.getTranslation();
+    Translation2d prevEndPoint = RobotContainer.swerveState.Pose.getTranslation();
     PathPlannerPath nextPath;
 
     // For each command phrase, adds the associated path and then the associated command to the command list

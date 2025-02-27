@@ -63,12 +63,12 @@ public class Robot extends TimedRobot
   @Override
   public void robotPeriodic() 
   {
-    robotPose = RobotContainer.state.Pose;
+    robotPose = RobotContainer.swerveState.Pose;
 
     if (robotPose.getX() == 0 && robotPose.getY() == 0) 
       {RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, 1, robotPose.getRotation()));}
 
-    RobotContainer.state = RobotContainer.s_Swerve.getState();
+    RobotContainer.swerveState = RobotContainer.s_Swerve.getState();
 
     CommandScheduler.getInstance().run();
 

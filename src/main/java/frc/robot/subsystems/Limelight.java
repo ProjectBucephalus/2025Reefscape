@@ -40,7 +40,7 @@ public class Limelight extends SubsystemBase
   public void periodic() 
   { 
     headingDeg = RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble();
-    omegaRps = Units.radiansToRotations(RobotContainer.state.Speeds.omegaRadiansPerSecond);
+    omegaRps = Units.radiansToRotations(RobotContainer.swerveState.Speeds.omegaRadiansPerSecond);
     
     if (SmartDashboard.getBoolean("Use Limelight", false))
     {

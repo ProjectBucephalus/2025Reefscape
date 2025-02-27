@@ -104,7 +104,7 @@ public class TargetHeadingScore extends Command
     {
       SmartDashboard.putString("Drive State", "Fenced");
 
-      robotSpeed = Math.hypot(RobotContainer.state.Speeds.vxMetersPerSecond, RobotContainer.state.Speeds.vyMetersPerSecond);
+      robotSpeed = Math.hypot(RobotContainer.swerveState.Speeds.vxMetersPerSecond, RobotContainer.swerveState.Speeds.vyMetersPerSecond);
       if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
         {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
       else
@@ -118,7 +118,7 @@ public class TargetHeadingScore extends Command
       // Outer wall is index 0, so has highest authority by being processed last
       for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
       {
-        Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.state.Pose.getTranslation(), motionXY, robotRadius);
+        Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
         motionXY = inputDamping;
       }
 
@@ -134,7 +134,7 @@ public class TargetHeadingScore extends Command
           driveRequest
           .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
           .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
-          .withTargetDirection(new Rotation2d(Units.degreesToRadians(targetHeading + rotationOffset)))
+          .withTargetDirection(new Rotation2d(Units.degreesToRadians(targetHeading)))
         );
   }
 
@@ -160,27 +160,27 @@ public class TargetHeadingScore extends Command
       switch (nearestReefFace) 
       {
         case 1:
-          targetHeading = 0;
+          targetHeading = 0 + rotationOffset;
           break;
 
         case 2:
-          targetHeading = 60;
+          targetHeading = 60 + rotationOffset;
           break;
 
         case 3:
-          targetHeading = 120;
+          targetHeading = 120 + rotationOffset;
           break;
 
         case 4:
-          targetHeading = 180;
+          targetHeading = 180 - rotationOffset;
           break;
 
         case 5:
-          targetHeading = -120;
+          targetHeading = -120 - rotationOffset;
           break;
 
         case 6:
-          targetHeading = -60;
+          targetHeading = -60 - rotationOffset;
           break;
         default:
           break;
