@@ -21,6 +21,7 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
+import frc.robot.subsystems.Limelight;
 
 public class TargetHeadingScore extends Command 
 {
@@ -76,11 +77,14 @@ public class TargetHeadingScore extends Command
   {
     updateTargetHeading();
     redAlliance = FieldUtils.isRedAlliance();
+
     SmartDashboard.putBoolean("redAlliance", redAlliance);
     if (redAlliance)
       {fieldGeoFence = FieldUtils.GeoFencing.fieldRedGeoFence;}
     else
       {fieldGeoFence = FieldUtils.GeoFencing.fieldBlueGeoFence;}
+
+    Limelight.setActivePOI(Limelight.TagPOI.REEF);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

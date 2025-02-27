@@ -19,6 +19,7 @@ import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
+import frc.robot.subsystems.Limelight;
 
 public class TargetHeading extends Command 
 {
@@ -65,10 +66,13 @@ public class TargetHeading extends Command
   {
     redAlliance = FieldUtils.isRedAlliance();
     SmartDashboard.putBoolean("redAlliance", redAlliance);
+
     if (redAlliance)
       {fieldGeoFence = FieldUtils.GeoFencing.fieldRedGeoFence;}
     else
       {fieldGeoFence = FieldUtils.GeoFencing.fieldBlueGeoFence;}
+
+    Limelight.setActivePOI(Limelight.TagPOI.REEF);
   }
 
   @Override

@@ -18,12 +18,20 @@ public class Limelight extends SubsystemBase
 {  
   private boolean useUpdate;
   private LimelightHelpers.PoseEstimate mt2;
-  private int[] validIDs = Constants.Vision.validIDs;
+  private static int[] validIDs = Constants.Vision.reefIDs;
 
   private double headingDeg;
   private double omegaRps;
 
   private final String limelightName;
+
+  public enum TagPOI 
+  {
+    REEF,
+    BARGE,
+    PROCESSOR,
+    CORALSTATION
+  }
   
   /** Creates a new Limelight. */
   public Limelight(String name) 
@@ -35,7 +43,25 @@ public class Limelight extends SubsystemBase
 
   public void setIMUMode(int mode)
     {LimelightHelpers.SetIMUMode(limelightName, mode);}
-   
+
+  public static void setActivePOI(TagPOI activePOI) 
+  {
+    switch (activePOI) 
+    {
+      default:
+      case REEF:
+        validIDs = Constants.Vision.reefIDs;
+        break;
+      case BARGE:
+        validIDs = Constants.Vision.bargeIDs;
+        break;
+      case PROCESSOR:
+      case CORALSTATION:
+        validIDs = Constants.Vision.humanPlayerStationIDs;
+        break;
+    }
+  }
+
   @Override
   public void periodic() 
   { 
