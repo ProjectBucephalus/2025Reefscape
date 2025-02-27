@@ -220,12 +220,12 @@ public final class Constants
     public static final double climberElevatorLowTheshold = 0;
     public static final double climberElevatorHighThreshold = 0;
 
-    private static final double diffectorGearTeethIn = 10;
+    private static final double diffectorGearTeethIn = 8;
     private static final double diffectorGearTeethOut = 60;
     private static final double diffectorSprocketTeethIn  = 18;
     private static final double diffectorSprocketTeethOut = 72;
     /** Output sprocket degrees per motor rotation */
-    public static final double gearboxRatio = 1.25 / (diffectorGearTeethIn / diffectorGearTeethOut); // I have ABSOLUTELY NO IDEA where the 1.25 scale comes from
+    public static final double gearboxRatio = (diffectorGearTeethOut / diffectorGearTeethIn);
     /** Ratio of output sprocket to arm sprocket (output sprocket teeth/arm sprocket teeth) */
     public static final double sprocketRatio = (diffectorSprocketTeethIn / diffectorSprocketTeethOut);
     /** Pitch Diameter of the sprocket, in m */
@@ -370,6 +370,23 @@ public final class Constants
     public static final double intakeArmMotionMagicAccel  = 0.25;
 
     /* Arm ratios */
-    public static final double topArmRatio    = 90;
+    public static final double algaeIntakeArmRatio    = 90;
+  }
+
+  public static final class ClimberConstants
+  {
+    public static final double lockedWinchPos = 0;
+    public static final double activeWinchPos = 10;
+    public static final double climbWinchPos  = -10;
+
+    public static final double winchKP = 1;
+    public static final double winchKI = 0;
+    public static final double winchKD = 0;
+
+    public static final double winchGearRatio = 90;
+    public static final double winchMotionMagicCruise = 10;
+    public static final double winchMotionMagicAccel  = 5;
+
+    public static final double initWinchThreshold = 10;
   }
 }

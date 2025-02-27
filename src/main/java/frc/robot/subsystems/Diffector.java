@@ -109,9 +109,9 @@ public class Diffector extends SubsystemBase
 
     motionMagicRequester = new MotionMagicVoltage(0);
 
-    ArmPathPlanner.ensureInitialized();
-    ArmPathPlanner.setStartPosition(ArmPathPlanner.fromArmRelative(armPosition));
-    ArmPathPlanner.setGoalPosition(ArmPathPlanner.fromArmRelative(targetPosition, false));
+    //ArmPathPlanner.ensureInitialized();
+    //ArmPathPlanner.setStartPosition(ArmPathPlanner.fromArmRelative(armPosition));
+    //ArmPathPlanner.setGoalPosition(ArmPathPlanner.fromArmRelative(targetPosition, false));
     plannedPathPoints.clear();
     plannedPathPoints.add(armPosition);
   }

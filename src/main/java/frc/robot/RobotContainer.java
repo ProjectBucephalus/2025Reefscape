@@ -24,6 +24,7 @@ import frc.robot.commands.Rumble.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
+import frc.robot.subsystems.Climber.ClimberStatus;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 import frc.robot.subsystems.Intake.IntakeStatus;
 import frc.robot.subsystems.Rumbler.Sides;
@@ -60,7 +61,7 @@ public class RobotContainer
   public static final Limelight s_LimelightStbd = new Limelight(IDConstants.llStbdName);
   
   public static final Diffector s_Diffector = new Diffector();
-  public static final Intake s_Intake = new Intake();
+  public static final Climber s_Climber = new Climber();
   public static final CoralManipulator s_CoralManipulator = new CoralManipulator();
   public static final AlgaeManipulator s_AlgaeManipulator = new AlgaeManipulator();
   public static final CANifierAccess s_Canifier = new CANifierAccess();
@@ -78,10 +79,10 @@ public class RobotContainer
   private final Trigger scoreDriveTrigger          = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
   private final Trigger stationDriveTrigger        = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
   private final Trigger processorDriveTrigger      = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
-  private final Trigger driverLeftRumbleTrigger    = new Trigger(() -> s_Intake.getAlgaeState());
-  private final Trigger copilotLeftRumbleTrigger   = new Trigger(
-              () -> s_Intake.getAlgaeState() && (s_Diffector.getRelativeRotation() > 45 && s_Diffector.getRelativeRotation() < 315) ||
-              s_Intake.getAlgaeState() && (s_Diffector.getRelativeRotation() > 135 && s_Diffector.getRelativeRotation() < 225));
+//  private final Trigger driverLeftRumbleTrigger    = new Trigger(() -> s_Intake.getAlgaeState());
+//  private final Trigger copilotLeftRumbleTrigger   = new Trigger(
+//              () -> s_Intake.getAlgaeState() && (s_Diffector.getRelativeRotation() > 45 && s_Diffector.getRelativeRotation() < 315) ||
+//              s_Intake.getAlgaeState() && (s_Diffector.getRelativeRotation() > 135 && s_Diffector.getRelativeRotation() < 225));
   //private final Trigger driverRightRumblTrigger = new Trigger(() -> );
   // TODO: Ready to score rumble
   //private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.climbReady() && s_Climber.climbReady() && s_Diffector.climbReady() );
@@ -275,18 +276,11 @@ public class RobotContainer
   private void configureCopilotBindings()
   {
     /* Climb controls */
-    //copilot.start().and(copilot.back()).onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbElevation, Constants.DiffectorConstants.climbAngle)); //Starts climber
-    //copilot.back().onTrue(new Test("climber", "deploy"));   //Deploys the climber
-
-    /** TODO: Add Co-Driver Controls
-     *    - Coral Left
-     *    - Coral Right
-     *    - Reset Arm
-     *    - Activate Climb
-     *    - Prepare Climb
-     *    - Climber Up
-     *    - Climber Down
-     */
+    copilot.start()
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbPosition)
+      .andThen(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.ACTIVE)))); //Starts climber
+    copilot.back()
+      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.CLIMB)));//Deploys the climber
 
     /* Coral scoring controls */
     copilot.y().and(copilot.rightTrigger().negate())
@@ -329,9 +323,10 @@ public class RobotContainer
 
   private void configureManualBindings()
   {
-    /* Manual climber controls */ // TODO
-    //copilot.axisMagnitudeGreaterThan(XboxController.Axis.kLeftY.value, Constants.Control.stickDeadband)
-    //  .whileTrue(Commands.runOnce(() -> s_Climber.manualOveride(copilot.getRawAxis(XboxController.Axis.kLeftY.value))));
+    /* Manual climber controls */
+    copilot.axisMagnitudeGreaterThan(XboxController.Axis.kLeftY.value, Constants.Control.stickDeadband)
+      .whileTrue(Commands.run(() -> s_Climber.manualOveride(-copilot.getRawAxis(XboxController.Axis.kLeftY.value))))
+      .onFalse(Commands.runOnce(() -> s_Climber.manualOveride(0)));
 
     /* Manual arm controls */
     copilot.axisMagnitudeGreaterThan(rotationAxis, Constants.Control.stickDeadband).or(copilot.axisMagnitudeGreaterThan(translationAxis, Constants.Control.stickDeadband))
@@ -355,11 +350,11 @@ public class RobotContainer
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
-    driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_RIGHT, "Intake Full"));
+    //driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_RIGHT, "Intake Full"));
     // TODO: Driver Rightside Rumble: Ready To Score
     
     /* Copilot rumble bindings */
-    copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_LEFT, "Transfer Ready"));
+    //copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_LEFT, "Transfer Ready"));
     // TODO: copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
   }
   
