@@ -15,19 +15,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.commands.Auto.*;
 import frc.robot.commands.Auto.PathfindToReef.DpadOptions;
-import frc.robot.commands.Manipulator.*;
 import frc.robot.commands.Diffector.*;
-import frc.robot.commands.Intake.*;
 import frc.robot.commands.Manipulator.SetAlgaeStatus;
 import frc.robot.commands.Manipulator.SetCoralStatus;
-import frc.robot.commands.Rumble.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.Climber.ClimberStatus;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
-import frc.robot.subsystems.Intake.IntakeStatus;
-import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
 
 /**

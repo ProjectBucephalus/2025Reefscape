@@ -333,46 +333,6 @@ public final class Constants
     public static final double algaeRange = 2;
   }
 
-  public static final class IntakeConstants // TODO: Depricate
-  {
-    /* Intake motors speeds */
-    public static final double algaeIntakeMotorSpeed = 0.8;
-    public static final double algaeEjectMotorSpeed = -0.8;
-    public static final double climbingIntakeMotorSpeed = 0;
-    public static final double standByMotorSpeed = 0;
-    public static final double stowedMotorSpeed = 0;
-    public static final double algaeTransferMotorSpeed = 0;
-
-    /* Top intake arm positions */
-    public static final double topAlgaeIntakeArmTarget   = 0;
-    public static final double topAlgaeEjectArmTarget    = 0;
-    public static final double algaeClimbingArmTarget    = 0;
-    public static final double topStandByArmTarget       = 0;
-    public static final double topStowedArmTarget        = 0;
-    public static final double topAlgaeTransferArmTarget = 0;
-
-    public static final double algaeStowedLowThreshold  = 10;
-    public static final double algaeStowedHighThreshold = 10;
-
-    /* Top arm PID + FeedForward values */
-    public static final double algaeIntakeArmSpringKP = 1; //1
-    public static final double algaeIntakeArmSpringKI = 0;
-    public static final double algaeIntakeArmSpringKD = 0;
-    public static final double topArmStopKP   = 12.5; //12.5
-    public static final double topArmStopKI   = 0;
-    public static final double topArmStopKD   = 0;
-    
-    public static final double algaeIntakeArmKS = 0.15;
-    public static final double algaeIntakeArmKG = 0.15;
-
-    /* Arm MotionMagic values */
-    public static final double intakeArmMotionMagicCruise = 0.25;
-    public static final double intakeArmMotionMagicAccel  = 0.25;
-
-    /* Arm ratios */
-    public static final double algaeIntakeArmRatio = 90;
-  }
-
   public static final class ClimberConstants
   {
     // TODO: Default brake

@@ -4,8 +4,6 @@
 
 package frc.robot.commands;
 
-import com.ctre.phoenix6.signals.DiffPIDOutput_PIDOutputModeValue;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.commands.Diffector.MoveTo;
