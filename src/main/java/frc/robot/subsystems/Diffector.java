@@ -206,14 +206,10 @@ public class Diffector extends SubsystemBase
 
     if (plannedPathPoints.size() != 0)
     {
-      SmartDashboard.putNumberArray("target Point", new double[]{plannedPathPoints.get(0).getX(), plannedPathPoints.get(0).getY()});
+      //SmartDashboard.putNumberArray("target Point", new double[]{plannedPathPoints.get(0).getX(), plannedPathPoints.get(0).getY()});
       motorTargets = calculateMotorTargets(plannedPathPoints.get(0));
 
-      if 
-      (
-        plannedPathPoints.get(0).getX() == elevation &&
-        plannedPathPoints.get(0).getY() == angle
-      )
+      if (atPosition(plannedPathPoints.get(0)))
         {plannedPathPoints.remove(0);}
     }
   }
@@ -245,6 +241,17 @@ public class Diffector extends SubsystemBase
   /** Returns true if the diffector is at its current target elevation and angle */
   public boolean atPosition()
     {return atElevation() && atAngle();}
+
+  /**
+   * Returns true if the diffector is at the given position
+   * @param checkTarget target elevation/rotation to check against
+   */
+  public boolean atPosition(Translation2d checkTarget)
+  {
+    return
+      Math.abs(elevation - checkTarget.getX()) < Constants.DiffectorConstants.elevationTolerance &&
+      Math.abs(angle - checkTarget.getY()) < Constants.DiffectorConstants.angleTolerance;
+  }
 
   /** Returns true if the diffector is safely in climb position */
   public boolean climbReady()
