@@ -7,7 +7,6 @@ package frc.robot.commands.Manipulator;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
