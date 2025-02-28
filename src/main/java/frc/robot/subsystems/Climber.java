@@ -1,13 +1,9 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.configs.TalonFXSConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IDConstants;
@@ -36,7 +32,7 @@ public class Climber extends SubsystemBase
 
   public Climber() 
   { 
-    this.status = ClimberStatus.LOCKED;
+    this.status = ClimberStatus.MANUAL;//LOCKED;
 
     m_ClimberWinch = new TalonFX(IDConstants.climberWinchMotorID);
     m_ClimberWinch.getConfigurator().apply(CTREConfigs.climberWinchFXConfig);
@@ -75,15 +71,16 @@ public class Climber extends SubsystemBase
     switch (status)
     {
       case LOCKED:
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.lockedWinchPos / 360));
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.lockedWinchPos));
         break;
 
       case ACTIVE:
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos / 360));
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos));
         break;
 
       case CLIMB:
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.climbWinchPos / 360));
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.climbWinchPos));
+        // TODO: Consider active hold using gyro pitch to balance
         break;
 
       case MANUAL:

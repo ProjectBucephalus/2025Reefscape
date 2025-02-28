@@ -15,19 +15,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.commands.Auto.*;
 import frc.robot.commands.Auto.PathfindToReef.DpadOptions;
-import frc.robot.commands.Manipulator.*;
 import frc.robot.commands.Diffector.*;
-import frc.robot.commands.Intake.*;
 import frc.robot.commands.Manipulator.SetAlgaeStatus;
 import frc.robot.commands.Manipulator.SetCoralStatus;
-import frc.robot.commands.Rumble.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.Climber.ClimberStatus;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
-import frc.robot.subsystems.Intake.IntakeStatus;
-import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
 
 /**
@@ -67,11 +62,17 @@ public class RobotContainer
   public static final CANifierAccess s_Canifier = new CANifierAccess();
   public static Rumbler s_Rumbler = new Rumbler(driver, copilot);
 
-  /* Drive Controls */
+  /* Driver Control Axis */
   public static final int translationAxis = XboxController.Axis.kLeftY.value;
   public static final int strafeAxis      = XboxController.Axis.kLeftX.value;
   public static final int rotationAxis    = XboxController.Axis.kRightX.value;
   public static final int brakeAxis       = XboxController.Axis.kRightTrigger.value;
+
+  /* Codriver Control Axis */
+  public static final int manualClimberAxis            = XboxController.Axis.kLeftY.value;
+  public static final int manualDiffectorElevationAxis = XboxController.Axis.kRightY.value;
+  public static final int manualDiffectorRotationAxis  = XboxController.Axis.kRightX.value;
+
 
   /* Triggers */
   public static final Trigger unlockHeadingTrigger = new Trigger(() -> Math.abs(driver.getRawAxis(rotationAxis)) > Constants.Control.stickDeadband);
@@ -324,13 +325,13 @@ public class RobotContainer
   private void configureManualBindings()
   {
     /* Manual climber controls */
-    copilot.axisMagnitudeGreaterThan(XboxController.Axis.kLeftY.value, Constants.Control.stickDeadband)
-      .whileTrue(Commands.run(() -> s_Climber.manualOveride(-copilot.getRawAxis(XboxController.Axis.kLeftY.value))))
+    copilot.axisMagnitudeGreaterThan(manualClimberAxis, Constants.Control.stickDeadband)
+      .whileTrue(Commands.run(() -> s_Climber.manualOveride(-copilot.getRawAxis(manualClimberAxis))))
       .onFalse(Commands.runOnce(() -> s_Climber.manualOveride(0)));
 
     /* Manual arm controls */
-    copilot.axisMagnitudeGreaterThan(XboxController.Axis.kRightY.value, Constants.Control.stickDeadband).or(copilot.axisMagnitudeGreaterThan(XboxController.Axis.kRightY.value, Constants.Control.stickDeadband))
-      .whileTrue(new ManualDiffectorControl(s_Diffector, () -> -copilot.getRawAxis(XboxController.Axis.kRightY.value), () -> -copilot.getRawAxis(XboxController.Axis.kRightY.value)));
+    copilot.axisMagnitudeGreaterThan(manualDiffectorElevationAxis, Constants.Control.stickDeadband).or(copilot.axisMagnitudeGreaterThan(manualDiffectorRotationAxis, Constants.Control.stickDeadband))
+      .whileTrue(new ManualDiffectorControl(s_Diffector, () -> -copilot.getRawAxis(manualDiffectorElevationAxis), () -> copilot.getRawAxis(manualDiffectorRotationAxis)));
 
     /* Coral outtake controls */
     copilot.povLeft()

@@ -8,24 +8,20 @@ import java.util.ArrayList;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants;
-import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
 import frc.robot.constants.IDConstants;
 import frc.robot.util.ArmCalculator;
-import frc.robot.util.ArmPathPlanner;
 import frc.robot.util.Conversions;
 
 public class Diffector extends SubsystemBase 
@@ -223,11 +219,7 @@ public class Diffector extends SubsystemBase
       //SmartDashboard.putNumberArray("target Point", new double[]{plannedPathPoints.get(0).getX(), plannedPathPoints.get(0).getY()});
       motorTargets = calculateMotorTargets(plannedPathPoints.get(0));
 
-      if 
-      (
-        MathUtil.isNear(plannedPathPoints.get(0).getX(), elevation, Constants.DiffectorConstants.elevationTolerance) &&
-        MathUtil.isNear(plannedPathPoints.get(0).getY(), angle, Constants.DiffectorConstants.angleTolerance)
-      )
+      if (atPosition(plannedPathPoints.get(0)))
         {plannedPathPoints.remove(0);}
     }
   }
@@ -259,6 +251,17 @@ public class Diffector extends SubsystemBase
   /** Returns true if the diffector is at its current target elevation and angle */
   public boolean atPosition()
     {return atElevation() && atAngle();}
+
+  /**
+   * Returns true if the diffector is at the given position
+   * @param checkTarget target elevation/rotation to check against
+   */
+  public boolean atPosition(Translation2d checkTarget)
+  {
+    return
+      Math.abs(elevation - checkTarget.getX()) < Constants.DiffectorConstants.elevationTolerance &&
+      Math.abs(angle - checkTarget.getY()) < Constants.DiffectorConstants.angleTolerance;
+  }
 
   /** Returns true if the diffector is safely in climb position */
   public boolean climbReady()

@@ -48,10 +48,10 @@ public final class Constants
     {
       //1, 2, 3,               // Red Human Player Stations
       //4, 5,                  // Red Barge
-      //6, 7, 8, 9, 10, 11,    // Red Reef
-      12, 13, 16,            // Blue Human Player Stations
-      14, 15,                // Blue Barge
-      17, 18, 19, 20, 21, 22 // Blue Reef
+      6, 7, 8, 9, 10, 11,      // Red Reef
+      //12, 13, 16,            // Blue Human Player Stations
+      //14, 15,                // Blue Barge
+      17, 18, 19, 20, 21, 22   // Blue Reef
     };
   }
 
@@ -333,62 +333,22 @@ public final class Constants
     public static final double algaeRange = 2;
   }
 
-  public static final class IntakeConstants // TODO: Speeds and Angles must be tuned to the specific robot
-  {
-    /* Intake motors speeds */
-    public static final double algaeIntakeMotorSpeed = 0.8;
-    public static final double algaeEjectMotorSpeed = -0.8;
-    public static final double climbingIntakeMotorSpeed = 0;
-    public static final double standByMotorSpeed = 0;
-    public static final double stowedMotorSpeed = 0;
-    public static final double algaeTransferMotorSpeed = 0;
-
-    /* Top intake arm positions 
-     * TODO: Put in Degrees for the arm top and bottom position in this comment
-     */
-    public static final double topAlgaeIntakeArmTarget   = 0;
-    public static final double topAlgaeEjectArmTarget    = 0;
-    public static final double algaeClimbingArmTarget    = 0;
-    public static final double topStandByArmTarget       = 0;
-    public static final double topStowedArmTarget        = 0;
-    public static final double topAlgaeTransferArmTarget = 0;
-
-    public static final double algaeStowedLowThreshold  = 10;
-    public static final double algaeStowedHighThreshold = 10;
-
-    /* Top arm PID + FeedForward values */
-    public static final double algaeIntakeArmSpringKP = 1; //1
-    public static final double algaeIntakeArmSpringKI = 0;
-    public static final double algaeIntakeArmSpringKD = 0;
-    public static final double topArmStopKP   = 12.5; //12.5
-    public static final double topArmStopKI   = 0;
-    public static final double topArmStopKD   = 0;
-    
-    public static final double algaeIntakeArmKS = 0.15;
-    public static final double algaeIntakeArmKG = 0.15;
-
-    /* Arm MotionMagic values */
-    public static final double intakeArmMotionMagicCruise = 0.25;
-    public static final double intakeArmMotionMagicAccel  = 0.25;
-
-    /* Arm ratios */
-    public static final double algaeIntakeArmRatio    = 90;
-  }
-
   public static final class ClimberConstants
   {
+    // TODO: Default brake
     public static final double lockedWinchPos = 0;
-    public static final double activeWinchPos = 10;
-    public static final double climbWinchPos  = -10;
+    public static final double activeWinchPos = 2.2;
+    public static final double climbWinchPos  = -0.7;
 
     public static final double winchKP = 1;
     public static final double winchKI = 0;
     public static final double winchKD = 0;
 
-    public static final double winchGearRatio = 90;
-    public static final double winchMotionMagicCruise = 10;
-    public static final double winchMotionMagicAccel  = 5;
-
-    public static final double initWinchThreshold = 10;
+    public static final double winchPlanetaryRatio = 45;
+    public static final double winchGearIn = 20;
+    public static final double winchGearOut = 60;
+    public static final double winchGearRatio = -(winchGearOut / winchGearIn) * winchPlanetaryRatio;
+    public static final double winchMotionMagicCruise = 1;
+    public static final double winchMotionMagicAccel  = 1;
   }
 }

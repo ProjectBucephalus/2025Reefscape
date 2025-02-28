@@ -15,21 +15,21 @@ public class ManualDiffectorControl extends Command
   private final DoubleSupplier elevationSup;
   private final DoubleSupplier rotationSup;
 
-  private double rotation;
   private double elevation;
+  private double rotation;
 
-  public ManualDiffectorControl(Diffector s_Diffector, DoubleSupplier translationSup, DoubleSupplier rotationSup) 
+  public ManualDiffectorControl(Diffector s_Diffector, DoubleSupplier elevationSup, DoubleSupplier rotationSup) 
   {
     this.s_Diffector = s_Diffector;
-    this.elevationSup = translationSup;
+    this.elevationSup = elevationSup;
     this.rotationSup = rotationSup;
   }
 
   @Override
   public void execute() 
   {
-    rotation = rotationSup.getAsDouble();
     elevation = elevationSup.getAsDouble();
+    rotation = rotationSup.getAsDouble();
     
     if (Math.abs(elevation) > 2 * Math.abs(rotation)) 
     {
