@@ -373,9 +373,10 @@ public final class Constants
 
   public static final class ClimberConstants
   {
+    // TODO: Default brake
     public static final double lockedWinchPos = 0;
-    public static final double activeWinchPos = 4;
-    public static final double climbWinchPos  = -4;
+    public static final double activeWinchPos = 2.2;
+    public static final double climbWinchPos  = -0.7;
 
     public static final double winchKP = 1;
     public static final double winchKI = 0;
@@ -384,7 +385,7 @@ public final class Constants
     public static final double winchPlanetaryRatio = 45;
     public static final double winchGearIn = 20;
     public static final double winchGearOut = 60;
-    public static final double winchGearRatio = (winchGearOut / winchGearIn) * winchPlanetaryRatio;
+    public static final double winchGearRatio = -(winchGearOut / winchGearIn) * winchPlanetaryRatio;
     public static final double winchMotionMagicCruise = 1;
     public static final double winchMotionMagicAccel  = 1;
   }
