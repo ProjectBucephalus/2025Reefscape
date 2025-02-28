@@ -1,10 +1,5 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -14,11 +9,10 @@ import frc.robot.util.Conversions;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
- * Coral manipulator subsystem, handing the intake, out-take,
- * And hold of coral for the coral manipulator
+ * Coral manipulator subsystem, handing the intake, out-take, 
+ * and holding of coral for the coral manipulator
  * 
  * @author 5985
- * @author Sebastian Aiello
  */
 public class CoralManipulator extends SubsystemBase 
 {
@@ -34,8 +28,8 @@ public class CoralManipulator extends SubsystemBase
    */
   public enum CoralManipulatorStatus {INTAKE, DELIVERY_LEFT, DELIVERY_RIGHT, DEFAULT}
 
-    /* Declaration of the enum variable */
-    private CoralManipulatorStatus coralStatus;
+  /* Declaration of the enum variable */
+  private CoralManipulatorStatus coralStatus;
 
   public CoralManipulator() 
   {
@@ -55,9 +49,7 @@ public class CoralManipulator extends SubsystemBase
     {coralMotor.set(speed);}
 
   private void setCoralManipulatorSpeedFeedforward(double speed)
-  {
-    coralMotor.set(speed + Math.sin(RobotContainer.s_Diffector.getAngle()) * Constants.GamePiecesManipulator.coralHoldingkG);
-  }
+    {coralMotor.set(speed + Math.sin(RobotContainer.s_Diffector.getAngle()) * Constants.GamePiecesManipulator.coralHoldingkG);}
 
   public void setCoralManipulatorStatus(CoralManipulatorStatus status)
     {coralStatus = status;}
