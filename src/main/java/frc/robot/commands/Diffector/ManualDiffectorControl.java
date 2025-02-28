@@ -13,24 +13,24 @@ import frc.robot.subsystems.Diffector;
 public class ManualDiffectorControl extends Command 
 {
   private final Diffector s_Diffector;
-  private final DoubleSupplier rotationSup;
   private final DoubleSupplier translationSup;
+  private final DoubleSupplier rotationSup;
 
-  private double rotation;
   private double elevation;
+  private double rotation;
 
-  public ManualDiffectorControl(Diffector s_Diffector, DoubleSupplier rotationSup, DoubleSupplier translationSup) 
+  public ManualDiffectorControl(Diffector s_Diffector, DoubleSupplier translationSup, DoubleSupplier rotationSup) 
   {
     this.s_Diffector = s_Diffector;
-    this.rotationSup = rotationSup;
     this.translationSup = translationSup;
+    this.rotationSup = rotationSup;
   }
 
   @Override
   public void execute() 
   {
-    rotation = rotationSup.getAsDouble();
     elevation = translationSup.getAsDouble();
+    rotation = rotationSup.getAsDouble();
     
     if (Math.abs(elevation) > 2 * Math.abs(rotation)) 
     {

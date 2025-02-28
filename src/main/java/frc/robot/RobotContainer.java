@@ -67,11 +67,17 @@ public class RobotContainer
   public static final CANifierAccess s_Canifier = new CANifierAccess();
   public static Rumbler s_Rumbler = new Rumbler(driver, copilot);
 
-  /* Drive Controls */
+  /* Driver Control Axis */
   public static final int translationAxis = XboxController.Axis.kLeftY.value;
   public static final int strafeAxis      = XboxController.Axis.kLeftX.value;
   public static final int rotationAxis    = XboxController.Axis.kRightX.value;
   public static final int brakeAxis       = XboxController.Axis.kRightTrigger.value;
+
+  /* Codriver Control Axis */
+  public static final int manualClimberAxis            = XboxController.Axis.kLeftY.value;
+  public static final int manualDiffectorElevationAxis = XboxController.Axis.kRightY.value;
+  public static final int manualDiffectorRotationAxis  = XboxController.Axis.kRightX.value;
+
 
   /* Triggers */
   public static final Trigger unlockHeadingTrigger = new Trigger(() -> Math.abs(driver.getRawAxis(rotationAxis)) > Constants.Control.stickDeadband);
@@ -324,13 +330,13 @@ public class RobotContainer
   private void configureManualBindings()
   {
     /* Manual climber controls */
-    copilot.axisMagnitudeGreaterThan(XboxController.Axis.kLeftY.value, Constants.Control.stickDeadband)
-      .whileTrue(Commands.run(() -> s_Climber.manualOveride(-copilot.getRawAxis(XboxController.Axis.kLeftY.value))))
+    copilot.axisMagnitudeGreaterThan(manualClimberAxis, Constants.Control.stickDeadband)
+      .whileTrue(Commands.run(() -> s_Climber.manualOveride(-copilot.getRawAxis(manualClimberAxis))))
       .onFalse(Commands.runOnce(() -> s_Climber.manualOveride(0)));
 
     /* Manual arm controls */
-    copilot.axisMagnitudeGreaterThan(rotationAxis, Constants.Control.stickDeadband).or(copilot.axisMagnitudeGreaterThan(translationAxis, Constants.Control.stickDeadband))
-      .whileTrue(new ManualDiffectorControl(s_Diffector, () -> copilot.getRawAxis(rotationAxis), () -> copilot.getRawAxis(translationAxis)));
+    copilot.axisMagnitudeGreaterThan(manualDiffectorElevationAxis, Constants.Control.stickDeadband).or(copilot.axisMagnitudeGreaterThan(manualDiffectorRotationAxis, Constants.Control.stickDeadband))
+      .whileTrue(new ManualDiffectorControl(s_Diffector, () -> -copilot.getRawAxis(manualDiffectorElevationAxis), () -> copilot.getRawAxis(manualDiffectorRotationAxis)));
 
     /* Coral outtake controls */
     copilot.povLeft()

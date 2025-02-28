@@ -75,15 +75,15 @@ public class Climber extends SubsystemBase
     switch (status)
     {
       case LOCKED:
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.lockedWinchPos / 360));
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.lockedWinchPos));
         break;
 
       case ACTIVE:
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos / 360));
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos));
         break;
 
       case CLIMB:
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.climbWinchPos / 360));
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.climbWinchPos));
         break;
 
       case MANUAL:
