@@ -39,7 +39,7 @@ public final class Constants
     /** Angle tolerance to consider something as "facing" the drivers, degrees */
     public static final double driverVisionTolerance = 5;
     /** Scalar for manual diffector control */
-    public static final double manualDiffectorScalar = 6;
+    public static final double manualDiffectorScalar = 4;
   }
 
   public static final class Vision
@@ -187,6 +187,8 @@ public final class Constants
 
   public static final class DiffectorConstants
   {
+    public static final double motorStallCurrent = 100; // TODO: Tune this to the point that it will reliably prevent stalls
+
     public static final double diffectorMotorKGEmpty = 0.225;
     public static final double diffectorMotorKSEmpty = 0.05;
     public static final double diffectorMotorKVEmpty = 0.58;
@@ -260,7 +262,7 @@ public final class Constants
     public static final double angleTolerance = 2;
     
     /** Elevation height check tolerance, m */
-    public static final double elevationTolerance = 0.025;
+    public static final double elevationTolerance = 0.01;
     
     /* 
      * Preset arm positions:
@@ -353,15 +355,15 @@ public final class Constants
     public static final double algaeStowedHighThreshold = 10;
 
     /* Top arm PID + FeedForward values */
-    public static final double topArmSpringKP = 1; //1
-    public static final double topArmSpringKI = 0;
-    public static final double topArmSpringKD = 0;
+    public static final double algaeIntakeArmSpringKP = 1; //1
+    public static final double algaeIntakeArmSpringKI = 0;
+    public static final double algaeIntakeArmSpringKD = 0;
     public static final double topArmStopKP   = 12.5; //12.5
     public static final double topArmStopKI   = 0;
     public static final double topArmStopKD   = 0;
     
-    public static final double topArmKS = 0.15;
-    public static final double topArmKG = 0.15;
+    public static final double algaeIntakeArmKS = 0.15;
+    public static final double algaeIntakeArmKG = 0.15;
 
     /* Arm MotionMagic values */
     public static final double intakeArmMotionMagicCruise = 0.25;

@@ -9,27 +9,26 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Diffector;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ManualDiffectorControl extends Command 
 {
   private final Diffector s_Diffector;
-  private final DoubleSupplier translationSup;
+  private final DoubleSupplier elevationSup;
   private final DoubleSupplier rotationSup;
 
   private double elevation;
   private double rotation;
 
-  public ManualDiffectorControl(Diffector s_Diffector, DoubleSupplier translationSup, DoubleSupplier rotationSup) 
+  public ManualDiffectorControl(Diffector s_Diffector, DoubleSupplier elevationSup, DoubleSupplier rotationSup) 
   {
     this.s_Diffector = s_Diffector;
-    this.translationSup = translationSup;
+    this.elevationSup = elevationSup;
     this.rotationSup = rotationSup;
   }
 
   @Override
   public void execute() 
   {
-    elevation = translationSup.getAsDouble();
+    elevation = elevationSup.getAsDouble();
     rotation = rotationSup.getAsDouble();
     
     if (Math.abs(elevation) > 2 * Math.abs(rotation)) 
