@@ -78,6 +78,7 @@ public class AlgaeManipulator extends SubsystemBase
       case HOLDING:
         if (RobotContainer.algae) 
           {algaeMotor.set(0);} 
+
         else
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
           break;
@@ -86,13 +87,9 @@ public class AlgaeManipulator extends SubsystemBase
         double armPos = RobotContainer.s_Diffector.getRelativeRotation();
 
         if (armPos > 90 && armPos <= 270)
-        {
-          setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);
-        }
+          {setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);}
         else
-        {
-          setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorProcessorSpeed);
-        }
+          {setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorProcessorSpeed);}
         
         if (!RobotContainer.algae) 
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}

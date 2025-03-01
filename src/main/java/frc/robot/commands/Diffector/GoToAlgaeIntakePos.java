@@ -28,13 +28,10 @@ public class GoToAlgaeIntakePos extends Command
   public void initialize() 
   {
     if (level2)
-    {
-      target = Constants.DiffectorConstants.algae3Position;
-    }
+      {target = Constants.DiffectorConstants.algae3Position;}
+      
     else
-    {
-      target = Constants.DiffectorConstants.algae2Position;
-    }
+      {target = Constants.DiffectorConstants.algae2Position;}
 
     moveCommand = new MoveTo(s_Diffector, target);
     moveCommand.schedule();

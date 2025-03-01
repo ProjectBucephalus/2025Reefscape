@@ -32,22 +32,17 @@ public class ManualDiffectorControl extends Command
     rotation = rotationSup.getAsDouble();
     
     if (Math.abs(elevation) > 2 * Math.abs(rotation)) 
-    {
-      rotation = 0;
-    }
+      {rotation = 0;}
+      
     if (Math.abs(rotation) > 2 * Math.abs(elevation))
-    {
-      elevation = 0;
-    }
+      {elevation = 0;}
 
     s_Diffector.setManualDiffectorValues(elevation, rotation);
   }
 
   @Override
   public void end(boolean interrupted) 
-  {
-    s_Diffector.setManualDiffectorValues(0, 0);
-  }
+    {s_Diffector.setManualDiffectorValues(0, 0);}
 
   @Override
   public boolean isFinished()

@@ -182,9 +182,7 @@ public class Diffector extends SubsystemBase
    * @return Arm rotation, wrapped, degrees anticlockwise, 0 = coral at top, [0..360]
    */
   public double getRelativeRotation()
-  {
-    return Conversions.mod(angle, 360);
-  }
+    {return Conversions.mod(angle, 360);}
 
   private void calculatePath()
   {
@@ -308,10 +306,13 @@ public class Diffector extends SubsystemBase
   {
     if(RobotContainer.coral && RobotContainer.algae) // Both game pieces
       {return CargoStates.TWO_ITEM;}
+
     else if(RobotContainer.coral ^ RobotContainer.algae) // One game piece
       {return CargoStates.ONE_ITEM;}
+
     else if(!RobotContainer.coral && !RobotContainer.algae) // No game piece
       {return CargoStates.EMPTY;}
+
     else // Default state, should never be reached
       {return CargoStates.EMPTY;}
   }
@@ -319,9 +320,8 @@ public class Diffector extends SubsystemBase
   public void setManualDiffectorValues(double newManualElevation, double newManualRotation)
   {
     if (newManualElevation != 0 || newManualRotation != 0) 
-    {
-      manualControl = true;
-    }
+      {manualControl = true;}
+
     manualElevation = newManualElevation;
     manualRotation = newManualRotation;
   }
@@ -345,9 +345,7 @@ public class Diffector extends SubsystemBase
       SmartDashboard.putBoolean("Diffector E-Stop", eStop);
     }
     else
-    {
-      eStop = SmartDashboard.getBoolean("Diffector E-Stop", false);
-    }
+      {eStop = SmartDashboard.getBoolean("Diffector E-Stop", false);}
     
     if (eStop)
     {
@@ -362,16 +360,12 @@ public class Diffector extends SubsystemBase
         if (manualElevation != 0) 
         {
           if (arm.checkAngle(angle) > elevation + Math.copySign(projectionElevation, manualElevation)) 
-          {
-            manualElevation = 0;
-          }
+            {manualElevation = 0;}
         }
         if (manualRotation != 0)
         {
           if (arm.checkAngle(angle + Math.copySign(projectionAngle, manualRotation)) > elevation) 
-          {
-            manualRotation = 0;
-          }
+            {manualRotation = 0;}
         }
         if (manualElevation == 0 && manualRotation == 0)
         {
@@ -394,9 +388,10 @@ public class Diffector extends SubsystemBase
         m_diffectorDA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])).withSlot(0));//getSlot()));
       }
       if (transferRequested && !MathUtil.isNear(180, getRelativeRotation(), DiffectorConstants.angleTolerance))
-      {transferRequested = false;}
+        {transferRequested = false;}
+        
       if (transferRequested && !MathUtil.isNear(0, angle, DiffectorConstants.angleTolerance))
-      {stowRequested = false;}
+        {stowRequested = false;}
 
     }
     SmartDashboard.putNumber("Elevator Target", targetElevation);

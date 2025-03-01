@@ -372,7 +372,7 @@ public class GeoFenceObject
       case polygon:
         // If the robot is touching (or past) the inscribed circle, process based on that circle
         if (robotXY.getDistance(centre) <= radius)
-            {return pointDamping(centre, motionXY, robotR, robotXY);}
+          {return pointDamping(centre, motionXY, robotR, robotXY);}
         else 
         {
           /* 
