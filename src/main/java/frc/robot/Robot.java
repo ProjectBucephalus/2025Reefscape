@@ -97,7 +97,7 @@ public class Robot extends TimedRobot
       }  
     }
     
-    //RobotContainer.s_Swerve.resetRotation(new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble())));
+    RobotContainer.s_Swerve.resetRotation(new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble())));
   }
 
   @Override

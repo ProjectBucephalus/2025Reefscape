@@ -61,6 +61,7 @@ public class TargetHeadingStation extends Command
     this.brakeSup = brakeSup;
     this.fencedSup = fencedSup;
     this.ySup = ySup;
+    this.rotationOffset = rotationOffset;
 
     driveRequest.HeadingController.setPID(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
   }
