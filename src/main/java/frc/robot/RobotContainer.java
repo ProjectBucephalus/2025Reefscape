@@ -278,10 +278,10 @@ public class RobotContainer
   {
     /* Climb controls */
     copilot.start()
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbPosition)
-      .andThen(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.ACTIVE)))); //Starts climber
+      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.ACTIVE)));
     copilot.back()
-      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.CLIMB)));//Deploys the climber
+      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.CLIMB))
+      .andThen(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbPosition)));//Deploys the climber
 
     /* Coral scoring controls */
     copilot.y().and(copilot.rightTrigger().negate())

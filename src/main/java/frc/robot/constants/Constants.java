@@ -273,24 +273,24 @@ public final class Constants
      * degrees anticlockwise for Port-side usecase, 0 = coral at top 
      */
     public static final Translation2d startPosition         = new Translation2d(0.55,   0);
-    public static final Translation2d climbPosition         = new Translation2d(0.40,  97);
+    public static final Translation2d climbPosition         = new Translation2d(minZ,  90);
     public static final Translation2d netPosition           = new Translation2d(  maxZ, 170); // TODO: Make this dynamic
-    public static final Translation2d algae3Position        = new Translation2d(1.35,  85);
-    public static final Translation2d algae2Position        = new Translation2d(0.92,  85); 
+    public static final Translation2d algae3Position        = new Translation2d(1.35,  265);
+    public static final Translation2d algae2Position        = new Translation2d(0.92,  265); 
     public static final Translation2d processorPosition     = new Translation2d(  minZ,  90);
-    public static final Translation2d reef4Position         = new Translation2d(  maxZ,  40); //TODO
-    public static final Translation2d reef3Position         = new Translation2d(1.05,  30); //TODO
-    public static final Translation2d reef2Position         = new Translation2d(0.7,  30); //TODO
-    public static final Translation2d reef1Position         = new Translation2d(0.7, 40); //TODO
+    public static final Translation2d reef4Position         = new Translation2d(  maxZ,  35);
+    public static final Translation2d reef3Position         = new Translation2d(1.05,  30);
+    public static final Translation2d reef2Position         = new Translation2d(0.6,  30); //TODO
+    public static final Translation2d reef1Position         = new Translation2d(0.5, 40); //TODO
     public static final Translation2d coralTransferPosition = new Translation2d(0.60, 180); 
-    public static final Translation2d coralIntakePosition   = new Translation2d(0.90, 180); //TODO
-    public static final Translation2d algaeTransferPosition = new Translation2d(1.20,   0); //TODO
+    public static final Translation2d coralIntakePosition   = new Translation2d(0.90, 180);
+    public static final Translation2d algaeTransferPosition = new Translation2d(0.90,   0); //TODO
     public static final Translation2d algaeIntakePosition   = new Translation2d(0.48, 60);
-    public static final Translation2d coralStationPosition  = new Translation2d(1.00, 240); //TODO Remove
+    public static final Translation2d coralStationPosition  = new Translation2d(1.00, 240); //TODO: Remove
     public static final Translation2d algaeStowPosition     = new Translation2d(0.80, 180); 
     public static final Translation2d coralStowPosition     = new Translation2d(0.80,   0);
         
-    public static final class  IKGeometry
+    public static final class IKGeometry
     {
       /* Manipulator arm geometry */
       public static final double coralArmLength   = 0.53;
@@ -340,8 +340,8 @@ public final class Constants
   {
     // TODO: Default brake
     public static final double lockedWinchPos = 0;
-    public static final double activeWinchPos = 2.2;
-    public static final double climbWinchPos  = -0.7;
+    public static final double activeWinchPos = -2.2;
+    public static final double climbWinchPos  = 0.7;
 
     public static final double winchKP = 1;
     public static final double winchKI = 0;
@@ -351,7 +351,7 @@ public final class Constants
     public static final double winchGearIn = 20;
     public static final double winchGearOut = 60;
     public static final double winchGearRatio = -(winchGearOut / winchGearIn) * winchPlanetaryRatio;
-    public static final double winchMotionMagicCruise = 1;
+    public static final double winchMotionMagicCruise = 10;
     public static final double winchMotionMagicAccel  = 1;
   }
 }

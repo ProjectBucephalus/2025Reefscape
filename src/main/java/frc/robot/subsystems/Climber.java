@@ -84,8 +84,6 @@ public class Climber extends SubsystemBase
         break;
 
       case MANUAL:
-        if (getClimberPos() > Constants.ClimberConstants.activeWinchPos || getClimberPos() < Constants.ClimberConstants.climbWinchPos)
-          {speed = 0;}
         if (speed != 0)
           {m_ClimberWinch.set(speed * manualScale);}
         else
