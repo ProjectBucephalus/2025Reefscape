@@ -42,12 +42,12 @@ public class Limelight extends SubsystemBase
     headingDeg = RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble();
     omegaRps = Units.radiansToRotations(RobotContainer.swerveState.Speeds.omegaRadiansPerSecond);
     
+    LimelightHelpers.SetRobotOrientation(limelightName, headingDeg, 0, 0, 0, 0, 0);
+    
+    LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, validIDs);
+    
     if (SmartDashboard.getBoolean("Use Limelight", false))
     {
-      LimelightHelpers.SetRobotOrientation(limelightName, headingDeg, 0, 0, 0, 0, 0);
-      
-      LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, validIDs);
-      
       mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
       
       useUpdate = !(mt2 == null || mt2.tagCount == 0 || omegaRps > 2.0);
