@@ -14,6 +14,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -327,7 +328,7 @@ public class Diffector extends SubsystemBase
   }
 
   public void goToAngle(double newTarget) 
-    {targetAngle = arm.goToAngle(newTarget);}
+    {targetAngle = arm.goToAngle(newTarget, angle);}
 
   @Override
   public void periodic() 
