@@ -264,6 +264,8 @@ public final class Constants
     
     /** Elevation height check tolerance, m */
     public static final double elevationTolerance = 0.01;
+
+    public static final int algaeEjectSpeedAngleThreshold = 30;
     
     /* 
      * Preset arm positions:
