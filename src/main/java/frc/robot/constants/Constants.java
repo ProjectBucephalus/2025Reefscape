@@ -278,15 +278,15 @@ public final class Constants
     public static final Translation2d algae3Position        = new Translation2d(1.35,  85);
     public static final Translation2d algae2Position        = new Translation2d(0.92,  85); 
     public static final Translation2d processorPosition     = new Translation2d(  minZ,  90);
-    public static final Translation2d reef4Position         = new Translation2d(  maxZ,  45);
-    public static final Translation2d reef3Position         = new Translation2d(1.28,  30);
-    public static final Translation2d reef2Position         = new Translation2d(0.90,  30);
-    public static final Translation2d reef1Position         = new Translation2d(0.80, 135);
+    public static final Translation2d reef4Position         = new Translation2d(  maxZ,  40); //TODO
+    public static final Translation2d reef3Position         = new Translation2d(1.05,  30); //TODO
+    public static final Translation2d reef2Position         = new Translation2d(0.7,  30); //TODO
+    public static final Translation2d reef1Position         = new Translation2d(0.7, 40); //TODO
     public static final Translation2d coralTransferPosition = new Translation2d(0.60, 180); 
-    public static final Translation2d coralIntakePosition   = new Translation2d(1.20, 180); //TODO
+    public static final Translation2d coralIntakePosition   = new Translation2d(0.90, 180); //TODO
     public static final Translation2d algaeTransferPosition = new Translation2d(1.20,   0); //TODO
-    public static final Translation2d algaeIntakePosition   = new Translation2d(0.48, 60); //TODO
-    public static final Translation2d coralStationPosition  = new Translation2d(1.00, 240); //TODO
+    public static final Translation2d algaeIntakePosition   = new Translation2d(0.48, 60);
+    public static final Translation2d coralStationPosition  = new Translation2d(1.00, 240); //TODO Remove
     public static final Translation2d algaeStowPosition     = new Translation2d(0.80, 180); 
     public static final Translation2d coralStowPosition     = new Translation2d(0.80,   0);
         
@@ -323,9 +323,9 @@ public final class Constants
   public static final class GamePiecesManipulator 
   {
     /* Coral manipulator speeds */
-    public static final double coralManipulatorDeliverySpeed   = 0.7;
-    public static final double coralManipulatorHoldingSpeed  = 0.15;
-    public static final double coralHoldingkG = 0.1;
+    public static final double coralManipulatorDeliverySpeed   = -0.7;
+    public static final double coralManipulatorHoldingSpeed  = -0.1;
+    public static final double coralHoldingkG = -0.05;
 
     /* Algae manipulator speeds */
     public static final double algaeManipulatorIntakeSpeed    = 0.4;
