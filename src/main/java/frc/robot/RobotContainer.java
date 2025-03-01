@@ -330,8 +330,9 @@ public class RobotContainer
       .onFalse(Commands.runOnce(() -> s_Climber.manualOveride(0)));
 
     /* Manual arm controls */
-    copilot.axisMagnitudeGreaterThan(manualDiffectorElevationAxis, Constants.Control.stickDeadband).or(copilot.axisMagnitudeGreaterThan(manualDiffectorRotationAxis, Constants.Control.stickDeadband))
+    copilot.axisMagnitudeGreaterThan(manualDiffectorElevationAxis, Constants.Control.manualDiffectorDeadband).or(copilot.axisMagnitudeGreaterThan(manualDiffectorRotationAxis, Constants.Control.manualDiffectorDeadband))
       .whileTrue(new ManualDiffectorControl(s_Diffector, () -> -copilot.getRawAxis(manualDiffectorElevationAxis), () -> copilot.getRawAxis(manualDiffectorRotationAxis)));
+    copilot.rightStick().whileTrue(Commands.run(() -> s_Diffector.unwind(), s_Diffector));
 
     /* Coral outtake controls */
     copilot.povLeft()

@@ -27,6 +27,7 @@ public final class Constants
 
   public static final class Control
   {
+    public static final double manualDiffectorDeadband = 0.25;
     public static final double stickDeadband = 0.15;
     /** Normal maximum robot speed, relative to maximum uncapped speed */
     public static final double maxThrottle = 0.6;
@@ -39,7 +40,7 @@ public final class Constants
     /** Angle tolerance to consider something as "facing" the drivers, degrees */
     public static final double driverVisionTolerance = 5;
     /** Scalar for manual diffector control */
-    public static final double manualDiffectorScalar = 4;
+    public static final double manualDiffectorScalar = 2;
   }
 
   public static final class Vision
@@ -272,8 +273,8 @@ public final class Constants
     public static final Translation2d startPosition         = new Translation2d(0.55,   0);
     public static final Translation2d climbPosition         = new Translation2d(0.40,  97);
     public static final Translation2d netPosition           = new Translation2d(  maxZ, 135); // TODO: Make this dynamic
-    public static final Translation2d algae3Position        = new Translation2d(1.13,  90);
-    public static final Translation2d algae2Position        = new Translation2d(0.92,  90); 
+    public static final Translation2d algae3Position        = new Translation2d(1.13,  85);
+    public static final Translation2d algae2Position        = new Translation2d(0.92,  85); 
     public static final Translation2d processorPosition     = new Translation2d(  minZ,  90);
     public static final Translation2d reef4Position         = new Translation2d(  maxZ,  45);
     public static final Translation2d reef3Position         = new Translation2d(1.28,  30);
@@ -282,7 +283,7 @@ public final class Constants
     public static final Translation2d coralTransferPosition = new Translation2d(0.60, 180); 
     public static final Translation2d coralIntakePosition   = new Translation2d(1.20, 180); //TODO
     public static final Translation2d algaeTransferPosition = new Translation2d(1.20,   0); //TODO
-    public static final Translation2d algaeIntakePosition   = new Translation2d(  minZ, 270); //TODO
+    public static final Translation2d algaeIntakePosition   = new Translation2d(minZ + 0.2, 270); //TODO
     public static final Translation2d coralStationPosition  = new Translation2d(1.00, 240); //TODO
     public static final Translation2d algaeStowPosition     = new Translation2d(0.80, 180); 
     public static final Translation2d coralStowPosition     = new Translation2d(0.80,   0);

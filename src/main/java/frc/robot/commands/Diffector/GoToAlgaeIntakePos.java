@@ -29,11 +29,11 @@ public class GoToAlgaeIntakePos extends Command
   {
     if (level2)
     {
-      target = Constants.DiffectorConstants.algae3Position;
+      target = Constants.DiffectorConstants.algae2Position;
     }
     else
     {
-      target = Constants.DiffectorConstants.algae2Position;
+      target = Constants.DiffectorConstants.algae3Position;
     }
 
     moveCommand = new MoveTo(s_Diffector, target);
