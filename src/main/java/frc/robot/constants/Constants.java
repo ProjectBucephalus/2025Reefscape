@@ -274,7 +274,7 @@ public final class Constants
      */
     public static final Translation2d startPosition         = new Translation2d(0.55,   0);
     public static final Translation2d climbPosition         = new Translation2d(0.40,  97);
-    public static final Translation2d netPosition           = new Translation2d(  maxZ, 135); // TODO: Make this dynamic
+    public static final Translation2d netPosition           = new Translation2d(  maxZ, 170); // TODO: Make this dynamic
     public static final Translation2d algae3Position        = new Translation2d(1.35,  85);
     public static final Translation2d algae2Position        = new Translation2d(0.92,  85); 
     public static final Translation2d processorPosition     = new Translation2d(  minZ,  90);
@@ -285,7 +285,7 @@ public final class Constants
     public static final Translation2d coralTransferPosition = new Translation2d(0.60, 180); 
     public static final Translation2d coralIntakePosition   = new Translation2d(1.20, 180); //TODO
     public static final Translation2d algaeTransferPosition = new Translation2d(1.20,   0); //TODO
-    public static final Translation2d algaeIntakePosition   = new Translation2d(0.5, 65); //TODO
+    public static final Translation2d algaeIntakePosition   = new Translation2d(0.48, 60); //TODO
     public static final Translation2d coralStationPosition  = new Translation2d(1.00, 240); //TODO
     public static final Translation2d algaeStowPosition     = new Translation2d(0.80, 180); 
     public static final Translation2d coralStowPosition     = new Translation2d(0.80,   0);

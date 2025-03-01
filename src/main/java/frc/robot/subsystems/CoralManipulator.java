@@ -94,7 +94,7 @@ public class CoralManipulator extends SubsystemBase
 
         if (!RobotContainer.coral) 
           {coralStatus = CoralManipulatorStatus.DEFAULT;}
-          break;
+        break;
 
       case DEFAULT: // TODO Loop overrun
         if (RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor())

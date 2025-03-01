@@ -344,9 +344,9 @@ public class RobotContainer
 
     /* Algae intake/outtake controls */
     copilot.leftTrigger()
-      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE)); //Intake algae through manipulator
+      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE)).onFalse(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.HOLDING)); //Intake algae through manipulator
      copilot.leftBumper()
-      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT)); //Ejects algae from manipulator
+      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT)).onFalse(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EMPTY)); //Ejects algae from manipulator
   }
 
   private void configureRumbleBindings()
