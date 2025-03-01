@@ -38,7 +38,7 @@ public class Climber extends SubsystemBase
     m_ClimberWinch.getConfigurator().apply(CTREConfigs.climberWinchFXConfig);
     m_ClimberWinch.setPosition(Constants.ClimberConstants.lockedWinchPos / 360);
     
-    manualScale = 0.25;
+    manualScale = Constants.ClimberConstants.manualScale;
 
     motionMagic = new MotionMagicVoltage(0);
   }

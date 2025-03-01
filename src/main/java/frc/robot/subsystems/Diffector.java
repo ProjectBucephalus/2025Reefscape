@@ -64,8 +64,8 @@ public class Diffector extends SubsystemBase
   public static boolean transferRequested = false;
   public static boolean stowRequested = true;
 
-  private double projectionElevation = 0.1;
-  private double projectionAngle     = 10;
+  private double projectionElevation = Constants.DiffectorConstants.projectionElevation;
+  private double projectionAngle     = Constants.DiffectorConstants.projectionAngle;
   //private PathConstraints armPathConstraints = new PathConstraints(1, 1, 0, 0);
   //private GoalEndState armEndState = new GoalEndState(0, Rotation2d.kZero);
   private static ArrayList<Translation2d> plannedPathPoints = new ArrayList<Translation2d>();
