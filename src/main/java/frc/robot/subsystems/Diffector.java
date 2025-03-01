@@ -56,6 +56,7 @@ public class Diffector extends SubsystemBase
   private double targetElevation;
   private double targetAngle;
   private Translation2d oldTarget;
+  private Translation2d relativeTarget;
 
   private double angle;
   private double elevation;
@@ -94,7 +95,8 @@ public class Diffector extends SubsystemBase
     targetPosition  = Constants.DiffectorConstants.startPosition;
     targetElevation = targetPosition.getX();
     targetAngle     = targetPosition.getY();
-    oldTarget = targetPosition;
+    oldTarget       = targetPosition;
+    relativeTarget  = targetPosition;
 
     m_diffectorUA.getConfigurator().apply(motorConfigUA);
     m_diffectorDA.getConfigurator().apply(motorConfigDA);
@@ -152,10 +154,10 @@ public class Diffector extends SubsystemBase
 
     if 
     (
-      targetPosition.equals(DiffectorConstants.startPosition) ||
-      targetPosition.equals(DiffectorConstants.coralTransferPosition) ||
-      targetPosition.equals(DiffectorConstants.algaeIntakePosition) ||
-      targetPosition.equals(DiffectorConstants.climbPosition)
+      relativeTarget.equals(DiffectorConstants.startPosition) ||
+      relativeTarget.equals(DiffectorConstants.coralTransferPosition) ||
+      relativeTarget.equals(DiffectorConstants.algaeIntakePosition) ||
+      relativeTarget.equals(DiffectorConstants.climbPosition)
     )
     {
       if (elevation < targetElevation - DiffectorConstants.elevationTolerance)
@@ -190,6 +192,7 @@ public class Diffector extends SubsystemBase
   private void calculatePath()
   {
     targetPosition = new Translation2d(targetElevation, targetAngle);
+    relativeTarget = new Translation2d(targetElevation, Conversions.mod(targetAngle, 360));
 
     if (!targetPosition.equals(oldTarget))
     {

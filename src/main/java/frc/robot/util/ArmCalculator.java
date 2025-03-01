@@ -122,11 +122,16 @@ public class ArmCalculator
   {
     ArrayList<Translation2d> pathOutput = new ArrayList<Translation2d>();
 
+    Translation2d relativeTarget = new Translation2d(targetPosition.getX(), Conversions.mod(targetPosition.getY(), 360));
+
     if 
     ( // Certain positions put the arm lower than it would otherwise be allowed to go
-      !targetPosition.equals(Constants.DiffectorConstants.startPosition) && 
-      !targetPosition.equals(Constants.DiffectorConstants.coralTransferPosition) &&
-      !targetPosition.equals(Constants.DiffectorConstants.climbPosition)
+      !(
+        relativeTarget.equals(Constants.DiffectorConstants.startPosition) ||
+        relativeTarget.equals(Constants.DiffectorConstants.coralTransferPosition) ||
+        relativeTarget.equals(Constants.DiffectorConstants.algaeIntakePosition) ||
+        relativeTarget.equals(Constants.DiffectorConstants.climbPosition)
+      )
     ) // Any other position should be made safe
       {targetPosition = new Translation2d(checkPosition(targetPosition), targetPosition.getY());}
     
