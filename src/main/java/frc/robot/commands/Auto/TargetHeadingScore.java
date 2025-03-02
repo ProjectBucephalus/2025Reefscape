@@ -151,7 +151,14 @@ public class TargetHeadingScore extends Command
 
     if (robotPos.getDistance(nearestBargePoint) <= Constants.GamePiecesManipulator.algaeRange) 
     {
-      targetHeading = nearestBargePoint.minus(robotPos).getAngle().getDegrees();
+      if (robotPos.getY() <= ((FieldUtils.fieldWidth / 2) + Constants.GamePiecesManipulator.netScoringOffset)) 
+      {
+        targetHeading = (nearestBargePoint.minus(robotPos).getAngle().getDegrees()) - rotationOffset;
+      }
+      else
+      {
+        targetHeading = 0 - rotationOffset;
+      }
     }
     else
     {
