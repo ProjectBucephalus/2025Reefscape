@@ -360,9 +360,11 @@ public class RobotContainer
     // TODO: copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
   }
   
+  @SuppressWarnings("unused")
   private void configureTestBindings()
   {}
 
+  @SuppressWarnings("unused")
   private void configureButtonBoxBindings()
   {}
 
