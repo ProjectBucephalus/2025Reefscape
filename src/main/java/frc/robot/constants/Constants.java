@@ -150,12 +150,12 @@ public final class Constants
         put("cr7", new AutoMapping("cr7", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
         put("cr8", new AutoMapping("cr8", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
         put("cr9", new AutoMapping("cr9", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-        put("a1" , new AutoMapping("a1" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-        put("a2" , new AutoMapping("a2" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
-        put("a3" , new AutoMapping("a3" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
-        put("a4" , new AutoMapping("a4" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
-        put("a5" , new AutoMapping("a5" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
-        put("a6" , new AutoMapping("a6" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+        put("a1" , new AutoMapping("a1" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));
+        put("a2" , new AutoMapping("a2" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));                
+        put("a3" , new AutoMapping("a3" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));                
+        put("a4" , new AutoMapping("a4" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));                
+        put("a5" , new AutoMapping("a5" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));                
+        put("a6" , new AutoMapping("a6" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));
         put("b1" , new AutoMapping("b1" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
         put("b2" , new AutoMapping("b2" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
         put("b3" , new AutoMapping("b3" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
@@ -275,15 +275,21 @@ public final class Constants
     public static final Translation2d startPosition         = new Translation2d(0.55,   0);
     public static final Translation2d climbPosition         = new Translation2d(minZ - 0.015,  90);
     public static final Translation2d netPosition           = new Translation2d(  maxZ, 170); // TODO: Make this dynamic
-    public static final Translation2d algae3Position        = new Translation2d(1.35,  275);
+    public static final Translation2d algae3Position        = new Translation2d(1.32,  275);
     public static final Translation2d algae2Position        = new Translation2d(0.92,  275); 
+    public static final Translation2d algae3FlippedPosition = new Translation2d(1.32,  95); //TODO
+    public static final Translation2d algae2FlippedPosition = new Translation2d(0.92,  95); //TODO
     public static final Translation2d processorPosition     = new Translation2d(  minZ,  90);
     public static final Translation2d reef4Position         = new Translation2d(  maxZ,  35);
     public static final Translation2d reef3Position         = new Translation2d(1.05,  30);
     public static final Translation2d reef2Position         = new Translation2d(0.6,  30); //TODO
     public static final Translation2d reef1Position         = new Translation2d(0.5, 40); //TODO
+    public static final Translation2d reef4FlippedPosition         = new Translation2d(  maxZ,  215);
+    public static final Translation2d reef3FlippedPosition         = new Translation2d(1.05,  210); 
+    public static final Translation2d reef2FlippedPosition         = new Translation2d(0.6,  210); //TODO
+    public static final Translation2d reef1FlippedPosition         = new Translation2d(0.5, 220); //TODO
     public static final Translation2d coralTransferPosition = new Translation2d(0.60, 180); 
-    public static final Translation2d coralIntakePosition   = new Translation2d(0.90, 180);
+    public static final Translation2d coralIntakePosition   = new Translation2d(0.90, 90);
     public static final Translation2d algaeTransferPosition = new Translation2d(0.90,   0);
     public static final Translation2d algaeIntakePosition   = new Translation2d(0.48, 60);
     public static final Translation2d coralStationPosition  = new Translation2d(1.00, 240); //TODO: Remove

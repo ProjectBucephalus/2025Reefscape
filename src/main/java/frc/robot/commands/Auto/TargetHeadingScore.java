@@ -179,7 +179,7 @@ public class TargetHeadingScore extends Command
           break;
 
         case 4:
-          targetHeading = 180 - rotationOffset;
+          targetHeading = 0 - rotationOffset;
           break;
 
         case 5:

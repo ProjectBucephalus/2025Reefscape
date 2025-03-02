@@ -285,21 +285,21 @@ public class RobotContainer
 
     /* Coral scoring controls */
     copilot.y().and(copilot.rightTrigger().negate())
-      .onTrue(new GoToCoralScorePos(4, s_Diffector));   //L4 scoring
+      .onTrue(new GoToCoralScorePos(4, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L4 scoring
     copilot.x().and(copilot.rightTrigger().negate())
-      .onTrue(new GoToCoralScorePos(3, s_Diffector));   //L3 scoring
+      .onTrue(new GoToCoralScorePos(3, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L3 scoring
     copilot.b().and(copilot.rightTrigger().negate())
-      .onTrue(new GoToCoralScorePos(2, s_Diffector));   //L2 scoring
+      .onTrue(new GoToCoralScorePos(2, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L2 scoring
     copilot.a().and(copilot.rightTrigger().negate())
-      .onTrue(new GoToCoralScorePos(1, s_Diffector));   //L1 scoring
+      .onTrue(new GoToCoralScorePos(1, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L1 scoring
         
     /* Algae scoring/intaking controls */
     copilot.y().and(copilot.rightTrigger())
       .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition)); //Net scoring // TODO: Make this dynamic
     copilot.x().and(copilot.rightTrigger())
-      .onTrue(new GoToAlgaeIntakePos(false, s_Diffector)); //L3 pick up
+      .onTrue(new GoToAlgaeIntakePos(false, s_Diffector, () -> swerveState.Pose.getTranslation())); //L3 pick up
     copilot.b().and(copilot.rightTrigger())
-      .onTrue(new GoToAlgaeIntakePos(true, s_Diffector));  //L2 pick up
+      .onTrue(new GoToAlgaeIntakePos(true, s_Diffector, () -> swerveState.Pose.getTranslation()));  //L2 pick up
     copilot.a().and(copilot.rightTrigger())
       .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.processorPosition)); //Processor scoring
 
