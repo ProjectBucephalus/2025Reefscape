@@ -11,10 +11,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
-import frc.robot.subsystems.Diffector;
 
 /** Add your docs here. */
 public class ArmCalculator 
@@ -42,7 +41,6 @@ public class ArmCalculator
   private double algaeInnerLength;
   private double algaeInnerAngle;
   private double offset;
-  private double angle; 
   private double maxAbsPos;
   private double reverseOffset;
   private double turnBackThreshold;
@@ -64,6 +62,9 @@ public class ArmCalculator
     minElevation  = Constants.DiffectorConstants.minZ;
     projectionAngle = IKGeometry.projectionAngle;
     projectionElevation = IKGeometry.projectionElevation;
+
+    maxAbsPos = DiffectorConstants.maxAbsAngle;
+    turnBackThreshold = DiffectorConstants.turnBackThreshold;
     
     railHeight    = IKGeometry.railHeight;
     railLateral   = IKGeometry.railLateral;
@@ -121,11 +122,16 @@ public class ArmCalculator
   {
     ArrayList<Translation2d> pathOutput = new ArrayList<Translation2d>();
 
+    Translation2d relativeTarget = new Translation2d(targetPosition.getX(), Conversions.mod(targetPosition.getY(), 360));
+
     if 
     ( // Certain positions put the arm lower than it would otherwise be allowed to go
-      !targetPosition.equals(Constants.DiffectorConstants.startPosition) && 
-      !targetPosition.equals(Constants.DiffectorConstants.coralTransferPosition) &&
-      !targetPosition.equals(Constants.DiffectorConstants.climbPosition)
+      !(
+        relativeTarget.equals(Constants.DiffectorConstants.startPosition) ||
+        relativeTarget.equals(Constants.DiffectorConstants.coralTransferPosition) ||
+        relativeTarget.equals(Constants.DiffectorConstants.algaeIntakePosition) ||
+        relativeTarget.equals(Constants.DiffectorConstants.climbPosition)
+      )
     ) // Any other position should be made safe
       {targetPosition = new Translation2d(checkPosition(targetPosition), targetPosition.getY());}
     
@@ -197,7 +203,7 @@ public class ArmCalculator
   /**
    * Adjusts the elevation of a given position to keep above safe limits
    * @param elevation the intended elevation
-   * @param angle the angle of the arm to check
+   * @param currentAngle the angle of the arm to check
    * @return maximum of the intended elevation and the safe elevation for the given angle
    */
   public double checkPosition(Translation2d position)
@@ -356,86 +362,87 @@ public class ArmCalculator
    * Below a threshold will go shortest path, otherwise will minimise total rotations
    * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public double goToAngle(double newAngle)
+  public double goToAngle(double newAngle, double currentAngle) // TODO Test what's happening with this
   {
     newAngle = Conversions.mod(newAngle, 360);
-    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), -180, 180);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(currentAngle, 360), -180, 180);
 
     if (Math.abs(offset) >= turnBackThreshold)
     {
       reverseOffset = offset - Math.copySign(360, offset);
 
-      if (Math.abs(angle + offset) > Math.abs(angle + reverseOffset))
-        {return (angle + reverseOffset);}
+      if (Math.abs(currentAngle + offset) > Math.abs(currentAngle + reverseOffset))
+        {return (currentAngle + reverseOffset);}
       
       else 
-        {return (angle + offset);}
+        {return (currentAngle + offset);}
     }
-    else if (angle + offset > maxAbsPos)
-      {return (angle + offset - 360);}
+    else if (currentAngle + offset > maxAbsPos)
+      {return (currentAngle + offset - 360);}
 
-    else if (angle + offset < -maxAbsPos)
-      {return (angle + offset + 360);}
+    else if (currentAngle + offset < -maxAbsPos)
+      {return (currentAngle + offset + 360);}
 
     else
-      {return (angle + offset);}
+      {return (currentAngle + offset);}
   }
 
   /**
    * Sets the Diffector arm to rotate the shortest path to the target angle, with protection against over-rotation
    * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public double goShortest(double newAngle)
+  public double goShortest(double newAngle, double currentAngle)
   {
     newAngle = Conversions.mod(newAngle, 360);
-    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), -180, 180);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(currentAngle, 360), -180, 180);
 
-    if (angle + offset > maxAbsPos)
-      {return (angle + offset - 360);}
+    if (currentAngle + offset > maxAbsPos)
+      {return (currentAngle + offset - 360);}
 
-    else if (angle + offset < -maxAbsPos)
-      {return (angle + offset + 360);}
+    else if (currentAngle + offset < -maxAbsPos)
+      {return (currentAngle + offset + 360);}
 
     else
-      {return (angle + offset);}
+      {return (currentAngle + offset);}
   }
 
   /**
    * Sets the Diffector arm to rotate Clockwise (viewed from bow) to the target angle, with protection against over-rotation
    * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public double goClockwise(double newAngle)
+  public double goClockwise(double newAngle, double currentAngle)
   {
     newAngle = Conversions.mod(newAngle, 360);
-    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), -360, 0);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(currentAngle, 360), -360, 0);
 
-    if (angle + offset > maxAbsPos)
-      {return (angle + offset - 360);}
+    if (currentAngle + offset > maxAbsPos)
+      {return (currentAngle + offset - 360);}
 
-    else if (angle + offset < -maxAbsPos)
-      {return (angle + offset + 360);}
+    else if (currentAngle + offset < -maxAbsPos)
+      {return (currentAngle + offset + 360);}
 
     else
-      {return (angle + offset);}
+      {return (currentAngle + offset);}
   }
 
   /**
    * Sets the Diffector arm to rotate Anticlockwise (viewed from bow) to the target angle, with protection against over-rotation
    * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
+   * @param currentAngle Current/starting angle of the arm, degrees anticlockwise
    */
-  public double goAnticlockwise(double newAngle)
+  public double goAnticlockwise(double newAngle, double currentAngle)
   {
     newAngle = Conversions.mod(newAngle, 360);
-    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), 0, 360);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(currentAngle, 360), 0, 360);
 
-    if (angle + offset > maxAbsPos)
-      {return (angle + offset - 360);}
+    if (currentAngle + offset > maxAbsPos)
+      {return (currentAngle + offset - 360);}
 
-    else if (angle + offset < -maxAbsPos)
-      {return (angle + offset + 360);}
+    else if (currentAngle + offset < -maxAbsPos)
+      {return (currentAngle + offset + 360);}
 
     else
-      {return (angle + offset);}
+      {return (currentAngle + offset);}
   }
 
 }

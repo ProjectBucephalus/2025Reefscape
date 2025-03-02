@@ -32,7 +32,7 @@ public class Climber extends SubsystemBase
 
   public Climber() 
   { 
-    this.status = ClimberStatus.LOCKED;
+    this.status = ClimberStatus.MANUAL;//LOCKED;
 
     m_ClimberWinch = new TalonFX(IDConstants.climberWinchMotorID);
     m_ClimberWinch.getConfigurator().apply(CTREConfigs.climberWinchFXConfig);
@@ -71,20 +71,19 @@ public class Climber extends SubsystemBase
     switch (status)
     {
       case LOCKED:
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.lockedWinchPos / 360));
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.lockedWinchPos));
         break;
 
       case ACTIVE:
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos / 360));
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos));
         break;
 
       case CLIMB:
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.climbWinchPos / 360));
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.climbWinchPos));
+        // TODO: Consider active hold using gyro pitch to balance
         break;
 
       case MANUAL:
-        if (getClimberPos() > Constants.ClimberConstants.activeWinchPos || getClimberPos() < Constants.ClimberConstants.climbWinchPos)
-          {speed = 0;}
         if (speed != 0)
           {m_ClimberWinch.set(speed * manualScale);}
         else

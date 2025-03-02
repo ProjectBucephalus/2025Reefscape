@@ -5,7 +5,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public final class CTREConfigs 
 {
-  public static final TalonFXConfiguration intakeTopArmFXConfig = new TalonFXConfiguration();
   public static final TalonFXConfiguration climberWinchFXConfig = new TalonFXConfiguration();
   public static final TalonFXConfiguration diffectorFXConfig = new TalonFXConfiguration();
 
@@ -42,29 +41,6 @@ public final class CTREConfigs
     /* Diffector MotionMagic Config */
     diffectorFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.DiffectorConstants.diffectorMotionMagicCruise / Constants.DiffectorConstants.gearboxRatio;
     diffectorFXConfig.MotionMagic.MotionMagicAcceleration = Constants.DiffectorConstants.diffectorMotionMagicAccel / Constants.DiffectorConstants.gearboxRatio;
-
-    /* Intake Top Arm PID Config, Spring Behaviour */
-    intakeTopArmFXConfig.Slot0.kP = Constants.IntakeConstants.topArmSpringKP;
-    intakeTopArmFXConfig.Slot0.kI = Constants.IntakeConstants.topArmSpringKI;
-    intakeTopArmFXConfig.Slot0.kD = Constants.IntakeConstants.topArmSpringKD;
-    intakeTopArmFXConfig.Slot0.kS = Constants.IntakeConstants.topArmKS;
-    intakeTopArmFXConfig.Slot0.kG = -Constants.IntakeConstants.topArmKG;
-
-    /* Intake Top Arm PID Config, Stop Behaviour */
-    intakeTopArmFXConfig.Slot1.kP = Constants.IntakeConstants.topArmStopKP;
-    intakeTopArmFXConfig.Slot1.kI = Constants.IntakeConstants.topArmStopKI;
-    intakeTopArmFXConfig.Slot1.kD = Constants.IntakeConstants.topArmStopKD;
-    intakeTopArmFXConfig.Slot1.kS = Constants.IntakeConstants.topArmKS;
-    intakeTopArmFXConfig.Slot1.kG = Constants.IntakeConstants.topArmKG;
-
-    intakeTopArmFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-
-    /* Intake Arm MotionMagic Values */
-    intakeTopArmFXConfig.MotionMagic.MotionMagicAcceleration = Constants.IntakeConstants.intakeArmMotionMagicAccel;
-    intakeTopArmFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.IntakeConstants.intakeArmMotionMagicCruise;
-
-    /* Intake Arm Ratios */
-    intakeTopArmFXConfig.Feedback.SensorToMechanismRatio = Constants.IntakeConstants.algaeIntakeArmRatio;
 
     /* Climber Values */
     climberWinchFXConfig.Feedback.SensorToMechanismRatio = Constants.ClimberConstants.winchGearRatio;

@@ -27,6 +27,7 @@ public final class Constants
 
   public static final class Control
   {
+    public static final double manualDiffectorDeadband = 0.25;
     public static final double stickDeadband = 0.15;
     /** Normal maximum robot speed, relative to maximum uncapped speed */
     public static final double maxThrottle = 0.6;
@@ -39,7 +40,7 @@ public final class Constants
     /** Angle tolerance to consider something as "facing" the drivers, degrees */
     public static final double driverVisionTolerance = 5;
     /** Scalar for manual diffector control */
-    public static final double manualDiffectorScalar = 6;
+    public static final double manualDiffectorScalar = 2;
   }
 
   public static final class Vision
@@ -48,10 +49,10 @@ public final class Constants
     {
       //1, 2, 3,               // Red Human Player Stations
       //4, 5,                  // Red Barge
-      //6, 7, 8, 9, 10, 11,    // Red Reef
-      12, 13, 16,            // Blue Human Player Stations
-      14, 15,                // Blue Barge
-      17, 18, 19, 20, 21, 22 // Blue Reef
+      6, 7, 8, 9, 10, 11,      // Red Reef
+      //12, 13, 16,            // Blue Human Player Stations
+      //14, 15,                // Blue Barge
+      17, 18, 19, 20, 21, 22   // Blue Reef
     };
   }
 
@@ -187,6 +188,8 @@ public final class Constants
 
   public static final class DiffectorConstants
   {
+    public static final double motorStallCurrent = 100; // TODO: Tune this to the point that it will reliably prevent stalls
+
     public static final double diffectorMotorKGEmpty = 0.225;
     public static final double diffectorMotorKSEmpty = 0.05;
     public static final double diffectorMotorKVEmpty = 0.58;
@@ -260,7 +263,9 @@ public final class Constants
     public static final double angleTolerance = 2;
     
     /** Elevation height check tolerance, m */
-    public static final double elevationTolerance = 0.025;
+    public static final double elevationTolerance = 0.01;
+
+    public static final int algaeEjectSpeedAngleThreshold = 30;
     
     /* 
      * Preset arm positions:
@@ -268,24 +273,24 @@ public final class Constants
      * degrees anticlockwise for Port-side usecase, 0 = coral at top 
      */
     public static final Translation2d startPosition         = new Translation2d(0.55,   0);
-    public static final Translation2d climbPosition         = new Translation2d(0.40,  97);
-    public static final Translation2d netPosition           = new Translation2d(  maxZ, 135); // TODO: Make this dynamic
-    public static final Translation2d algae3Position        = new Translation2d(1.13,  90);
-    public static final Translation2d algae2Position        = new Translation2d(0.92,  90); 
+    public static final Translation2d climbPosition         = new Translation2d(minZ,  90);
+    public static final Translation2d netPosition           = new Translation2d(  maxZ, 170); // TODO: Make this dynamic
+    public static final Translation2d algae3Position        = new Translation2d(1.35,  265);
+    public static final Translation2d algae2Position        = new Translation2d(0.92,  265); 
     public static final Translation2d processorPosition     = new Translation2d(  minZ,  90);
-    public static final Translation2d reef4Position         = new Translation2d(  maxZ,  45);
-    public static final Translation2d reef3Position         = new Translation2d(1.28,  30);
-    public static final Translation2d reef2Position         = new Translation2d(0.90,  30);
-    public static final Translation2d reef1Position         = new Translation2d(0.80, 135);
+    public static final Translation2d reef4Position         = new Translation2d(  maxZ,  35);
+    public static final Translation2d reef3Position         = new Translation2d(1.05,  30);
+    public static final Translation2d reef2Position         = new Translation2d(0.6,  30); //TODO
+    public static final Translation2d reef1Position         = new Translation2d(0.5, 40); //TODO
     public static final Translation2d coralTransferPosition = new Translation2d(0.60, 180); 
-    public static final Translation2d coralIntakePosition   = new Translation2d(1.20, 180); //TODO
-    public static final Translation2d algaeTransferPosition = new Translation2d(1.20,   0); //TODO
-    public static final Translation2d algaeIntakePosition   = new Translation2d(  minZ, 270); //TODO
-    public static final Translation2d coralStationPosition  = new Translation2d(1.00, 240); //TODO
+    public static final Translation2d coralIntakePosition   = new Translation2d(0.90, 180);
+    public static final Translation2d algaeTransferPosition = new Translation2d(0.90,   0); //TODO
+    public static final Translation2d algaeIntakePosition   = new Translation2d(0.48, 60);
+    public static final Translation2d coralStationPosition  = new Translation2d(1.00, 240); //TODO: Remove
     public static final Translation2d algaeStowPosition     = new Translation2d(0.80, 180); 
     public static final Translation2d coralStowPosition     = new Translation2d(0.80,   0);
         
-    public static final class  IKGeometry
+    public static final class IKGeometry
     {
       /* Manipulator arm geometry */
       public static final double coralArmLength   = 0.53;
@@ -318,9 +323,9 @@ public final class Constants
   public static final class GamePiecesManipulator 
   {
     /* Coral manipulator speeds */
-    public static final double coralManipulatorDeliverySpeed   = 0.7;
-    public static final double coralManipulatorHoldingSpeed  = 0.15;
-    public static final double coralHoldingkG = 0.1;
+    public static final double coralManipulatorDeliverySpeed   = -0.7;
+    public static final double coralManipulatorHoldingSpeed  = -0.1;
+    public static final double coralHoldingkG = -0.05;
 
     /* Algae manipulator speeds */
     public static final double algaeManipulatorIntakeSpeed    = 0.4;
@@ -331,62 +336,22 @@ public final class Constants
     public static final double algaeRange = 2;
   }
 
-  public static final class IntakeConstants // TODO: Speeds and Angles must be tuned to the specific robot
-  {
-    /* Intake motors speeds */
-    public static final double algaeIntakeMotorSpeed = 0.8;
-    public static final double algaeEjectMotorSpeed = -0.8;
-    public static final double climbingIntakeMotorSpeed = 0;
-    public static final double standByMotorSpeed = 0;
-    public static final double stowedMotorSpeed = 0;
-    public static final double algaeTransferMotorSpeed = 0;
-
-    /* Top intake arm positions 
-     * TODO: Put in Degrees for the arm top and bottom position in this comment
-     */
-    public static final double topAlgaeIntakeArmTarget   = 0;
-    public static final double topAlgaeEjectArmTarget    = 0;
-    public static final double algaeClimbingArmTarget    = 0;
-    public static final double topStandByArmTarget       = 0;
-    public static final double topStowedArmTarget        = 0;
-    public static final double topAlgaeTransferArmTarget = 0;
-
-    public static final double algaeStowedLowThreshold  = 10;
-    public static final double algaeStowedHighThreshold = 10;
-
-    /* Top arm PID + FeedForward values */
-    public static final double topArmSpringKP = 1; //1
-    public static final double topArmSpringKI = 0;
-    public static final double topArmSpringKD = 0;
-    public static final double topArmStopKP   = 12.5; //12.5
-    public static final double topArmStopKI   = 0;
-    public static final double topArmStopKD   = 0;
-    
-    public static final double topArmKS = 0.15;
-    public static final double topArmKG = 0.15;
-
-    /* Arm MotionMagic values */
-    public static final double intakeArmMotionMagicCruise = 0.25;
-    public static final double intakeArmMotionMagicAccel  = 0.25;
-
-    /* Arm ratios */
-    public static final double algaeIntakeArmRatio    = 90;
-  }
-
   public static final class ClimberConstants
   {
+    // TODO: Default brake
     public static final double lockedWinchPos = 0;
-    public static final double activeWinchPos = 10;
-    public static final double climbWinchPos  = -10;
+    public static final double activeWinchPos = -2.2;
+    public static final double climbWinchPos  = 0.7;
 
     public static final double winchKP = 1;
     public static final double winchKI = 0;
     public static final double winchKD = 0;
 
-    public static final double winchGearRatio = 90;
+    public static final double winchPlanetaryRatio = 45;
+    public static final double winchGearIn = 20;
+    public static final double winchGearOut = 60;
+    public static final double winchGearRatio = -(winchGearOut / winchGearIn) * winchPlanetaryRatio;
     public static final double winchMotionMagicCruise = 10;
-    public static final double winchMotionMagicAccel  = 5;
-
-    public static final double initWinchThreshold = 10;
+    public static final double winchMotionMagicAccel  = 1;
   }
 }

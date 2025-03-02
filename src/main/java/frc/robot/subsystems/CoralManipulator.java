@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -49,7 +50,9 @@ public class CoralManipulator extends SubsystemBase
     {coralMotor.set(speed);}
 
   private void setCoralManipulatorSpeedFeedforward(double speed)
-    {coralMotor.set(speed + Math.sin(RobotContainer.s_Diffector.getAngle()) * Constants.GamePiecesManipulator.coralHoldingkG);}
+  {
+    coralMotor.set(speed + Math.sin(Units.degreesToRadians(RobotContainer.s_Diffector.getAngle())) * Constants.GamePiecesManipulator.coralHoldingkG);
+  }
 
   public void setCoralManipulatorStatus(CoralManipulatorStatus status)
     {coralStatus = status;}
@@ -65,8 +68,8 @@ public class CoralManipulator extends SubsystemBase
         setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
         
         if (RobotContainer.coral) 
-          {coralStatus = CoralManipulatorStatus.DEFAULT; }
-          break;
+          {coralStatus = CoralManipulatorStatus.DEFAULT;}
+        break;
 
       case DELIVERY_LEFT:
       case DELIVERY_RIGHT:
@@ -75,7 +78,7 @@ public class CoralManipulator extends SubsystemBase
         double armPos = RobotContainer.s_Diffector.getRelativeRotation();
         double robotPos = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
 
-        if (coralStatus == CoralManipulatorStatus.DELIVERY_LEFT) 
+        if (coralStatus == CoralManipulatorStatus.DELIVERY_RIGHT) 
           {speed = -speed;}
           
         if (armPos > 90 && armPos <= 270)
@@ -88,18 +91,20 @@ public class CoralManipulator extends SubsystemBase
 
         if (!RobotContainer.coral) 
           {coralStatus = CoralManipulatorStatus.DEFAULT;}
-          break;
+        break;
 
       case DEFAULT: // TODO Loop overrun
         if (RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor())
           {setCoralManipulatorSpeed(0);} 
 
         else if (RobotContainer.s_Canifier.coralManiPortSensor() && !RobotContainer.s_Canifier.coralManiStbdSensor())
-          {setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);} 
-
+        {
+          setCoralManipulatorSpeedFeedforward(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
+        } 
         else if (!RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor()) 
-          {setCoralManipulatorSpeed(-Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);} 
-
+        {
+          setCoralManipulatorSpeedFeedforward(-Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
+        } 
         else if (!RobotContainer.s_Canifier.coralManiPortSensor() && !RobotContainer.s_Canifier.coralManiStbdSensor()) 
           {setCoralManipulatorSpeedFeedforward(0);}
           break;
