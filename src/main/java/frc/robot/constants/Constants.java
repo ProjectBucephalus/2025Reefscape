@@ -158,7 +158,9 @@ public final class Constants
     {
       {
         add(new Translation2d(FieldUtils.fieldLength / 2, 5.08));
+        add(new Translation2d(FieldUtils.fieldLength / 2, 5.6245));
         add(new Translation2d(FieldUtils.fieldLength / 2, 6.169));
+        add(new Translation2d(FieldUtils.fieldLength / 2, 6.615));
         add(new Translation2d(FieldUtils.fieldLength / 2, 7.261));
       }
     };
@@ -171,7 +173,7 @@ public final class Constants
     };
 
 
-    public static final String defaultAuto = "t5,cR5,w3.5,cR5";
+    public static final String defaultAuto = "rc4,cr1,rb4,cl1,ra4,cl1,rl4";
   }
 
   public static final class DiffectorConstants
@@ -327,7 +329,7 @@ public final class Constants
     public static final double algaeManipulatorProcessorSpeed = -0.6;
 
     /** Algae net shooting range, m */
-    public static final double algaeRange = 2;
+    public static final double algaeRange = 1.2;
     /** How far towards the barge we have to be from field center to be able to score in the net (Y axis) */
     public static final double netScoringOffset = 0.2;
   }

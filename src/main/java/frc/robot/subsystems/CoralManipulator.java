@@ -77,17 +77,14 @@ public class CoralManipulator extends SubsystemBase
 
       case DELIVERY_SMART:
         int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
-        speed = Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed;
+        speed = -Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed;
 
-        if (nearestReefFace == 4 || nearestReefFace == 5 || nearestReefFace == 6) 
+        if (nearestReefFace == 5 || nearestReefFace == 6) 
         {
           speed = -speed;
         }
 
         setCoralManipulatorSpeed(speed);
-
-        if (!RobotContainer.coral) 
-          {coralStatus = CoralManipulatorStatus.DEFAULT;}
         break;
 
       case DELIVERY_LEFT:
@@ -107,9 +104,6 @@ public class CoralManipulator extends SubsystemBase
           {speed = -speed;}
 
         setCoralManipulatorSpeed(speed);
-
-        if (!RobotContainer.coral) 
-          {coralStatus = CoralManipulatorStatus.DEFAULT;}
         break;
 
       case DEFAULT: // TODO Loop overrun
