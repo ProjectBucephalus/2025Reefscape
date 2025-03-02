@@ -84,7 +84,7 @@ public class CoralManipulator extends SubsystemBase
         if (armPos > 90 && armPos <= 270)
           {speed = -speed;}
 
-        if (robotPos > 90 + Constants.Control.driverVisionTolerance && robotPos <= 270 - Constants.Control.driverVisionTolerance) 
+        if (robotPos > 90 - Constants.Control.driverVisionTolerance && robotPos <= 270 + Constants.Control.driverVisionTolerance) 
           {speed = -speed;}
 
         setCoralManipulatorSpeed(speed);

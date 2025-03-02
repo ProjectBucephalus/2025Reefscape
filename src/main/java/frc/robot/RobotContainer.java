@@ -186,9 +186,9 @@ public class RobotContainer
       * Station pathfinding controls 
       * Drives to the nearest coral station when the station heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    stationDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToStation(5, () -> swerveState.Pose.getY(), s_Swerve));
-    stationDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToStation(2, () -> swerveState.Pose.getY(), s_Swerve));
-    stationDriveTrigger.and(driver.povRight()).onTrue(new PathfindToStation(8, () -> swerveState.Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToStation(2, () -> swerveState.Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToStation(1, () -> swerveState.Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povRight()).onTrue(new PathfindToStation(3, () -> swerveState.Pose.getY(), s_Swerve));
 
     /* 
       * Processor pathfinding control 
