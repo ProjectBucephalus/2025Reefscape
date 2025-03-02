@@ -262,11 +262,11 @@ public final class Constants
      */
     public static final Translation2d startPosition         = new Translation2d(0.55,   0);
     public static final Translation2d climbPosition         = new Translation2d(minZ - 0.015,  90);
-    public static final Translation2d netPosition           = new Translation2d(  maxZ, 170); // TODO: Make this dynamic
+    public static final Translation2d netPosition           = new Translation2d(  maxZ, 170);
     public static final Translation2d algae3Position        = new Translation2d(1.32,  275);
     public static final Translation2d algae2Position        = new Translation2d(0.92,  275); 
-    public static final Translation2d algae3FlippedPosition = new Translation2d(1.32,  -275); //TODO
-    public static final Translation2d algae2FlippedPosition = new Translation2d(0.92,  -275); //TODO
+    public static final Translation2d algae3FlippedPosition = new Translation2d(1.32,  -275); 
+    public static final Translation2d algae2FlippedPosition = new Translation2d(0.92,  -275);
     public static final Translation2d processorPosition     = new Translation2d(  minZ,  96);
     public static final Translation2d reef4Position         = new Translation2d(  maxZ,  35);
     public static final Translation2d reef3Position         = new Translation2d(1.05,  30);
