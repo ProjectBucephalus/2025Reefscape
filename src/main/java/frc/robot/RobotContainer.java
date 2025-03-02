@@ -155,7 +155,7 @@ public class RobotContainer
       .setYaw((FieldUtils.isRedAlliance() ? 180 : 0))));
 
     /* Intake controls */
-    driver.leftTrigger().whileTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT));
+    driver.leftTrigger().whileTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_SMART));
     driver.leftBumper().whileTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT));
 
     /* Smart Intake and Auto Score controls */

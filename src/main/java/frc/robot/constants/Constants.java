@@ -267,7 +267,7 @@ public final class Constants
     public static final Translation2d algae2Position        = new Translation2d(0.92,  275); 
     public static final Translation2d algae3FlippedPosition = new Translation2d(1.32,  -275); //TODO
     public static final Translation2d algae2FlippedPosition = new Translation2d(0.92,  -275); //TODO
-    public static final Translation2d processorPosition     = new Translation2d(  minZ - 0.05,  96);
+    public static final Translation2d processorPosition     = new Translation2d(  minZ,  96);
     public static final Translation2d reef4Position         = new Translation2d(  maxZ,  35);
     public static final Translation2d reef3Position         = new Translation2d(1.05,  30);
     public static final Translation2d reef2Position         = new Translation2d(0.6,  30); //TODO
@@ -324,7 +324,7 @@ public final class Constants
     /* Algae manipulator speeds */
     public static final double algaeManipulatorIntakeSpeed    = 0.4;
     public static final double algaeManipulatorNetSpeed       = -0.9;
-    public static final double algaeManipulatorProcessorSpeed = -1;
+    public static final double algaeManipulatorProcessorSpeed = -0.6;
 
     /** Algae net shooting range, m */
     public static final double algaeRange = 2;
