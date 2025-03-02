@@ -85,7 +85,7 @@ public class Robot extends TimedRobot
   }
 
   @Override
-  public void disabledPeriodic() 
+  public void disabledPeriodic()
   {
     if (!allianceKnown) 
     {
@@ -93,7 +93,7 @@ public class Robot extends TimedRobot
       {
         allianceKnown = true;
         if (DriverStation.getAlliance().get() == Alliance.Blue) 
-          {RobotContainer.s_Swerve.getPigeon2().setYaw(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble() + 180);}
+          {RobotContainer.s_Swerve.getPigeon2().setYaw(180);}
       }  
     }
     

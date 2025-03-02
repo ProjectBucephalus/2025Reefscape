@@ -8,6 +8,8 @@ import frc.robot.constants.IDConstants;
 
 import com.ctre.phoenix.CANifier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 public class CANifierAccess
 {
   CANifier io_CANifier = new CANifier(IDConstants.canifierID);
@@ -15,13 +17,22 @@ public class CANifierAccess
   public CANifierAccess() {}
 
   public boolean algaeManiSensor()
-    {return io_CANifier.getGeneralInput(IDConstants.algaeManipulatorDIO);}
+  {
+    SmartDashboard.putBoolean("A Beam", io_CANifier.getGeneralInput(IDConstants.algaeManipulatorDIO));
+    return io_CANifier.getGeneralInput(IDConstants.algaeManipulatorDIO);
+  }
 
   public boolean coralManiStbdSensor()
-    {return io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOStbd);}
+  {
+    SmartDashboard.putBoolean("C Beam 1", io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOStbd));
+    return io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOStbd);
+  }
 
   public boolean coralManiPortSensor()
-    {return io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOPort);}
+  {
+    SmartDashboard.putBoolean("C Beam 2", io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOPort));
+    return io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOPort);
+  }
 }
 
 // io_CANifier.getGeneralInput(GeneralPin.SPI_CLK_PWM0P);  PWM1, PWM2, PWM0

@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.util.Units;
@@ -14,11 +10,10 @@ import frc.robot.util.Conversions;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
- * Coral manipulator subsystem, handing the intake, out-take,
- * And hold of coral for the coral manipulator
+ * Coral manipulator subsystem, handing the intake, out-take, 
+ * and holding of coral for the coral manipulator
  * 
  * @author 5985
- * @author Sebastian Aiello
  */
 public class CoralManipulator extends SubsystemBase 
 {
@@ -34,8 +29,8 @@ public class CoralManipulator extends SubsystemBase
    */
   public enum CoralManipulatorStatus {INTAKE, DELIVERY_LEFT, DELIVERY_RIGHT, DEFAULT}
 
-    /* Declaration of the enum variable */
-    private CoralManipulatorStatus coralStatus;
+  /* Declaration of the enum variable */
+  private CoralManipulatorStatus coralStatus;
 
   public CoralManipulator() 
   {
@@ -81,11 +76,12 @@ public class CoralManipulator extends SubsystemBase
         double armPos = RobotContainer.s_Diffector.getRelativeRotation();
         double robotPos = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
 
-        if (coralStatus == CoralManipulatorStatus.DELIVERY_LEFT) 
+        if (coralStatus == CoralManipulatorStatus.DELIVERY_RIGHT) 
           {speed = -speed;}
 
         if (armPos > 90 && armPos <= 270)
           {speed = -speed;}
+
 
         if (robotPos > 90 + Constants.Control.driverVisionTolerance && robotPos <= 270 - Constants.Control.driverVisionTolerance) 
           {speed = -speed;}
@@ -94,10 +90,12 @@ public class CoralManipulator extends SubsystemBase
 
         if (!RobotContainer.coral) 
           {coralStatus = CoralManipulatorStatus.DEFAULT;}
-          break;
+        break;
 
       case DEFAULT: // TODO Loop overrun
         if (RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor())
+          {setCoralManipulatorSpeed(0);} 
+
           {setCoralManipulatorSpeed(0);} 
 
         else if (RobotContainer.s_Canifier.coralManiPortSensor() && !RobotContainer.s_Canifier.coralManiStbdSensor())

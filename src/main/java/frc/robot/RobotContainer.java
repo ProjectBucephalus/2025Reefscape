@@ -234,7 +234,7 @@ public class RobotContainer
         new TargetHeadingStation
         (
           s_Swerve, 
-          Rotation2d.kCW_90deg,
+          Rotation2d.kZero,
           () -> swerveState.Pose.getY(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
@@ -278,10 +278,10 @@ public class RobotContainer
   {
     /* Climb controls */
     copilot.start()
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbPosition)
-      .andThen(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.ACTIVE)))); //Starts climber
+      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.ACTIVE)));
     copilot.back()
-      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.CLIMB)));//Deploys the climber
+      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.CLIMB))
+      .andThen(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbPosition)));//Deploys the climber
 
     /* Coral scoring controls */
     copilot.y().and(copilot.rightTrigger().negate())
@@ -330,8 +330,9 @@ public class RobotContainer
       .onFalse(Commands.runOnce(() -> s_Climber.manualOveride(0)));
 
     /* Manual arm controls */
-    copilot.axisMagnitudeGreaterThan(manualDiffectorElevationAxis, Constants.Control.stickDeadband).or(copilot.axisMagnitudeGreaterThan(manualDiffectorRotationAxis, Constants.Control.stickDeadband))
+    copilot.axisMagnitudeGreaterThan(manualDiffectorElevationAxis, Constants.Control.manualDiffectorDeadband).or(copilot.axisMagnitudeGreaterThan(manualDiffectorRotationAxis, Constants.Control.manualDiffectorDeadband))
       .whileTrue(new ManualDiffectorControl(s_Diffector, () -> -copilot.getRawAxis(manualDiffectorElevationAxis), () -> copilot.getRawAxis(manualDiffectorRotationAxis)));
+    copilot.rightStick().whileTrue(Commands.run(() -> s_Diffector.unwind(), s_Diffector));
 
     /* Coral outtake controls */
     copilot.povLeft()
@@ -343,9 +344,9 @@ public class RobotContainer
 
     /* Algae intake/outtake controls */
     copilot.leftTrigger()
-      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE)); //Intake algae through manipulator
+      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE)).onFalse(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.HOLDING)); //Intake algae through manipulator
      copilot.leftBumper()
-      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT)); //Ejects algae from manipulator
+      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT)).onFalse(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EMPTY)); //Ejects algae from manipulator
   }
 
   private void configureRumbleBindings()

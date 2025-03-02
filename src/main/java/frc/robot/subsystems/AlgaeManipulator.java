@@ -73,7 +73,7 @@ public class AlgaeManipulator extends SubsystemBase
 
         if (RobotContainer.algae) 
           {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
-          break;
+        break;
 
       case HOLDING:
         if (RobotContainer.algae) 
@@ -81,7 +81,7 @@ public class AlgaeManipulator extends SubsystemBase
 
         else
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
-          break;
+        break;
 
       case EJECT:
         double armPos = RobotContainer.s_Diffector.getRelativeRotation();
@@ -90,17 +90,14 @@ public class AlgaeManipulator extends SubsystemBase
           {setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);}
         else
           {setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorProcessorSpeed);}
-        
-        if (!RobotContainer.algae) 
-          {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
-          break;
+        break;
 
       case EMPTY:
         setAlgaeManipulatorSpeed(0);
 
         if (RobotContainer.algae) 
           {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
-          break;
+        break;
     }
   }
 }
