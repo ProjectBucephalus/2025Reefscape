@@ -49,7 +49,7 @@ public final class Constants
     {
       //1, 2, 3,               // Red Human Player Stations
       //4, 5,                  // Red Barge
-      6, 7, 8, 9, 10, 11,      // Red Reef
+      //6, 7, 8, 9, 10, 11,      // Red Reef
       //12, 13, 16,            // Blue Human Player Stations
       //14, 15,                // Blue Barge
       17, 18, 19, 20, 21, 22   // Blue Reef

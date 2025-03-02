@@ -155,8 +155,8 @@ public class RobotContainer
       .setYaw((FieldUtils.isRedAlliance() ? 180 : 0))));
 
     /* Intake controls */
-    driver.leftTrigger().whileTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_SMART));
-    driver.leftBumper().whileTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT));
+    driver.leftTrigger().onTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_SMART)).onFalse(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DEFAULT));
+    driver.leftBumper().onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT)).onFalse(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EMPTY));
 
     /* Smart Intake and Auto Score controls */
     driver.rightBumper() // TODO: Intake is now part of Diffector system
