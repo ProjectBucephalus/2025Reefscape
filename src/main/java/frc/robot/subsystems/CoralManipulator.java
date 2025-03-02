@@ -94,9 +94,7 @@ public class CoralManipulator extends SubsystemBase
 
       case DEFAULT: // TODO Loop overrun
         if (RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor())
-          {setCoralManipulatorSpeed(0);} 
-
-          {setCoralManipulatorSpeed(0);} 
+          {setCoralManipulatorSpeed(0);}
 
         else if (RobotContainer.s_Canifier.coralManiPortSensor() && !RobotContainer.s_Canifier.coralManiStbdSensor())
           {setCoralManipulatorSpeedFeedforward(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);}
