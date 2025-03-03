@@ -289,22 +289,43 @@ public final class Constants
     public static final class IKGeometry
     {
       /* Manipulator arm geometry */
-      public static final double coralArmLength   = 0.53;
-      public static final double coralArmAngle    = 36/2;
-      public static final double algaeArmLength   = 0.6;
-      public static final double algaeArmAngle    = 60/2;
-      public static final double algaeWheelLength = 0.54;
-      public static final double algaeClawLength  = 0.48;
-      public static final double algaeInnerLength = 0.3;
-      public static final double algaeInnerAngle  = 108/2;
+      public static final Translation2d[] armGeometry = new Translation2d[]
+      {
+        new Translation2d(0.16,0.42),
+        new Translation2d(0.16,0.48),
+        new Translation2d(0.14,0.48),
+        new Translation2d(0.12,0.48),
+        new Translation2d(0.00,0.48),
+        new Translation2d(-0.12,0.48),
+        new Translation2d(-0.14,0.48),
+        new Translation2d(-0.16,0.48),
+        new Translation2d(-0.16,0.42),
+        new Translation2d(-0.24,-0.35),
+        new Translation2d(-0.24,-0.37),
+        new Translation2d(-0.24,-0.40),
+        new Translation2d(-0.24,-0.45),
+        new Translation2d(-0.23,-0.46),
+        new Translation2d(-0.22,-0.47),
+        new Translation2d(-0.20,-0.47),
+        new Translation2d(-0.18,-0.46),
+        new Translation2d(0.12,-0.50),
+        new Translation2d(0.12,-0.55),
+        new Translation2d(0.15,-0.58),
+        new Translation2d(0.20,-0.58),
+        new Translation2d(0.23,-0.55),
+        new Translation2d(0.23,-0.53),
+        new Translation2d(0.24,-0.50),
+        new Translation2d(0.24,-0.45),
+        new Translation2d(0.24,-0.40),
+        new Translation2d(0.24,-0.37),
+        new Translation2d(0.24,-0.35)
+      };
 
       /* Deck obstruction geometry */
       public static final double railHeight  = 0.3;
       public static final double railLateral = 0.45;
       public static final double railMedial  = 0.3;
       public static final double deckHeight  = 0.2;
-      public static final double latchDepth  = 0.1;
-      public static final double latchAngle  = 2;
 
       /** For IK, angle the arm is projected to test for immediate collisions, degrees */
       public static final double projectionAngle = 5;
