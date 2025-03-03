@@ -44,7 +44,7 @@ public final class CTREConfigs
 
     /* Climber Values */
     climberWinchFXConfig.Feedback.SensorToMechanismRatio = Constants.ClimberConstants.winchGearRatio;
-    climberWinchFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.ClimberConstants.winchMotionMagicCruise;
+    climberWinchFXConfig.MotionMagic.MotionMagicCruiseVelocity = Constants.ClimberConstants.winchDefaultCruise;
     climberWinchFXConfig.MotionMagic.MotionMagicAcceleration = Constants.ClimberConstants.winchMotionMagicAccel;
     climberWinchFXConfig.Slot0.kP = Constants.ClimberConstants.winchKP;
     climberWinchFXConfig.Slot0.kI = Constants.ClimberConstants.winchKI;
