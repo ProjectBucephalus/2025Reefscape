@@ -49,5 +49,6 @@ public final class CTREConfigs
     climberWinchFXConfig.Slot0.kP = Constants.ClimberConstants.winchKP;
     climberWinchFXConfig.Slot0.kI = Constants.ClimberConstants.winchKI;
     climberWinchFXConfig.Slot0.kD = Constants.ClimberConstants.winchKD;
+    climberWinchFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
   }
 }

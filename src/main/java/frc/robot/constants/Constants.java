@@ -247,7 +247,7 @@ public final class Constants
     /** Physical upper limit of the elevator, metres above the ground */
     public static final double maxZ = 1.725;
     /** Physical lower limit of the elevator when horizontal, metres above the ground */
-    public static final double minZ = 0.44;
+    public static final double minZ = 0.42;
     
     /** Arm rotation check tollerance, degrees */
     public static final double angleTolerance = 2;
@@ -263,13 +263,13 @@ public final class Constants
      * degrees anticlockwise for Port-side usecase, 0 = coral at top 
      */
     public static final Translation2d startPosition         = new Translation2d(0.55,   0);
-    public static final Translation2d climbPosition         = new Translation2d(minZ - 0.015,  90);
+    public static final Translation2d climbPosition         = new Translation2d(0.42,  90);
     public static final Translation2d netPosition           = new Translation2d(  maxZ, 170);
     public static final Translation2d algae3Position        = new Translation2d(1.32,  275);
     public static final Translation2d algae2Position        = new Translation2d(0.92,  275); 
     public static final Translation2d algae3FlippedPosition = new Translation2d(1.32,  -275); 
     public static final Translation2d algae2FlippedPosition = new Translation2d(0.92,  -275);
-    public static final Translation2d processorPosition     = new Translation2d(  minZ,  96);
+    public static final Translation2d processorPosition     = new Translation2d(0.44,  96);
     public static final Translation2d reef4Position         = new Translation2d(  maxZ,  35);
     public static final Translation2d reef3Position         = new Translation2d(1.05,  30);
     public static final Translation2d reef2Position         = new Translation2d(0.6,  30); //TODO
@@ -322,10 +322,10 @@ public final class Constants
       };
 
       /* Deck obstruction geometry */
-      public static final double railHeight  = 0.3;
+      public static final double railHeight  = 0.2;
       public static final double railLateral = 0.45;
-      public static final double railMedial  = 0.3;
-      public static final double deckHeight  = 0.2;
+      public static final double railMedial  = 0.37;
+      public static final double deckHeight  = 0.165;
 
       /** For IK, angle the arm is projected to test for immediate collisions, degrees */
       public static final double projectionAngle = 5;
@@ -359,8 +359,8 @@ public final class Constants
   {
     // TODO: Default brake
     public static final double lockedWinchPos = 0;
-    public static final double activeWinchPos = 1.7;
-    public static final double climbWinchPos  = -0.54;
+    public static final double activeWinchPos = 1.85;
+    public static final double climbWinchPos  = -0.3;
 
     public static final double winchKP = 1;
     public static final double winchKI = 0;
