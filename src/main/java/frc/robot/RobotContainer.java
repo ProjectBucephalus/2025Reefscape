@@ -152,7 +152,7 @@ public class RobotContainer
   {
     // Heading reset
     driver.start().onTrue(Commands.runOnce(() -> s_Swerve.getPigeon2()
-      .setYaw((FieldUtils.isRedAlliance() ? 180 : 0))));
+      .setYaw((FieldUtils.isRedAlliance() ? 0 : 180))));
 
     /* Intake controls */
     driver.leftTrigger().onTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_SMART)).onFalse(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DEFAULT));
