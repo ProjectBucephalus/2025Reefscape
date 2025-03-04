@@ -54,6 +54,11 @@ public final class Constants
       //14, 15,                // Blue Barge
       17, 18, 19, 20, 21, 22   // Blue Reef
     };
+
+    /** Baseline 1 meter, 1 tag stddev for x and y, in meters */
+    public static final double linearStdDevBaseline = 0.06;
+    /** Baseline 1 meter, 1 tag stddev rotation, in radians */
+    public static final double rotStdDevBaseline = 0.012;
   }
 
   public static final class Swerve
@@ -268,17 +273,17 @@ public final class Constants
     public static final Translation2d startPosition         = new Translation2d(0.57,   0);
     public static final Translation2d climbPosition         = new Translation2d(0.42,  90);
     public static final Translation2d netPosition           = new Translation2d(  maxZ, 170);
-    public static final Translation2d algae3Position        = new Translation2d(1.32, 275);
-    public static final Translation2d algae2Position        = new Translation2d(0.92, 275); 
-    public static final Translation2d algae3FlippedPosition = new Translation2d(1.32,  -275); 
-    public static final Translation2d algae2FlippedPosition = new Translation2d(0.92,  96.5);
+    public static final Translation2d algae3Position        = new Translation2d(1.37, 275);//TODO
+    public static final Translation2d algae2Position        = new Translation2d(0.97, 275); //TODO
+    public static final Translation2d algae3FlippedPosition = new Translation2d(1.32,  -275); //TODO
+    public static final Translation2d algae2FlippedPosition = new Translation2d(0.80,  96.5); //TODO
     public static final Translation2d processorPosition     = new Translation2d(0.44,  96);
-    public static final Translation2d reef4Position         = new Translation2d(  maxZ,  35);
+    public static final Translation2d reef4Position         = new Translation2d(  maxZ,  35); //TODO
     public static final Translation2d reef3Position         = new Translation2d(1.05,  30);
     public static final Translation2d reef2Position         = new Translation2d(0.72,  45); //TODO
     public static final Translation2d reef1Position         = new Translation2d(0.5,   40); //TODO
-    public static final Translation2d reef4FlippedPosition  = new Translation2d(  maxZ,   -35);
-    public static final Translation2d reef3FlippedPosition  = new Translation2d(1.05,   -30); 
+    public static final Translation2d reef4FlippedPosition  = new Translation2d(  maxZ,   -35); //TODO
+    public static final Translation2d reef3FlippedPosition  = new Translation2d(1.05,   -30); //TODO
     public static final Translation2d reef2FlippedPosition  = new Translation2d(0.72,   -45); //TODO
     public static final Translation2d reef1FlippedPosition  = new Translation2d(0.5,    -40); //TODO
     public static final Translation2d coralTransferPosition = new Translation2d(0.60, 180); 
