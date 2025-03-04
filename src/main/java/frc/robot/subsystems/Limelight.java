@@ -7,34 +7,48 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.util.LimelightHelpers;
+import frc.robot.util.LimelightHelpers.PoseEstimate;
 
 public class Limelight extends SubsystemBase 
 {  
   private boolean useUpdate;
   private LimelightHelpers.PoseEstimate mt2;
   private int[] validIDs = Constants.Vision.validIDs;
+  private LimelightHelpers.PoseEstimate mt1;
 
+  
   private double headingDeg;
   private double omegaRps;
-
+  
   private final String limelightName;
   
   /** Creates a new Limelight. */
   public Limelight(String name) 
   {
     limelightName = name;
-    
+
     SmartDashboard.putBoolean("Use Limelight", false);
   }
 
   public void setIMUMode(int mode)
     {LimelightHelpers.SetIMUMode(limelightName, mode);}
+
+  public Rotation2d getLimelightRotation()
+  {
+    mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+
+    if (mt1 != null)
+      {return mt1.pose.getRotation();}
+    return Rotation2d.kZero;
+  }
    
   @Override
   public void periodic() 
@@ -61,5 +75,8 @@ public class Limelight extends SubsystemBase
     }
 
     SmartDashboard.putNumber("Gyro yaw", headingDeg);
+    if (!getLimelightRotation().equals(Rotation2d.kZero))
+    SmartDashboard.putNumber("Pose " + limelightName + " Estimate", getLimelightRotation().getDegrees());
+    else SmartDashboard.putNumber("Pose " + limelightName + " Estimate", -1);
   }
 }

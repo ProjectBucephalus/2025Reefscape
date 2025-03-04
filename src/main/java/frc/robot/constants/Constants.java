@@ -340,6 +340,7 @@ public final class Constants
     public static final double lockedWinchPos = 0;
     public static final double activeWinchPos = 2.2;
     public static final double climbWinchPos  = -0.7;
+    public static final double manualScale    = 0.25;
 
     public static final double winchKP = 1;
     public static final double winchKI = 0;
