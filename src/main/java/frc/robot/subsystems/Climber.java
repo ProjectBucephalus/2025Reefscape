@@ -87,6 +87,10 @@ public class Climber extends SubsystemBase
         m_ClimberWinch.getConfigurator().apply(config.MotionMagic.withMotionMagicCruiseVelocity(Constants.ClimberConstants.winchDefaultCruise));
         // TODO: Consider active hold using gyro pitch to balance
         break;
+      
+      case INTAKE:
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.intakeWinchPos));
+        break;
 
       case MANUAL:
         if (speed != 0)
