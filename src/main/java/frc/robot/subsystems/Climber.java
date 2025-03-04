@@ -41,7 +41,7 @@ public class Climber extends SubsystemBase
     m_ClimberWinch.getConfigurator().apply(config);
     m_ClimberWinch.setPosition(Constants.ClimberConstants.lockedWinchPos / 360);
     
-    manualScale = 0.25;
+    manualScale = Constants.ClimberConstants.manualScale;
 
     motionMagic = new MotionMagicVoltage(0);
   }
@@ -74,17 +74,17 @@ public class Climber extends SubsystemBase
     switch (status)
     {
       case LOCKED:
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.lockedWinchPos));
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.lockedWinchPos / 360));
         break;
 
       case ACTIVE:
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos));
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos / 360));
         break;
 
       case CLIMB:
         m_ClimberWinch.getConfigurator().apply(config.MotionMagic.withMotionMagicCruiseVelocity(Constants.ClimberConstants.winchClimbCruise));
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.climbWinchPos));
         m_ClimberWinch.getConfigurator().apply(config.MotionMagic.withMotionMagicCruiseVelocity(Constants.ClimberConstants.winchDefaultCruise));
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.climbWinchPos));
         // TODO: Consider active hold using gyro pitch to balance
         break;
       
