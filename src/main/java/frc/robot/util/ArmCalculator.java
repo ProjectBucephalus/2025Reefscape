@@ -9,7 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.constants.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
 
@@ -37,8 +37,9 @@ public class ArmCalculator
   
   public ArmCalculator()
   {
-    maxElevation  = Constants.DiffectorConstants.maxZ;
-    minElevation  = Constants.DiffectorConstants.minZ;
+    maxElevation  = DiffectorConstants.maxZ;
+    minElevation  = DiffectorConstants.minZ;
+    safeElevation = DiffectorConstants.safeElevation;
     projectionAngle = IKGeometry.projectionAngle;
     projectionElevation = IKGeometry.projectionElevation;
 
@@ -65,13 +66,22 @@ public class ArmCalculator
 
     Translation2d relativeTarget = new Translation2d(targetPosition.getX(), Conversions.mod(targetPosition.getY(), 360));
 
+    Translation2d robotPos = RobotContainer.swerveState.Pose.getTranslation();
+
+    GeoFenceObject allianceReef = FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.reefRed : FieldUtils.GeoFencing.reefBlue;
+
+    if (robotPos.getDistance(allianceReef.getCentre()) <= DiffectorConstants.IKGeometry.reefSafetyRadius) 
+      {safeElevation = DiffectorConstants.reefSafeElevation;}
+    else
+      {safeElevation = DiffectorConstants.safeElevation;}
+
     if 
     ( // Certain positions put the arm lower than it would otherwise be allowed to go
       !(
-        relativeTarget.equals(Constants.DiffectorConstants.startPosition) ||
-        relativeTarget.equals(Constants.DiffectorConstants.coralTransferPosition) ||
-        relativeTarget.equals(Constants.DiffectorConstants.algaeIntakePosition) ||
-        relativeTarget.equals(Constants.DiffectorConstants.climbPosition)
+        relativeTarget.equals(DiffectorConstants.startPosition) ||
+        relativeTarget.equals(DiffectorConstants.coralTransferPosition) ||
+        relativeTarget.equals(DiffectorConstants.algaeIntakePosition) ||
+        relativeTarget.equals(DiffectorConstants.climbPosition)
       )
     ) // Any other position should be made safe
       {targetPosition = new Translation2d(checkPosition(targetPosition), targetPosition.getY());}
@@ -89,7 +99,7 @@ public class ArmCalculator
     double angleRelative = Conversions.mod(startPosition.getY(), 360);
 
     // Elevation change only
-    if (Math.abs(angleChange) <= Constants.DiffectorConstants.angleTolerance)
+    if (Math.abs(angleChange) <= DiffectorConstants.angleTolerance)
     {
       pathOutput.add(targetPosition);
       return pathOutput;
@@ -97,8 +107,8 @@ public class ArmCalculator
     
     if // Arm is not vertical:
     (
-      Conversions.mod(angleRelative, 180) > Constants.DiffectorConstants.angleTolerance && 
-      Conversions.mod(angleRelative, 180) < 180 - Constants.DiffectorConstants.angleTolerance
+      Conversions.mod(angleRelative, 180) > DiffectorConstants.angleTolerance && 
+      Conversions.mod(angleRelative, 180) < 180 - DiffectorConstants.angleTolerance
     )
     {
       // Any rotation taking the arm past vertical:
@@ -131,8 +141,8 @@ public class ArmCalculator
     // Arm starts vertical and starts lower than is safe
     else if (startPosition.getX() <= checkAngle(startPosition.getY()))
     { // Ensure the arm is safe before moving from vertical
-      pathOutput.add(new Translation2d(safeElevation + projectionAngle, startPosition.getY()));
-      pathOutput.add(new Translation2d(safeElevation + projectionAngle, targetPosition.getY()));
+      pathOutput.add(new Translation2d(safeElevation + projectionElevation, startPosition.getY()));
+      pathOutput.add(new Translation2d(safeElevation + projectionElevation, targetPosition.getY()));
     }
 
     // Add Target waypoint:

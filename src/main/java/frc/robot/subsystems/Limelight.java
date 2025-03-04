@@ -27,6 +27,9 @@ public class Limelight extends SubsystemBase
   
   private double headingDeg;
   private double omegaRps;
+  private double stdDevFactor;
+  private double linearStdDev;
+  private double rotStdDev;
   
   private final String limelightName;
   
@@ -69,7 +72,12 @@ public class Limelight extends SubsystemBase
       
       if (useUpdate) 
       {
-        RobotContainer.s_Swerve.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+        stdDevFactor = Math.pow(mt2.avgTagDist, 2.0) / mt2.tagCount;
+
+        linearStdDev = Constants.Vision.linearStdDevBaseline * stdDevFactor;
+        rotStdDev = Constants.Vision.rotStdDevBaseline * stdDevFactor;
+
+        RobotContainer.s_Swerve.setVisionMeasurementStdDevs(VecBuilder.fill(linearStdDev, linearStdDev, rotStdDev));
         RobotContainer.s_Swerve.addVisionMeasurement(mt2.pose, Utils.fpgaToCurrentTime(mt2.timestampSeconds));
       }
     }
