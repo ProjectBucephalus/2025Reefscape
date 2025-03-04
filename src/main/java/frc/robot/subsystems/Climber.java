@@ -35,7 +35,7 @@ public class Climber extends SubsystemBase
 
   public Climber() 
   { 
-    this.status = ClimberStatus.MANUAL;//LOCKED;
+    this.status = ClimberStatus.LOCKED;
 
     m_ClimberWinch = new TalonFX(IDConstants.climberWinchMotorID);
     m_ClimberWinch.getConfigurator().apply(config);

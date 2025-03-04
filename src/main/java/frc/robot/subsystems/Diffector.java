@@ -14,10 +14,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants;
@@ -29,7 +27,7 @@ public class Diffector extends SubsystemBase
 {
   private boolean eStop;
 
-  public enum CargoStates{EMPTY, ONE_ITEM, TWO_ITEM}
+  public enum CargoStates{DEFAULT, SPRING}
   private CargoStates cargoState;
 
   private boolean manualControl;
@@ -203,22 +201,6 @@ public class Diffector extends SubsystemBase
       //SmartDashboard.putNumberArray("pathDump", plannedPathPoints.stream().mapMultiToDouble((point, consumer) -> {consumer.accept(point.getX()); consumer.accept(point.getY());}).toArray());
     }
 
-    /*if (ArmPathPlanner.isNewPathAvailable())
-    {      
-      PathPlannerPath plannedPath = ArmPathPlanner.getCurrentPath(armPathConstraints, armEndState);
-
-      plannedPathPoints.clear();
-      if (plannedPath != null)
-      { 
-        List<Waypoint> plannedPathWaypoints = ArmPathPlanner.getCurrentPath(armPathConstraints, armEndState).getWaypoints();
-        
-        if (plannedPathWaypoints != null)
-          {plannedPathPoints.addAll(plannedPathWaypoints.stream().map(waypoint -> ArmPathPlanner.toArmRelative(waypoint.anchor())).toList());}
-        else
-          {plannedPathPoints.add(new Translation2d(arm.checkPosition(targetElevation, targetAngle), targetAngle));}
-      }
-    }*/
-
     if (plannedPathPoints.size() != 0)
     {
       //SmartDashboard.putNumberArray("target Point", new double[]{plannedPathPoints.get(0).getX(), plannedPathPoints.get(0).getY()});
@@ -302,23 +284,15 @@ public class Diffector extends SubsystemBase
   {
     switch (cargoState) 
     {
-      case EMPTY: return 0;
-      case ONE_ITEM: return 1;
-      case TWO_ITEM: return 2;
+      case DEFAULT: return 0;
+      case SPRING: return 1;
       default: return 0;
     }
   }
 
   private CargoStates updateCargoState()
-  {
-    if(RobotContainer.coral && RobotContainer.algae) // Both game pieces
-      {return CargoStates.TWO_ITEM;}
-    else if(RobotContainer.coral ^ RobotContainer.algae) // One game piece
-      {return CargoStates.ONE_ITEM;}
-    else if(!RobotContainer.coral && !RobotContainer.algae) // No game piece
-      {return CargoStates.EMPTY;}
-    else // Default state, should never be reached
-      {return CargoStates.EMPTY;}
+  {  // Default state, should never be reached
+    {return CargoStates.DEFAULT;}
   }
 
   public void setManualDiffectorValues(double newManualElevation, double newManualRotation)

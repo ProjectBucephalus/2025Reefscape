@@ -131,8 +131,8 @@ public class ArmCalculator
     // Arm starts vertical and starts lower than is safe
     else if (startPosition.getX() <= checkAngle(startPosition.getY()))
     { // Ensure the arm is safe before moving from vertical
-      pathOutput.add(new Translation2d(safeElevation, startPosition.getY()));
-      pathOutput.add(new Translation2d(safeElevation, targetPosition.getY()));
+      pathOutput.add(new Translation2d(safeElevation + projectionAngle, startPosition.getY()));
+      pathOutput.add(new Translation2d(safeElevation + projectionAngle, targetPosition.getY()));
     }
 
     // Add Target waypoint:
