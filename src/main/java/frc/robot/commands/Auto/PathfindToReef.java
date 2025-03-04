@@ -73,8 +73,6 @@ public class PathfindToReef extends Command
 
     pathName = pathName.toLowerCase();
 
-    SmartDashboard.putString("pathname", pathName.toLowerCase());
-
     path = FieldUtils.loadPath(pathName);
     
     pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, constraints);

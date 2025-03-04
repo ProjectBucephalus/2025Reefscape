@@ -145,8 +145,8 @@ public final class Constants
         put("a5" , new AutoMapping("a5" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));                
         put("a6" , new AutoMapping("a6" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));
         put("b1" , new AutoMapping("b1" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-        put("b2" , new AutoMapping("b2" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-        put("b3" , new AutoMapping("b3" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+        put("b2" , new AutoMapping("b3" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+        put("b3" , new AutoMapping("b5" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
         put("p"  , new AutoMapping("p"  , () -> new ScoreAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
       }
     };
@@ -247,7 +247,7 @@ public final class Constants
     /** Physical upper limit of the elevator, metres above the ground */
     public static final double maxZ = 1.725;
     /** Physical lower limit of the elevator when horizontal, metres above the ground */
-    public static final double minZ = 0.44;
+    public static final double minZ = 0.42;
     
     /** Arm rotation check tollerance, degrees */
     public static final double angleTolerance = 2;
@@ -263,13 +263,13 @@ public final class Constants
      * degrees anticlockwise for Port-side usecase, 0 = coral at top 
      */
     public static final Translation2d startPosition         = new Translation2d(0.55,   0);
-    public static final Translation2d climbPosition         = new Translation2d(minZ - 0.015,  90);
+    public static final Translation2d climbPosition         = new Translation2d(0.42,  90);
     public static final Translation2d netPosition           = new Translation2d(  maxZ, 170);
     public static final Translation2d algae3Position        = new Translation2d(1.32,  275);
     public static final Translation2d algae2Position        = new Translation2d(0.92,  275); 
     public static final Translation2d algae3FlippedPosition = new Translation2d(1.32,  -275); 
     public static final Translation2d algae2FlippedPosition = new Translation2d(0.92,  -275);
-    public static final Translation2d processorPosition     = new Translation2d(  minZ,  96);
+    public static final Translation2d processorPosition     = new Translation2d(0.44,  96);
     public static final Translation2d reef4Position         = new Translation2d(  maxZ,  35);
     public static final Translation2d reef3Position         = new Translation2d(1.05,  30);
     public static final Translation2d reef2Position         = new Translation2d(0.6,  30); //TODO
@@ -282,29 +282,49 @@ public final class Constants
     public static final Translation2d coralIntakePosition   = new Translation2d(0.90, 90);
     public static final Translation2d algaeTransferPosition = new Translation2d(0.90,   0);
     public static final Translation2d algaeIntakePosition   = new Translation2d(0.48, 60);
-    public static final Translation2d coralStationPosition  = new Translation2d(1.00, 240); //TODO: Remove
     public static final Translation2d algaeStowPosition     = new Translation2d(0.80, 180); 
     public static final Translation2d coralStowPosition     = new Translation2d(0.80,   0);
         
     public static final class IKGeometry
     {
       /* Manipulator arm geometry */
-      public static final double coralArmLength   = 0.53;
-      public static final double coralArmAngle    = 36/2;
-      public static final double algaeArmLength   = 0.6;
-      public static final double algaeArmAngle    = 60/2;
-      public static final double algaeWheelLength = 0.54;
-      public static final double algaeClawLength  = 0.48;
-      public static final double algaeInnerLength = 0.3;
-      public static final double algaeInnerAngle  = 108/2;
+      public static final Translation2d[] armGeometry = new Translation2d[]
+      {
+        new Translation2d(0.16,0.42),
+        new Translation2d(0.16,0.48),
+        new Translation2d(0.14,0.48),
+        new Translation2d(0.12,0.48),
+        new Translation2d(0.00,0.48),
+        new Translation2d(-0.12,0.48),
+        new Translation2d(-0.14,0.48),
+        new Translation2d(-0.16,0.48),
+        new Translation2d(-0.16,0.42),
+        new Translation2d(-0.24,-0.35),
+        new Translation2d(-0.24,-0.37),
+        new Translation2d(-0.24,-0.40),
+        new Translation2d(-0.24,-0.45),
+        new Translation2d(-0.23,-0.46),
+        new Translation2d(-0.22,-0.47),
+        new Translation2d(-0.20,-0.47),
+        new Translation2d(-0.18,-0.46),
+        new Translation2d(0.12,-0.50),
+        new Translation2d(0.12,-0.55),
+        new Translation2d(0.15,-0.58),
+        new Translation2d(0.20,-0.58),
+        new Translation2d(0.23,-0.55),
+        new Translation2d(0.23,-0.53),
+        new Translation2d(0.24,-0.50),
+        new Translation2d(0.24,-0.45),
+        new Translation2d(0.24,-0.40),
+        new Translation2d(0.24,-0.37),
+        new Translation2d(0.24,-0.35)
+      };
 
       /* Deck obstruction geometry */
-      public static final double railHeight  = 0.3;
+      public static final double railHeight  = 0.2;
       public static final double railLateral = 0.45;
-      public static final double railMedial  = 0.3;
-      public static final double deckHeight  = 0.2;
-      public static final double latchDepth  = 0.1;
-      public static final double latchAngle  = 2;
+      public static final double railMedial  = 0.37;
+      public static final double deckHeight  = 0.165;
 
       /** For IK, angle the arm is projected to test for immediate collisions, degrees */
       public static final double projectionAngle = 5;
@@ -328,19 +348,20 @@ public final class Constants
     public static final double algaeManipulatorNetSpeed       = -0.9;
     public static final double algaeManipulatorProcessorSpeed = -0.6;
 
-    /** Algae net shooting range, m */
-    public static final double algaeRange = 1.2;
+    /** Algae net shooting range for rotation snapping, m */
+    public static final double algaeRange = 1.3;
     /** How far towards the barge we have to be from field center to be able to score in the net (Y axis) */
-    public static final double netScoringOffset = 0.2;
+    public static final double netScoringCenterDistance = 0.5;
+    /** Target X distance from barge targetting points for scoring */
+    public static final double netScoringOffset = 1.5;
   }
 
   public static final class ClimberConstants
   {
-    // TODO: Default brake
     public static final double lockedWinchPos = 0;
-    public static final double activeWinchPos = 2.2;
-    public static final double climbWinchPos  = -0.7;
-    public static final double manualScale    = 0.25;
+    public static final double activeWinchPos = 1.85;
+    public static final double climbWinchPos  = -0.3;
+    public static final double intakeWinchPos = 0.2;
 
     public static final double winchKP = 1;
     public static final double winchKI = 0;
@@ -350,7 +371,8 @@ public final class Constants
     public static final double winchGearIn = 20;
     public static final double winchGearOut = 60;
     public static final double winchGearRatio = -(winchGearOut / winchGearIn) * winchPlanetaryRatio;
-    public static final double winchMotionMagicCruise = 10;
+    public static final double winchDefaultCruise = 10;
+    public static final double winchClimbCruise = 10;
     public static final double winchMotionMagicAccel  = 10;
   }
 }

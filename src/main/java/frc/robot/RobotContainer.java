@@ -278,9 +278,9 @@ public class RobotContainer
   {
     /* Climb controls */
     copilot.start()
-      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.ACTIVE)));
+      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.CLIMB)));
     copilot.back()
-      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.CLIMB))
+      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.ACTIVE))
       .andThen(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbPosition)));//Deploys the climber
 
     /* Coral scoring controls */
@@ -295,7 +295,7 @@ public class RobotContainer
         
     /* Algae scoring/intaking controls */
     copilot.y().and(copilot.rightTrigger())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition)); //Net scoring // TODO: Make this dynamic
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition)); //Net scoring
     copilot.x().and(copilot.rightTrigger())
       .onTrue(new GoToAlgaeIntakePos(false, s_Diffector, () -> swerveState.Pose.getTranslation())); //L3 pick up
     copilot.b().and(copilot.rightTrigger())
