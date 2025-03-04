@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants;
@@ -306,7 +307,21 @@ public class Diffector extends SubsystemBase
   }
 
   public void goToAngle(double newTarget) 
-    {targetAngle = arm.goToAngle(newTarget, angle);}
+  {
+    if (RobotContainer.algae)
+    {
+      if (getRelativeRotation() < 180 && Conversions.mod(newTarget, 360) > 180)
+        {targetAngle = arm.goAnticlockwise(newTarget, angle);} // Going Anticlockwise to take held Algae over robot
+
+      else if (getRelativeRotation() > 180 && Conversions.mod(newTarget, 360) < 180)
+        {targetAngle = arm.goClockwise(newTarget, angle);} // Going Clockwise to take held Algae over robot
+        
+      else
+        {targetAngle = arm.goShortest(newTarget, angle);}
+    }
+    else
+      {targetAngle = arm.goToAngle(newTarget, angle);}
+  }
 
   @Override
   public void periodic() 
