@@ -9,6 +9,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
@@ -39,6 +40,7 @@ public class ArmCalculator
   {
     maxElevation  = Constants.DiffectorConstants.maxZ;
     minElevation  = Constants.DiffectorConstants.minZ;
+    safeElevation = Constants.DiffectorConstants.safeElevation;
     projectionAngle = IKGeometry.projectionAngle;
     projectionElevation = IKGeometry.projectionElevation;
 
@@ -64,6 +66,15 @@ public class ArmCalculator
     ArrayList<Translation2d> pathOutput = new ArrayList<Translation2d>();
 
     Translation2d relativeTarget = new Translation2d(targetPosition.getX(), Conversions.mod(targetPosition.getY(), 360));
+
+    Translation2d robotPos = RobotContainer.swerveState.Pose.getTranslation();
+
+    GeoFenceObject allianceReef = FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.reefRed : FieldUtils.GeoFencing.reefBlue;
+
+    if (robotPos.getDistance(allianceReef.getCentre()) <= Constants.DiffectorConstants.IKGeometry.reefSafetyRadius) 
+    {
+      safeElevation = Constants.DiffectorConstants.reefSafeElevation;
+    }
 
     if 
     ( // Certain positions put the arm lower than it would otherwise be allowed to go

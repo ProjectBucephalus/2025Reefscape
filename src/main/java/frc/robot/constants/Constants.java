@@ -248,6 +248,9 @@ public final class Constants
     public static final double maxZ = 1.725;
     /** Physical lower limit of the elevator when horizontal, metres above the ground */
     public static final double minZ = 0.42;
+    /** Elevation at which all rotations are safe */
+    public static final double safeElevation = 0.8;
+    public static final double reefSafeElevation = 1;
     
     /** Arm rotation check tollerance, degrees */
     public static final double angleTolerance = 2;
@@ -262,21 +265,21 @@ public final class Constants
      * height of centre of rotation above the ground, metres
      * degrees anticlockwise for Port-side usecase, 0 = coral at top 
      */
-    public static final Translation2d startPosition         = new Translation2d(0.55,   0);
+    public static final Translation2d startPosition         = new Translation2d(0.57,   0);
     public static final Translation2d climbPosition         = new Translation2d(0.42,  90);
     public static final Translation2d netPosition           = new Translation2d(  maxZ, 170);
     public static final Translation2d algae3Position        = new Translation2d(1.32,  275);
     public static final Translation2d algae2Position        = new Translation2d(0.92,  275); 
     public static final Translation2d algae3FlippedPosition = new Translation2d(1.32,  -275); 
-    public static final Translation2d algae2FlippedPosition = new Translation2d(0.92,  -275);
+    public static final Translation2d algae2FlippedPosition = new Translation2d(0.92,  96.5);
     public static final Translation2d processorPosition     = new Translation2d(0.44,  96);
     public static final Translation2d reef4Position         = new Translation2d(  maxZ,  35);
     public static final Translation2d reef3Position         = new Translation2d(1.05,  30);
-    public static final Translation2d reef2Position         = new Translation2d(0.6,  30); //TODO
+    public static final Translation2d reef2Position         = new Translation2d(0.72,  45); //TODO
     public static final Translation2d reef1Position         = new Translation2d(0.5, 40); //TODO
     public static final Translation2d reef4FlippedPosition  = new Translation2d(  maxZ,  -35);
     public static final Translation2d reef3FlippedPosition  = new Translation2d(1.05,  -30); 
-    public static final Translation2d reef2FlippedPosition  = new Translation2d(0.6,  -30); //TODO
+    public static final Translation2d reef2FlippedPosition  = new Translation2d(0.72,  -45); //TODO
     public static final Translation2d reef1FlippedPosition  = new Translation2d(0.5, -40); //TODO
     public static final Translation2d coralTransferPosition = new Translation2d(0.60, 180); 
     public static final Translation2d coralIntakePosition   = new Translation2d(0.90, 90);
@@ -333,6 +336,8 @@ public final class Constants
 
       /** For pathfollowing, elevation/rotation "distance" to set the dynamic target position at */
       public static final Translation2d unitTravel = new Translation2d(projectionElevation, projectionAngle);
+
+      public static final double reefSafetyRadius = 1.7;
     }
   }
 
@@ -341,7 +346,7 @@ public final class Constants
     /* Coral manipulator speeds */
     public static final double coralManipulatorDeliverySpeed   = -0.7;
     public static final double coralManipulatorHoldingSpeed  = -0.05;
-    public static final double coralHoldingkG = -0.05;
+    public static final double coralHoldingkG = -0.035;
 
     /* Algae manipulator speeds */
     public static final double algaeManipulatorIntakeSpeed    = 0.4;
