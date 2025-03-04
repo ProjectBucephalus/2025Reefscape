@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.CTREConfigs;
-import frc.robot.subsystems.Limelight;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -40,8 +39,8 @@ public class Robot extends TimedRobot
 
   private boolean allianceKnown = false;
   private boolean rotationKnown = false;
-  private ArrayList<Double> portRotationData;
-  private ArrayList<Double> stbdRotationData;
+  private ArrayList<Double> portRotationData = new ArrayList<Double>();
+  private ArrayList<Double> stbdRotationData = new ArrayList<Double>();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -160,7 +159,7 @@ public class Robot extends TimedRobot
       }
     }
     
-    RobotContainer.s_Swerve.resetRotation(new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble())));
+    RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
   }
 
   @Override

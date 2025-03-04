@@ -85,6 +85,6 @@ public class Limelight extends SubsystemBase
     SmartDashboard.putNumber("Gyro yaw", headingDeg);
     if (!getLimelightRotation().equals(Rotation2d.kZero))
     SmartDashboard.putNumber("Pose " + limelightName + " Estimate", getLimelightRotation().getDegrees());
-    else SmartDashboard.putNumber("Pose " + limelightName + " Estimate", -1);
+    else SmartDashboard.putNumber("Pose " + limelightName + " Estimate", 0);
   }
 }
