@@ -41,7 +41,7 @@ public class Robot extends TimedRobot
   private boolean allianceKnown = false;
   private boolean rotationKnown = false;
   private ArrayList<Double> portRotationData;
-  private ArrayList<Double> stbdRatationData;
+  private ArrayList<Double> stbdRotationData;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -110,11 +110,53 @@ public class Robot extends TimedRobot
         portRotationData.add(0, RobotContainer.s_LimelightPort.getLimelightRotation().getDegrees());
 
         if (portRotationData.size() > 5)
-        {
-          portRotationData.remove(5);
-        }
+          {portRotationData.remove(5);}
 
-        if ()
+        if (portRotationData.size() == 5)
+        {
+          double lowest = portRotationData.get(0).doubleValue();
+          double highest = portRotationData.get(0).doubleValue();
+          
+          for(int i = 1; i < 5; i++)
+          {
+            lowest = Math.min(lowest, portRotationData.get(i).doubleValue());
+            highest = Math.max(highest, portRotationData.get(i).doubleValue());
+          }
+          
+          if (highest - lowest < 1)
+          {
+            RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
+            rotationKnown = true;
+          }
+
+        }
+      }
+
+      if (!RobotContainer.s_LimelightStbd.getLimelightRotation().equals(Rotation2d.kZero))
+      {
+        stbdRotationData.add(0, RobotContainer.s_LimelightStbd.getLimelightRotation().getDegrees());
+
+        if (stbdRotationData.size() > 5)
+          {stbdRotationData.remove(5);}
+
+        else if (stbdRotationData.size() == 5)
+        {
+          double lowest = stbdRotationData.get(0).doubleValue();
+          double highest = stbdRotationData.get(0).doubleValue();
+          
+          for(int i = 1; i < 5; i++)
+          {
+            lowest = Math.min(lowest, stbdRotationData.get(i).doubleValue());
+            highest = Math.max(highest, stbdRotationData.get(i).doubleValue());
+          }
+
+          if (highest - lowest < 1)
+          {
+            RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
+            rotationKnown = true;
+          }
+          
+        }
       }
     }
     
