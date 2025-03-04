@@ -145,8 +145,8 @@ public final class Constants
         put("a5" , new AutoMapping("a5" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));                
         put("a6" , new AutoMapping("a6" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));
         put("b1" , new AutoMapping("b1" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-        put("b2" , new AutoMapping("b2" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
-        put("b3" , new AutoMapping("b3" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+        put("b2" , new AutoMapping("b3" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
+        put("b3" , new AutoMapping("b5" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
         put("p"  , new AutoMapping("p"  , () -> new ScoreAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
       }
     };
@@ -348,10 +348,12 @@ public final class Constants
     public static final double algaeManipulatorNetSpeed       = -0.9;
     public static final double algaeManipulatorProcessorSpeed = -0.6;
 
-    /** Algae net shooting range, m */
-    public static final double algaeRange = 1.2;
+    /** Algae net shooting range for rotation snapping, m */
+    public static final double algaeRange = 1.3;
     /** How far towards the barge we have to be from field center to be able to score in the net (Y axis) */
-    public static final double netScoringOffset = 0.2;
+    public static final double netScoringCenterDistance = 0.5;
+    /** Target X distance from barge targetting points for scoring */
+    public static final double netScoringOffset = 1.5;
   }
 
   public static final class ClimberConstants
