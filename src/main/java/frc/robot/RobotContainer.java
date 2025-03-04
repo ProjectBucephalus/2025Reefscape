@@ -295,7 +295,7 @@ public class RobotContainer
         
     /* Algae scoring/intaking controls */
     copilot.y().and(copilot.rightTrigger())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition)); //Net scoring // TODO: Make this dynamic
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition)); //Net scoring
     copilot.x().and(copilot.rightTrigger())
       .onTrue(new GoToAlgaeIntakePos(false, s_Diffector, () -> swerveState.Pose.getTranslation())); //L3 pick up
     copilot.b().and(copilot.rightTrigger())

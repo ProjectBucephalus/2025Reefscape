@@ -358,7 +358,6 @@ public final class Constants
 
   public static final class ClimberConstants
   {
-    // TODO: Default brake
     public static final double lockedWinchPos = 0;
     public static final double activeWinchPos = 1.85;
     public static final double climbWinchPos  = -0.3;
