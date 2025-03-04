@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -151,9 +152,30 @@ public class RobotContainer
   private void configureDriverBindings()
   {
     // Heading reset
-    driver.start().onTrue(Commands.runOnce(() -> s_Swerve.getPigeon2()
-      .setYaw((FieldUtils.isRedAlliance() ? 0 : 180))));
-
+    driver.start()
+      .onTrue
+      (
+        Commands.runOnce
+        (
+          () -> s_Swerve.getPigeon2()
+          .setYaw(FieldUtils.isRedAlliance() ? 0 : 180)
+        )
+      )
+      .onTrue
+      (
+        Commands.runOnce
+        (
+          () -> s_Swerve.resetPose
+          (
+            new Pose2d
+            (
+              RobotContainer.swerveState.Pose.getTranslation(), 
+              new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))
+            )
+          )
+        )
+      );
+      
     /* Intake controls */
     driver.leftTrigger().onTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_SMART)).onFalse(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DEFAULT));
     driver.leftBumper().onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT)).onFalse(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EMPTY));

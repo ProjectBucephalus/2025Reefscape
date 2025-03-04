@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -15,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.util.LimelightHelpers;
-import frc.robot.util.LimelightHelpers.PoseEstimate;
 
 public class Limelight extends SubsystemBase 
 {  
@@ -38,7 +36,7 @@ public class Limelight extends SubsystemBase
   {
     limelightName = name;
 
-    SmartDashboard.putBoolean("Use Limelight", false);
+    SmartDashboard.putBoolean("Use Limelight", true);
   }
 
   public void setIMUMode(int mode)
@@ -63,7 +61,7 @@ public class Limelight extends SubsystemBase
     
     LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, validIDs);
     
-    if (SmartDashboard.getBoolean("Use Limelight", false))
+    if (SmartDashboard.getBoolean("Use Limelight", true))
     {
       mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
       
