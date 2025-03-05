@@ -24,6 +24,7 @@ import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
 import frc.robot.constants.IDConstants;
 import frc.robot.util.ArmCalculator;
 import frc.robot.util.Conversions;
+import frc.robot.util.FieldUtils;
 
 public class Diffector extends SubsystemBase 
 {
@@ -186,6 +187,14 @@ public class Diffector extends SubsystemBase
 
     if (!targetPosition.equals(oldTarget))
     {
+      if 
+      (
+        !(
+          MathUtil.isNear(RobotContainer.swerveState.Pose.getTranslation().getX(), FieldUtils.fieldLength / 2, IKGeometry.bargeSafetyWidth) &&
+          targetPosition.getX() > IKGeometry.bargeSafetyHeight
+        )
+      )
+    
       oldTarget = targetPosition;
 
       plannedPathPoints = arm.pathfindArm(targetPosition, armPosition);
@@ -377,16 +386,20 @@ public class Diffector extends SubsystemBase
       {
         if (manualElevation != 0) 
         {
-          if (manualElevation < 0 && arm.checkAngle(angle) > elevation - projectionElevation) 
-          {
-            manualElevation = 0;
-          }
+          if 
+          (
+            (manualElevation < 0 && arm.checkAngle(angle) > elevation - projectionElevation) || 
+            (manualElevation > 0 && elevation + projectionElevation > DiffectorConstants.maxZ)
+          )
+            {manualElevation = 0;}
         }
+
         if (manualRotation != 0)
         {
           if (arm.checkAngle(angle + Math.copySign(projectionAngle, manualRotation)) > elevation) 
             {manualRotation = 0;}
         }
+
         if (manualElevation == 0 && manualRotation == 0)
         {
           goToAngle(angle);
