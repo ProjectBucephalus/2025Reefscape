@@ -22,13 +22,11 @@ public class ScoreAlgaeSequence extends SequentialCommandGroup
   public ScoreAlgaeSequence(boolean toNet, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator) 
   {
     if (toNet)
-    {
-      diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition);
-    } 
+      {diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition);} 
+
     else 
-    {
-      diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.processorPosition);
-    }
+      {diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.processorPosition);}
+      
     addCommands(diffectorPosCommand, new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT));
   }
 }

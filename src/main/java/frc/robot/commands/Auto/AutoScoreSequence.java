@@ -46,8 +46,10 @@ public class AutoScoreSequence extends SequentialCommandGroup
 
     if (RobotContainer.driver.povLeft().getAsBoolean()) 
       {postSide = DpadOptions.LEFT;}
+
     else if (RobotContainer.driver.povRight().getAsBoolean())
       {postSide = DpadOptions.RIGHT;}
+
     else 
     {
       switch (nearestReefFace) 
@@ -68,14 +70,19 @@ public class AutoScoreSequence extends SequentialCommandGroup
 
     if (RobotContainer.copilot.a().getAsBoolean()) 
       {coralLevel = 1;}
+      
     else if (RobotContainer.copilot.b().getAsBoolean())
       {coralLevel = 2;}
+      
     else if (RobotContainer.copilot.x().getAsBoolean())
       {coralLevel = 3;}
+      
     else if (RobotContainer.copilot.y().getAsBoolean())
       {coralLevel = 4;}
+      
     else if (algaeLevel2) 
       {coralLevel = 3;}
+      
     else if (!algaeLevel2) 
       {coralLevel = 2;}
 
@@ -99,12 +106,12 @@ public class AutoScoreSequence extends SequentialCommandGroup
       addCommands
       (
         new PathfindToReef(DpadOptions.CENTRE, posSup, s_Swerve)
-        .alongWith(new GoToAlgaeIntakePos(algaeLevel2, s_Diffector)),
+        .alongWith(new GoToAlgaeIntakePos(algaeLevel2, s_Diffector, posSup)),
         
         new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE),
         
         new PathfindToReef(postSide, posSup, s_Swerve)
-        .alongWith(new GoToCoralScorePos(coralLevel, s_Diffector)),
+        .alongWith(new GoToCoralScorePos(coralLevel, s_Diffector, posSup)),
 
         new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT),
 

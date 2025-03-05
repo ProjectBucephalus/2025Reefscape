@@ -81,6 +81,7 @@ public class TargetHeadingScore extends Command
     SmartDashboard.putBoolean("redAlliance", redAlliance);
     if (redAlliance)
       {fieldGeoFence = FieldUtils.GeoFencing.fieldRedGeoFence;}
+
     else
       {fieldGeoFence = FieldUtils.GeoFencing.fieldBlueGeoFence;}
 
@@ -111,6 +112,7 @@ public class TargetHeadingScore extends Command
       robotSpeed = Math.hypot(RobotContainer.swerveState.Speeds.vxMetersPerSecond, RobotContainer.swerveState.Speeds.vyMetersPerSecond);
       if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
         {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
+
       else
         {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
 
@@ -153,9 +155,9 @@ public class TargetHeadingScore extends Command
 
     nearestBargePoint = FieldUtils.getNearestBargePoint(robotPos);
 
-    if (robotPos.getDistance(nearestBargePoint) <= Constants.GamePiecesManipulator.algaeRange) 
+    if (robotPos.getDistance(nearestBargePoint) <= Constants.GamePiecesManipulator.algaeRange && robotPos.getY() <= ((FieldUtils.fieldWidth / 2) + Constants.GamePiecesManipulator.netScoringCenterDistance)) 
     {
-      targetHeading = nearestBargePoint.minus(robotPos).getAngle().getDegrees();
+      targetHeading = 0 - rotationOffset;
     }
     else
     {
@@ -176,7 +178,7 @@ public class TargetHeadingScore extends Command
           break;
 
         case 4:
-          targetHeading = 180 - rotationOffset;
+          targetHeading = 0 - rotationOffset;
           break;
 
         case 5:
@@ -186,6 +188,7 @@ public class TargetHeadingScore extends Command
         case 6:
           targetHeading = -60 - rotationOffset;
           break;
+          
         default:
           break;
       }

@@ -12,7 +12,5 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 public class RunAutoCommandList extends SequentialCommandGroup 
 {
   public RunAutoCommandList(ArrayList<Command> commandList) 
-  {    
-    addCommands(commandList.toArray(Command[]::new));
-  }
+    {addCommands(commandList.toArray(Command[]::new));}
 }

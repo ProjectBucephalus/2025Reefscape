@@ -259,6 +259,11 @@ public class GeoFenceObject
     return centresList;
   }
 
+  public Translation2d getCentre()
+  {
+    return centre;
+  }
+
   /**
    * Damps the motion of the robot in the direction of a Geofence object to prevent collision
     * @param robotXY Coordinates of the robot, metres
@@ -372,7 +377,7 @@ public class GeoFenceObject
       case polygon:
         // If the robot is touching (or past) the inscribed circle, process based on that circle
         if (robotXY.getDistance(centre) <= radius)
-            {return pointDamping(centre, motionXY, robotR, robotXY);}
+          {return pointDamping(centre, motionXY, robotR, robotXY);}
         else 
         {
           /* 

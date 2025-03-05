@@ -4,6 +4,9 @@
 
 package frc.robot.commands.Manipulator;
 
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.GoToAlgaeIntakePos;
 import frc.robot.subsystems.AlgaeManipulator;
@@ -15,6 +18,6 @@ import frc.robot.subsystems.Diffector;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class IntakeAlgaeSequence extends SequentialCommandGroup 
 { 
-  public IntakeAlgaeSequence(boolean level2, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator) 
-    {addCommands(new GoToAlgaeIntakePos(level2, s_Diffector), new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE));}
+  public IntakeAlgaeSequence(boolean level2, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator, Supplier<Translation2d> posSup) 
+    {addCommands(new GoToAlgaeIntakePos(level2, s_Diffector, posSup), new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE));}
 }

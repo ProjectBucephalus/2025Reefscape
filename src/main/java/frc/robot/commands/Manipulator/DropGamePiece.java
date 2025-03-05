@@ -7,7 +7,6 @@ package frc.robot.commands.Manipulator;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
@@ -42,11 +41,14 @@ public class DropGamePiece extends Command
     {
       if (algaeModifier.getAsBoolean())
         {new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT).schedule();}
+        
       else
         {new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT).schedule();}
     }
+    
     else if (coral)
       {new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT).schedule();}
+      
     else if (algae)
       {new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT).schedule();}
   }

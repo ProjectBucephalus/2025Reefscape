@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.95,
-  "robotLength": 0.95,
+  "robotWidth": 0.912,
+  "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
     "Algae Paths",

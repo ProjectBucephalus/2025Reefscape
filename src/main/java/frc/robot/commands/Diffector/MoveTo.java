@@ -5,6 +5,8 @@
 package frc.robot.commands.Diffector;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Diffector;
 
@@ -26,12 +28,20 @@ public class MoveTo extends Command
   @Override
   public void execute() 
   {
-    s_Diffector.setElevationTarget(targetPosition.getX());
-    s_Diffector.goToAngle(targetPosition.getY());
+    if (!RobotState.isDisabled() || SmartDashboard.getBoolean("OVERIDE MODE", false))
+    {
+      s_Diffector.setElevationTarget(targetPosition.getX());
+      s_Diffector.goToAngle(targetPosition.getY());
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
+    {return true;}
+
+  // Allows the command to run when the robot is disabled
+  @Override
+  public boolean runsWhenDisabled()
     {return true;}
 }

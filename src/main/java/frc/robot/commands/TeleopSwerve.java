@@ -101,6 +101,7 @@ public class TeleopSwerve extends Command
         robotSpeed = Math.hypot(RobotContainer.swerveState.Speeds.vxMetersPerSecond, RobotContainer.swerveState.Speeds.vyMetersPerSecond);
         if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
           {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
+          
         else
           {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
         

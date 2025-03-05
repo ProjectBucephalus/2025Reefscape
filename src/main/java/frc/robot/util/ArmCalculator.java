@@ -5,16 +5,13 @@
 package frc.robot.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.RobotContainer;
-import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
-import frc.robot.subsystems.Diffector;
 
 /** Add your docs here. */
 public class ArmCalculator 
@@ -24,91 +21,37 @@ public class ArmCalculator
   private double safeElevation;
   private double projectionAngle;
   private double projectionElevation;
-  private double waypointHold;
 
   private double railHeight;
   private double railLateral;
   private double railMedial;
   private double deckHeight;
-  private double latchDepth;
-  private double latchAngle;
-  
-  private double coralArmLength;
-  private double coralArmAngle;
-  private double algaeArmLength;
-  private double algaeArmAngle;
-  private double algaeWheelLength;
-  private double algaeClawLength;
-  private double algaeInnerLength;
-  private double algaeInnerAngle;
+
   private double offset;
-  private double angle; 
   private double maxAbsPos;
   private double reverseOffset;
   private double turnBackThreshold;
 
-  private Translation2d coralA, coralC;
-  private Translation2d algaeOuterA, algaeOuterC;
-  private Translation2d algaeInnerA, algaeInnerC;
-  private Translation2d algaeClawA, algaeClawC;
-  private Translation2d algaeWheelA, algaeWheelC;
-
   /** Unrotated virtual arm */
   private final Translation2d[] armGeometry;
-  /** Rotatable virtual arm */
-  private Translation2d[] armGeometryRotated;
-
+  
   public ArmCalculator()
   {
-    maxElevation  = Constants.DiffectorConstants.maxZ;
-    minElevation  = Constants.DiffectorConstants.minZ;
+    maxElevation  = DiffectorConstants.maxZ;
+    minElevation  = DiffectorConstants.minZ;
+    safeElevation = DiffectorConstants.safeElevation;
     projectionAngle = IKGeometry.projectionAngle;
     projectionElevation = IKGeometry.projectionElevation;
+
+    maxAbsPos = DiffectorConstants.maxAbsAngle;
+    turnBackThreshold = DiffectorConstants.turnBackThreshold;
     
     railHeight    = IKGeometry.railHeight;
     railLateral   = IKGeometry.railLateral;
     railMedial    = IKGeometry.railMedial;
     deckHeight    = IKGeometry.deckHeight;
-    latchDepth = IKGeometry.latchDepth;
-    latchAngle  = IKGeometry.latchAngle;
-    
-    coralArmLength   = IKGeometry.coralArmLength;
-    coralArmAngle    = IKGeometry.coralArmAngle;
-    algaeArmLength   = IKGeometry.algaeArmLength;
-    algaeArmAngle    = IKGeometry.algaeArmAngle;
-    algaeWheelLength = IKGeometry.algaeWheelLength;
-    algaeClawLength  = IKGeometry.algaeClawLength;
-    algaeInnerLength = IKGeometry.algaeInnerLength;
-    algaeInnerAngle  = IKGeometry.algaeInnerAngle;
 
-    safeElevation = deckHeight + Math.max(coralArmLength, algaeArmLength);
-    
-    coralA      = new Translation2d(0,coralArmLength)  .rotateBy(new Rotation2d(Units.degreesToRadians(coralArmAngle)));
-    coralC      = new Translation2d(0,coralArmLength)  .rotateBy(new Rotation2d(Units.degreesToRadians(-coralArmAngle)));
-    algaeOuterA = new Translation2d(0,algaeArmLength)  .rotateBy(new Rotation2d(Units.degreesToRadians(180+algaeArmAngle)));
-    algaeOuterC = new Translation2d(0,algaeArmLength)  .rotateBy(new Rotation2d(Units.degreesToRadians(180-algaeArmAngle)));
-    algaeInnerA = new Translation2d(0,algaeInnerLength).rotateBy(new Rotation2d(Units.degreesToRadians(180+algaeInnerAngle)));
-    algaeInnerC = new Translation2d(0,algaeInnerLength).rotateBy(new Rotation2d(Units.degreesToRadians(180-algaeInnerAngle)));
-    algaeClawA  = new Translation2d(0,algaeClawLength) .rotateBy(new Rotation2d(Units.degreesToRadians(180+algaeArmAngle)));
-    algaeClawC  = new Translation2d(0,algaeClawLength) .rotateBy(new Rotation2d(Units.degreesToRadians(180-algaeArmAngle)));
-    algaeWheelA = new Translation2d(0,algaeWheelLength).rotateBy(new Rotation2d(Units.degreesToRadians(180+algaeArmAngle)));
-    algaeWheelC = new Translation2d(0,algaeWheelLength).rotateBy(new Rotation2d(Units.degreesToRadians(180-algaeArmAngle)));
-    
-    armGeometry = new Translation2d[]
-    {
-      coralA,      // [0] // Anticlockwise limit of Coral arm
-      coralC,      // [1] // Clockwise limit of Coral arm
-      algaeOuterA, // [2] // Anticlockwise limit of Algae arm
-      algaeOuterC, // [3] // Clockwise limit of Algae arm
-      algaeInnerA, // [4] // Anticlockwise, innermost point of Algae claw
-      algaeInnerC, // [5] // Clockwise, innermost point of Algae claw
-      algaeClawA,  // [6] // Anticlockwise, outermost point of Algae claw
-      algaeClawC,  // [7] // Clockwise, outermost point of Algae claw
-      algaeWheelA, // [8] // Anticlockwise limit of Algae wheel
-      algaeWheelC  // [9] // Clockwise limit of Algae wheel
-    };
-    
-    armGeometryRotated = armGeometry.clone();
+    armGeometry = IKGeometry.armGeometry;
   }
 
   /**
@@ -121,13 +64,38 @@ public class ArmCalculator
   {
     ArrayList<Translation2d> pathOutput = new ArrayList<Translation2d>();
 
+    Translation2d relativeTarget = new Translation2d(targetPosition.getX(), Conversions.mod(targetPosition.getY(), 360));
+
+    Translation2d robotPos = RobotContainer.swerveState.Pose.getTranslation();
+
+    GeoFenceObject allianceReef = FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.reefRed : FieldUtils.GeoFencing.reefBlue;
+
+    if (robotPos.getDistance(allianceReef.getCentre()) <= DiffectorConstants.IKGeometry.reefSafetyRadius) 
+      {safeElevation = DiffectorConstants.reefSafeElevation;}
+    else
+      {safeElevation = DiffectorConstants.safeElevation;}
+
     if 
     ( // Certain positions put the arm lower than it would otherwise be allowed to go
-      !targetPosition.equals(Constants.DiffectorConstants.startPosition) && 
-      !targetPosition.equals(Constants.DiffectorConstants.coralTransferPosition) &&
-      !targetPosition.equals(Constants.DiffectorConstants.climbPosition)
-    ) // Any other position should be made safe
-      {targetPosition = new Translation2d(checkPosition(targetPosition), targetPosition.getY());}
+      (
+        relativeTarget.equals(DiffectorConstants.startPosition) ||
+        relativeTarget.equals(DiffectorConstants.coralTransferPosition) ||
+        relativeTarget.equals(DiffectorConstants.algaeIntakePosition) ||
+        relativeTarget.equals(DiffectorConstants.climbPosition)
+      )
+    )
+    { // Forced safe path for unsafe targets
+      pathOutput.add(new Translation2d(Math.min(safeElevation, startPosition.getX()), startPosition.getY()));
+      pathOutput.add(new Translation2d(Math.min(safeElevation, startPosition.getX()), targetPosition.getY()));
+      pathOutput.add(new Translation2d(safeElevation, targetPosition.getY())); // Ensuring arm is not rotating
+      pathOutput.add(targetPosition);
+
+      return pathOutput;
+    }
+    
+    
+    // Any other position should be made safe
+    targetPosition = new Translation2d(checkPosition(targetPosition), targetPosition.getY());
     
     // Path of arm starts above safe limits, path is safe as given
     if (startPosition.getX() >= safeElevation)
@@ -142,7 +110,7 @@ public class ArmCalculator
     double angleRelative = Conversions.mod(startPosition.getY(), 360);
 
     // Elevation change only
-    if (Math.abs(angleChange) <= Constants.DiffectorConstants.angleTolerance)
+    if (Math.abs(angleChange) <= DiffectorConstants.angleTolerance)
     {
       pathOutput.add(targetPosition);
       return pathOutput;
@@ -150,8 +118,8 @@ public class ArmCalculator
     
     if // Arm is not vertical:
     (
-      Conversions.mod(angleRelative, 180) > Constants.DiffectorConstants.angleTolerance && 
-      Conversions.mod(angleRelative, 180) < 180 - Constants.DiffectorConstants.angleTolerance
+      Conversions.mod(angleRelative, 180) > DiffectorConstants.angleTolerance && 
+      Conversions.mod(angleRelative, 180) < 180 - DiffectorConstants.angleTolerance
     )
     {
       // Any rotation taking the arm past vertical:
@@ -197,7 +165,7 @@ public class ArmCalculator
   /**
    * Adjusts the elevation of a given position to keep above safe limits
    * @param elevation the intended elevation
-   * @param angle the angle of the arm to check
+   * @param currentAngle the angle of the arm to check
    * @return maximum of the intended elevation and the safe elevation for the given angle
    */
   public double checkPosition(Translation2d position)
@@ -220,135 +188,31 @@ public class ArmCalculator
      *    Topside of electronics = Deck, Obstructing mechanisms/bumbers = Rail
      *    Centreline = Mast, Near = Medial, Far = Lateral
      */
-
-    angle = Conversions.mod(angle, 360);
-
-    /*  
-     *  Rotating the virtual arm reference points to allow for position calculations
-     *    Some conditions are based on the angle
-     *    Some on the relative height of certain reference points
-     *    Some on the relative translation of certain reference points
-     */
-    Rotation2d rotation = new Rotation2d(Units.degreesToRadians(angle));
     
-    armGeometryRotated = (Translation2d[])Arrays.stream(armGeometry).map(geometryPoint -> geometryPoint.rotateBy(rotation)).toArray(Translation2d[]::new);
-
-    // TODO: Edgecase: Coral arm is narrower than Algae arm, so small angles towards Coral would still have the Algae arm lower
-    if(angle > 90 && angle < 270) // Coral arm down:
-    { 
-    /*
-     *  Coral manipulator:
-     *    36 degree arc, centred on 0
-     *    0.53m radius
-     */
-
-      if (armGeometryRotated[0].getX() >= 0 && armGeometryRotated[1].getX() <= 0) // Coral arm extends to either side of the mast:
-        {return -Math.min(armGeometryRotated[0].getY(), armGeometryRotated[1].getY()) + deckHeight;} // Keep carriage above the deck by the length of the arm
-
-      if (armGeometryRotated[0].getX() < 0) // Anticlockwise Coral limit is Starbord/Clockwise of the mast:
-      {
-        if (armGeometryRotated[0].getX() <= -railMedial) // Anticlockwise Coral limit is beyond the Medial rail limit:
-          {return (-armGeometryRotated[0].getY()) + railHeight;} // Keep the Anticlockwise Coral limit above the rail
-        else // Antilockwise Coral limit is within the Medial rail limit:
-        {
-          return Math.max
-          (
-            // Keep the Anticlockwise Coral limit above the deck
-            (-armGeometryRotated[0].getY()) + deckHeight,
-            // and keep the carriage away from the rail by the length of the arm
-            Math.sqrt(Math.pow(coralArmLength,2) - Math.pow(railMedial,2)) + railHeight 
-          );
-        }
-      }
-      else // Clockwise Coral limit is Port/Anticlockwise of the mast:
-      {
-        if (armGeometryRotated[1].getX() >= railMedial) // Clockwise Coral limit is beyond the Medial rail limit:
-          {return (-armGeometryRotated[1].getY()) + railHeight;} // Keep the Clockwise Coral limit above the rail
-        else // Clockwise Coral limit is within the Medial rail limit:
-        {
-          return Math.max
-          (
-            // Keep the Clockwise Coral limit above the deck
-            (-armGeometryRotated[1].getY()) + deckHeight,
-            // and keep the carriage away from the rail by the length of the arm
-            Math.sqrt(Math.pow(coralArmLength,2) - Math.pow(railMedial,2)) + railHeight 
-          );
-        }
-      }
-    }
-
-    else if (angle < 90 || angle > 270) // Algae arm down:
+    // Rotation value of the input angle
+    Rotation2d rotation = new Rotation2d(Units.degreesToRadians(angle));
+    // Temporary, rotated reference point
+    Translation2d geometryPointRotated;
+    // Running value of the lowest point relative to the deck/rail
+    double lowestPoint = 0;
+    
+    for (Translation2d geometryPoint : armGeometry)
     {
-    /*
-     *  Algae manipulator:
-     *    Primary span:
-     *      60 degree arc, centred on 180
-     *      0.6m radius
-     *    Claw:
-     *      Inner span:
-     *        108 degree arc, centred on 180
-     *        0.3m radius, then projected paralel to arm
-     *      Outerpoint of wheels halfway between the limits of the primary span, and the point where the Claw meets the primary span
-     */
-      
-      if (armGeometryRotated[2].getX() >= -0 && armGeometryRotated[3].getX() <= 0) // Algae arm extends to either side of the mast:
-        {return algaeArmLength + deckHeight;} // Keep carriage above the deck by the length of the arm
-      
-      if (armGeometryRotated[2].getX() < 0) // Anticlockwise Algae limit is Starbord/Clockwise of the mast:
+      geometryPointRotated = geometryPoint.rotateBy(rotation);
+      if (geometryPointRotated.getY() < 0)
       {
-        if (armGeometryRotated[2].getX() >= -railMedial) // Anticlockwise Algae limit is within the Starboard rail:
-        {
-          {
-            return Math.max
-            (
-              // Keep the Anticlockwise Algae limit above the deck
-              (-armGeometryRotated[2].getY()) + deckHeight,
-              // and keep the carriage away from the rail by the length of the arm
-              Math.sqrt(Math.pow(algaeArmLength,2) - Math.pow(railMedial,2)) + railHeight
-            );
-          }
-        }
-        else if (armGeometryRotated[6].getX() <= -railLateral) // The Anticlockwise wheel is beyond the rail
-        {
-          return 
-            Math.max(-armGeometryRotated[6].getY(), -armGeometryRotated[4].getY()) 
-            + railHeight; // Keep inner and outer ends of the claw above the rail
-        }
-        else if (armGeometryRotated[2].getX() <= -railLateral) // Anticlockwise limit is beyond the rail:
-          {return -armGeometryRotated[8].getY() + railHeight;} // Keep the Anticlockwise wheel above the rail
-        else                                                   // Anticlockwise limit is within the rail:
-          {return -armGeometryRotated[2].getY() + railHeight;} // Keep the Anticlockwise limit above the rail
-      }
-      
-      else // Clockwise Algae limit is Port/Anticlockwise of the mast:
-      {
-        if (armGeometryRotated[3].getX() <= railMedial) // Clockwise Algae limit is within the rail:
-        {
-          {
-            return Math.max
-            (
-              // Keep the Clockwise Algae limit above the deck
-              (-armGeometryRotated[3].getY()) + deckHeight,
-              // and keep the carriage away from the rail by the length of the arm
-              Math.sqrt(Math.pow(algaeArmLength,2) - Math.pow(railMedial,2)) + railHeight
-            );
-          }
-        }
-        else if (armGeometryRotated[7].getX() >= railLateral) // The Clockwise wheel is beyond the rail:
-        {
-          return 
-            Math.max(-armGeometryRotated[7].getY(), -armGeometryRotated[5].getY()) 
-            + railHeight; // Keep inner and outer ends of the claw above the rail
-        }
-        else if (armGeometryRotated[3].getX() >= railLateral)  // Clockwise limit is beyond the rail:
-          {return -armGeometryRotated[9].getY() + railHeight;} // Keep the Clockwise wheel above the rail
-        else                                                   // Clockwise limit is within the rail:
-          {return -armGeometryRotated[3].getY() + railHeight;} // Keep the Clockwise limit above the rail
+        if (Math.abs(geometryPointRotated.getX()) < railMedial)
+          {lowestPoint = Math.min(lowestPoint, geometryPointRotated.getY() - deckHeight);} // Point is directly over the deck
+        else if (Math.abs(geometryPointRotated.getX()) < railLateral)
+          {lowestPoint = Math.min(lowestPoint, geometryPointRotated.getY() - railHeight);} // Point is directly over the rail
+        else
+          {lowestPoint = Math.min(lowestPoint, geometryPointRotated.getY() - deckHeight);} // Point is beyond the rail
       }
     }
 
-    else // Arm is horizontal
-      {return minElevation;}
+    //  lowestPoint is the depth below the centre of rotation
+    // -lowestPoint is therefore the height above the ground
+    return -lowestPoint;
   }
 
   /**
@@ -356,86 +220,87 @@ public class ArmCalculator
    * Below a threshold will go shortest path, otherwise will minimise total rotations
    * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public double goToAngle(double newAngle)
+  public double goToAngle(double newAngle, double currentAngle)
   {
     newAngle = Conversions.mod(newAngle, 360);
-    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), -180, 180);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(currentAngle, 360), -180, 180);
 
     if (Math.abs(offset) >= turnBackThreshold)
     {
       reverseOffset = offset - Math.copySign(360, offset);
 
-      if (Math.abs(angle + offset) > Math.abs(angle + reverseOffset))
-        {return (angle + reverseOffset);}
+      if (Math.abs(currentAngle + offset) > Math.abs(currentAngle + reverseOffset))
+        {return (currentAngle + reverseOffset);}
       
       else 
-        {return (angle + offset);}
+        {return (currentAngle + offset);}
     }
-    else if (angle + offset > maxAbsPos)
-      {return (angle + offset - 360);}
+    else if (currentAngle + offset > maxAbsPos)
+      {return (currentAngle + offset - 360);}
 
-    else if (angle + offset < -maxAbsPos)
-      {return (angle + offset + 360);}
+    else if (currentAngle + offset < -maxAbsPos)
+      {return (currentAngle + offset + 360);}
 
     else
-      {return (angle + offset);}
+      {return (currentAngle + offset);}
   }
 
   /**
    * Sets the Diffector arm to rotate the shortest path to the target angle, with protection against over-rotation
    * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public double goShortest(double newAngle)
+  public double goShortest(double newAngle, double currentAngle)
   {
     newAngle = Conversions.mod(newAngle, 360);
-    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), -180, 180);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(currentAngle, 360), -180, 180);
 
-    if (angle + offset > maxAbsPos)
-      {return (angle + offset - 360);}
+    if (currentAngle + offset > maxAbsPos)
+      {return (currentAngle + offset - 360);}
 
-    else if (angle + offset < -maxAbsPos)
-      {return (angle + offset + 360);}
+    else if (currentAngle + offset < -maxAbsPos)
+      {return (currentAngle + offset + 360);}
 
     else
-      {return (angle + offset);}
+      {return (currentAngle + offset);}
   }
 
   /**
    * Sets the Diffector arm to rotate Clockwise (viewed from bow) to the target angle, with protection against over-rotation
    * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
    */
-  public double goClockwise(double newAngle)
+  public double goClockwise(double newAngle, double currentAngle)
   {
     newAngle = Conversions.mod(newAngle, 360);
-    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), -360, 0);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(currentAngle, 360), -360, 0);
 
-    if (angle + offset > maxAbsPos)
-      {return (angle + offset - 360);}
+    if (currentAngle + offset > maxAbsPos)
+      {return (currentAngle + offset - 360);}
 
-    else if (angle + offset < -maxAbsPos)
-      {return (angle + offset + 360);}
+    else if (currentAngle + offset < -maxAbsPos)
+      {return (currentAngle + offset + 360);}
 
     else
-      {return (angle + offset);}
+      {return (currentAngle + offset);}
   }
 
   /**
    * Sets the Diffector arm to rotate Anticlockwise (viewed from bow) to the target angle, with protection against over-rotation
    * @param newAngle Target angle of the arm, degrees anticlockwise, 0 = coral at top
+   * @param currentAngle Current/starting angle of the arm, degrees anticlockwise
    */
-  public double goAnticlockwise(double newAngle)
+  public double goAnticlockwise(double newAngle, double currentAngle)
   {
     newAngle = Conversions.mod(newAngle, 360);
-    offset = MathUtil.inputModulus(newAngle - Conversions.mod(angle, 360), 0, 360);
+    offset = MathUtil.inputModulus(newAngle - Conversions.mod(currentAngle, 360), 0, 360);
 
-    if (angle + offset > maxAbsPos)
-      {return (angle + offset - 360);}
+    if (currentAngle + offset > maxAbsPos)
+      {return (currentAngle + offset - 360);}
 
-    else if (angle + offset < -maxAbsPos)
-      {return (angle + offset + 360);}
+    else if (currentAngle + offset < -maxAbsPos)
+      {return (currentAngle + offset + 360);}
 
     else
-      {return (angle + offset);}
+      {return (currentAngle + offset);}
   }
 
 }
