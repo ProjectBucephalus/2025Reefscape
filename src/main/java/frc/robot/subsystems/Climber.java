@@ -44,7 +44,6 @@ public class Climber extends SubsystemBase
     m_ClimberWinch.setPosition(Constants.ClimberConstants.stowWinchPos / 360);
     
     manualScale = Constants.ClimberConstants.manualScale;
-    manualScale = Constants.ClimberConstants.manualScale;
 
     motionMagic = new MotionMagicVoltage(0);
   }
