@@ -377,7 +377,7 @@ public class Diffector extends SubsystemBase
       {
         if (manualElevation != 0) 
         {
-          if (arm.checkAngle(angle) > elevation + Math.copySign(projectionElevation, manualElevation)) 
+          if (manualElevation < 0 && arm.checkAngle(angle) > elevation - projectionElevation) 
           {
             manualElevation = 0;
           }
@@ -399,8 +399,8 @@ public class Diffector extends SubsystemBase
 
       if (manualControl)
       {
-        m_diffectorUA.setVoltage((manualRotation + manualElevation) * Constants.Control.manualDiffectorScalar);
-        m_diffectorDA.setVoltage((manualRotation - manualElevation) * Constants.Control.manualDiffectorScalar);
+        m_diffectorUA.setVoltage((manualRotation * Constants.Control.manualDiffectorRotationScalar) + (manualElevation * Constants.Control.manualDiffectorElevationScalar));
+        m_diffectorDA.setVoltage((manualRotation * Constants.Control.manualDiffectorRotationScalar) - (manualElevation * Constants.Control.manualDiffectorElevationScalar));
       }
       else
       {
@@ -409,6 +409,7 @@ public class Diffector extends SubsystemBase
         m_diffectorUA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[0])).withSlot(0));//getSlot()));
         m_diffectorDA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])).withSlot(0));//getSlot()));
       }
+      
       if (transferRequested && !MathUtil.isNear(180, getRelativeRotation(), DiffectorConstants.angleTolerance))
       {transferRequested = false;}
       if (transferRequested && !MathUtil.isNear(0, angle, DiffectorConstants.angleTolerance))

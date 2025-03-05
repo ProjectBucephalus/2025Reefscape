@@ -39,8 +39,10 @@ public final class Constants
     public static final double minRotThrottle = 0.5;
     /** Angle tolerance to consider something as "facing" the drivers, degrees */
     public static final double driverVisionTolerance = 5;
-    /** Scalar for manual diffector control */
-    public static final double manualDiffectorScalar = 2;
+    /** Scalar for manual diffector elevation control */
+    public static final double manualDiffectorElevationScalar = 2;
+    /** Scalar for manual diffector rotation control */
+    public static final double manualDiffectorRotationScalar = 2;
   }
 
   public static final class Vision
