@@ -9,6 +9,7 @@ import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -110,5 +111,7 @@ public class Limelight extends SubsystemBase
     if (!getLimelightRotation().equals(Rotation2d.kZero))
     SmartDashboard.putNumber("Pose " + limelightName + " Estimate", getLimelightRotation().getDegrees());
     else SmartDashboard.putNumber("Pose " + limelightName + " Estimate", 0);
+
+    SmartDashboard.putNumber(limelightName + " HW Metrics", NetworkTableInstance.getDefault().getTable(limelightName).getEntry("hw").getDouble(0));
   }
 }
