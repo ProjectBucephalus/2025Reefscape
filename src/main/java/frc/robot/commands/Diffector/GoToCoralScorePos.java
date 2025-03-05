@@ -42,44 +42,44 @@ public class GoToCoralScorePos extends Command
       case 4:
         if (nearestReefFace == 5 || nearestReefFace == 6) 
         {
-          target = Constants.DiffectorConstants.reef4FlippedPosition;
+          target = Constants.DiffectorConstants.coral4PortPosition;
         }
         else
         {
-          target = Constants.DiffectorConstants.reef4Position;
+          target = Constants.DiffectorConstants.coral4StbdPosition;
         }
         break;
 
       case 3:
         if (nearestReefFace == 5 || nearestReefFace == 6) 
         {
-          target = Constants.DiffectorConstants.reef3FlippedPosition;
+          target = Constants.DiffectorConstants.coral3PortPosition;
         }
         else
         {
-          target = Constants.DiffectorConstants.reef3Position;
+          target = Constants.DiffectorConstants.coral3StbdPosition;
         }
         break;
 
       case 2:
         if (nearestReefFace == 5 || nearestReefFace == 6) 
         {
-          target = Constants.DiffectorConstants.reef2FlippedPosition;
+          target = Constants.DiffectorConstants.coral2PortPosition;
         }
         else
         {
-          target = Constants.DiffectorConstants.reef2Position;
+          target = Constants.DiffectorConstants.coral2StbdPosition;
         }
         break;
 
       case 1:
         if (nearestReefFace == 5 || nearestReefFace == 6) 
         {
-          target = Constants.DiffectorConstants.reef1FlippedPosition;
+          target = Constants.DiffectorConstants.coral1PortPosition;
         }
         else
         {
-          target = Constants.DiffectorConstants.reef1Position;
+          target = Constants.DiffectorConstants.coral1StbdPosition;
         }
         break;
     }

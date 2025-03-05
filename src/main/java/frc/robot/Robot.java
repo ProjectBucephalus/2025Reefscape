@@ -87,6 +87,7 @@ public class Robot extends TimedRobot
   {
     RobotContainer.s_LimelightPort.setIMUMode(1);
     RobotContainer.s_LimelightStbd.setIMUMode(1);
+    SmartDashboard.putBoolean("OVERIDE MODE", false);
   }
 
   @Override
@@ -154,7 +155,6 @@ public class Robot extends TimedRobot
             RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
             rotationKnown = true;
           }
-          
         }
       }
     }

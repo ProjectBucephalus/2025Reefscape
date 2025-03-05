@@ -41,22 +41,22 @@ public class GoToAlgaeIntakePos extends Command
     {
       if (nearestReefFace == 5 || nearestReefFace == 6) 
       {
-        target = Constants.DiffectorConstants.algae2FlippedPosition;
+        target = Constants.DiffectorConstants.algae2PortPosition;
       }
       else
       {
-        target = Constants.DiffectorConstants.algae2Position;
+        target = Constants.DiffectorConstants.algae2StbdPosition;
       }
     }
     else
     {
       if (nearestReefFace == 5 || nearestReefFace == 6) 
       {
-        target = Constants.DiffectorConstants.algae3FlippedPosition;
+        target = Constants.DiffectorConstants.algae3PortPosition;
       }
       else
       {
-        target = Constants.DiffectorConstants.algae3Position;
+        target = Constants.DiffectorConstants.algae3StbdPosition;
       }
     }
 
