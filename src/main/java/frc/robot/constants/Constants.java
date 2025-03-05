@@ -47,7 +47,7 @@ public final class Constants
 
   public static final class Vision
   {
-    public static final int[] validIDs = 
+    /* public static final int[] validIDs = 
     {
       //1, 2, 3,               // Red Human Player Stations
       //4, 5,                  // Red Barge
@@ -55,6 +55,24 @@ public final class Constants
       //12, 13, 16,            // Blue Human Player Stations
       //14, 15,                // Blue Barge
       17, 18, 19, 20, 21, 22   // Blue Reef
+    };*/
+
+    public static final int[] reefIDs = 
+    {
+      //6, 7, 8, 9, 10, 11,    // Red Reef
+      17, 18, 19, 20, 21, 22 // Blue Reef
+    };
+
+    public static final int[] bargeIDs = 
+    {
+      4, 5,  // Red Barge
+      14, 15 // Blue Barge
+    };
+
+    public static final int[] humanPlayerStationIDs = 
+    {
+      //1, 2, 3,   // Red Human Player Stations
+      12, 13, 16 // Blue Human Player Stations
     };
 
     /** Baseline 1 meter, 1 tag stddev for x and y, in meters */
