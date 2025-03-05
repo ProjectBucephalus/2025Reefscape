@@ -256,6 +256,9 @@ public class Diffector extends SubsystemBase
     return (stowRequested = Math.abs(angle) < stowThreshold);
   }
 
+  public Translation2d getRelativeTarget()
+    {return relativeTarget;}
+
   public double getAngleTarget()
     {return targetAngle;}
 
