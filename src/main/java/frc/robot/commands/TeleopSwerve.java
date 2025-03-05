@@ -4,6 +4,7 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Limelight;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
 
@@ -64,11 +65,14 @@ public class TeleopSwerve extends Command
     public void initialize()
     {
       redAlliance = FieldUtils.isRedAlliance();
+
       SmartDashboard.putBoolean("redAlliance", redAlliance);
       if (redAlliance)
         {fieldGeoFence = FieldUtils.GeoFencing.fieldRedGeoFence;}
       else
         {fieldGeoFence = FieldUtils.GeoFencing.fieldBlueGeoFence;}
+      
+      Limelight.setActivePOI(Limelight.TagPOI.REEF);
     }
 
   @Override
