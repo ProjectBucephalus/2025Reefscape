@@ -151,8 +151,10 @@ public class TargetHeadingScore extends Command
 
     nearestBargePoint = FieldUtils.getNearestBargePoint(robotPos);
 
-    if (robotPos.getDistance(nearestBargePoint) <= Constants.GamePiecesManipulator.algaeRange) 
-      {targetHeading = nearestBargePoint.minus(robotPos).getAngle().getDegrees();}
+    if (robotPos.getDistance(nearestBargePoint) <= Constants.GamePiecesManipulator.algaeRange && robotPos.getY() <= ((FieldUtils.fieldWidth / 2) + Constants.GamePiecesManipulator.netScoringCenterDistance)) 
+    {
+      targetHeading = 0 - rotationOffset;
+    }
     else
     {
       nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
@@ -172,7 +174,7 @@ public class TargetHeadingScore extends Command
           break;
 
         case 4:
-          targetHeading = 180 - rotationOffset;
+          targetHeading = 0 - rotationOffset;
           break;
 
         case 5:

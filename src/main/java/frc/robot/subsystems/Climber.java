@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -21,23 +22,27 @@ public class Climber extends SubsystemBase
   private final MotionMagicVoltage motionMagic;
   private double speed;
   private double manualScale;
+  private TalonFXConfiguration config = CTREConfigs.climberWinchFXConfig;
 
   public enum ClimberStatus 
   {
     ACTIVE,
     LOCKED,
     MANUAL,
-    CLIMB
+    CLIMB,
+    INTAKE //TODO
   };
 
   public Climber() 
   { 
     this.status = ClimberStatus.LOCKED;
+    this.status = ClimberStatus.LOCKED;
 
     m_ClimberWinch = new TalonFX(IDConstants.climberWinchMotorID);
-    m_ClimberWinch.getConfigurator().apply(CTREConfigs.climberWinchFXConfig);
+    m_ClimberWinch.getConfigurator().apply(config);
     m_ClimberWinch.setPosition(Constants.ClimberConstants.lockedWinchPos / 360);
     
+    manualScale = Constants.ClimberConstants.manualScale;
     manualScale = Constants.ClimberConstants.manualScale;
 
     motionMagic = new MotionMagicVoltage(0);
@@ -72,14 +77,20 @@ public class Climber extends SubsystemBase
     {
       case LOCKED:
         m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.lockedWinchPos / 360));
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.lockedWinchPos / 360));
         break;
 
       case ACTIVE:
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos / 360));
         m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos / 360));
         break;
 
       case CLIMB:
         m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.climbWinchPos / 360));
+        break;
+      
+      case INTAKE:
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.intakeWinchPos));
         break;
 
       case MANUAL:

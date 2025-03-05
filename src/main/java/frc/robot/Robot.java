@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+
 import com.pathplanner.lib.commands.PathfindingCommand;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -36,6 +38,9 @@ public class Robot extends TimedRobot
   private Pose2d robotPose;
 
   private boolean allianceKnown = false;
+  private boolean rotationKnown = false;
+  private ArrayList<Double> portRotationData = new ArrayList<Double>();
+  private ArrayList<Double> stbdRotationData = new ArrayList<Double>();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -92,12 +97,69 @@ public class Robot extends TimedRobot
       if (DriverStation.getAlliance().isPresent()) 
       {
         allianceKnown = true;
-        if (DriverStation.getAlliance().get() == Alliance.Blue) 
+        if (DriverStation.getAlliance().get() == Alliance.Blue && !rotationKnown) 
           {RobotContainer.s_Swerve.getPigeon2().setYaw(180);}
       }  
     }
+
+    if (!rotationKnown)
+    {
+      if (!RobotContainer.s_LimelightPort.getLimelightRotation().equals(Rotation2d.kZero))
+      {
+        portRotationData.add(0, RobotContainer.s_LimelightPort.getLimelightRotation().getDegrees());
+
+        if (portRotationData.size() > 5)
+          {portRotationData.remove(5);}
+
+        if (portRotationData.size() == 5)
+        {
+          double lowest = portRotationData.get(0).doubleValue();
+          double highest = portRotationData.get(0).doubleValue();
+          
+          for(int i = 1; i < 5; i++)
+          {
+            lowest = Math.min(lowest, portRotationData.get(i).doubleValue());
+            highest = Math.max(highest, portRotationData.get(i).doubleValue());
+          }
+          
+          if (highest - lowest < 1)
+          {
+            RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
+            rotationKnown = true;
+          }
+
+        }
+      }
+
+      if (!RobotContainer.s_LimelightStbd.getLimelightRotation().equals(Rotation2d.kZero))
+      {
+        stbdRotationData.add(0, RobotContainer.s_LimelightStbd.getLimelightRotation().getDegrees());
+
+        if (stbdRotationData.size() > 5)
+          {stbdRotationData.remove(5);}
+
+        else if (stbdRotationData.size() == 5)
+        {
+          double lowest = stbdRotationData.get(0).doubleValue();
+          double highest = stbdRotationData.get(0).doubleValue();
+          
+          for(int i = 1; i < 5; i++)
+          {
+            lowest = Math.min(lowest, stbdRotationData.get(i).doubleValue());
+            highest = Math.max(highest, stbdRotationData.get(i).doubleValue());
+          }
+
+          if (highest - lowest < 1)
+          {
+            RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
+            rotationKnown = true;
+          }
+          
+        }
+      }
+    }
     
-    RobotContainer.s_Swerve.resetRotation(new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble())));
+    RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
   }
 
   @Override

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.166,
-        "y": 2.524
+        "x": 5.205,
+        "y": 2.605
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.041,
-        "y": 2.74050635094611
+        "x": 5.08,
+        "y": 2.82150635094611
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.991,
-        "y": 2.827
+        "x": 5.055,
+        "y": 2.865
       },
       "prevControl": {
-        "x": 5.116,
-        "y": 2.6104936490538906
+        "x": 5.18,
+        "y": 2.648493649053891
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": -150.0
   },
   "reversed": false,
   "folder": "Reef Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": -150.0
   },
   "useDefaultConstraints": true
 }

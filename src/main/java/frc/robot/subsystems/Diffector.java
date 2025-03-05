@@ -28,7 +28,7 @@ public class Diffector extends SubsystemBase
 {
   private boolean eStop;
 
-  public enum CargoStates{EMPTY, ONE_ITEM, TWO_ITEM}
+  public enum CargoStates{DEFAULT, SPRING}
   private CargoStates cargoState;
 
   private boolean manualControl;
@@ -78,6 +78,7 @@ public class Diffector extends SubsystemBase
     SmartDashboard.putBoolean("Diffector E-Stop", eStop);
     manualControl = false;
     arm = new ArmCalculator();
+    
     motorConfigUA = CTREConfigs.diffectorFXConfig;
     motorConfigDA = motorConfigUA;
     motorConfigDA.Slot0.kG = -motorConfigUA.Slot0.kG;
@@ -199,22 +200,6 @@ public class Diffector extends SubsystemBase
       //SmartDashboard.putNumberArray("pathDump", plannedPathPoints.stream().mapMultiToDouble((point, consumer) -> {consumer.accept(point.getX()); consumer.accept(point.getY());}).toArray());
     }
 
-    /*if (ArmPathPlanner.isNewPathAvailable())
-    {      
-      PathPlannerPath plannedPath = ArmPathPlanner.getCurrentPath(armPathConstraints, armEndState);
-
-      plannedPathPoints.clear();
-      if (plannedPath != null)
-      { 
-        List<Waypoint> plannedPathWaypoints = ArmPathPlanner.getCurrentPath(armPathConstraints, armEndState).getWaypoints();
-        
-        if (plannedPathWaypoints != null)
-          {plannedPathPoints.addAll(plannedPathWaypoints.stream().map(waypoint -> ArmPathPlanner.toArmRelative(waypoint.anchor())).toList());}
-        else
-          {plannedPathPoints.add(new Translation2d(arm.checkPosition(targetElevation, targetAngle), targetAngle));}
-      }
-    }*/
-
     if (plannedPathPoints.size() != 0)
     {
       //SmartDashboard.putNumberArray("target Point", new double[]{plannedPathPoints.get(0).getX(), plannedPathPoints.get(0).getY()});
@@ -298,9 +283,8 @@ public class Diffector extends SubsystemBase
   {
     switch (cargoState) 
     {
-      case EMPTY: return 0;
-      case ONE_ITEM: return 1;
-      case TWO_ITEM: return 2;
+      case DEFAULT: return 0;
+      case SPRING: return 1;
       default: return 0;
     }
   }
@@ -330,7 +314,21 @@ public class Diffector extends SubsystemBase
   }
 
   public void goToAngle(double newTarget) 
-    {targetAngle = arm.goToAngle(newTarget, angle);}
+  {
+    if (RobotContainer.algae)
+    {
+      if (getRelativeRotation() < 180 && Conversions.mod(newTarget, 360) > 180)
+        {targetAngle = arm.goAnticlockwise(newTarget, angle);} // Going Anticlockwise to take held Algae over robot
+
+      else if (getRelativeRotation() > 180 && Conversions.mod(newTarget, 360) < 180)
+        {targetAngle = arm.goClockwise(newTarget, angle);} // Going Clockwise to take held Algae over robot
+        
+      else
+        {targetAngle = arm.goShortest(newTarget, angle);}
+    }
+    else
+      {targetAngle = arm.goToAngle(newTarget, angle);}
+  }
 
   @Override
   public void periodic() 

@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -151,12 +152,33 @@ public class RobotContainer
   private void configureDriverBindings()
   {
     // Heading reset
-    driver.start().onTrue(Commands.runOnce(() -> s_Swerve.getPigeon2()
-      .setYaw((FieldUtils.isRedAlliance() ? 180 : 0))));
-
+    driver.start()
+      .onTrue
+      (
+        Commands.runOnce
+        (
+          () -> s_Swerve.getPigeon2()
+          .setYaw(FieldUtils.isRedAlliance() ? 0 : 180)
+        )
+      )
+      .onTrue
+      (
+        Commands.runOnce
+        (
+          () -> s_Swerve.resetPose
+          (
+            new Pose2d
+            (
+              RobotContainer.swerveState.Pose.getTranslation(), 
+              new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))
+            )
+          )
+        )
+      );
+      
     /* Intake controls */
-    driver.leftTrigger().whileTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT));
-    driver.leftBumper().whileTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT));
+    driver.leftTrigger().onTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_SMART)).onFalse(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DEFAULT));
+    driver.leftBumper().onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT)).onFalse(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EMPTY));
 
     /* Smart Intake and Auto Score controls */
     driver.rightBumper() // TODO: Intake is now part of Diffector system
@@ -186,9 +208,9 @@ public class RobotContainer
       * Station pathfinding controls 
       * Drives to the nearest coral station when the station heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    stationDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToStation(5, () -> swerveState.Pose.getY(), s_Swerve));
-    stationDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToStation(2, () -> swerveState.Pose.getY(), s_Swerve));
-    stationDriveTrigger.and(driver.povRight()).onTrue(new PathfindToStation(8, () -> swerveState.Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToStation(2, () -> swerveState.Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToStation(1, () -> swerveState.Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povRight()).onTrue(new PathfindToStation(3, () -> swerveState.Pose.getY(), s_Swerve));
 
     /* 
       * Processor pathfinding control 
@@ -278,28 +300,28 @@ public class RobotContainer
   {
     /* Climb controls */
     copilot.start()
-      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.ACTIVE)));
+      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.CLIMB)));
     copilot.back()
-      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.CLIMB))
+      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.ACTIVE))
       .andThen(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbPosition)));//Deploys the climber
 
     /* Coral scoring controls */
     copilot.y().and(copilot.rightTrigger().negate())
-      .onTrue(new GoToCoralScorePos(4, s_Diffector));   //L4 scoring
+      .onTrue(new GoToCoralScorePos(4, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L4 scoring
     copilot.x().and(copilot.rightTrigger().negate())
-      .onTrue(new GoToCoralScorePos(3, s_Diffector));   //L3 scoring
+      .onTrue(new GoToCoralScorePos(3, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L3 scoring
     copilot.b().and(copilot.rightTrigger().negate())
-      .onTrue(new GoToCoralScorePos(2, s_Diffector));   //L2 scoring
+      .onTrue(new GoToCoralScorePos(2, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L2 scoring
     copilot.a().and(copilot.rightTrigger().negate())
-      .onTrue(new GoToCoralScorePos(1, s_Diffector));   //L1 scoring
+      .onTrue(new GoToCoralScorePos(1, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L1 scoring
         
     /* Algae scoring/intaking controls */
     copilot.y().and(copilot.rightTrigger())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition)); //Net scoring // TODO: Make this dynamic
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition)); //Net scoring
     copilot.x().and(copilot.rightTrigger())
-      .onTrue(new GoToAlgaeIntakePos(false, s_Diffector)); //L3 pick up
+      .onTrue(new GoToAlgaeIntakePos(false, s_Diffector, () -> swerveState.Pose.getTranslation())); //L3 pick up
     copilot.b().and(copilot.rightTrigger())
-      .onTrue(new GoToAlgaeIntakePos(true, s_Diffector));  //L2 pick up
+      .onTrue(new GoToAlgaeIntakePos(true, s_Diffector, () -> swerveState.Pose.getTranslation()));  //L2 pick up
     copilot.a().and(copilot.rightTrigger())
       .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.processorPosition)); //Processor scoring
 
@@ -326,12 +348,12 @@ public class RobotContainer
   {
     /* Manual climber controls */
     copilot.axisMagnitudeGreaterThan(manualClimberAxis, Constants.Control.stickDeadband)
-      .whileTrue(Commands.run(() -> s_Climber.manualOveride(-copilot.getRawAxis(manualClimberAxis))))
+      .whileTrue(Commands.run(() -> s_Climber.manualOveride(copilot.getRawAxis(manualClimberAxis))))
       .onFalse(Commands.runOnce(() -> s_Climber.manualOveride(0)));
 
     /* Manual arm controls */
     copilot.axisMagnitudeGreaterThan(manualDiffectorElevationAxis, Constants.Control.manualDiffectorDeadband).or(copilot.axisMagnitudeGreaterThan(manualDiffectorRotationAxis, Constants.Control.manualDiffectorDeadband))
-      .whileTrue(new ManualDiffectorControl(s_Diffector, () -> -copilot.getRawAxis(manualDiffectorElevationAxis), () -> copilot.getRawAxis(manualDiffectorRotationAxis)));
+      .whileTrue(new ManualDiffectorControl(s_Diffector, () -> -copilot.getRawAxis(manualDiffectorElevationAxis), () -> -copilot.getRawAxis(manualDiffectorRotationAxis)));
     copilot.rightStick().whileTrue(Commands.run(() -> s_Diffector.unwind(), s_Diffector));
 
     /* Coral outtake controls */
@@ -360,9 +382,11 @@ public class RobotContainer
     // TODO: copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
   }
   
+  @SuppressWarnings("unused")
   private void configureTestBindings()
   {}
 
+  @SuppressWarnings("unused")
   private void configureButtonBoxBindings()
   {}
 

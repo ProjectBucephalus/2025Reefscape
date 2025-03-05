@@ -60,7 +60,7 @@ public class DynamicAuto
           commandList.add(AutoBuilder.pathfindThenFollowPath(nextPath, constraints));
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();
 
-          commandList.add(new ScoreCoralSequence(Integer.parseInt(splitCommands[i].substring(2)), RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator));
+          commandList.add(new ScoreCoralSequence(Integer.parseInt(splitCommands[i].substring(2)), RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator, () -> RobotContainer.swerveState.Pose.getTranslation()));
         }
         else
         {
