@@ -20,6 +20,7 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants;
+import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
 import frc.robot.constants.IDConstants;
 import frc.robot.util.ArmCalculator;
 import frc.robot.util.Conversions;
@@ -65,8 +66,8 @@ public class Diffector extends SubsystemBase
   public static boolean transferRequested = false;
   public static boolean stowRequested = true;
 
-  private double projectionElevation = 0.1;
-  private double projectionAngle     = 10;
+  private double projectionElevation = IKGeometry.projectionElevation;
+  private double projectionAngle     = IKGeometry.projectionAngle;
   //private PathConstraints armPathConstraints = new PathConstraints(1, 1, 0, 0);
   //private GoalEndState armEndState = new GoalEndState(0, Rotation2d.kZero);
   private static ArrayList<Translation2d> plannedPathPoints = new ArrayList<Translation2d>();
