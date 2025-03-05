@@ -85,18 +85,6 @@ public class CoralManipulator extends SubsystemBase
         setCoralManipulatorSpeed(speed);
         break;
 
-      case DELIVERY_SMART:
-        int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
-        speed = -Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed;
-
-        if (nearestReefFace == 5 || nearestReefFace == 6) 
-        {
-          speed = -speed;
-        }
-
-        setCoralManipulatorSpeed(speed);
-        break;
-
       case DELIVERY_LEFT:
       case DELIVERY_RIGHT:
         speed = Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed;

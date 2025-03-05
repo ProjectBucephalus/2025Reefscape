@@ -291,17 +291,8 @@ public class Diffector extends SubsystemBase
 
   private CargoStates updateCargoState()
   {
-    if(RobotContainer.coral && RobotContainer.algae) // Both game pieces
-      {return CargoStates.TWO_ITEM;}
-
-    else if(RobotContainer.coral ^ RobotContainer.algae) // One game piece
-      {return CargoStates.ONE_ITEM;}
-
-    else if(!RobotContainer.coral && !RobotContainer.algae) // No game piece
-      {return CargoStates.EMPTY;}
-
-    else // Default state, should never be reached
-      {return CargoStates.EMPTY;}
+   // Default state, should never be reached
+   {return CargoStates.DEFAULT;}
   }
 
   public void setManualDiffectorValues(double newManualElevation, double newManualRotation)
