@@ -146,7 +146,7 @@ public class FieldUtils
     public static final GeoFenceObject cornerNBlue   = new GeoFenceObject(fieldWest, fieldNorth - cornerWidth, fieldWest + cornerLength, fieldNorth, wallBuffer);
     public static final GeoFenceObject cornerSRed    = new GeoFenceObject(fieldEast, fieldSouth + cornerWidth, fieldEast - cornerLength, fieldSouth, wallBuffer);
     public static final GeoFenceObject cornerNRed    = new GeoFenceObject(fieldEast, fieldNorth - cornerWidth, fieldEast - cornerLength, fieldNorth, wallBuffer);
-
+    
     public static final GeoFenceObject[] fieldBlueGeoFence = 
     {
       field, 
@@ -179,5 +179,9 @@ public class FieldUtils
     public static final double robotRadiusCircumscribed = 0.55;
     /** Speed threshold at which the robot changes between radii, in meters per second*/
     public static final double robotSpeedThreshold = 1.5;
+    
+    /* Barge Exclusion Zone -> Keep the arm pivot far enough away from the net to prevent touching it */
+    public static final double bargeSafetyWidth = Constants.DiffectorConstants.IKGeometry.bargeSafetyWidth;
+    public static final GeoFenceObject netProtectionZone = new GeoFenceObject((fieldLength/2) - bargeSafetyWidth, fieldSouth, (fieldLength/2) + bargeSafetyWidth, fieldNorth, wallBuffer, 0, ObjectTypes.box);
   }
 }

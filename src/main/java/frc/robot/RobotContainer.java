@@ -105,7 +105,7 @@ public class RobotContainer
         () -> -driver.getRawAxis(rotationAxis), 
         () -> driver.getRawAxis(brakeAxis),
         () -> true,
-        () -> !driver.leftStick().getAsBoolean()
+        () -> true
       )
     );
 
