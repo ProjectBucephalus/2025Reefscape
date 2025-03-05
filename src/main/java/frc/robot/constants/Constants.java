@@ -185,9 +185,6 @@ public final class Constants
 
   public static final class DiffectorConstants
   {
-    public static final double projectionElevation = 0.1;
-    public static final double projectionAngle = 10;
-
     public static final double motorStallCurrent = 100; // TODO: Tune this to the point that it will reliably prevent stalls
 
     public static final double diffectorMotorKGEmpty = 0.225;
