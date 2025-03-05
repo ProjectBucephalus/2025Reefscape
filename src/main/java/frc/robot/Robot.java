@@ -56,6 +56,7 @@ public class Robot extends TimedRobot
     RobotContainer.s_LimelightStbd.setIMUMode(1);
 
     SmartDashboard.putData("Field", autoPosition);
+    SmartDashboard.putNumber("Exposure Setting", 0);
   }
 
   /**

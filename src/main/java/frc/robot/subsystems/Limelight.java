@@ -32,6 +32,8 @@ public class Limelight extends SubsystemBase
   
   private final String limelightName;
 
+  private int pipelineIndex = 0;
+
   public enum TagPOI 
   {
     REEF,
@@ -78,9 +80,18 @@ public class Limelight extends SubsystemBase
     }
   }
 
+  public int updateLimelightPipeline()
+    {return (int) SmartDashboard.getNumber("Exposure Setting", 0);}
+
   @Override
   public void periodic() 
   { 
+    if (updateLimelightPipeline() != pipelineIndex)
+    {
+      pipelineIndex = updateLimelightPipeline();
+      LimelightHelpers.setPipelineIndex(limelightName, pipelineIndex);
+    } // TODO: Set up multiple pipelines, the same except for exposure [150..600]
+
     headingDeg = RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble();
     omegaRps = Units.radiansToRotations(RobotContainer.swerveState.Speeds.omegaRadiansPerSecond);
     
