@@ -92,7 +92,12 @@ public class Diffector extends SubsystemBase
     m_diffectorDA = new TalonFX(IDConstants.daMotorID);
     encoder = new CANcoder(IDConstants.armCANcoderID);
 
-    targetPosition  = Constants.DiffectorConstants.startPosition;
+    // To allow for rapid testing of new code, Diffector can start at Coral-Stow position if needed
+    if (SmartDashboard.getBoolean("Start at Coral Stow", false))
+      {targetPosition  = Constants.DiffectorConstants.coralStowPosition;}
+    else 
+      {targetPosition  = Constants.DiffectorConstants.startPosition;}
+
     targetElevation = targetPosition.getX();
     targetAngle     = targetPosition.getY();
     oldTarget       = targetPosition;
