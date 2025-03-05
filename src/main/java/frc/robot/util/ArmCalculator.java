@@ -77,14 +77,25 @@ public class ArmCalculator
 
     if 
     ( // Certain positions put the arm lower than it would otherwise be allowed to go
-      !(
+      (
         relativeTarget.equals(DiffectorConstants.startPosition) ||
         relativeTarget.equals(DiffectorConstants.coralTransferPosition) ||
         relativeTarget.equals(DiffectorConstants.algaeIntakePosition) ||
         relativeTarget.equals(DiffectorConstants.climbPosition)
       )
-    ) // Any other position should be made safe
-      {targetPosition = new Translation2d(checkPosition(targetPosition), targetPosition.getY());}
+    )
+    { // Forced safe path for unsafe targets
+      pathOutput.add(new Translation2d(Math.min(safeElevation, startPosition.getX()), startPosition.getY()));
+      pathOutput.add(new Translation2d(Math.min(safeElevation, startPosition.getX()), targetPosition.getY()));
+      pathOutput.add(new Translation2d(safeElevation, targetPosition.getY())); // Ensuring arm is not rotating
+      pathOutput.add(targetPosition);
+
+      return pathOutput;
+    }
+    
+    
+    // Any other position should be made safe
+    targetPosition = new Translation2d(checkPosition(targetPosition), targetPosition.getY());
     
     // Path of arm starts above safe limits, path is safe as given
     if (startPosition.getX() >= safeElevation)
@@ -141,8 +152,8 @@ public class ArmCalculator
     // Arm starts vertical and starts lower than is safe
     else if (startPosition.getX() <= checkAngle(startPosition.getY()))
     { // Ensure the arm is safe before moving from vertical
-      pathOutput.add(new Translation2d(safeElevation + projectionElevation, startPosition.getY()));
-      pathOutput.add(new Translation2d(safeElevation + projectionElevation, targetPosition.getY()));
+      pathOutput.add(new Translation2d(safeElevation, startPosition.getY()));
+      pathOutput.add(new Translation2d(safeElevation, targetPosition.getY()));
     }
 
     // Add Target waypoint:
