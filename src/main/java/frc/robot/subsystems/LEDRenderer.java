@@ -111,14 +111,17 @@ public class LEDRenderer extends SubsystemBase
   {
     // wipe the buffer
     patternBlack.applyTo(lightBuffer);
+
     // sort the queue by layer priority
     renderQueue.sort(Comparator.comparing(LightLayer::getPriority));
     SmartDashboard.putStringArray("Render Queue", listLayers());
+
     // call each layers render() method to draw to the buffer
     for (LightLayer layer : renderQueue) 
     {
       layer.render(lightBuffer);
     }
+
     // transfer the layered buffer to the LED Driver
     lights.setData(lightBuffer);
   }

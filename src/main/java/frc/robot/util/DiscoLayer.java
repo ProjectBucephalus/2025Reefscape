@@ -8,7 +8,7 @@ import frc.robot.constants.Constants.LEDStrip;
 public class DiscoLayer 
 {
   /**
-   *  layer object for the disco mode of lightlayer
+   *  layer class object for the disco mode of lightlayer
    */
   private double start; // the floor of this value is the position at which this layer starts
   private double length; // the floor of this value is the width or length of the layer, in LED's
@@ -60,7 +60,7 @@ public class DiscoLayer
   {
     /**
      * Getter for the layer age
-     * Returns the time this layer has been "alive" in seconds at last update
+     * Returns the time this layer has been "alive" at last update, in seconds
      */
     return age;
   }
@@ -77,18 +77,25 @@ public class DiscoLayer
     length += (growth * timeDelta);
     growth += (growthRate * timeDelta);
     age = (int)Math.floor(currTime - startTime);
+    
     // do limit checks
+    
     if (start > maxPos) {start -= (maxPos + 1);}
     if (start < 0) {start += maxPos + 1;}
     velocity = Conversions.clamp(velocity, -maxVel, maxVel);
+    
     //if we are at max velocity, flip the acceleration so it starts changing
     if (((velocity == -maxVel) && (accel < 0)) || ((velocity == maxVel) && (accel > 0))) {accel = -accel;}
+    
     length = Conversions.clamp(length, 1, maxLen);
     growth = Conversions.clamp(growth, -maxGrow, maxGrow);
+    
     // if at max or min size, flip growth so it will start changing 
     if (((length == 1) && (growth < 0)) || ((length == maxLen) && (growth > 0))) {growth = -growth;}
+    
     // also if growth is at max or min, flip growth rate change
     else if (((growth == -maxGrow) && (growthRate < 0)) || ((growth == maxGrow) &&(growthRate < 0)) ) {growthRate = -growthRate;}
+    
     // also throw in a random change to accel and growth rate every now and then
     if (Math.random() > LEDStrip.discoChangeChance)
     {
@@ -112,8 +119,11 @@ public class DiscoLayer
     start = Math.random()*viewWidth;
     length = Math.random()*(viewWidth-1);
     age = 0;
-    // we like nice bright Colors, so the sum of the R, G, and B values should at least equal 1
+    
+    // we like nice bright Colors :)
     shade = new Color(Math.random(), Math.random(), Math.random());
+    
+    // if all colour values are below the threshold, the colour is too dark, randomly set one of them to 1.
     if ((shade.blue < LEDStrip.discoColorThreshold) && 
         (shade.green < LEDStrip.discoColorThreshold) && 
         (shade.red < LEDStrip.discoColorThreshold))
@@ -132,14 +142,18 @@ public class DiscoLayer
         shade = new Color(shade.red,1.0,shade.blue);
       }
     }
+
     // calculate max values based on viewWidth
+    
     maxPos = viewWidth - 1;
     maxLen = (int)Math.floor((double)viewWidth * 0.9);
     maxVel = (double)viewWidth * LEDStrip.discoMaxVelMultiplier;
     maxAcc = maxVel * LEDStrip.discoMaxAccelMultiplier;
     maxGrow = (double)viewWidth * LEDStrip.discoMaxGrowMultiplier;
     maxGrowRate = maxGrow * LEDStrip.discoMaxGrowRateMultiplier;
+    
     // set values to random value between -max and +max 
+    
     velocity = ((Math.random() - 0.5) * 2) * maxVel;
     accel = ((Math.random() - 0.5) * 2) * maxAcc;
     growth = ((Math.random() - 0.5) * 2) * maxGrow;
