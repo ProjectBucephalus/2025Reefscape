@@ -54,9 +54,7 @@ public class CoralManipulator extends SubsystemBase
     {coralMotor.set(speed);}
 
   private void setCoralManipulatorSpeedFeedforward(double speed)
-  {
-    coralMotor.set(speed + Math.sin(Units.degreesToRadians(RobotContainer.s_Diffector.getAngle())) * Constants.GamePiecesManipulator.coralHoldingkG);
-  }
+    {coralMotor.set(speed + Math.sin(Units.degreesToRadians(RobotContainer.s_Diffector.getAngle())) * Constants.GamePiecesManipulator.coralHoldingkG);}
 
   public void setCoralManipulatorStatus(CoralManipulatorStatus status)
     {coralStatus = status;}
@@ -73,7 +71,7 @@ public class CoralManipulator extends SubsystemBase
         
         if (RobotContainer.coral) 
           {coralStatus = CoralManipulatorStatus.DEFAULT;}
-        break;
+          break;
 
       case DELIVERY_SMART:
         int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
@@ -96,7 +94,7 @@ public class CoralManipulator extends SubsystemBase
 
         if (coralStatus == CoralManipulatorStatus.DELIVERY_RIGHT) 
           {speed = -speed;}
-          
+
         if (armPos > 90 && armPos <= 270)
           {speed = -speed;}
 
@@ -108,16 +106,14 @@ public class CoralManipulator extends SubsystemBase
 
       case DEFAULT:
         if (RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor())
-          {setCoralManipulatorSpeed(0);} 
+          {setCoralManipulatorSpeed(0);}
 
         else if (RobotContainer.s_Canifier.coralManiPortSensor() && !RobotContainer.s_Canifier.coralManiStbdSensor())
-        {
-          setCoralManipulatorSpeedFeedforward(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
-        } 
+          {setCoralManipulatorSpeedFeedforward(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);}
+
         else if (!RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor()) 
-        {
-          setCoralManipulatorSpeedFeedforward(-Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
-        } 
+          {setCoralManipulatorSpeedFeedforward(-Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);} 
+          
         else if (!RobotContainer.s_Canifier.coralManiPortSensor() && !RobotContainer.s_Canifier.coralManiStbdSensor()) 
           {setCoralManipulatorSpeedFeedforward(0);}
           break;

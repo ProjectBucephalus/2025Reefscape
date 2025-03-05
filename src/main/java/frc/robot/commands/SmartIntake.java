@@ -28,17 +28,13 @@ public class SmartIntake extends Command
 
   @Override
   public void initialize()
-  {
-    new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeIntakePosition).schedule();
-  }
+    {new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeIntakePosition).schedule();}
 
   @Override
   public void execute()
   {
     if (s_Diffector.atPosition())
-    {
-      new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE).schedule();
-    }
+      {new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE).schedule();}
   }
 
   // Called once the command ends or is interrupted.
@@ -47,15 +43,11 @@ public class SmartIntake extends Command
   {
     new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.HOLDING);
     if (RobotContainer.algae)
-    {
-      new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferPosition).schedule();
-    }
+      {new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferPosition).schedule();}
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() 
-  {
-    return false;
-  }
+    {return false;}
 }

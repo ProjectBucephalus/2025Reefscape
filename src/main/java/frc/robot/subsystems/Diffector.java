@@ -177,9 +177,7 @@ public class Diffector extends SubsystemBase
    * @return Arm rotation, wrapped, degrees anticlockwise, 0 = coral at top, [0..360]
    */
   public double getRelativeRotation()
-  {
-    return Conversions.mod(angle, 360);
-  }
+    {return Conversions.mod(angle, 360);}
 
   private void calculatePath()
   {
@@ -287,16 +285,16 @@ public class Diffector extends SubsystemBase
   }
 
   private CargoStates updateCargoState()
-  {  // Default state, should never be reached
-    {return CargoStates.DEFAULT;}
+  {
+   // Default state, should never be reached
+   {return CargoStates.DEFAULT;}
   }
 
   public void setManualDiffectorValues(double newManualElevation, double newManualRotation)
   {
     if (newManualElevation != 0 || newManualRotation != 0) 
-    {
-      manualControl = true;
-    }
+      {manualControl = true;}
+
     manualElevation = newManualElevation;
     manualRotation = newManualRotation;
   }
@@ -365,9 +363,7 @@ public class Diffector extends SubsystemBase
       SmartDashboard.putBoolean("Diffector E-Stop", eStop);
     }
     else
-    {
-      eStop = SmartDashboard.getBoolean("Diffector E-Stop", false);
-    }
+      {eStop = SmartDashboard.getBoolean("Diffector E-Stop", false);}
     
     if (eStop)
     {
@@ -389,9 +385,7 @@ public class Diffector extends SubsystemBase
         if (manualRotation != 0)
         {
           if (arm.checkAngle(angle + Math.copySign(projectionAngle, manualRotation)) > elevation) 
-          {
-            manualRotation = 0;
-          }
+            {manualRotation = 0;}
         }
         if (manualElevation == 0 && manualRotation == 0)
         {
@@ -415,9 +409,10 @@ public class Diffector extends SubsystemBase
       }
       
       if (transferRequested && !MathUtil.isNear(180, getRelativeRotation(), DiffectorConstants.angleTolerance))
-      {transferRequested = false;}
+        {transferRequested = false;}
+        
       if (transferRequested && !MathUtil.isNear(0, angle, DiffectorConstants.angleTolerance))
-      {stowRequested = false;}
+        {stowRequested = false;}
 
     }
     SmartDashboard.putNumber("Elevator Target", targetElevation);

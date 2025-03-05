@@ -33,6 +33,7 @@ public class EjectAlgae extends Command
   {
     if (RobotContainer.s_Diffector.getRelativeRotation() < 60) 
       {cancel = true;}
+      
     else
       {s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EJECT);}
   }

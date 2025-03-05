@@ -20,13 +20,10 @@ public class TransferGamePiece extends SequentialCommandGroup
   public TransferGamePiece(Diffector s_Diffector, boolean isCoral) 
   {
     if (isCoral)
-    {
-      c_ArmCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferPosition);
-    } 
+      {c_ArmCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferPosition);}
+ 
     else
-    {
-      c_ArmCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferPosition);
-    }
+      {c_ArmCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferPosition);}
 
     addCommands(c_ArmCommand);
   }

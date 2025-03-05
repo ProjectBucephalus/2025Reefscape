@@ -41,11 +41,14 @@ public class DropGamePiece extends Command
     {
       if (algaeModifier.getAsBoolean())
         {new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT).schedule();}
+        
       else
         {new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT).schedule();}
     }
+    
     else if (coral)
       {new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT).schedule();}
+      
     else if (algae)
       {new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT).schedule();}
   }

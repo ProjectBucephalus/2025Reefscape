@@ -47,18 +47,22 @@ public class Rumbler extends SubsystemBase
         if(!drRequest.contains(requestID))
           {return drRequest.add(requestID);}
         break;
+        
       case DRIVER_LEFT:
         if(!dlRequest.contains(requestID))
           {return dlRequest.add(requestID);}
         break;
+
       case COPILOT_RIGHT:
         if(!crRequest.contains(requestID))
           {return crRequest.add(requestID);}
         break;
+
       case COPILOT_LEFT:
         if(!clRequest.contains(requestID))
           {return clRequest.add(requestID);}
         break;
+
       default:
         return false;
     }
@@ -71,12 +75,16 @@ public class Rumbler extends SubsystemBase
     {
       case DRIVER_RIGHT:
         return drRequest.remove(requestID);
+
       case DRIVER_LEFT:
         return dlRequest.remove(requestID);
+
       case COPILOT_RIGHT:
         return crRequest.remove(requestID);
+
       case COPILOT_LEFT:
         return clRequest.remove(requestID);
+
       default:
         return false;
     }    
@@ -91,20 +99,28 @@ public class Rumbler extends SubsystemBase
     // if there are any active requests in the queue for a rumble motor, rumble, otherwise stop.
     if (drRequest.size() > 0)
       {rumbleDriver.setRumble(GenericHID.RumbleType.kRightRumble, driverStrength);}
+
     else
       {rumbleDriver.setRumble(GenericHID.RumbleType.kRightRumble, 0);}
+
     if(dlRequest.size() > 0)
       {rumbleDriver.setRumble(GenericHID.RumbleType.kLeftRumble,driverStrength);}
+
     else
       {rumbleDriver.setRumble(GenericHID.RumbleType.kLeftRumble,0);}
+
     if(crRequest.size() > 0)
       {rumbleCopilot.setRumble(RumbleType.kRightRumble,copilotStrength);}
+
     else
       {rumbleCopilot.setRumble(RumbleType.kRightRumble,0);}
+
     if(clRequest.size() > 0)
       {rumbleCopilot.setRumble(RumbleType.kLeftRumble,copilotStrength);}
+
     else
       {rumbleCopilot.setRumble(RumbleType.kLeftRumble,0);}
+
     // put queue contents to dashboard, for debugging / verification.
     SmartDashboard.putString("DriverRight Rumble Queue",drRequest.toString());
     SmartDashboard.putString("CopilotLeft Rumbler Queue",clRequest.toString());

@@ -49,6 +49,7 @@ public class PathfindToStation extends Command
     {
       if (robotY >= 4.026) 
         {stationSide = 'r';}
+
       else 
         {stationSide = 'l';}
     }
@@ -56,6 +57,7 @@ public class PathfindToStation extends Command
     {
       if (robotY >= 4.026) 
         {stationSide = 'l';}
+        
       else 
         {stationSide = 'r';}
     }
