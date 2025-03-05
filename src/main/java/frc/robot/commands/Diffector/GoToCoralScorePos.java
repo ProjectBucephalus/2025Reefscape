@@ -4,51 +4,92 @@
 
 package frc.robot.commands.Diffector;
 
+import java.util.function.Supplier;
+
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Diffector;
+import frc.robot.util.FieldUtils;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class GoToCoralScorePos extends Command 
 {
-  int level;
-  Diffector s_Diffector;
-  Command moveCommand;
+  private int level;
+  private Translation2d target;
+  private Diffector s_Diffector;
+  private Command c_MoveCommand;
+  private int nearestReefFace;
+  private Translation2d robotPos;
+  private Supplier<Translation2d> posSup;
 
-  public GoToCoralScorePos(int level, Diffector s_Diffector) 
+  public GoToCoralScorePos(int level, Diffector s_Diffector, Supplier<Translation2d> posSup) 
   {
     this.s_Diffector = s_Diffector;
     this.level = level;
+    this.posSup = posSup;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() 
   {
+    robotPos = posSup.get();
+    nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
+
     switch (level)
     {
-      case 1:
-        moveCommand = new MoveTo(s_Diffector, Constants.Diffector.reef4Elevation, Constants.Diffector.reef4Angle);
-        break;
-
-      case 2:
-        moveCommand = new MoveTo(s_Diffector, Constants.Diffector.reef3Elevation, Constants.Diffector.reef3Angle);
+      case 4:
+        if (nearestReefFace == 5 || nearestReefFace == 6) 
+        {
+          target = Constants.DiffectorConstants.reef4FlippedPosition;
+        }
+        else
+        {
+          target = Constants.DiffectorConstants.reef4Position;
+        }
         break;
 
       case 3:
-        moveCommand = new MoveTo(s_Diffector, Constants.Diffector.reef2Elevation, Constants.Diffector.reef2Angle);
+        if (nearestReefFace == 5 || nearestReefFace == 6) 
+        {
+          target = Constants.DiffectorConstants.reef3FlippedPosition;
+        }
+        else
+        {
+          target = Constants.DiffectorConstants.reef3Position;
+        }
         break;
 
-      case 4:
-        moveCommand = new MoveTo(s_Diffector, Constants.Diffector.reef1Elevation, Constants.Diffector.reef1Angle);
+      case 2:
+        if (nearestReefFace == 5 || nearestReefFace == 6) 
+        {
+          target = Constants.DiffectorConstants.reef2FlippedPosition;
+        }
+        else
+        {
+          target = Constants.DiffectorConstants.reef2Position;
+        }
+        break;
+
+      case 1:
+        if (nearestReefFace == 5 || nearestReefFace == 6) 
+        {
+          target = Constants.DiffectorConstants.reef1FlippedPosition;
+        }
+        else
+        {
+          target = Constants.DiffectorConstants.reef1Position;
+        }
         break;
     }
 
-    moveCommand.schedule();
+    c_MoveCommand = new MoveTo(s_Diffector, target);
+    c_MoveCommand.schedule();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished()
-    {return moveCommand.isFinished();}
+    {return c_MoveCommand.isFinished();}
 }

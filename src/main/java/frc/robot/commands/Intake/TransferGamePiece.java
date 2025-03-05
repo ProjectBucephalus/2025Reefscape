@@ -8,31 +8,26 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.Diffector.MoveTo;
 import frc.robot.constants.Constants;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Diffector;
-import frc.robot.subsystems.Intake.IntakeStatus;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class TransferGamePiece extends SequentialCommandGroup 
 {
-  Command diffectorPosCommand;
-  Command intakeCommand;
+  private Command c_ArmCommand;
 
-  public TransferGamePiece(Diffector s_Diffector, Intake s_Intake, boolean isCoral) 
+  public TransferGamePiece(Diffector s_Diffector, boolean isCoral) 
   {
     if (isCoral)
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.coralTransferElevation, Constants.Diffector.coralTransferAngle);
-      intakeCommand = new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_CORAL);
+      c_ArmCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferPosition);
     } 
     else
     {
-      diffectorPosCommand = new MoveTo(s_Diffector, Constants.Diffector.algaeTransferElevation, Constants.Diffector.algaeTransferAngle);
-      intakeCommand = new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE);
+      c_ArmCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferPosition);
     }
 
-    addCommands(diffectorPosCommand, intakeCommand);
+    addCommands(c_ArmCommand);
   }
 }

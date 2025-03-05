@@ -2,9 +2,10 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.CoralManipulator;
+package frc.robot.commands.Manipulator;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.Diffector.MoveTo;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CoralManipulator;
@@ -16,5 +17,5 @@ import frc.robot.subsystems.Diffector;
 public class IntakeCoralSequence extends SequentialCommandGroup 
 {
   public IntakeCoralSequence(Diffector s_Diffector, CoralManipulator s_CoralManipulator) 
-    {addCommands(new MoveTo(s_Diffector, Constants.Diffector.coralStationElevation, Constants.Diffector.coralStationAngle), new IntakeCoral(s_CoralManipulator));}
+    {addCommands(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralIntakePosition), new WaitCommand(3), new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferPosition));}
 }

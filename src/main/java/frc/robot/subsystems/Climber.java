@@ -1,77 +1,102 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CTREConfigs;
-import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.IDConstants;
 
-public class Climber extends SubsystemBase {
+public class Climber extends SubsystemBase
+{
+    /* Declarations of all the motor controllers */
+  private TalonFX m_ClimberWinch;
+  private boolean climbActive;
+  private ClimberStatus status;
+
+  //private DigitalInput dio;
+
+  /* Declarations of all the motion magic variables */
   private final MotionMagicVoltage motionMagic;
-  private TalonFX m_Winch;
-  private double climbTarget;
-  
+  private double speed;
+  private double manualScale;
+  private TalonFXConfiguration config = CTREConfigs.climberWinchFXConfig;
+
   public enum ClimberStatus 
   {
-    INIT_CONFIG,
-    DEPLOY_CONFIG,
-    CLIMB_CONFIG
+    ACTIVE,
+    LOCKED,
+    MANUAL,
+    CLIMB,
+    INTAKE //TODO
   };
-  
-  /** Creates a new Climber. */
+
   public Climber() 
   { 
-    m_Winch = new TalonFX(Constants.Climber.winchID);
+    this.status = ClimberStatus.LOCKED;
 
-    m_Winch.getConfigurator().apply(CTREConfigs.climberWinchFXConfiguration);
+    m_ClimberWinch = new TalonFX(IDConstants.climberWinchMotorID);
+    m_ClimberWinch.getConfigurator().apply(config);
+    m_ClimberWinch.setPosition(Constants.ClimberConstants.lockedWinchPos / 360);
+    
+    manualScale = Constants.ClimberConstants.manualScale;
 
     motionMagic = new MotionMagicVoltage(0);
   }
 
-  private void setClimberSpeed(double speed)
-    {m_Winch.set(speed);}
+  public double getClimberPos()
+    {return m_ClimberWinch.getPosition().getValueAsDouble();}
+  
+  public ClimberStatus getClimberStatus()
+    {return status;}
+  
+  public void setClimberStatus(ClimberStatus newStatus)
+    {status = newStatus;}
 
-  private void setClimbTargets(double newWinchTarget)
+  public boolean isUnlocked()
+    {return climbActive;}
+
+  public boolean manualOveride(double motorSpeed)
   {
-    climbTarget = newWinchTarget;
-    //Use for auto-positoning
+    speed = motorSpeed;
+    if (status == ClimberStatus.LOCKED)
+      {return false;}
+
+    status = ClimberStatus.MANUAL;
+    return true;
   }
-
-  public void setClimberStatus(ClimberStatus Status)
-  {
-    switch (Status)
-    {
-      case INIT_CONFIG:
-        setClimberSpeed(Constants.Climber.initSpeed);
-        setClimbTargets(Constants.Climber.initWinchPos);
-        break;
-
-      case DEPLOY_CONFIG: 
-        if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
-        {
-          setClimberSpeed(Constants.Climber.deploySpeed);
-          setClimbTargets(Constants.Climber.deployWinchPos);
-        }   
-        break;
-
-      case CLIMB_CONFIG:
-        if (RobotContainer.s_Intake.isCoralStowed() && RobotContainer.s_Diffector.safeToMoveClimber())
-        {
-          setClimberSpeed(Constants.Climber.climbSpeed);
-          setClimbTargets(Constants.Climber.climbWinchPos);
-        }
-        break;
-    }
-  }
-
-  public boolean isStowed()
-    {return (m_Winch.getPosition()).getValueAsDouble() <= Constants.Climber.initWinchThreshold;}
-
-  public boolean climbReady()
-    {return (m_Winch.getPosition()).getValueAsDouble() >= Constants.Climber.deployWinchPos;}
 
   @Override
   public void periodic()
-    {m_Winch.setControl(motionMagic.withPosition(climbTarget));}
+  {
+    switch (status)
+    {
+      case LOCKED:
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.lockedWinchPos / 360));
+        break;
+
+      case ACTIVE:
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos / 360));
+        break;
+
+      case CLIMB:
+        m_ClimberWinch.getConfigurator().apply(config.MotionMagic.withMotionMagicCruiseVelocity(Constants.ClimberConstants.winchClimbCruise));
+        m_ClimberWinch.getConfigurator().apply(config.MotionMagic.withMotionMagicCruiseVelocity(Constants.ClimberConstants.winchDefaultCruise));
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.climbWinchPos));
+        // TODO: Consider active hold using gyro pitch to balance
+        break;
+      
+      case INTAKE:
+        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.intakeWinchPos));
+        break;
+
+      case MANUAL:
+        if (speed != 0)
+          {m_ClimberWinch.set(speed * manualScale);}
+        else
+          {m_ClimberWinch.setControl(motionMagic.withPosition(getClimberPos()));}
+    }
+  }
 }

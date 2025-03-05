@@ -26,15 +26,15 @@ public class Rumbler extends SubsystemBase
 
   public Rumbler(CommandXboxController driver, CommandXboxController copilot)
   {
-    SmartDashboard.putNumber("Driver Rumble", Constants.Rumbler.driverDefault);
-    SmartDashboard.putNumber("Copilot Rumble", Constants.Rumbler.copilotDefault);
+    SmartDashboard.putNumber("Driver Rumble", Constants.RumblerConstants.driverDefault);
+    SmartDashboard.putNumber("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
 
     // could drop the getHID method as setrumble has been added to the CommandXBoxController class in 2025, but this still works.
     rumbleDriver = driver;
     rumbleCopilot = copilot;  
     // Check if smartdashboard has existing settings for driver and copilot rumble strength, and put defaults if not.
-    driverStrength = SmartDashboard.getNumber("Driver Rumble", Constants.Rumbler.driverDefault);
-    copilotStrength = SmartDashboard.getNumber("Copilot Rumble", Constants.Rumbler.copilotDefault);
+    driverStrength = SmartDashboard.getNumber("Driver Rumble", Constants.RumblerConstants.driverDefault);
+    copilotStrength = SmartDashboard.getNumber("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
   } 
 
   public boolean addRequest(Sides queue, String requestID)
@@ -86,8 +86,8 @@ public class Rumbler extends SubsystemBase
   public void periodic()
   {
     // check for chages to rumble stregnths in smartdashboard, and update.
-    driverStrength = SmartDashboard.getNumber("Driver Rumble", Constants.Rumbler.driverDefault);
-    copilotStrength = SmartDashboard.getNumber("Copilot Rumble", Constants.Rumbler.copilotDefault);
+    driverStrength = SmartDashboard.getNumber("Driver Rumble", Constants.RumblerConstants.driverDefault);
+    copilotStrength = SmartDashboard.getNumber("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
     // if there are any active requests in the queue for a rumble motor, rumble, otherwise stop.
     if (drRequest.size() > 0)
       {rumbleDriver.setRumble(GenericHID.RumbleType.kRightRumble, driverStrength);}

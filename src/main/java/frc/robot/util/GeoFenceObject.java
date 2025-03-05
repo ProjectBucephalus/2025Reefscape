@@ -218,7 +218,7 @@ public class GeoFenceObject
   }
 
   private Translation2d pointDamping(Translation2d point, Translation2d motionXY, double robotR, Translation2d robotXY)
-      {return pointDamping(point.getX(), point.getY(), motionXY, robotR, robotXY);}
+    {return pointDamping(point.getX(), point.getY(), motionXY, robotR, robotXY);}
   
   private Translation2d pointDamping(double pointX, double pointY, Translation2d motionXY, double robotR, Translation2d robotXY)
   {
@@ -254,12 +254,14 @@ public class GeoFenceObject
   {
     ArrayList<Translation2d> centresList = new ArrayList<Translation2d>();
     if (objectType == ObjectTypes.polygon) 
-    {
-      for(int i = 0; i < edgeLines.size(); i++)
-        {centresList.add(edgeLines.get(i).centre);}
-    }
+      {centresList.addAll(edgeLines.stream().map(edgeLine -> edgeLine.centre).toList());}
     centresList.add(centre);
     return centresList;
+  }
+
+  public Translation2d getCentre()
+  {
+    return centre;
   }
 
   /**

@@ -1,5 +1,8 @@
 package frc.robot;
 
+import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.Sendable;
@@ -12,20 +15,17 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
 import frc.robot.commands.*;
-import frc.robot.commands.AlgaeManipulator.*;
 import frc.robot.commands.Auto.*;
 import frc.robot.commands.Auto.PathfindToReef.DpadOptions;
-import frc.robot.commands.CoralManipulator.*;
 import frc.robot.commands.Diffector.*;
-import frc.robot.commands.Intake.*;
-import frc.robot.commands.Rumble.*;
-import frc.robot.commands.Util.*;
+import frc.robot.commands.Manipulator.SetAlgaeStatus;
+import frc.robot.commands.Manipulator.SetCoralStatus;
 import frc.robot.constants.*;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.Intake.IntakeStatus;
-import frc.robot.subsystems.Rumbler.Sides;
+import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
+import frc.robot.subsystems.Climber.ClimberStatus;
+import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 import frc.robot.util.*;
 import frc.robot.util.LightLayer.LEDType;
 import frc.robot.util.LightLayer.Mode;
@@ -39,25 +39,32 @@ import frc.robot.util.LightLayer.Mode;
 public class RobotContainer 
 {
   public enum HeadingStates{UNLOCKED, REEF_LOCK, PROCESSOR_LOCK, STATION_LOCK, CAGE_LOCK}
+  
+  private final Telemetry logger = new Telemetry(Constants.Swerve.maxSpeed);
 
   /* Persistent values for tracking systems */
   public static HeadingStates headingState = HeadingStates.UNLOCKED;
-  public static boolean coral = Constants.Diffector.startingCoralState;
-  public static boolean algae = Constants.Diffector.startingAlgaeState;
+  public static boolean coral = Constants.DiffectorConstants.startingCoralState;
+  public static boolean algae = Constants.DiffectorConstants.startingAlgaeState;
+  public static SwerveDriveState swerveState;
 
   /* Controllers */
-  public static final CommandXboxController driver = new CommandXboxController(0);
-  public static final CommandXboxController copilot = new CommandXboxController(1);
+  public static final CommandXboxController driver    = new CommandXboxController(0);
+  public static final CommandXboxController copilot   = new CommandXboxController(1);
+  public static final CommandXboxController buttonBox = new CommandXboxController(2);
+  public static final CommandXboxController testing   = new CommandXboxController(3);
+  public static final CommandXboxController sysID     = new CommandXboxController(4);
 
   /* Subsystems */
   public static final CommandSwerveDrivetrain s_Swerve = TunerConstants.createDrivetrain();
-  public static final Limelight s_LimelightPort = new Limelight("limelight-port");
-  public static final Limelight s_LimelightStbd = new Limelight("limelight-stbd");
+  public static final Limelight s_LimelightPort = new Limelight(IDConstants.llPortName);
+  public static final Limelight s_LimelightStbd = new Limelight(IDConstants.llStbdName);
+  
   public static final Diffector s_Diffector = new Diffector();
   public static final Climber s_Climber = new Climber();
-  public static final Intake s_Intake = new Intake();
   public static final CoralManipulator s_CoralManipulator = new CoralManipulator();
   public static final AlgaeManipulator s_AlgaeManipulator = new AlgaeManipulator();
+  public static final CANifierAccess s_Canifier = new CANifierAccess();
   public static Rumbler s_Rumbler = new Rumbler(driver, copilot);
   private final LEDRenderer s_Lights = new LEDRenderer();
   private LightLayer progressLayer = new LightLayer(s_Swerve, "Progress");
@@ -66,30 +73,38 @@ public class RobotContainer
   private LightLayer processorPointerLayer = new LightLayer(s_Swerve, "ProcPointer");
 
 
-  /* Drive Controls */
+  /* Driver Control Axis */
   public static final int translationAxis = XboxController.Axis.kLeftY.value;
-  public static final int strafeAxis = XboxController.Axis.kLeftX.value;
-  public static final int rotationAxis = XboxController.Axis.kRightX.value;
-  public static final int brakeAxis = XboxController.Axis.kRightTrigger.value;
+  public static final int strafeAxis      = XboxController.Axis.kLeftX.value;
+  public static final int rotationAxis    = XboxController.Axis.kRightX.value;
+  public static final int brakeAxis       = XboxController.Axis.kRightTrigger.value;
+
+  /* Codriver Control Axis */
+  public static final int manualClimberAxis            = XboxController.Axis.kLeftY.value;
+  public static final int manualDiffectorElevationAxis = XboxController.Axis.kRightY.value;
+  public static final int manualDiffectorRotationAxis  = XboxController.Axis.kRightX.value;
+
 
   /* Triggers */
   public static final Trigger unlockHeadingTrigger = new Trigger(() -> Math.abs(driver.getRawAxis(rotationAxis)) > Constants.Control.stickDeadband);
-  private final Trigger cageDriveTrigger = new Trigger(() -> headingState == HeadingStates.CAGE_LOCK);
-  private final Trigger reefDriveTrigger = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
-  private final Trigger stationDriveTrigger = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
-  private final Trigger processorDriveTrigger = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
-  private final Trigger driverLeftRumbleTrigger = new Trigger(() -> s_Intake.getCoralState() || s_Intake.getAlgaeState());
-  private final Trigger copilotLeftRumbleTrigger = new Trigger(
-              () -> s_Intake.isCoralStowed() ||s_Intake.getCoralState() ||s_Intake.getAlgaeState() 
-              || s_Intake.getCoralState() && (s_Diffector.getEncoderPos() > 45 && s_Diffector.getEncoderPos() < 315) ||
-              s_Intake.getAlgaeState() && (s_Diffector.getEncoderPos() > 135 && s_Diffector.getEncoderPos() < 225));
-  //private final Trigger driverRightRumblTrigger = new Trigger(() -> )
+  private final Trigger cageDriveTrigger           = new Trigger(() -> headingState == HeadingStates.CAGE_LOCK);
+  private final Trigger scoreDriveTrigger          = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
+  private final Trigger stationDriveTrigger        = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
+  private final Trigger processorDriveTrigger      = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
+//  private final Trigger driverLeftRumbleTrigger    = new Trigger(() -> s_Intake.getAlgaeState());
+//  private final Trigger copilotLeftRumbleTrigger   = new Trigger(
+//              () -> s_Intake.getAlgaeState() && (s_Diffector.getRelativeRotation() > 45 && s_Diffector.getRelativeRotation() < 315) ||
+//              s_Intake.getAlgaeState() && (s_Diffector.getRelativeRotation() > 135 && s_Diffector.getRelativeRotation() < 225));
+  //private final Trigger driverRightRumblTrigger = new Trigger(() -> );
   // TODO: Ready to score rumble
-  private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.climbReady() && s_Climber.climbReady() && s_Diffector.climbReady() );
+  //private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.climbReady() && s_Climber.climbReady() && s_Diffector.climbReady() );
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() 
   {
+    swerveState = s_Swerve.getState();
+
+    SmartDashboard.putBoolean("IgnoreFence", true);
     s_Swerve.setDefaultCommand
     (
       new TeleopSwerve
@@ -128,7 +143,7 @@ public class RobotContainer
           builder.addDoubleProperty("Back Right Angle", () -> s_Swerve.getModule(3).getCurrentState().angle.getRadians(), null);
           builder.addDoubleProperty("Back Right Velocity", () -> s_Swerve.getModule(3).getCurrentState().speedMetersPerSecond, null);
 
-          builder.addDoubleProperty("Robot Angle", () -> s_Swerve.getState().Pose.getRotation().getRadians(), null);
+          builder.addDoubleProperty("Robot Angle", () -> swerveState.Pose.getRotation().getRadians(), null);
         }
       }
     );
@@ -137,22 +152,50 @@ public class RobotContainer
     configureDriverBindings();
     configureAutoDriveBindings();
     configureCopilotBindings();
+    //configureTestBindings();
     configureRumbleBindings();
+    configureManualBindings();
+
+    s_Swerve.registerTelemetry(logger::telemeterize);
     initLED();
   }
 
   private void configureDriverBindings()
   {
     // Heading reset
-    driver.start().onTrue(Commands.runOnce(() -> s_Swerve.seedFieldCentric()));
-
+    driver.start()
+      .onTrue
+      (
+        Commands.runOnce
+        (
+          () -> s_Swerve.getPigeon2()
+          .setYaw(FieldUtils.isRedAlliance() ? 0 : 180)
+        )
+      )
+      .onTrue
+      (
+        Commands.runOnce
+        (
+          () -> s_Swerve.resetPose
+          (
+            new Pose2d
+            (
+              RobotContainer.swerveState.Pose.getTranslation(), 
+              new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))
+            )
+          )
+        )
+      );
+      
     /* Intake controls */
-    driver.leftTrigger().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_CORAL)));
-    driver.leftBumper().whileTrue(Commands.runOnce(() -> s_Intake.setIntakeStatus(IntakeStatus.INTAKE_ALGAE)));
+    driver.leftTrigger().onTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_SMART)).onFalse(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DEFAULT));
+    driver.leftBumper().onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT)).onFalse(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EMPTY));
 
-    /* Scoring and game piece management controls */
-    driver.rightBumper().whileTrue(new DropGamePiece(s_AlgaeManipulator, s_CoralManipulator));
-    driver.back().onTrue(new AutoScoreSequence(s_Diffector, s_AlgaeManipulator, s_CoralManipulator, s_Swerve, () -> s_Swerve.getState().Pose.getTranslation()));
+    /* Smart Intake and Auto Score controls */
+    driver.rightBumper() // TODO: Intake is now part of Diffector system
+      .whileTrue(new SmartIntake(s_AlgaeManipulator, s_Diffector));
+    driver.back()
+      .onTrue(new AutoScoreSequence(s_Diffector, s_AlgaeManipulator, s_CoralManipulator, s_Swerve, () -> swerveState.Pose.getTranslation()));
   }
 
   private void configureAutoDriveBindings()
@@ -160,25 +203,25 @@ public class RobotContainer
     /* Heading lock state management */
     unlockHeadingTrigger.onTrue(Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED));
     driver.y().onTrue(Commands.runOnce(() -> headingState = HeadingStates.CAGE_LOCK));
-    driver.a().onTrue(Commands.runOnce(() -> headingState = HeadingStates.STATION_LOCK));
-    driver.b().onTrue(Commands.runOnce(() -> headingState = HeadingStates.PROCESSOR_LOCK));
     driver.x().onTrue(Commands.runOnce(() -> headingState = HeadingStates.REEF_LOCK));
+    driver.b().onTrue(Commands.runOnce(() -> headingState = HeadingStates.PROCESSOR_LOCK));
+    driver.a().onTrue(Commands.runOnce(() -> headingState = HeadingStates.STATION_LOCK));
 
     /* 
       * Cage pathfinding controls 
       * Drives to the nearest reef face when the cage heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    cageDriveTrigger.and(driver.povUp()).onTrue(new PathfindToAndFollow("cage2", s_Swerve));
-    cageDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToAndFollow("cage3", s_Swerve));
+    cageDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToAndFollow("cage2", s_Swerve));
+    cageDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToAndFollow("cage3", s_Swerve));
     cageDriveTrigger.and(driver.povRight()).onTrue(new PathfindToAndFollow("cage1", s_Swerve));
 
     /* 
       * Station pathfinding controls 
       * Drives to the nearest coral station when the station heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    stationDriveTrigger.and(driver.povUp()).onTrue(new PathfindToStation(5, () -> s_Swerve.getState().Pose.getY(), s_Swerve));
-    stationDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToStation(2, () -> s_Swerve.getState().Pose.getY(), s_Swerve));
-    stationDriveTrigger.and(driver.povRight()).onTrue(new PathfindToStation(8, () -> s_Swerve.getState().Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToStation(2, () -> swerveState.Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToStation(1, () -> swerveState.Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povRight()).onTrue(new PathfindToStation(3, () -> swerveState.Pose.getY(), s_Swerve));
 
     /* 
       * Processor pathfinding control 
@@ -187,26 +230,29 @@ public class RobotContainer
     processorDriveTrigger.and(driver.povRight()).onTrue(new PathfindToAndFollow("p", s_Swerve));
 
     /* 
-      * Reef pathfinding controls 
+      * Reef and Net pathfinding controls 
       * Drives to the nearest reef face when the reef heading lock is active and a corresponding dpad direction is pressed 
+      * Drives to the nearest net position when the scoring heading lock is active and down is pressed on the dpad
       */ 
-    reefDriveTrigger.and(driver.povUp()).onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
-    reefDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToReef(DpadOptions.LEFT, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
-    reefDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> s_Swerve.getState().Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> swerveState.Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToReef(DpadOptions.LEFT, () -> swerveState.Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> swerveState.Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povDown()) .onTrue(new PathfindToBarge(() -> swerveState.Pose.getTranslation(), s_Swerve));
 
     /* 
       * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed
-      * Does not need to check the rotation stick, as soon at the rotation stick is moved all drive triggers become false (see line 141)
+      * Does not need to check the rotation stick, as soon at the rotation stick is moved all drive triggers become false
       * Bind heading targeting commands to run while the appropriate head lock trigger is active and the dpad isn't pressed
       * Does not need to check the rotation stick, as soon as the rotation stick is moved all heading lock triggers become false 
-      * (see line 141)
+      * (see start of this function)
       */
     cageDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
         new TargetHeading
         (
-          s_Swerve, 
+          s_Swerve,
+          Rotation2d.kZero, 
           Rotation2d.kZero,
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
@@ -221,7 +267,8 @@ public class RobotContainer
         new TargetHeadingStation
         (
           s_Swerve, 
-          () -> s_Swerve.getState().Pose.getY(),
+          Rotation2d.kZero,
+          () -> swerveState.Pose.getY(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
           () -> driver.getRawAxis(brakeAxis),
@@ -234,7 +281,8 @@ public class RobotContainer
       (
         new TargetHeading
         (
-          s_Swerve, 
+          s_Swerve,
+          Rotation2d.kCW_90deg, 
           Rotation2d.kCW_90deg,
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
@@ -243,13 +291,14 @@ public class RobotContainer
         )
       );
 
-    reefDriveTrigger.and(driver.povCenter())
+    scoreDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetHeadingReef
+        new TargetHeadingScore
         (
           s_Swerve, 
-          () -> s_Swerve.getState().Pose.getTranslation(),
+          90,
+          () -> swerveState.Pose.getTranslation(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
           () -> driver.getRawAxis(brakeAxis),
@@ -261,84 +310,105 @@ public class RobotContainer
   private void configureCopilotBindings()
   {
     /* Climb controls */
-    copilot.start().and(copilot.back()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.climbElevation, Constants.Diffector.climbAngle));
-    copilot.back().onTrue(new Test("climber", "deploy"));
+    copilot.start()
+      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.CLIMB)));
+    copilot.back()
+      .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.ACTIVE))
+      .andThen(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbPosition)));//Deploys the climber
 
     /* Coral scoring controls */
-    copilot.a().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(1, s_Diffector, s_CoralManipulator));
-    copilot.b().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(2, s_Diffector, s_CoralManipulator));
-    copilot.x().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(3, s_Diffector, s_CoralManipulator));
-    copilot.y().and(copilot.rightTrigger().negate()).onTrue(new ScoreCoralSequence(4, s_Diffector, s_CoralManipulator));
+    copilot.y().and(copilot.rightTrigger().negate())
+      .onTrue(new GoToCoralScorePos(4, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L4 scoring
+    copilot.x().and(copilot.rightTrigger().negate())
+      .onTrue(new GoToCoralScorePos(3, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L3 scoring
+    copilot.b().and(copilot.rightTrigger().negate())
+      .onTrue(new GoToCoralScorePos(2, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L2 scoring
+    copilot.a().and(copilot.rightTrigger().negate())
+      .onTrue(new GoToCoralScorePos(1, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L1 scoring
         
-    /* Algae scoring controls */
-    copilot.a().and(copilot.rightTrigger()).onTrue(new ScoreAlgae(false, s_Diffector, s_AlgaeManipulator));
-    copilot.b().and(copilot.rightTrigger()).onTrue(new IntakeAlgaeSequence(true, s_Diffector, s_AlgaeManipulator));
-    copilot.x().and(copilot.rightTrigger()).onTrue(new IntakeAlgaeSequence(false, s_Diffector, s_AlgaeManipulator));
-    copilot.y().and(copilot.rightTrigger()).onTrue(new ScoreAlgae(true, s_Diffector, s_AlgaeManipulator));
+    /* Algae scoring/intaking controls */
+    copilot.y().and(copilot.rightTrigger())
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition)); //Net scoring
+    copilot.x().and(copilot.rightTrigger())
+      .onTrue(new GoToAlgaeIntakePos(false, s_Diffector, () -> swerveState.Pose.getTranslation())); //L3 pick up
+    copilot.b().and(copilot.rightTrigger())
+      .onTrue(new GoToAlgaeIntakePos(true, s_Diffector, () -> swerveState.Pose.getTranslation()));  //L2 pick up
+    copilot.a().and(copilot.rightTrigger())
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.processorPosition)); //Processor scoring
 
-    /* Game piece transfer positions controls*/
-    copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE));
-    copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.algaeTransferElevation, Constants.Diffector.algaeTransferAngle));
-    copilot.povUp().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.TRANSFER_ALGAE));
-    copilot.povUp().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new MoveTo(s_Diffector, Constants.Diffector.coralTransferElevation, Constants.Diffector.coralTransferAngle));
+    /* Stow pos*/
+    copilot.povUp().and(copilot.rightTrigger())
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeStowPosition));  //algae stow
+    copilot.povUp().and(copilot.rightTrigger().negate())
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralStowPosition)); //coral stow
 
-    /* Transfer and deploy controls */
-    copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STAND_BY));
-    copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new TransferGamePiece(s_Diffector, s_Intake, false));
-    copilot.povDown().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STAND_BY));
-    copilot.povDown().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new TransferGamePiece(s_Diffector, s_Intake, true));
+    /* Transfer pos */
+    copilot.povDown().and(copilot.rightTrigger())
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferPosition)); //agae transer
+    copilot.povDown().and(copilot.rightTrigger().negate())
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferPosition)); //coral transfer
 
-    /* Stow position controls */
-    copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));
-    copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new IntakeAlgae(s_AlgaeManipulator));
-    copilot.povRight().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.STOWED));
-    copilot.povRight().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new IntakeCoral(s_CoralManipulator));
+    /* Game piece intake position controls */
+    copilot.rightBumper().and(copilot.rightTrigger().negate())
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralIntakePosition));
+    copilot.rightBumper().and(copilot.rightTrigger())
+      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeIntakePosition));
+  }
 
-    // Intake from coral station
-    copilot.povLeft().and(copilot.rightTrigger().negate()).whileTrue(new IntakeCoralSequence(s_Diffector, s_CoralManipulator));
-
-    /* Game piece intake controls */
-    copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_ALGAE));
-    copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new IntakeAlgae(s_AlgaeManipulator));
-    copilot.leftTrigger().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.INTAKE_CORAL));
-    copilot.leftTrigger().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new IntakeCoral(s_CoralManipulator));
-
-    /* Game piece outtake controls */
-    copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.EJECT_ALGAE));
-    copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger()).onTrue(new EjectAlgae(s_AlgaeManipulator));
-    copilot.leftBumper().and(copilot.rightBumper()).and(copilot.rightTrigger().negate()).onTrue(new SetIntakeStatus(s_Intake, IntakeStatus.EJECT_CORAL));
-    copilot.leftBumper().and(copilot.rightBumper().negate()).and(copilot.rightTrigger().negate()).onTrue(new EjectCoral(s_CoralManipulator));
-
-    /* Modifier controls for testing only */
-    copilot.rightTrigger().onTrue(new Test("algaeModifier", "on")).onFalse(new Test("algaeModifier", "off"));
-    copilot.rightBumper().onTrue(new Test("intakeModifier", "on")).onFalse(new Test("intakeModifier", "off"));
-    
-    /* Manual winch controls */
-    copilot.axisGreaterThan(0, 0.85).and(copilot.back()).whileTrue(new Test("manualWinch", "spool winch"));
-    copilot.axisLessThan(0, -0.85).and(copilot.back()).whileTrue(new Test("manualWinch", "unspool winch"));
-    
-    /* Manual intake controls */
-    copilot.axisLessThan(1, -0.85).and(copilot.rightTrigger()).onTrue(new Test("manualIntake", "intake up"));
-    copilot.axisGreaterThan(1, 0.85).and(copilot.rightTrigger()).onTrue(new Test("manualIntake", "intake down"));
+  private void configureManualBindings()
+  {
+    /* Manual climber controls */
+    copilot.axisMagnitudeGreaterThan(manualClimberAxis, Constants.Control.stickDeadband)
+      .whileTrue(Commands.run(() -> s_Climber.manualOveride(copilot.getRawAxis(manualClimberAxis))))
+      .onFalse(Commands.runOnce(() -> s_Climber.manualOveride(0)));
 
     /* Manual arm controls */
-    copilot.axisGreaterThan(4, 0.85).onTrue(new Test("manualArm", "arm clockwise"));
-    copilot.axisLessThan(4, -0.85).onTrue(new Test("manualArm", "arm anticlockwise"));
-  
-    /* Manual elevator controls */
-    copilot.axisLessThan(5, -0.85).whileTrue(new Test("manualElevator", "elevator up"));
-    copilot.axisGreaterThan(5, 0.85).whileTrue(new Test("manualElevator", "elevator down"));
+    copilot.axisMagnitudeGreaterThan(manualDiffectorElevationAxis, Constants.Control.manualDiffectorDeadband).or(copilot.axisMagnitudeGreaterThan(manualDiffectorRotationAxis, Constants.Control.manualDiffectorDeadband))
+      .whileTrue(new ManualDiffectorControl(s_Diffector, () -> -copilot.getRawAxis(manualDiffectorElevationAxis), () -> -copilot.getRawAxis(manualDiffectorRotationAxis)));
+    copilot.rightStick().whileTrue(Commands.run(() -> s_Diffector.unwind(), s_Diffector));
+
+    /* Coral outtake controls */
+    copilot.povLeft()
+      .onTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT))
+      .onFalse(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DEFAULT));
+    copilot.povRight()
+      .onTrue(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_RIGHT))
+      .onFalse(new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DEFAULT));
+
+    /* Algae intake/outtake controls */
+    copilot.leftTrigger()
+      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE)).onFalse(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.HOLDING)); //Intake algae through manipulator
+     copilot.leftBumper()
+      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT)).onFalse(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EMPTY)); //Ejects algae from manipulator
   }
 
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
-    driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_LEFT, "Intake Full"));
+    //driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_RIGHT, "Intake Full"));
+    // TODO: Driver Rightside Rumble: Ready To Score
     
     /* Copilot rumble bindings */
-    copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_LEFT, "Transfer Ready"));
-    copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
+    //copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_LEFT, "Transfer Ready"));
+    // TODO: copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
   }
+  
+  @SuppressWarnings("unused")
+  private void configureTestBindings()
+  {}
+
+  @SuppressWarnings("unused")
+  private void configureButtonBoxBindings()
+  {}
+
+  public CommandSwerveDrivetrain getSwerve()
+    {return s_Swerve;}
+
+  public Limelight getLimelightPort()
+    {return s_LimelightPort;}
+
+  public Limelight getLimelightStbd()
+    {return s_LimelightStbd;}
 
   private void initLED()
   {

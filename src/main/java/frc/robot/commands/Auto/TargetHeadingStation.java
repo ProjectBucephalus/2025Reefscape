@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
@@ -23,15 +24,16 @@ import frc.robot.util.GeoFenceObject;
 public class TargetHeadingStation extends Command 
 {
   private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
-    .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
-    .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
     .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
+
+  private double deadband = Constants.Control.stickDeadband;
 
   private CommandSwerveDrivetrain s_Swerve;    
   private DoubleSupplier translationSup;
   private DoubleSupplier strafeSup;
   private DoubleSupplier brakeSup;
+  private Rotation2d rotationOffset;
   private BooleanSupplier fencedSup;
   private Translation2d motionXY;
   private DoubleSupplier ySup;
@@ -47,9 +49,9 @@ public class TargetHeadingStation extends Command
   private double robotY;
   private Rotation2d targetHeading;
 
-  public TargetHeadingStation(CommandSwerveDrivetrain s_Swerve, DoubleSupplier ySup, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  public TargetHeadingStation(CommandSwerveDrivetrain s_Swerve, Rotation2d rotationOffset, DoubleSupplier ySup, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
-    SmartDashboard.putBoolean("Station Snap Updating", true);
+    SmartDashboard.putBoolean("Heading Snap Updating", true);
 
     this.s_Swerve = s_Swerve;
     addRequirements(s_Swerve);
@@ -59,6 +61,7 @@ public class TargetHeadingStation extends Command
     this.brakeSup = brakeSup;
     this.fencedSup = fencedSup;
     this.ySup = ySup;
+    this.rotationOffset = rotationOffset;
 
     driveRequest.HeadingController.setPID(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
   }
@@ -84,16 +87,19 @@ public class TargetHeadingStation extends Command
     brakeVal = brakeSup.getAsDouble();
     motionXY = new Translation2d(translationVal, strafeVal);
 
-    if (SmartDashboard.getBoolean("Reef Snap Updating", true)) 
+    /* Apply deadbands */
+    if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
+
+    if (SmartDashboard.getBoolean("Heading Snap Updating", true)) 
       {updateTargetHeading();}
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     
-    if (fencedSup.getAsBoolean())
+    if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", true))
     {
       SmartDashboard.putString("Drive State", "Fenced");
 
-      robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
+      robotSpeed = Math.hypot(RobotContainer.swerveState.Speeds.vxMetersPerSecond, RobotContainer.swerveState.Speeds.vyMetersPerSecond);
       if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
         {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
       else
@@ -107,7 +113,7 @@ public class TargetHeadingStation extends Command
       // Outer wall is index 0, so has highest authority by being processed last
       for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
       {
-        Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
+        Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
         motionXY = inputDamping;
       }
 
@@ -123,7 +129,7 @@ public class TargetHeadingStation extends Command
       driveRequest
       .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
       .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
-      .withTargetDirection(targetHeading)
+      .withTargetDirection(targetHeading.plus(rotationOffset))
     );
   }
 

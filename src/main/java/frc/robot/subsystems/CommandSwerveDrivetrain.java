@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TunerConstants.TunerSwerveDrivetrain;
 
@@ -61,6 +62,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
   /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
+  @SuppressWarnings("unused")
   private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine
   (
     new SysIdRoutine.Config
@@ -80,6 +82,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   );
 
   /* SysId routine for characterizing steer. This is used to find PID gains for the steer motors. */
+  @SuppressWarnings("unused")
   private final SysIdRoutine m_sysIdRoutineSteer = new SysIdRoutine
   (
     new SysIdRoutine.Config
@@ -103,6 +106,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     * This is used to find PID gains for the FieldCentricFacingAngle HeadingController.
     * See the documentation of SwerveRequest.SysIdSwerveRotation for info on importing the log to SysId.
     */
+  @SuppressWarnings("unused")
   private final SysIdRoutine m_sysIdRoutineRotation = new SysIdRoutine
   (
     new SysIdRoutine.Config
@@ -224,9 +228,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       var config = RobotConfig.fromGUISettings();
       AutoBuilder.configure
       (
-        () -> getState().Pose,   // Supplier of current robot pose
+        () -> RobotContainer.swerveState.Pose,   // Supplier of current robot pose
         this::resetPose,         // Consumer for seeding pose against auto
-        () -> getState().Speeds, // Supplier of current robot speeds
+        () -> RobotContainer.swerveState.Speeds, // Supplier of current robot speeds
         // Consumer of ChassisSpeeds and feedforwards to drive the robot
         (speeds, feedforwards) -> setControl
         (
@@ -246,8 +250,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this // Subsystem for requirements
       );
-    } catch (Exception ex) 
-      {DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());}
+    } 
+      catch (Exception ex) 
+        {DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());}
   }
 
   @Override
@@ -325,8 +330,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
       );
     }
-    field.setRobotPose(getState().Pose);
-    SmartDashboard.putNumber("Robot Speed", Math.hypot(getState().Speeds.vxMetersPerSecond, getState().Speeds.vyMetersPerSecond));
+    field.setRobotPose(RobotContainer.swerveState.Pose);
+    SmartDashboard.putNumber("Robot Speed", RobotContainer.swerveState.Speeds.vxMetersPerSecond);
   }
 
   private void startSimThread() 

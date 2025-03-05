@@ -16,16 +16,15 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
 
-public class TargetHeadingReef extends Command 
+public class TargetHeadingScore extends Command 
 {
   private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
-    .withDeadband(Constants.Control.maxThrottle * Constants.Swerve.maxSpeed * Constants.Control.stickDeadband)
-    .withRotationalDeadband(Constants.Swerve.maxAngularVelocity * Constants.Control.stickDeadband)
     .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
@@ -33,6 +32,7 @@ public class TargetHeadingReef extends Command
   private DoubleSupplier translationSup;
   private DoubleSupplier strafeSup;
   private DoubleSupplier brakeSup;
+  private double rotationOffset;
   private BooleanSupplier fencedSup;
   private Supplier<Translation2d> posSup;
   private Translation2d motionXY;
@@ -47,11 +47,16 @@ public class TargetHeadingReef extends Command
   
   private int nearestReefFace;
   private Translation2d robotPos;
-  private Rotation2d targetHeading;
+  private Translation2d nearestBargePoint;
+  private double targetHeading;
+  private double deadband = Constants.Control.stickDeadband;
 
-  public TargetHeadingReef(CommandSwerveDrivetrain s_Swerve, Supplier<Translation2d> posSup, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  /** 
+   * Rotation offset accounts for wanting the robot to face side-on
+   */
+  public TargetHeadingScore(CommandSwerveDrivetrain s_Swerve, double rotationOffset, Supplier<Translation2d> posSup, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
-    SmartDashboard.putBoolean("Reef Snap Updating", true);
+    SmartDashboard.putBoolean("Heading Snap Updating", true);
 
     this.s_Swerve = s_Swerve;
     addRequirements(s_Swerve);
@@ -61,6 +66,7 @@ public class TargetHeadingReef extends Command
     this.brakeSup = brakeSup;
     this.fencedSup = fencedSup;
     this.posSup = posSup;
+    this.rotationOffset = rotationOffset;
 
     driveRequest.HeadingController.setPID(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
   }
@@ -86,16 +92,19 @@ public class TargetHeadingReef extends Command
     brakeVal = brakeSup.getAsDouble();
     motionXY = new Translation2d(translationVal, strafeVal);
 
-    if (SmartDashboard.getBoolean("Reef Snap Updating", true)) 
+    /* Apply deadbands */
+    if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
+
+    if (SmartDashboard.getBoolean("Heading Snap Updating", true)) 
       {updateTargetHeading();}
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     
-    if (fencedSup.getAsBoolean())
+    if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", true))
     {
       SmartDashboard.putString("Drive State", "Fenced");
 
-      robotSpeed = Math.hypot(s_Swerve.getState().Speeds.vxMetersPerSecond, s_Swerve.getState().Speeds.vyMetersPerSecond);
+      robotSpeed = Math.hypot(RobotContainer.swerveState.Speeds.vxMetersPerSecond, RobotContainer.swerveState.Speeds.vyMetersPerSecond);
       if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
         {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
       else
@@ -109,7 +118,7 @@ public class TargetHeadingReef extends Command
       // Outer wall is index 0, so has highest authority by being processed last
       for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
       {
-        Translation2d inputDamping = fieldGeoFence[i].dampMotion(s_Swerve.getState().Pose.getTranslation(), motionXY, robotRadius);
+        Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
         motionXY = inputDamping;
       }
 
@@ -121,12 +130,12 @@ public class TargetHeadingReef extends Command
       {SmartDashboard.putString("Drive State", "Non-Fenced");}
     
       s_Swerve.setControl
-    (
-      driveRequest
-      .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
-      .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
-      .withTargetDirection(targetHeading)
-    );
+        (
+          driveRequest
+          .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
+          .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
+          .withTargetDirection(new Rotation2d(Units.degreesToRadians(targetHeading)))
+        );
   }
 
   // Returns true when the command should end.
@@ -138,36 +147,44 @@ public class TargetHeadingReef extends Command
   {
     robotPos = posSup.get();
 
-    nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
-    SmartDashboard.putNumber("nearest face", nearestReefFace);
+    nearestBargePoint = FieldUtils.getNearestBargePoint(robotPos);
 
-    switch (nearestReefFace) 
+    if (robotPos.getDistance(nearestBargePoint) <= Constants.GamePiecesManipulator.algaeRange && robotPos.getY() <= ((FieldUtils.fieldWidth / 2) + Constants.GamePiecesManipulator.netScoringCenterDistance)) 
     {
-      case 1:
-        targetHeading = new Rotation2d(Units.degreesToRadians(0));
-        break;
-
-      case 2:
-        targetHeading = new Rotation2d(Units.degreesToRadians(60));
-        break;
-
-      case 3:
-        targetHeading = new Rotation2d(Units.degreesToRadians(120));
-        break;
-
-      case 4:
-        targetHeading = new Rotation2d(Units.degreesToRadians(180));
-        break;
-
-      case 5:
-        targetHeading = new Rotation2d(Units.degreesToRadians(-120));
-        break;
-
-      case 6:
-        targetHeading = new Rotation2d(Units.degreesToRadians(-60));
-        break;
-      default:
-        break;
+      targetHeading = 0 - rotationOffset;
     }
+    else
+    {
+      nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
+
+      switch (nearestReefFace) 
+      {
+        case 1:
+          targetHeading = 0 + rotationOffset;
+          break;
+
+        case 2:
+          targetHeading = 60 + rotationOffset;
+          break;
+
+        case 3:
+          targetHeading = 120 + rotationOffset;
+          break;
+
+        case 4:
+          targetHeading = 0 - rotationOffset;
+          break;
+
+        case 5:
+          targetHeading = -120 - rotationOffset;
+          break;
+
+        case 6:
+          targetHeading = -60 - rotationOffset;
+          break;
+        default:
+          break;
+      }
+    }    
   }
 }

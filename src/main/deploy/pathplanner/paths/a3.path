@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.309,
-        "y": 2.607
+        "x": 5.339,
+        "y": 2.683
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.184,
-        "y": 2.82350635094611
+        "x": 5.214,
+        "y": 2.8995063509461096
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.134,
-        "y": 2.91
+        "x": 5.189,
+        "y": 2.943
       },
       "prevControl": {
-        "x": 5.259,
-        "y": 2.69349364905389
+        "x": 5.314,
+        "y": 2.72649364905389
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 5.5,
+    "maxVelocity": 2.0,
+    "maxAcceleration": 2.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1050.0,
     "nominalVoltage": 12.0,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": -150.0
   },
   "reversed": false,
   "folder": "Algae Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": -150.0
   },
   "useDefaultConstraints": true
 }
