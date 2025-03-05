@@ -365,7 +365,7 @@ public final class Constants
 
   public static final class ClimberConstants
   {
-    public static final double lockedWinchPos = 0;
+    public static final double stowWinchPos = 0;
     public static final double activeWinchPos = 1.85;
     public static final double climbWinchPos  = -0.3;
     public static final double intakeWinchPos = 0.2;
