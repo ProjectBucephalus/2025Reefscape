@@ -81,6 +81,7 @@ public class ArmCalculator
         relativeTarget.equals(DiffectorConstants.startPosition) ||
         relativeTarget.equals(DiffectorConstants.coralTransferPosition) ||
         relativeTarget.equals(DiffectorConstants.algaeIntakePosition) ||
+        relativeTarget.equals(DiffectorConstants.processorPosition) ||
         relativeTarget.equals(DiffectorConstants.climbPosition)
       )
     )
