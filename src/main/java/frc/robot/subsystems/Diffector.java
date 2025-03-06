@@ -355,6 +355,7 @@ public class Diffector extends SubsystemBase
       if (SmartDashboard.getBoolean("Overide: Arm At Target", false))
       {
         positionOveride(targetElevation, targetAngle);
+        plannedPathPoints.clear();
         SmartDashboard.putBoolean("Overide: Arm At Target", false);
       }
     }
