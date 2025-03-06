@@ -82,7 +82,7 @@ public class TeleopSwerve extends Command
     rotationVal = rotationSup.getAsDouble();
     translationVal = translationSup.getAsDouble();
     strafeVal = strafeSup.getAsDouble();
-    brakeVal = brakeSup.getAsDouble();
+    brakeVal = Math.max(brakeSup.getAsDouble(), RobotContainer.s_Diffector.getElevation() - 1);
     motionXY = new Translation2d(translationVal, strafeVal);
 
     /* Apply deadbands */

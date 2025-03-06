@@ -200,33 +200,33 @@ public class RobotContainer
       * Cage pathfinding controls 
       * Drives to the nearest reef face when the cage heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    cageDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToAndFollow("cage2", s_Swerve));
-    cageDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToAndFollow("cage3", s_Swerve));
-    cageDriveTrigger.and(driver.povRight()).onTrue(new PathfindToAndFollow("cage1", s_Swerve));
+    cageDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToAndFollow("cage2", s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
+    cageDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToAndFollow("cage3", s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
+    cageDriveTrigger.and(driver.povRight()).onTrue(new PathfindToAndFollow("cage1", s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
 
     /* 
       * Station pathfinding controls 
       * Drives to the nearest coral station when the station heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    stationDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToStation(2, () -> swerveState.Pose.getY(), s_Swerve));
-    stationDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToStation(1, () -> swerveState.Pose.getY(), s_Swerve));
-    stationDriveTrigger.and(driver.povRight()).onTrue(new PathfindToStation(3, () -> swerveState.Pose.getY(), s_Swerve));
+    stationDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToStation(2, () -> swerveState.Pose.getY(), s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
+    stationDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToStation(1, () -> swerveState.Pose.getY(), s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
+    stationDriveTrigger.and(driver.povRight()).onTrue(new PathfindToStation(3, () -> swerveState.Pose.getY(), s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
 
     /* 
       * Processor pathfinding control 
       * Runs when the processor heading lock is active and right is pressed on the dpad 
       */ 
-    processorDriveTrigger.and(driver.povRight()).onTrue(new PathfindToAndFollow("p", s_Swerve));
+    processorDriveTrigger.and(driver.povRight()).onTrue(new PathfindToAndFollow("p", s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
 
     /* 
       * Reef and Net pathfinding controls 
       * Drives to the nearest reef face when the reef heading lock is active and a corresponding dpad direction is pressed 
       * Drives to the nearest net position when the scoring heading lock is active and down is pressed on the dpad
       */ 
-    scoreDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> swerveState.Pose.getTranslation(), s_Swerve));
-    scoreDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToReef(DpadOptions.LEFT, () -> swerveState.Pose.getTranslation(), s_Swerve));
-    scoreDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> swerveState.Pose.getTranslation(), s_Swerve));
-    scoreDriveTrigger.and(driver.povDown()) .onTrue(new PathfindToBarge(() -> swerveState.Pose.getTranslation(), s_Swerve));
+    scoreDriveTrigger.and(driver.povUp())   .onTrue(new PathfindToReef(DpadOptions.CENTRE, () -> swerveState.Pose.getTranslation(), s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
+    scoreDriveTrigger.and(driver.povLeft()) .onTrue(new PathfindToReef(DpadOptions.LEFT, () -> swerveState.Pose.getTranslation(), s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
+    scoreDriveTrigger.and(driver.povRight()).onTrue(new PathfindToReef(DpadOptions.RIGHT, () -> swerveState.Pose.getTranslation(), s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
+    scoreDriveTrigger.and(driver.povDown()) .onTrue(new PathfindToBarge(() -> swerveState.Pose.getTranslation(), s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
 
     /* 
       * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed

@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
@@ -94,7 +95,7 @@ public class TargetHeadingScore extends Command
   {
     translationVal = translationSup.getAsDouble();
     strafeVal = strafeSup.getAsDouble();
-    brakeVal = brakeSup.getAsDouble();
+    brakeVal = Math.max(brakeSup.getAsDouble(), RobotContainer.s_Diffector.getElevation() - 1);
     motionXY = new Translation2d(translationVal, strafeVal);
 
     /* Apply deadbands */
@@ -105,21 +106,26 @@ public class TargetHeadingScore extends Command
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     
+    robotSpeed = Math.hypot(RobotContainer.swerveState.Speeds.vxMetersPerSecond, RobotContainer.swerveState.Speeds.vyMetersPerSecond);
+    if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
+    {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
+    
+    else
+    {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
+    
+    // Invert processing input when on red alliance
+    if (redAlliance)
+    {motionXY = motionXY.unaryMinus();}
+
+    if (RobotContainer.s_Diffector.getElevation() > IKGeometry.bargeSafetyHeight && !SmartDashboard.getBoolean("OVERIDE MODE", false)) // TODO: Copy to other drive functions as needed
+    {
+      motionXY = FieldUtils.GeoFencing.netProtectionZone.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
+    }
+
     if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", true))
     {
       SmartDashboard.putString("Drive State", "Fenced");
-
-      robotSpeed = Math.hypot(RobotContainer.swerveState.Speeds.vxMetersPerSecond, RobotContainer.swerveState.Speeds.vyMetersPerSecond);
-      if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
-        {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
-
-      else
-        {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
-
-      // Invert processing input when on red alliance
-      if (redAlliance)
-        {motionXY = motionXY.unaryMinus();}
-
+    
       // Read down the list of geofence objects
       // Outer wall is index 0, so has highest authority by being processed last
       for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
@@ -155,7 +161,8 @@ public class TargetHeadingScore extends Command
 
     nearestBargePoint = FieldUtils.getNearestBargePoint(robotPos);
 
-    if (robotPos.getDistance(nearestBargePoint) <= Constants.GamePiecesManipulator.algaeRange && robotPos.getY() <= ((FieldUtils.fieldWidth / 2) + Constants.GamePiecesManipulator.netScoringCenterDistance)) 
+    // TODO
+    if (robotPos.getDistance(nearestBargePoint) <= Constants.GamePiecesManipulator.algaeRange && robotPos.getY() >= ((FieldUtils.fieldWidth / 2) + Constants.GamePiecesManipulator.netScoringCenterDistance)) 
     {
       targetHeading = 0 - rotationOffset;
     }

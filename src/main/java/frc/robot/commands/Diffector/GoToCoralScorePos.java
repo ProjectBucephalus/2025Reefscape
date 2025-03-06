@@ -92,4 +92,8 @@ public class GoToCoralScorePos extends Command
   @Override
   public boolean isFinished()
     {return c_MoveCommand.isFinished();}
+
+  @Override
+  public boolean runsWhenDisabled() 
+    {return true;}
 }

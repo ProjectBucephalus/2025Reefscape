@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Auto;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -26,19 +27,22 @@ public class PathfindToReef extends Command
   private DpadOptions dpadValue;
   private Supplier<Translation2d> posSup;
   private Translation2d robotPos;
+  private BooleanSupplier brakeSup;
 
   private int nearestReefFace;
   private String pathName;
   
   private PathPlannerPath path;
-  private final PathConstraints constraints = Constants.Auto.defaultConstraints;
+  private final PathConstraints defaultConstraints = Constants.Auto.defaultConstraints;
+  private final PathConstraints slowedConstraints = Constants.Auto.slowedConstraints;
   private Command pathfindingCommand;
  
   /** Creates a new PathfindToStation. */
-  public PathfindToReef(DpadOptions dpadValue, Supplier<Translation2d> posSup, CommandSwerveDrivetrain s_Swerve) 
+  public PathfindToReef(DpadOptions dpadValue, Supplier<Translation2d> posSup, CommandSwerveDrivetrain s_Swerve, BooleanSupplier brakeSup) 
   {
     this.posSup = posSup;
     this.dpadValue = dpadValue;
+    this.brakeSup = brakeSup;
     addRequirements(s_Swerve);
   }
 
@@ -77,7 +81,10 @@ public class PathfindToReef extends Command
 
     path = FieldUtils.loadPath(pathName);
     
-    pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, constraints);
+    if (brakeSup.getAsBoolean())
+      {pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, slowedConstraints);}
+    else
+      {pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, defaultConstraints);}
     pathfindingCommand.until(RobotContainer.driver.povCenter()).schedule();
   }
 

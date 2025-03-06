@@ -59,7 +59,7 @@ public final class Constants
 
     public static final int[] reefIDs = 
     {
-      //6, 7, 8, 9, 10, 11,    // Red Reef
+      6, 7, 8, 9, 10, 11,    // Red Reef
       17, 18, 19, 20, 21, 22 // Blue Reef
     };
 
@@ -93,7 +93,7 @@ public final class Constants
     public static final double driveKD = 0.0;
 
     /* Rotation Control PID Values */
-    public static final double rotationKP = 3; //TODO: Tune to robot
+    public static final double rotationKP = 5; //TODO: Tune to robot
     public static final double rotationKI = 0;
     public static final double rotationKD = 0;
 
@@ -106,8 +106,10 @@ public final class Constants
 
   public static final class Auto
   {   
-  /** m/s */
+    /** m/s */
     public static final double pathplannerMaxSpeed = 2;
+    /** m/s */
+    public static final double pathplannerSlowedSpeed = 0.5;
     /** m/s^2 */
     public static final double pathplannerMaxAcceleration = 2;
     /** degrees/s */
@@ -116,6 +118,9 @@ public final class Constants
     public static final double pathplannerMaxAngularAcceleration = 1050;
     public static final PathConstraints defaultConstraints = new PathConstraints
       (pathplannerMaxSpeed, pathplannerMaxAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
+    
+    public static final PathConstraints slowedConstraints = new PathConstraints
+      (pathplannerSlowedSpeed, pathplannerMaxAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
     
     public static final Map<Translation2d, Integer> reefMidPointMap = new HashMap<>(6)
     {
@@ -296,8 +301,8 @@ public final class Constants
     public static final Translation2d netPosition           = new Translation2d(  maxZ, 170);
     public static final Translation2d algae3PortPosition    = new Translation2d(1.19,  97);
     public static final Translation2d algae3StbdPosition    = new Translation2d(1.37, 275);
-    public static final Translation2d algae2PortPosition    = new Translation2d(0.79,  97);
-    public static final Translation2d algae2StbdPosition    = new Translation2d(0.97, 275);
+    public static final Translation2d algae2PortPosition    = new Translation2d(0.79,  95);
+    public static final Translation2d algae2StbdPosition    = new Translation2d(0.97, 275); 
     public static final Translation2d processorPosition     = new Translation2d(0.44,  96);
 
     public static final Translation2d coral4PortPosition    = new Translation2d(  maxZ,   -35); //TODO
@@ -384,12 +389,12 @@ public final class Constants
   public static final class ClimberConstants
   {
     public static final double stowWinchPos = 0;
-    public static final double activeWinchPos = 1.85;
-    public static final double climbWinchPos  = -0.3;
-    public static final double intakeWinchPos = 0.2;
-    public static final double manualScale    = 0.25;
+    public static final double activeWinchPos = -1.85;
+    public static final double climbWinchPos  = 0.3;
+    public static final double intakeWinchPos = -0.2;
+    public static final double manualScale    = -0.25;
 
-    public static final double winchKP = 1;
+    public static final double winchKP = 5;
     public static final double winchKI = 0;
     public static final double winchKD = 0;
 
@@ -397,8 +402,8 @@ public final class Constants
     public static final double winchGearIn = 20;
     public static final double winchGearOut = 60;
     public static final double winchGearRatio = -(winchGearOut / winchGearIn) * winchPlanetaryRatio;
-    public static final double winchDefaultCruise = 10;
-    public static final double winchClimbCruise = 10;
-    public static final double winchMotionMagicAccel  = 10;
+    public static final double winchDefaultCruise = 50;
+    public static final double winchClimbCruise = 30;
+    public static final double winchMotionMagicAccel  = 50;
   }
 }
