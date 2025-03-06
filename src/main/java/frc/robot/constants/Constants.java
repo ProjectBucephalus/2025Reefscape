@@ -30,7 +30,7 @@ public final class Constants
     public static final double manualDiffectorDeadband = 0.25;
     public static final double stickDeadband = 0.15;
     /** Normal maximum robot speed, relative to maximum uncapped speed */
-    public static final double maxThrottle = 0.6;
+    public static final double maxThrottle = 0.7;
     /** Minimum robot speed when braking, relative to maximum uncapped speed */
     public static final double minThrottle = 0.1;
     /** Normal maximum rotational robot speed, relative to maximum uncapped rotational speed */
@@ -376,10 +376,10 @@ public final class Constants
     /* Algae manipulator speeds */
     public static final double algaeManipulatorIntakeSpeed    = 0.4;
     public static final double algaeManipulatorNetSpeed       = -0.9;
-    public static final double algaeManipulatorProcessorSpeed = -0.6;
+    public static final double algaeManipulatorProcessorSpeed = -0.4;
 
     /** Algae net shooting range for rotation snapping, m */
-    public static final double algaeRange = 1.3;
+    public static final double algaeRange = 1.7;
     /** How far towards the barge we have to be from field center to be able to score in the net (Y axis) */
     public static final double netScoringCenterDistance = 0.5;
     /** Target X distance from barge targetting points for scoring */
