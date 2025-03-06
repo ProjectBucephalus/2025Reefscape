@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -161,11 +162,13 @@ public class TargetHeadingScore extends Command
 
     nearestBargePoint = FieldUtils.getNearestBargePoint(robotPos);
 
-    // TODO
-    if (robotPos.getDistance(nearestBargePoint) <= Constants.GamePiecesManipulator.algaeRange && robotPos.getY() >= ((FieldUtils.fieldWidth / 2) + Constants.GamePiecesManipulator.netScoringCenterDistance)) 
-    {
-      targetHeading = 0 - rotationOffset;
-    }
+    // TODO: Confirm this works for both aliances
+    if 
+    (
+      robotPos.getDistance(nearestBargePoint) <= Constants.GamePiecesManipulator.algaeRange && 
+      MathUtil.isNear(robotPos.getY(), (FieldUtils.fieldWidth / 2), Constants.GamePiecesManipulator.netScoringCenterDistance)
+    ) 
+      {targetHeading = 0 - rotationOffset;}
     else
     {
       nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
