@@ -155,7 +155,7 @@ public class FieldUtils
       reefBlue, 
       reefZoneRed, 
       bargeColumn, 
-      //bargeZoneRed, // TODO: Box objects are inverted
+      bargeZoneRed, // TODO: Box objects are inverted
       cornerSBlue, 
       cornerNBlue, 
       cornerSRed, 
@@ -168,7 +168,7 @@ public class FieldUtils
       reefRed, 
       reefZoneBlue, 
       bargeColumn, 
-      //bargeZoneBlue, // TODO: Box objects are inverted
+      bargeZoneBlue, // TODO: Box objects are inverted
       cornerSBlue, 
       cornerNBlue, 
       cornerSRed, 
