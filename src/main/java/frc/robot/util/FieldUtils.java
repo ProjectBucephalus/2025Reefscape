@@ -153,7 +153,7 @@ public class FieldUtils
       reefBlue, 
       reefZoneRed, 
       bargeColumn, 
-      bargeZoneRed, 
+      //bargeZoneRed, // TODO: Box objects are inverted
       cornerSBlue, 
       cornerNBlue, 
       cornerSRed, 
@@ -166,7 +166,7 @@ public class FieldUtils
       reefRed, 
       reefZoneBlue, 
       bargeColumn, 
-      bargeZoneBlue, 
+      //bargeZoneBlue, // TODO: Box objects are inverted
       cornerSBlue, 
       cornerNBlue, 
       cornerSRed, 
@@ -182,6 +182,6 @@ public class FieldUtils
     
     /* Barge Exclusion Zone -> Keep the arm pivot far enough away from the net to prevent touching it */
     public static final double bargeSafetyWidth = Constants.DiffectorConstants.IKGeometry.bargeSafetyWidth;
-    public static final GeoFenceObject netProtectionZone = new GeoFenceObject((fieldLength/2) - bargeSafetyWidth, fieldSouth, (fieldLength/2) + bargeSafetyWidth, fieldNorth, wallBuffer, 0, ObjectTypes.box);
+    public static final GeoFenceObject netProtectionZone = new GeoFenceObject((fieldLength/2), fieldSouth, (fieldLength/2), fieldNorth, wallBuffer, bargeSafetyWidth, ObjectTypes.line);
   }
 }
