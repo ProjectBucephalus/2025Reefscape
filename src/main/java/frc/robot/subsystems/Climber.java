@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
@@ -39,7 +40,7 @@ public class Climber extends SubsystemBase
   { 
     m_ClimberWinch = new TalonFX(IDConstants.climberWinchMotorID);
     m_ClimberWinch.getConfigurator().apply(config);
-    m_ClimberWinch.setPosition(Constants.ClimberConstants.stowWinchPos / 360);
+    m_ClimberWinch.setPosition(Constants.ClimberConstants.stowWinchPos);
     
     manualScale = Constants.ClimberConstants.manualScale;
     
@@ -80,17 +81,18 @@ public class Climber extends SubsystemBase
   @Override
   public void periodic()
   {
+    SmartDashboard.putNumber("Climber Position", m_ClimberWinch.getPosition().getValueAsDouble());
     if (RobotContainer.s_Diffector.getRelativeTarget() == Constants.DiffectorConstants.coralIntakePosition || RobotContainer.algae)
     {
       if (!climberClearanceFlag)
       {
-        //setClimberStatus(ClimberStatus.INTAKE);
+        setClimberStatus(ClimberStatus.INTAKE);
         climberClearanceFlag = true;
       }
     }
     else if (climberClearanceFlag)
     {
-      //setClimberStatus(ClimberStatus.STOW);
+      setClimberStatus(ClimberStatus.STOW);
       climberClearanceFlag = false;
     }
 

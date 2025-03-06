@@ -296,7 +296,7 @@ public final class Constants
      * degrees anticlockwise for Port-side usecase, 0 = coral at top 
      */
     public static final Translation2d startPosition         = new Translation2d(0.57,   0);
-    public static final Translation2d climbPosition         = new Translation2d(0.42,  90);
+    public static final Translation2d climbPosition         = new Translation2d(0.43,  90);
 
     public static final Translation2d netPosition           = new Translation2d(  maxZ, 170);
     public static final Translation2d algae3PortPosition    = new Translation2d(1.19,  97);
@@ -389,21 +389,21 @@ public final class Constants
   public static final class ClimberConstants
   {
     public static final double stowWinchPos = 0;
-    public static final double activeWinchPos = -1.85;
-    public static final double climbWinchPos  = 0.3;
-    public static final double intakeWinchPos = -0.2;
-    public static final double manualScale    = -0.25;
+    public static final double activeWinchPos = 1.5;
+    public static final double climbWinchPos  = -0.3;
+    public static final double intakeWinchPos = 0.2;
+    public static final double manualScale    = 0.25;
 
-    public static final double winchKP = 5;
+    public static final double winchKP = 150;
     public static final double winchKI = 0;
     public static final double winchKD = 0;
 
     public static final double winchPlanetaryRatio = 45;
     public static final double winchGearIn = 20;
     public static final double winchGearOut = 60;
-    public static final double winchGearRatio = -(winchGearOut / winchGearIn) * winchPlanetaryRatio;
-    public static final double winchDefaultCruise = 50;
-    public static final double winchClimbCruise = 30;
-    public static final double winchMotionMagicAccel  = 50;
+    public static final double winchGearRatio = ((winchGearOut / winchGearIn) * winchPlanetaryRatio);
+    public static final double winchDefaultCruise = 1;
+    public static final double winchClimbCruise = 0.5;
+    public static final double winchMotionMagicAccel  = 1;
   }
 }
