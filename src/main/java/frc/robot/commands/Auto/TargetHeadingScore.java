@@ -165,8 +165,7 @@ public class TargetHeadingScore extends Command
     // TODO: Confirm this works for both aliances
     if 
     (
-      robotPos.getDistance(nearestBargePoint) <= Constants.GamePiecesManipulator.algaeRange && 
-      MathUtil.isNear(robotPos.getY(), (FieldUtils.fieldWidth / 2), Constants.GamePiecesManipulator.netScoringCenterDistance)
+      MathUtil.isNear(robotPos.getX(), (FieldUtils.fieldLength / 2), Constants.GamePiecesManipulator.algaeRange)
     ) 
       {targetHeading = 0 - rotationOffset;}
     else
