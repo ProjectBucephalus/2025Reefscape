@@ -380,7 +380,7 @@ public final class Constants
     /* Algae manipulator speeds */
     public static final double algaeManipulatorIntakeSpeed    = 0.4;
     public static final double algaeManipulatorNetSpeed       = -0.9;
-    public static final double algaeManipulatorProcessorSpeed = -0.4;
+    public static final double algaeManipulatorProcessorSpeed = -0.3;
 
     /** Algae net shooting range for rotation snapping, m */
     public static final double algaeRange = 2.5;
