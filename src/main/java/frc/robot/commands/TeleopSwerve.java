@@ -82,7 +82,7 @@ public class TeleopSwerve extends Command
     rotationVal = rotationSup.getAsDouble();
     translationVal = translationSup.getAsDouble();
     strafeVal = strafeSup.getAsDouble();
-    brakeVal = Math.max(brakeSup.getAsDouble(), Math.min((RobotContainer.s_Diffector.getElevation() - 1) * 2, 1)); // TODO move 2 scalar to constants
+    brakeVal = Math.max(brakeSup.getAsDouble(), Math.min((RobotContainer.s_Diffector.getElevation() - 1) * Constants.Control.armBrakeRate, 1));
     motionXY = new Translation2d(translationVal, strafeVal);
 
     /* Apply deadbands */
@@ -102,6 +102,10 @@ public class TeleopSwerve extends Command
       else
       {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
       
+      // Invert processing input when on red alliance
+      if (redAlliance)
+        {motionXY = motionXY.unaryMinus();}
+
       if (RobotContainer.s_Diffector.getElevation() > IKGeometry.bargeSafetyHeight && !SmartDashboard.getBoolean("OVERIDE MODE", false)) // TODO: Copy to other drive functions as needed
       {
         motionXY = FieldUtils.GeoFencing.netProtectionZone.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
@@ -111,9 +115,6 @@ public class TeleopSwerve extends Command
       {
         SmartDashboard.putString("Drive State", "Fenced");
 
-        // Invert processing input when on red alliance
-        if (redAlliance)
-          {motionXY = motionXY.unaryMinus();}
         
         // Read down the list of geofence objects
         // Outer wall is index 0, so has highest authority by being processed last

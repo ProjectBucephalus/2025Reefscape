@@ -96,7 +96,7 @@ public class TargetHeadingScore extends Command
   {
     translationVal = translationSup.getAsDouble();
     strafeVal = strafeSup.getAsDouble();
-    brakeVal = Math.max(brakeSup.getAsDouble(), Math.min((RobotContainer.s_Diffector.getElevation() - 1) * 2, 1)); // TODO move 2 scalar to constants
+    brakeVal = Math.max(brakeSup.getAsDouble(), Math.min((RobotContainer.s_Diffector.getElevation() - 1) * Constants.Control.armBrakeRate, 1));
     motionXY = new Translation2d(translationVal, strafeVal);
 
     /* Apply deadbands */
@@ -138,17 +138,17 @@ public class TargetHeadingScore extends Command
     else
     {SmartDashboard.putString("Drive State", "Non-Fenced");}
     
-      // Uninvert processing output when on red alliance
-      if (redAlliance)
-        {motionXY = motionXY.unaryMinus();}
-    
-      s_Swerve.setControl
-        (
-          driveRequest
-          .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
-          .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
-          .withTargetDirection(new Rotation2d(Units.degreesToRadians(targetHeading)))
-        );
+    // Uninvert processing output when on red alliance
+    if (redAlliance)
+      {motionXY = motionXY.unaryMinus();}
+  
+    s_Swerve.setControl
+    (
+      driveRequest
+      .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
+      .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
+      .withTargetDirection(new Rotation2d(Units.degreesToRadians(targetHeading)))
+    );
   }
 
   // Returns true when the command should end.
