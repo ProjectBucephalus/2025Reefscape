@@ -171,7 +171,7 @@ public class Robot extends TimedRobot
     RobotContainer.s_LimelightPort.setIMUMode(2);
     RobotContainer.s_LimelightStbd.setIMUMode(2);
 
-    Elastic.selectTab(FieldUtils.isRedAlliance() ? "Red Alliance" : "Blue Alliance");
+    Elastic.selectTab("Autonomous");
     
     autonomousCommand = robotContainer.getAutoCommand();
 
@@ -191,7 +191,7 @@ public class Robot extends TimedRobot
     if (autonomousCommand != null) 
       {autonomousCommand.cancel();}
 
-    Elastic.selectTab("Autonomous");
+    Elastic.selectTab(FieldUtils.isRedAlliance() ? "Red Alliance" : "Blue Alliance");
   }
 
   @Override
