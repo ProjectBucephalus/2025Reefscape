@@ -155,8 +155,8 @@ public class TargetHeadingProcessor extends Command
     robotX = xSup.getAsDouble();
 
     if (robotX >= 8.774) 
-      {targetHeading = new Rotation2d(Units.degreesToRadians(0));} 
+      {targetHeading = new Rotation2d(Units.degreesToRadians(90));} 
     else 
-      {targetHeading = new Rotation2d(Units.degreesToRadians(180));}
+      {targetHeading = new Rotation2d(Units.degreesToRadians(-90));}
   }
 }
