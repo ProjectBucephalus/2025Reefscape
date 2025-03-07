@@ -82,7 +82,7 @@ public class Climber extends SubsystemBase
   public void periodic()
   {
     SmartDashboard.putNumber("Climber Position", m_ClimberWinch.getPosition().getValueAsDouble());
-    if (RobotContainer.s_Diffector.getRelativeTarget() == Constants.DiffectorConstants.coralIntakePosition || RobotContainer.algae)
+    if (RobotContainer.s_Diffector.getRelativeTarget().equals(Constants.DiffectorConstants.coralIntakePosition) || RobotContainer.algae)
     {
       if (!climberClearanceFlag)
       {
@@ -100,19 +100,23 @@ public class Climber extends SubsystemBase
     {
       case STOW:
         m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.stowWinchPos));
+        SmartDashboard.putNumber("Climber Target", Constants.ClimberConstants.stowWinchPos);
         break;
 
       case ACTIVE:
         m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos));
+        SmartDashboard.putNumber("Climber Target", Constants.ClimberConstants.activeWinchPos);
         break;
 
       case CLIMB:
         m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.climbWinchPos));
-        // TODO: Consider active hold using gyro pitch to balance
+        SmartDashboard.putNumber("Climber Target", Constants.ClimberConstants.climbWinchPos);
+        // TODO: Merge in active balancing, only in override mode
         break;
       
       case INTAKE:
         m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.intakeWinchPos));
+        SmartDashboard.putNumber("Climber Target", Constants.ClimberConstants.intakeWinchPos);
         break;
 
       case MANUAL:
@@ -120,6 +124,7 @@ public class Climber extends SubsystemBase
           {m_ClimberWinch.set(speed * manualScale);}
         else
           {m_ClimberWinch.setControl(motionMagic.withPosition(getClimberPos()));}
+        break;
     }
   }
 }

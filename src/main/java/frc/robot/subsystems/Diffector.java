@@ -433,6 +433,7 @@ public class Diffector extends SubsystemBase
     SmartDashboard.putNumber("Arm Target", targetAngle);
     SmartDashboard.putNumber("Elevator Height", elevation);
     SmartDashboard.putNumber("Arm Rotation", angle);
+    SmartDashboard.putNumber("Relative Angle Target", relativeTarget.getY());
 
     SmartDashboard.putNumber("UA Error", motorTargets[0] - Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()));
     SmartDashboard.putNumber("DA Error", motorTargets[1] - Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble()));
