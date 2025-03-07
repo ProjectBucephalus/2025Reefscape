@@ -362,7 +362,7 @@ public final class Constants
       public static final double reefSafetyRadius = 1.7;
 
       /** Distance from centre of barge where arm height needs to be checked, metres */
-      public static final double bargeSafetyWidth = 0.9;
+      public static final double bargeSafetyWidth = 0.95;
       /** Minimum height over ground where arm height needs to be checked, metres */
       public static final double bargeSafetyHeight = 1;
     }
