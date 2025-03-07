@@ -311,12 +311,12 @@ public final class Constants
 
     public static final Translation2d coral4PortPosition    = new Translation2d(  maxZ,   -33); //TODO
     public static final Translation2d coral4StbdPosition    = new Translation2d(  maxZ,  33); //TODO
-    public static final Translation2d coral3PortPosition    = new Translation2d(1.05,   -28);
-    public static final Translation2d coral3StbdPosition    = new Translation2d(1.05,  28);
-    public static final Translation2d coral2PortPosition    = new Translation2d(0.72,   -40); //TODO
-    public static final Translation2d coral2StbdPosition    = new Translation2d(0.72,  40); //TODO
-    public static final Translation2d coral1PortPosition    = new Translation2d(0.5,    -40); //TODO
-    public static final Translation2d coral1StbdPosition    = new Translation2d(0.5,   40); //TODO
+    public static final Translation2d coral3PortPosition    = new Translation2d(1.0,   -28);
+    public static final Translation2d coral3StbdPosition    = new Translation2d(1.0,  28);
+    public static final Translation2d coral2PortPosition    = new Translation2d(0.72,   -45); //TODO
+    public static final Translation2d coral2StbdPosition    = new Translation2d(0.72,  45); //TODO
+    public static final Translation2d coral1PortPosition    = new Translation2d(0.8,    -150); //TODO
+    public static final Translation2d coral1StbdPosition    = new Translation2d(0.8,   150); //TODO
 
     public static final Translation2d coralIntakePosition   = new Translation2d(0.90,  90);
     public static final Translation2d coralTransferPosition = new Translation2d(0.61, 180);
