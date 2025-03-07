@@ -171,7 +171,7 @@ public class Robot extends TimedRobot
     RobotContainer.s_LimelightPort.setIMUMode(2);
     RobotContainer.s_LimelightStbd.setIMUMode(2);
 
-    Elastic.selectTab("Autonomous");
+    Elastic.selectTab(FieldUtils.isRedAlliance() ? "Red Alliance" : "Blue Alliance");
     
     autonomousCommand = robotContainer.getAutoCommand();
 
