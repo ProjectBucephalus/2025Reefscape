@@ -217,6 +217,7 @@ public class RobotContainer
       * Runs when the processor heading lock is active and right is pressed on the dpad 
       */ 
     processorDriveTrigger.and(driver.povRight()).onTrue(new PathfindToAndFollow("p", s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
+    processorDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToAndFollow("pOpp", s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
 
     /* 
       * Reef and Net pathfinding controls 
