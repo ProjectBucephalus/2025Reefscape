@@ -236,7 +236,7 @@ public final class Constants
     /** Desired cruise speed OF MOTOR, RPS */
     public static final double diffectorMotionMagicCruise = 90;
     /** Desired acceleration OF MOTOR, RPS^2 */
-    public static final double diffectorMotionMagicAccel  = 45;
+    public static final double diffectorMotionMagicAccel  = 70;
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;
@@ -381,7 +381,7 @@ public final class Constants
     public static final double algaeManipulatorProcessorSpeed = -0.4;
 
     /** Algae net shooting range for rotation snapping, m */
-    public static final double algaeRange = 1.7;
+    public static final double algaeRange = 2.5;
     /** How far towards the barge we have to be from field center to be able to score in the net (Y axis) */
     public static final double netScoringCenterDistance = 0.5;
     /** Target X distance from barge targetting points for scoring */
@@ -393,7 +393,7 @@ public final class Constants
     public static final double stowWinchPos = 0;
     public static final double activeWinchPos = 1.5;
     public static final double climbWinchPos  = -0.3;
-    public static final double intakeWinchPos = 0.2;
+    public static final double intakeWinchPos = 0.4;
     public static final double manualScale    = 0.25;
 
     public static final double winchKP = 150;
