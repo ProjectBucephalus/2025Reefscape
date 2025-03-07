@@ -269,10 +269,11 @@ public class RobotContainer
     processorDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetHeading
+        new TargetHeadingProcessor
         (
           s_Swerve,
           Rotation2d.kCW_90deg, 
+          () -> swerveState.Pose.getX(),
           Rotation2d.kCW_90deg,
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
