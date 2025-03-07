@@ -14,10 +14,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
-import frc.robot.commands.Manipulator.ScoreCoralSequence;
+import frc.robot.commands.Diffector.GoToCoralScorePos;
+import frc.robot.commands.Manipulator.SetCoralStatus;
 import frc.robot.commands.Util.WaitUntilAutoTime;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Auto.AutoMapping;
+import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 
 public class DynamicAuto 
 {
@@ -62,10 +64,23 @@ public class DynamicAuto
 
           Pathfinding.setStartPosition(prevEndPoint);
           
-          commandList.add(AutoBuilder.pathfindThenFollowPath(nextPath, constraints));
+          commandList.add
+            (
+              AutoBuilder.pathfindThenFollowPath(nextPath, constraints)
+              .alongWith
+              (
+                new GoToCoralScorePos
+                (
+                  Integer.parseInt(splitCommands[i].substring(2)), 
+                  RobotContainer.s_Diffector, 
+                  () -> RobotContainer.swerveState.Pose.getTranslation()
+                )
+              )
+            );
+          
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();
 
-          commandList.add(new ScoreCoralSequence(Integer.parseInt(splitCommands[i].substring(2)), RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator, () -> RobotContainer.swerveState.Pose.getTranslation()));
+          commandList.add(new SetCoralStatus(RobotContainer.s_CoralManipulator, CoralManipulatorStatus.DELIVERY_SMART));
         }
         else
         {

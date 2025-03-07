@@ -91,7 +91,7 @@ public class GoToCoralScorePos extends Command
   // Returns true when the command should end.
   @Override
   public boolean isFinished()
-    {return c_MoveCommand.isFinished();}
+    {return s_Diffector.atPosition();}
 
   @Override
   public boolean runsWhenDisabled() 
