@@ -43,6 +43,8 @@ public final class Constants
     public static final double manualDiffectorElevationScalar = 2;
     /** Scalar for manual diffector rotation control */
     public static final double manualDiffectorRotationScalar = 2;
+    /** Scalar for braking effect of diffector arm being higher than 1m */
+    public static final double armBrakeRate = 1.5;
   }
 
   public static final class Vision
