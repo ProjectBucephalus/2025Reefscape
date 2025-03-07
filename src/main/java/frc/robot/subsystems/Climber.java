@@ -109,8 +109,15 @@ public class Climber extends SubsystemBase
         break;
 
       case CLIMB:
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.climbWinchPos));
-        SmartDashboard.putNumber("Climber Target", Constants.ClimberConstants.climbWinchPos);
+        double adjustedClimberPos = Constants.ClimberConstants.climbWinchPos;
+
+        if (SmartDashboard.getBoolean("OVERIDE MODE", false)) 
+        {
+          adjustedClimberPos += RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() * Constants.ClimberConstants.winchBalanceScalar;
+        }
+
+        m_ClimberWinch.setControl(motionMagic.withPosition(adjustedClimberPos));
+        SmartDashboard.putNumber("Climber Target", adjustedClimberPos);
         // TODO: Merge in active balancing, only in override mode
         break;
       

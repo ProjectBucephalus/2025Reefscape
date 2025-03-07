@@ -399,6 +399,7 @@ public final class Constants
     public static final double winchKP = 150;
     public static final double winchKI = 0;
     public static final double winchKD = 0;
+    public static final double winchBalanceScalar = 0.05;
 
     public static final double winchPlanetaryRatio = 45;
     public static final double winchGearIn = 20;
