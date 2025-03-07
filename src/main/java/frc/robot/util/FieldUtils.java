@@ -183,7 +183,7 @@ public class FieldUtils
     public static final double robotSpeedThreshold = 1.5;
     
     /* Barge Exclusion Zone -> Keep the arm pivot far enough away from the net to prevent touching it */
-    public static final double bargeSafetyWidth = Constants.DiffectorConstants.IKGeometry.bargeSafetyWidth - robotRadiusInscribed - 0.2;
+    public static final double bargeSafetyWidth = Constants.DiffectorConstants.IKGeometry.bargeSafetyWidth - robotRadiusInscribed;
     public static final GeoFenceObject netProtectionZone = new GeoFenceObject((fieldLength/2), fieldSouth, (fieldLength/2), fieldNorth, wallBuffer, bargeSafetyWidth, ObjectTypes.line);
   }
 }
