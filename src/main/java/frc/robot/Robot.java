@@ -77,6 +77,7 @@ public class Robot extends TimedRobot
       {RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, 1, robotPose.getRotation()));}
 
     RobotContainer.swerveState = RobotContainer.s_Swerve.getState();
+    RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
 
     CommandScheduler.getInstance().run();
 
@@ -161,8 +162,6 @@ public class Robot extends TimedRobot
         }
       }
     }
-    
-    RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
   }
 
   @Override

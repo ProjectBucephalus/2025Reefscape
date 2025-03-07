@@ -282,6 +282,8 @@ public class RobotContainer
         )
       );
 
+    processorDriveTrigger.whileTrue(new DynamicBargeObstacle(() -> swerveState.Pose.getTranslation()));
+
     scoreDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
