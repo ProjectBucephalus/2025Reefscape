@@ -58,7 +58,7 @@ public class DynamicAuto
           {commandList.add(new WaitUntilAutoTime(Double.parseDouble(splitCommands[i].substring(1))));}
         else if (splitCommands[i].charAt(0) == 'r')
         {
-          nextPath = FieldUtils.loadPath(Constants.Auto.autoMap.get(splitCommands[i].substring(0, 1)).pathName);
+          nextPath = FieldUtils.loadPath(Constants.Auto.autoMap.get(splitCommands[i].substring(0, 2)).pathName);
 
           Pathfinding.setStartPosition(prevEndPoint);
           

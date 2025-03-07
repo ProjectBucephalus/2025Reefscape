@@ -102,19 +102,19 @@ public class TeleopSwerve extends Command
       else
       {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
       
-      // Invert processing input when on red alliance
-      if (redAlliance)
-      {motionXY = motionXY.unaryMinus();}
-
       if (RobotContainer.s_Diffector.getElevation() > IKGeometry.bargeSafetyHeight && !SmartDashboard.getBoolean("OVERIDE MODE", false)) // TODO: Copy to other drive functions as needed
       {
         motionXY = FieldUtils.GeoFencing.netProtectionZone.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
       }
-
-      if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", true))
+      
+      if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", false))
       {
         SmartDashboard.putString("Drive State", "Fenced");
 
+        // Invert processing input when on red alliance
+        if (redAlliance)
+          {motionXY = motionXY.unaryMinus();}
+        
         // Read down the list of geofence objects
         // Outer wall is index 0, so has highest authority by being processed last
         for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
@@ -122,14 +122,14 @@ public class TeleopSwerve extends Command
           Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
           motionXY = inputDamping;
         }
-
-        // Uninvert processing output when on red alliance
-        if (redAlliance)
-          {motionXY = motionXY.unaryMinus();}
       } 
       else 
-        {SmartDashboard.putString("Drive State", "Non-Fenced");}
-
+      {SmartDashboard.putString("Drive State", "Non-Fenced");}
+      
+      // Uninvert processing output when on red alliance
+      if (redAlliance)
+        {motionXY = motionXY.unaryMinus();}
+      
       s_Swerve.setControl
       (
         driveRequest
