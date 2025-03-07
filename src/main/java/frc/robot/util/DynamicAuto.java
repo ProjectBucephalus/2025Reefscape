@@ -23,6 +23,7 @@ public class DynamicAuto
 {
   private static final PathConstraints constraints = Constants.Auto.defaultConstraints;
 
+  
   /** Creates a new DynamicAuto. */
   public DynamicAuto() {}
 
@@ -33,14 +34,18 @@ public class DynamicAuto
    */
   public static ArrayList<Command> getCommandList(String commandInput)
   {
-    // Splits the single-String command phrases into individual strings, which are stored in an array
-    String[] splitCommands = commandInput.toLowerCase().split(",");
-    // Length of the command list is twice the number of command phrases, as each phrase maps to two commands (one path and one robot)
+    // Removes all space characters from the single-String command phrases, ensures it's all lowercase, and then splits it into individual strings, which are stored in an array
+    String[] splitCommands = commandInput.replaceAll("//s", "").toLowerCase().split(",");
+    // The arraylist that all the commands will be placed into
     ArrayList<Command> commandList = new ArrayList<>();
     
+    // Holders for the values during each command processing
     AutoMapping autoMapValue;
-    Translation2d prevEndPoint = RobotContainer.swerveState.Pose.getTranslation();
     PathPlannerPath nextPath;
+    Command command;
+
+    // Tracks the end point of the previous path, used so each path properly pathfinds from the end point of the previous one
+    Translation2d prevEndPoint = RobotContainer.swerveState.Pose.getTranslation();
 
     // For each command phrase, adds the associated path and then the associated command to the command list
     for (int i = 0; i < splitCommands.length; i++) 
@@ -73,7 +78,12 @@ public class DynamicAuto
           commandList.add(AutoBuilder.pathfindThenFollowPath(nextPath, constraints));
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
 
-          commandList.add(autoMapValue.command.get());
+          command = autoMapValue.command.get();
+
+          if (command != null) 
+          {
+            commandList.add(command);
+          }
         }
     }
 
