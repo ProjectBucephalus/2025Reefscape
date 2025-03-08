@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 import frc.robot.commands.Diffector.GoToCoralScorePos;
+import frc.robot.commands.Diffector.MoveTo;
 import frc.robot.commands.Manipulator.SetCoralStatus;
 import frc.robot.commands.Util.WaitUntilAutoTime;
 import frc.robot.constants.Constants;
@@ -85,6 +86,29 @@ public class DynamicAuto
         prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();
 
         commandList.add(new SetCoralStatus(RobotContainer.s_CoralManipulator, CoralManipulatorStatus.DELIVERY_SMART));
+      }
+      else if (splitCommands[i].charAt(0) == 'c') 
+      {
+        nextPath = FieldUtils.loadPath(Constants.Auto.autoMap.get(splitCommands[i]).pathName);
+
+        Pathfinding.setStartPosition(prevEndPoint);
+        
+        commandList.add
+          (
+            AutoBuilder.pathfindThenFollowPath(nextPath, constraints)
+            .alongWith
+            (
+              new MoveTo(RobotContainer.s_Diffector, Constants.DiffectorConstants.coralIntakePosition)
+            )
+          );
+
+        prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
+
+        commandList.add(new WaitCommand(1.5));
+
+        commandList.add(new MoveTo(RobotContainer.s_Diffector, Constants.DiffectorConstants.coralTransferPosition).until(() -> RobotContainer.s_Diffector.atPosition()));
+      
+        commandList.add(new MoveTo(RobotContainer.s_Diffector, Constants.DiffectorConstants.coralStowPosition));
       }
       else
       {

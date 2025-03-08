@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.CTREConfigs;
+import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
+import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 import frc.robot.util.Elastic;
 import frc.robot.util.FieldUtils;
 
@@ -189,6 +191,9 @@ public class Robot extends TimedRobot
 
     if (autonomousCommand != null) 
       {autonomousCommand.cancel();}
+
+    RobotContainer.s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT);
+    RobotContainer.s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY);
 
     Elastic.selectTab(FieldUtils.isRedAlliance() ? "Red Alliance" : "Blue Alliance");
   }

@@ -94,7 +94,7 @@ public class RobotContainer
   {
     swerveState = s_Swerve.getState();
 
-    SmartDashboard.putBoolean("IgnoreFence", false);
+    SmartDashboard.putBoolean("IgnoreFence", true);
     s_Swerve.setDefaultCommand
     (
       new TeleopSwerve
