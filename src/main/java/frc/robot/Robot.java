@@ -41,6 +41,8 @@ public class Robot extends TimedRobot
 
   private Pose2d robotPose;
 
+  private Command c_WarmupCommand;
+
   private boolean allianceKnown = false;
   private boolean rotationKnown = false;
   private ArrayList<Double> portRotationData = new ArrayList<Double>();
@@ -54,7 +56,9 @@ public class Robot extends TimedRobot
   public void robotInit() 
   {
     robotContainer = new RobotContainer();
-    PathfindingCommand.warmupCommand().schedule();
+    c_WarmupCommand = PathfindingCommand.warmupCommand();
+
+    c_WarmupCommand.schedule();
 
     RobotContainer.s_LimelightPort.setIMUMode(1);
     RobotContainer.s_LimelightStbd.setIMUMode(1);
@@ -94,11 +98,20 @@ public class Robot extends TimedRobot
     RobotContainer.s_LimelightPort.setIMUMode(1);
     RobotContainer.s_LimelightStbd.setIMUMode(1);
     SmartDashboard.putBoolean("OVERIDE MODE", false);
+    SmartDashboard.putBoolean("Process Auto", false);
   }
 
   @Override
   public void disabledPeriodic()
   {
+    SmartDashboard.putBoolean("", c_WarmupCommand.isFinished());
+
+    if (SmartDashboard.getBoolean("Process Auto", false))
+    {
+      SmartDashboard.putBoolean("Process Auto", false);
+      autonomousCommand = robotContainer.getAutoCommand();
+    }
+
     if (!allianceKnown) 
     {
       if (DriverStation.getAlliance().isPresent()) 
@@ -174,7 +187,8 @@ public class Robot extends TimedRobot
 
     Elastic.selectTab(FieldUtils.isRedAlliance() ? "Red Alliance" : "Blue Alliance");
     
-    autonomousCommand = robotContainer.getAutoCommand();
+    if (autonomousCommand == null) 
+      {autonomousCommand = robotContainer.getAutoCommand();}
 
     if (autonomousCommand != null) 
       {autonomousCommand.schedule();}
