@@ -20,7 +20,7 @@ import frc.robot.util.FieldUtils;
 public class DynamicBargeObstacle extends Command 
 {
   private Supplier<Translation2d> robotPosSup;
-  private ArrayList<Pair<Translation2d, Translation2d>> bargeObstacle;
+  private ArrayList<Pair<Translation2d, Translation2d>> bargeObstacle = new ArrayList<Pair<Translation2d, Translation2d>>();
 
   public DynamicBargeObstacle(Supplier<Translation2d> robotPosSup) 
   {

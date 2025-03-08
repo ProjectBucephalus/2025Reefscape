@@ -183,8 +183,8 @@ public class FieldUtils
     /** Speed threshold at which the robot changes between radii, in meters per second*/
     public static final double robotSpeedThreshold = 1.5;
     
-    public static final Pair<Translation2d, Translation2d> redAllianceBargeDynamic = new Pair<Translation2d,Translation2d>(new Translation2d(8.19, 3.721), new Translation2d(9.358, 0));
-    public static final Pair<Translation2d, Translation2d> blueAllianceBargeDynamic = new Pair<Translation2d,Translation2d>(new Translation2d(8.19, 4.331), new Translation2d(9.358, fieldWidth));
+    public static final Pair<Translation2d, Translation2d> blueAllianceBargeDynamic = new Pair<Translation2d,Translation2d>(new Translation2d(8.19, 3.721), new Translation2d(9.358, 0));
+    public static final Pair<Translation2d, Translation2d> redAllianceBargeDynamic = new Pair<Translation2d,Translation2d>(new Translation2d(8.19, 4.331), new Translation2d(9.358, fieldWidth));
 
     /* Barge Exclusion Zone -> Keep the arm pivot far enough away from the net to prevent touching it */
     public static final double bargeSafetyWidth = Constants.DiffectorConstants.IKGeometry.bargeSafetyWidth - robotRadiusInscribed;
