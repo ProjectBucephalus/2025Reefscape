@@ -84,6 +84,8 @@ public class DynamicAuto
             )
           );
 
+        commandList.add(new WaitUntilCommand(() -> RobotContainer.s_Diffector.atPosition()));
+
         prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();
 
         commandList.add(new SetCoralStatus(RobotContainer.s_CoralManipulator, CoralManipulatorStatus.DELIVERY_SMART));
