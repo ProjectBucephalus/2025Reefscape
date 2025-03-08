@@ -209,7 +209,7 @@ public final class Constants
     };
 
     /** How close we have to be to the path start point to just follow the path without using pathfinding */
-    public static final double pathFollowTolerance = 0.02;
+    public static final double pathFollowTolerance = 0.04;
 
     public static final String defaultAuto = "rc4,cr1,rb4,cl1,ra4,cl1,rl4";
   }
@@ -322,7 +322,7 @@ public final class Constants
     public static final Translation2d coral1PortPosition    = new Translation2d(0.82,    -150);
     public static final Translation2d coral1StbdPosition    = new Translation2d(0.82,   150);
 
-    public static final Translation2d coralIntakePosition   = new Translation2d(0.90,  90);
+    public static final Translation2d coralIntakePosition   = new Translation2d(0.95,  205);
     public static final Translation2d coralTransferPosition = new Translation2d(0.625, 180);
     public static final Translation2d coralStowPosition     = new Translation2d(0.80,   0);
 
