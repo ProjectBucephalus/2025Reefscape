@@ -20,8 +20,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
-import frc.robot.util.Elastic;
-import frc.robot.util.FieldUtils;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -185,8 +183,6 @@ public class Robot extends TimedRobot
   {  
     RobotContainer.s_LimelightPort.setIMUMode(2);
     RobotContainer.s_LimelightStbd.setIMUMode(2);
-
-    Elastic.selectTab(FieldUtils.isRedAlliance() ? "Red Alliance" : "Blue Alliance");
     
     if (autonomousCommand == null) 
       {autonomousCommand = robotContainer.getAutoCommand();}
@@ -209,8 +205,6 @@ public class Robot extends TimedRobot
 
     RobotContainer.s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT);
     RobotContainer.s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY);
-
-    Elastic.selectTab(FieldUtils.isRedAlliance() ? "Red Alliance" : "Blue Alliance");
   }
 
   @Override
