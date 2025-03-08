@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.commands.Manipulator.EjectAlgaeSmart;
 import frc.robot.commands.Manipulator.IntakeAlgaeSequence;
 import frc.robot.commands.Manipulator.IntakeCoralSequence;
 import frc.robot.commands.Manipulator.ScoreAlgaeSequence;
@@ -182,6 +183,7 @@ public final class Constants
         put("p"  , new AutoMapping("p"  , () -> new ScoreAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
         put("kl" , new AutoMapping("kl", null));
         put("kr" , new AutoMapping("kr", null));
+        put("e"  , new AutoMapping(null, () -> new EjectAlgaeSmart(RobotContainer.s_AlgaeManipulator, RobotContainer.s_Diffector, () -> RobotContainer.swerveState.Pose.getTranslation())));
       }
     };
 

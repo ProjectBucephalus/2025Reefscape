@@ -127,12 +127,16 @@ public class DynamicAuto
       {
         // Each iteration fills two indexes in the command list
         autoMapValue = Constants.Auto.autoMap.get(splitCommands[i]);
-        nextPath = FieldUtils.loadPath(autoMapValue.pathName);
 
-        Pathfinding.setStartPosition(prevEndPoint);
-        
-        commandList.add(AutoBuilder.pathfindThenFollowPath(nextPath, constraints));
-        prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
+        if (autoMapValue.pathName != null) 
+        {       
+          nextPath = FieldUtils.loadPath(autoMapValue.pathName);
+  
+          Pathfinding.setStartPosition(prevEndPoint);
+          
+          commandList.add(AutoBuilder.pathfindThenFollowPath(nextPath, constraints));
+          prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
+        }
 
         command = autoMapValue.command.get();
 
