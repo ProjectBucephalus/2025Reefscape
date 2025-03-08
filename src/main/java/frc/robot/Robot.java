@@ -110,6 +110,7 @@ public class Robot extends TimedRobot
     if (SmartDashboard.getBoolean("Process Auto", false))
     {
       autonomousCommand = robotContainer.getAutoCommand();
+      SmartDashboard.putBoolean("Process Auto", false);
     }
 
     if (!allianceKnown) 

@@ -91,10 +91,11 @@ public class DynamicAuto
         if (splitCommands[i].charAt(2) == '4') 
         {
           commandList.add(new WaitCommand(0.1));
-          commandList.add(new GoToCoralScorePos(3, RobotContainer.s_Diffector, () -> RobotContainer.swerveState.Pose.getTranslation()));
+          commandList.add(new GoToCoralScorePos(3, RobotContainer.s_Diffector, () -> RobotContainer.swerveState.Pose.getTranslation()).raceWith(new WaitCommand(0.05)));
         }
         
         commandList.add(new WaitUntilCommand(() -> !RobotContainer.coral));
+        commandList.add(new WaitCommand(0.1));
         commandList.add(new SetCoralStatus(RobotContainer.s_CoralManipulator, CoralManipulatorStatus.DEFAULT));
       }
       else if (splitCommands[i].charAt(0) == 'c') 
@@ -114,7 +115,7 @@ public class DynamicAuto
 
         prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
 
-        commandList.add(new WaitCommand(1.5));
+        commandList.add(new WaitCommand(0.2));
 
         commandList.add(new MoveTo(RobotContainer.s_Diffector, Constants.DiffectorConstants.coralTransferPosition));
         commandList.add(new WaitUntilCommand(() -> RobotContainer.s_Diffector.atPosition(Constants.DiffectorConstants.coralTransferPosition)));
