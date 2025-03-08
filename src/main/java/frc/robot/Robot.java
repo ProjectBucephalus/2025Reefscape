@@ -63,6 +63,7 @@ public class Robot extends TimedRobot
 
     SmartDashboard.putData("Field", autoPosition);
     SmartDashboard.putNumber("Exposure Setting", 0);
+    SmartDashboard.putBoolean("Rotation Known", rotationKnown);
   }
 
   /**
@@ -81,45 +82,8 @@ public class Robot extends TimedRobot
       {RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, 1, robotPose.getRotation()));}
 
     RobotContainer.swerveState = RobotContainer.s_Swerve.getState();
-    RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
 
-    CommandScheduler.getInstance().run();
-
-    SmartDashboard.putBoolean("Unlock Heading Trigger", RobotContainer.unlockHeadingTrigger.getAsBoolean());
-    SmartDashboard.putString("Heading State", RobotContainer.headingState.toString());
-  }
-
-  /** This function is called once each time the robot enters Disabled mode. */
-  @Override
-  public void disabledInit() 
-  {
-    RobotContainer.s_LimelightPort.setIMUMode(1);
-    RobotContainer.s_LimelightStbd.setIMUMode(1);
-    SmartDashboard.putBoolean("OVERIDE MODE", false);
-    SmartDashboard.putBoolean("Process Auto", false);
-    rotationKnown = false;
-  }
-
-  @Override
-  public void disabledPeriodic()
-  {
-    SmartDashboard.putBoolean("Warmup Finished", !c_WarmupCommand.isScheduled());
-
-    if (SmartDashboard.getBoolean("Process Auto", false))
-    {
-      autonomousCommand = robotContainer.getAutoCommand();
-      SmartDashboard.putBoolean("Process Auto", false);
-    }
-
-    if (!allianceKnown) 
-    {
-      if (DriverStation.getAlliance().isPresent()) 
-      {
-        allianceKnown = true;
-        if (DriverStation.getAlliance().get() == Alliance.Blue && !rotationKnown) 
-          {RobotContainer.s_Swerve.getPigeon2().setYaw(180);}
-      }  
-    }
+    rotationKnown = SmartDashboard.getBoolean("Rotation Known", rotationKnown);
 
     if (!rotationKnown)
     {
@@ -175,6 +139,52 @@ public class Robot extends TimedRobot
           }
         }
       }
+    }
+    else
+    {
+      portRotationData.clear();
+      stbdRotationData.clear();
+    }
+
+    SmartDashboard.putBoolean("Rotation Known", rotationKnown);
+
+    RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
+
+    CommandScheduler.getInstance().run();
+
+    SmartDashboard.putString("Heading State", RobotContainer.headingState.toString());
+  }
+
+  /** This function is called once each time the robot enters Disabled mode. */
+  @Override
+  public void disabledInit() 
+  {
+    RobotContainer.s_LimelightPort.setIMUMode(1);
+    RobotContainer.s_LimelightStbd.setIMUMode(1);
+    SmartDashboard.putBoolean("OVERIDE MODE", false);
+    SmartDashboard.putBoolean("Process Auto", false);
+    rotationKnown = false;
+  }
+
+  @Override
+  public void disabledPeriodic()
+  {
+    SmartDashboard.putBoolean("Warmup Finished", !c_WarmupCommand.isScheduled());
+
+    if (SmartDashboard.getBoolean("Process Auto", false))
+    {
+      autonomousCommand = robotContainer.getAutoCommand();
+      SmartDashboard.putBoolean("Process Auto", false);
+    }
+
+    if (!allianceKnown) 
+    {
+      if (DriverStation.getAlliance().isPresent()) 
+      {
+        allianceKnown = true;
+        if (DriverStation.getAlliance().get() == Alliance.Blue && !rotationKnown) 
+          {RobotContainer.s_Swerve.getPigeon2().setYaw(180);}
+      }  
     }
   }
 
