@@ -283,8 +283,8 @@ public final class Constants
     /** Physical lower limit of the elevator when horizontal, metres above the ground */
     public static final double minZ = 0.42;
     /** Elevation at which all rotations are safe */
-    public static final double safeElevation = 0.95; // TODO: Algae on deck‽
-    public static final double reefSafeElevation = 0.95;
+    public static final double safeElevation = 0.97; // TODO: Algae on deck‽
+    public static final double reefSafeElevation = 1;
     
     /** Arm rotation check tollerance, degrees */
     public static final double angleTolerance = 2;
@@ -311,20 +311,20 @@ public final class Constants
 
     public static final Translation2d coral4PortPosition    = new Translation2d(  maxZ,   -33); //TODO
     public static final Translation2d coral4StbdPosition    = new Translation2d(  maxZ,  33); //TODO
-    public static final Translation2d coral3PortPosition    = new Translation2d(1.0,   -28);
-    public static final Translation2d coral3StbdPosition    = new Translation2d(1.0,  28);
-    public static final Translation2d coral2PortPosition    = new Translation2d(0.72,   -45); //TODO
-    public static final Translation2d coral2StbdPosition    = new Translation2d(0.72,  45); //TODO
-    public static final Translation2d coral1PortPosition    = new Translation2d(0.8,    -150); //TODO
-    public static final Translation2d coral1StbdPosition    = new Translation2d(0.8,   150); //TODO
+    public static final Translation2d coral3PortPosition    = new Translation2d(0.98,   -28);
+    public static final Translation2d coral3StbdPosition    = new Translation2d(0.98,  28);
+    public static final Translation2d coral2PortPosition    = new Translation2d(0.70,   -45); //TODO
+    public static final Translation2d coral2StbdPosition    = new Translation2d(0.70,  45); //TODO
+    public static final Translation2d coral1PortPosition    = new Translation2d(0.78,    -150); //TODO
+    public static final Translation2d coral1StbdPosition    = new Translation2d(0.78,   150); //TODO
 
     public static final Translation2d coralIntakePosition   = new Translation2d(0.90,  90);
-    public static final Translation2d coralTransferPosition = new Translation2d(0.61, 180);
+    public static final Translation2d coralTransferPosition = new Translation2d(0.635, 180);
     public static final Translation2d coralStowPosition     = new Translation2d(0.80,   0);
 
     public static final Translation2d algaeIntakePosition   = new Translation2d(0.48,  60);
     public static final Translation2d algaeTransferPosition = new Translation2d(0.90,   0);
-    public static final Translation2d algaeStowPosition     = new Translation2d(0.80, 180); 
+    public static final Translation2d algaeStowPosition     = new Translation2d(0.825, 180); 
         
     public static final class IKGeometry
     {
