@@ -172,7 +172,7 @@ public class Diffector extends SubsystemBase
     )
     {
       calibrationCounter++;
-      if (calibrationCounter > 10) 
+      if (calibrationCounter == 30) 
       {
         SmartDashboard.putBoolean("Overide: Calibrate Arm", true);
       }

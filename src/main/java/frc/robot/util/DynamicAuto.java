@@ -10,6 +10,8 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -89,6 +91,41 @@ public class DynamicAuto
         commandList.add(new SetCoralStatus(RobotContainer.s_CoralManipulator, CoralManipulatorStatus.DELIVERY_SMART));
         commandList.add(new WaitUntilCommand(() -> !RobotContainer.coral));
         commandList.add(new SetCoralStatus(RobotContainer.s_CoralManipulator, CoralManipulatorStatus.DEFAULT));
+        SmartDashboard.putBoolean("level 4", false);
+        if (splitCommands[i].charAt(2) == '4') 
+        {
+          SmartDashboard.putBoolean("level 4", true);
+
+          double motionAmount;
+          switch (splitCommands[i].charAt(1)) 
+          {
+            case 'i':
+            case 'j':
+            case 'k':
+            case 'l':
+              motionAmount = -0.15;
+              break;
+          
+            default:
+              motionAmount = 0.15;
+              break;
+          }
+          SmartDashboard.putNumber("motionAmount", motionAmount);
+
+          Rotation2d prevRotation = nextPath.getGoalEndState().rotation();
+          Translation2d robotMotion = new Translation2d(0, motionAmount);
+          robotMotion = robotMotion.rotateBy(prevRotation);
+          SmartDashboard.putNumber("motionX", robotMotion.getX());
+          SmartDashboard.putNumber("motionY", robotMotion.getY());
+
+          Pose2d targetPoint = new Pose2d(prevEndPoint.plus(robotMotion), prevRotation);
+          
+          Pathfinding.setStartPosition(prevEndPoint);
+
+          commandList.add(AutoBuilder.pathfindToPose(targetPoint, constraints));
+
+          prevEndPoint = targetPoint.getTranslation();
+        }
       }
       else if (splitCommands[i].charAt(0) == 'c') 
       {
@@ -109,8 +146,8 @@ public class DynamicAuto
 
         commandList.add(new WaitCommand(1.5));
 
-        commandList.add(new MoveTo(RobotContainer.s_Diffector, Constants.DiffectorConstants.coralTransferPosition).until(() -> RobotContainer.s_Diffector.atPosition()));
-      
+        commandList.add(new MoveTo(RobotContainer.s_Diffector, Constants.DiffectorConstants.coralTransferPosition));
+        commandList.add(new WaitUntilCommand(() -> RobotContainer.s_Diffector.atPosition(Constants.DiffectorConstants.coralTransferPosition)));
         commandList.add(new MoveTo(RobotContainer.s_Diffector, Constants.DiffectorConstants.coralStowPosition));
       }
       else
