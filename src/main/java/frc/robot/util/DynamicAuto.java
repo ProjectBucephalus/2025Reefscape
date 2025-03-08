@@ -85,7 +85,8 @@ public class DynamicAuto
 
         prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();
 
-        commandList.add(new SetCoralStatus(RobotContainer.s_CoralManipulator, CoralManipulatorStatus.DELIVERY_SMART));
+        commandList.add(new SetCoralStatus(RobotContainer.s_CoralManipulator, CoralManipulatorStatus.DELIVERY_SMART).until(() -> !RobotContainer.coral));
+        commandList.add(new SetCoralStatus(RobotContainer.s_CoralManipulator, CoralManipulatorStatus.DEFAULT));
       }
       else if (splitCommands[i].charAt(0) == 'c') 
       {
