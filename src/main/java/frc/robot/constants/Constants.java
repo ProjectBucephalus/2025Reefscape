@@ -331,11 +331,11 @@ public final class Constants
       /** Manipulator arm point-cloud */
       public static final Translation2d[] armGeometry = new Translation2d[]
       {
-        new Translation2d(0.16,0.42), new Translation2d(0.16,0.48),
-        new Translation2d(0.14,0.48), new Translation2d(0.12,0.48),
-        new Translation2d(0.00,0.48), new Translation2d( -0.12,0.48),
-        new Translation2d( -0.14,0.48), new Translation2d( -0.16,0.48),
-        new Translation2d( -0.16,0.42), new Translation2d( -0.24, -0.35),
+        new Translation2d(0.16,0.445), new Translation2d(0.16,0.505),
+        new Translation2d(0.14,0.505), new Translation2d(0.12,0.505),
+        new Translation2d(0.00,0.505), new Translation2d( -0.12,0.505),
+        new Translation2d( -0.14,0.505), new Translation2d( -0.16,0.505),
+        new Translation2d( -0.16,0.445), new Translation2d( -0.24, -0.35),
         new Translation2d( -0.24, -0.37), new Translation2d( -0.24, -0.40),
         new Translation2d( -0.24, -0.45), new Translation2d( -0.23, -0.46),
         new Translation2d( -0.22, -0.47), new Translation2d( -0.20, -0.47),
