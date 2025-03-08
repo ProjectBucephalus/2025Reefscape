@@ -99,6 +99,7 @@ public class Robot extends TimedRobot
     RobotContainer.s_LimelightStbd.setIMUMode(1);
     SmartDashboard.putBoolean("OVERIDE MODE", false);
     SmartDashboard.putBoolean("Process Auto", false);
+    rotationKnown = false;
   }
 
   @Override
