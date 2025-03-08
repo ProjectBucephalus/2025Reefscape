@@ -73,6 +73,8 @@ public class Diffector extends SubsystemBase
   //private GoalEndState armEndState = new GoalEndState(0, Rotation2d.kZero);
   private static ArrayList<Translation2d> plannedPathPoints = new ArrayList<Translation2d>();
 
+  private int calibrationCounter = 0;
+
   /** Creates a new Diffector. */
   public Diffector() 
   {
@@ -159,6 +161,26 @@ public class Diffector extends SubsystemBase
     }
     else if (elevation < arm.checkPosition(armPosition) - DiffectorConstants.elevationTolerance)
       {eStop = true;}
+
+    if 
+    (
+      atPosition() &&
+      (relativeTarget.equals(DiffectorConstants.algaeStowPosition) ||
+      relativeTarget.equals(DiffectorConstants.coralStowPosition) ||
+      relativeTarget.equals(DiffectorConstants.coralIntakePosition) ||
+      relativeTarget.equals(DiffectorConstants.algaeTransferPosition))
+    )
+    {
+      calibrationCounter++;
+      if (calibrationCounter > 10) 
+      {
+        SmartDashboard.putBoolean("Overide: Calibrate Arm", true);
+      }
+    }
+    else
+    {
+      calibrationCounter = 0;
+    }
 
     return armPosition;
   }
@@ -344,14 +366,14 @@ public class Diffector extends SubsystemBase
   @Override
   public void periodic() 
   { 
+    if (SmartDashboard.getBoolean("Overide: Calibrate Arm", false))
+    {
+      positionOveride(elevation, getEncoderPos());
+      SmartDashboard.putBoolean("Overide: Calibrate Arm", false);
+    }
+    
     if (SmartDashboard.getBoolean("OVERIDE MODE", false))
     {
-      if (SmartDashboard.getBoolean("Overide: Calibrate Arm", false))
-      {
-        positionOveride(elevation, getEncoderPos());
-        SmartDashboard.putBoolean("Overide: Calibrate Arm", false);
-      }
-
       if (SmartDashboard.getBoolean("Overide: Arm At Target", false))
       {
         positionOveride(targetElevation, targetAngle);
