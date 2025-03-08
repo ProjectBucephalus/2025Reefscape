@@ -105,11 +105,10 @@ public class Robot extends TimedRobot
   @Override
   public void disabledPeriodic()
   {
-    SmartDashboard.putBoolean("", c_WarmupCommand.isFinished());
+    SmartDashboard.putBoolean("Warmup Finished", !c_WarmupCommand.isScheduled());
 
     if (SmartDashboard.getBoolean("Process Auto", false))
     {
-      SmartDashboard.putBoolean("Process Auto", false);
       autonomousCommand = robotContainer.getAutoCommand();
     }
 

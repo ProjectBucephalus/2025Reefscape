@@ -159,7 +159,7 @@ public class Diffector extends SubsystemBase
       if (elevation < targetElevation - DiffectorConstants.elevationTolerance)
         {eStop = true;}
     }
-    else if (elevation < arm.checkPosition(armPosition) - DiffectorConstants.elevationTolerance)
+    else if (elevation < arm.checkPosition(armPosition) - DiffectorConstants.elevationTolerance && !manualControl)
       {eStop = true;}
 
     if 
@@ -407,16 +407,6 @@ public class Diffector extends SubsystemBase
     {
       if (manualControl)
       {
-        if (manualElevation != 0) 
-        {
-          if 
-          (
-            (manualElevation < 0 && arm.checkAngle(angle) > elevation - projectionElevation) || 
-            (manualElevation > 0 && elevation + projectionElevation > DiffectorConstants.maxZ)
-          )
-            {manualElevation = 0;}
-        }
-
         if (manualRotation != 0)
         {
           if (arm.checkAngle(angle + Math.copySign(projectionAngle, manualRotation)) > elevation) 
