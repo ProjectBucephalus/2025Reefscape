@@ -262,7 +262,7 @@ public class Diffector extends SubsystemBase
     {return atElevation() && atAngle();}
 
   /**
-   * Returns true if the diffector is at the given position
+   * Returns true if the diffector is at the given absolute position
    * @param checkTarget target elevation/rotation to check against
    */
   public boolean atPosition(Translation2d checkTarget)
@@ -272,11 +272,15 @@ public class Diffector extends SubsystemBase
       Math.abs(angle - checkTarget.getY()) < DiffectorConstants.angleTolerance;
   }
 
+  /**
+   * Returns true if the diffector is at the given relative position
+   * @param checkTarget target elevation/rotation to check against
+   */
   public boolean atRelativePosition(Translation2d checkTarget)
   {
     return
       Math.abs(elevation - checkTarget.getX()) < DiffectorConstants.elevationTolerance &&
-      Math.abs(getRelativeRotation() - checkTarget.getY()) < DiffectorConstants.angleTolerance;
+      Math.abs(getRelativeRotation() - Conversions.mod(checkTarget.getY(), 360)) < DiffectorConstants.angleTolerance;
   }
 
   /** Returns true if the diffector is safely in climb position */
@@ -422,8 +426,8 @@ public class Diffector extends SubsystemBase
 
         if (manualElevation == 0 && manualRotation == 0)
         {
-          goToAngle(angle);
-          setElevationTarget(elevation);
+          targetElevation = elevation;
+          targetAngle = angle;
           manualControl = false;
         }
       }

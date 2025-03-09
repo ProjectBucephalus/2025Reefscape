@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
+import frc.robot.util.FieldUtils;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -78,8 +79,13 @@ public class Robot extends TimedRobot
   {
     robotPose = RobotContainer.swerveState.Pose;
 
-    if (robotPose.getX() == 0 && robotPose.getY() == 0) 
-      {RobotContainer.s_Swerve.resetPose(new Pose2d(1.5, 1, robotPose.getRotation()));}
+    if (robotPose.getX() <= 0.25 && robotPose.getY() <= 0.25) 
+    {
+      if (allianceKnown && DriverStation.getAlliance().get() == Alliance.Blue)
+        RobotContainer.s_Swerve.resetPose(new Pose2d((FieldUtils.fieldLength/2) - 1.5, FieldUtils.fieldWidth/2, robotPose.getRotation()));
+      else
+        RobotContainer.s_Swerve.resetPose(new Pose2d((FieldUtils.fieldLength/2) + 1.5, FieldUtils.fieldWidth/2, robotPose.getRotation()));
+    }
 
     RobotContainer.swerveState = RobotContainer.s_Swerve.getState();
 
@@ -108,7 +114,9 @@ public class Robot extends TimedRobot
           if (highest - lowest < 1)
           {
             RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
-            rotationKnown = true;
+            SmartDashboard.putBoolean("Rotation Known", true);
+            portRotationData.clear();
+            stbdRotationData.clear();
           }
 
         }
@@ -135,18 +143,13 @@ public class Robot extends TimedRobot
           if (highest - lowest < 1)
           {
             RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
-            rotationKnown = true;
+            SmartDashboard.putBoolean("Rotation Known", true);
+            portRotationData.clear();
+            stbdRotationData.clear();
           }
         }
       }
     }
-    else
-    {
-      portRotationData.clear();
-      stbdRotationData.clear();
-    }
-
-    SmartDashboard.putBoolean("Rotation Known", rotationKnown);
 
     RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
 
