@@ -54,6 +54,6 @@ public class EjectAlgaeSmart extends SequentialCommandGroup
         break;
     }
 
-    addCommands(new MoveTo(s_Diffector, target), new WaitUntilCommand(() -> RobotContainer.s_Diffector.atPosition(target)), new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT));
+    addCommands(new MoveTo(s_Diffector, target), new WaitUntilCommand(() -> s_Diffector.atPosition()), new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT));
   }
 }
