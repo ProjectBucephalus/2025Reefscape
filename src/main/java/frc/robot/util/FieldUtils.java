@@ -188,6 +188,6 @@ public class FieldUtils
 
     /* Barge Exclusion Zone -> Keep the arm pivot far enough away from the net to prevent touching it */
     public static final double bargeSafetyWidth = Constants.DiffectorConstants.IKGeometry.bargeSafetyWidth - robotRadiusInscribed;
-    public static final GeoFenceObject netProtectionZone = new GeoFenceObject((fieldLength/2), fieldSouth, (fieldLength/2), fieldNorth, wallBuffer, bargeSafetyWidth, ObjectTypes.line);
+    public static final GeoFenceObject netProtectionZone = new GeoFenceObject((fieldLength/2), fieldSouth, (fieldLength/2), fieldNorth, 0.25, bargeSafetyWidth, ObjectTypes.line);
   }
 }
