@@ -123,6 +123,21 @@ public class DynamicAuto
         commandList.add(new WaitUntilCommand(() -> RobotContainer.s_Diffector.atPosition()));
         commandList.add(new MoveTo(RobotContainer.s_Diffector, Constants.DiffectorConstants.coralStowPosition));
       }
+      else if (splitCommands[i].charAt(0) == 'a') 
+      {
+        autoMapValue = Constants.Auto.autoMap.get(splitCommands[i]);
+        nextPath = FieldUtils.loadPath(Constants.Auto.autoMap.get(splitCommands[i]).pathName);
+
+        Pathfinding.setStartPosition(prevEndPoint);
+        
+        commandList.add
+          (
+            AutoBuilder.pathfindThenFollowPath(nextPath, constraints)
+            .alongWith(autoMapValue.command.get())
+          );
+
+        prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
+      }
       else
       {
         // Each iteration fills two indexes in the command list
