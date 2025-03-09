@@ -69,6 +69,7 @@ public class DynamicAuto
         nextPath = FieldUtils.loadPath(Constants.Auto.autoMap.get(splitCommands[i].substring(0, 2)).pathName);
 
         Pathfinding.setStartPosition(prevEndPoint);
+        prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();
 
         commandList.add
           (
@@ -79,12 +80,10 @@ public class DynamicAuto
               (
                 Integer.parseInt(splitCommands[i].substring(2)), 
                 RobotContainer.s_Diffector, 
-                () -> RobotContainer.swerveState.Pose.getTranslation()
+                prevEndPoint
               )
             )
           );
-
-        prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();
         
         commandList.add(new WaitUntilCommand(() -> RobotContainer.s_Diffector.atPosition()));
 
