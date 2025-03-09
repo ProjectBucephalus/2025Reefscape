@@ -193,11 +193,11 @@ public final class Constants
     public static final ArrayList<Translation2d> blueBargePoints = new ArrayList<Translation2d>()
     {
       {
-        add(new Translation2d(FieldUtils.fieldLength / 2, 5.08));
-        add(new Translation2d(FieldUtils.fieldLength / 2, 5.6245));
-        add(new Translation2d(FieldUtils.fieldLength / 2, 6.169));
-        add(new Translation2d(FieldUtils.fieldLength / 2, 6.615));
         add(new Translation2d(FieldUtils.fieldLength / 2, 7.261));
+        add(new Translation2d(FieldUtils.fieldLength / 2, 6.615));
+        add(new Translation2d(FieldUtils.fieldLength / 2, 6.169));
+        add(new Translation2d(FieldUtils.fieldLength / 2, 5.6245));
+        add(new Translation2d(FieldUtils.fieldLength / 2, 5.08));
       }
     };
 
