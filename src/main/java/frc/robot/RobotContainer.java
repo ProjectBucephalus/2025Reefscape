@@ -257,7 +257,7 @@ public class RobotContainer
         new TargetHeadingStation
         (
           s_Swerve, 
-          Rotation2d.kCCW_90deg,
+          Rotation2d.kZero,
           () -> swerveState.Pose.getY(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 

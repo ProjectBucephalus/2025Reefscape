@@ -322,7 +322,7 @@ public final class Constants
     public static final Translation2d coral1PortPosition    = new Translation2d(0.82, 210);
     public static final Translation2d coral1StbdPosition    = new Translation2d(0.82, 150);
 
-    public static final Translation2d coralIntakePosition   = new Translation2d(0.95, 205);
+    public static final Translation2d coralIntakePosition   = new Translation2d(0.90,  90);
     public static final Translation2d coralTransferPosition = new Translation2d(0.625,180);
     public static final Translation2d coralStowPosition     = new Translation2d(0.80,   0);
 
