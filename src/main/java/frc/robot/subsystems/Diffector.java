@@ -105,13 +105,17 @@ public class Diffector extends SubsystemBase
 
     m_diffectorUA.getConfigurator().apply(motorConfigUA);
     m_diffectorDA.getConfigurator().apply(motorConfigDA);
-
-    m_diffectorUA.setPosition(Units.degreesToRotations((targetPosition.getY() / rotationRatio) + (targetPosition.getX() / travelRatio)));
-    m_diffectorDA.setPosition(Units.degreesToRotations((targetPosition.getY() / rotationRatio) - (targetPosition.getX() / travelRatio)));
     
     motorTargets = calculateMotorTargets(targetPosition);
 
+    if (Conversions.mod(getEncoderPos(), 360) > Constants.DiffectorConstants.angleTolerance && Conversions.mod(getEncoderPos(), 360) < 360 - Constants.DiffectorConstants.angleTolerance) 
+    {
+      eStop = true;
+    }
+    positionOveride(targetElevation, getEncoderPos());
+
     calculatePosition();
+
     cargoState = updateCargoState();
 
     motionMagicRequester = new MotionMagicVoltage(0);

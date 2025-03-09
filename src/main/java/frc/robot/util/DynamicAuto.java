@@ -129,11 +129,25 @@ public class DynamicAuto
 
         Pathfinding.setStartPosition(prevEndPoint);
         
-        commandList.add
+        var pathStartingPoint = nextPath.getStartingHolonomicPose();
+
+        if (pathStartingPoint.isPresent()) 
+        {
+          commandList.add
+          (
+            AutoBuilder.pathfindToPose(pathStartingPoint.get(), constraints)
+            .alongWith(autoMapValue.command.get())
+          );
+          commandList.add(AutoBuilder.followPath(nextPath));
+        }
+        else
+        {
+          commandList.add
           (
             AutoBuilder.pathfindThenFollowPath(nextPath, constraints)
             .alongWith(autoMapValue.command.get())
           );
+        }
 
         prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
       }
