@@ -120,7 +120,7 @@ public class DynamicAuto
         commandList.add(new WaitCommand(0.1));
 
         commandList.add(new MoveTo(RobotContainer.s_Diffector, Constants.DiffectorConstants.coralTransferPosition));
-        commandList.add(new WaitUntilCommand(() -> RobotContainer.s_Diffector.atPosition(Constants.DiffectorConstants.coralTransferPosition)));
+        commandList.add(new WaitUntilCommand(() -> RobotContainer.s_Diffector.atPosition()));
         commandList.add(new MoveTo(RobotContainer.s_Diffector, Constants.DiffectorConstants.coralStowPosition));
       }
       else
