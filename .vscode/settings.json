@@ -56,5 +56,8 @@
     "edu.wpi.first.math.proto.*",
     "edu.wpi.first.math.**.proto.*",
     "edu.wpi.first.math.**.struct.*",
-  ]
+  ],
+  "java.project.explorer.showNonJavaResources": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false
 }
