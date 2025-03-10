@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib 
+// Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -6,12 +6,10 @@ package frc.robot.commands.Auto;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -25,7 +23,7 @@ import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
 import frc.robot.subsystems.Limelight;
 
-public class TargetHeadingScore extends Command 
+public class TargetHeadingProcessor extends Command 
 {
   private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
     .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
@@ -35,10 +33,10 @@ public class TargetHeadingScore extends Command
   private DoubleSupplier translationSup;
   private DoubleSupplier strafeSup;
   private DoubleSupplier brakeSup;
-  private double rotationOffset;
+  private Rotation2d rotationOffset;
   private BooleanSupplier fencedSup;
-  private Supplier<Translation2d> posSup;
   private Translation2d motionXY;
+  private DoubleSupplier xSup;
   private GeoFenceObject[] fieldGeoFence;
   private boolean redAlliance;
   private double robotRadius;
@@ -48,16 +46,11 @@ public class TargetHeadingScore extends Command
   private double strafeVal;
   private double brakeVal;
   
-  private int nearestReefFace;
-  private Translation2d robotPos;
-  private Translation2d nearestBargePoint;
-  private double targetHeading;
+  private double robotX;
+  private Rotation2d targetHeading;
   private double deadband = Constants.Control.stickDeadband;
 
-  /** 
-   * Rotation offset accounts for wanting the robot to face side-on
-   */
-  public TargetHeadingScore(CommandSwerveDrivetrain s_Swerve, double rotationOffset, Supplier<Translation2d> posSup, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  public TargetHeadingProcessor(CommandSwerveDrivetrain s_Swerve, Rotation2d rotationOffset, DoubleSupplier xSup, Rotation2d targetHeading, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
     SmartDashboard.putBoolean("Heading Snap Updating", true);
 
@@ -68,29 +61,29 @@ public class TargetHeadingScore extends Command
     this.strafeSup = strafeSup;
     this.brakeSup = brakeSup;
     this.fencedSup = fencedSup;
-    this.posSup = posSup;
+    this.targetHeading = targetHeading;
     this.rotationOffset = rotationOffset;
+    this.xSup = xSup;
 
     driveRequest.HeadingController.setPID(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
   }
 
-  @Override 
+  @Override
   public void initialize()
   {
     updateTargetHeading();
     redAlliance = FieldUtils.isRedAlliance();
-
     SmartDashboard.putBoolean("redAlliance", redAlliance);
+
     if (redAlliance)
       {fieldGeoFence = FieldUtils.GeoFencing.fieldRedGeoFence;}
 
     else
       {fieldGeoFence = FieldUtils.GeoFencing.fieldBlueGeoFence;}
 
-    Limelight.setActivePOI(Limelight.TagPOI.REEF);
+    Limelight.setActivePOI(Limelight.TagPOI.PROCESSOR);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() 
   {
@@ -106,6 +99,7 @@ public class TargetHeadingScore extends Command
       {updateTargetHeading();}
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
+    
     
     robotSpeed = Math.hypot(RobotContainer.swerveState.Speeds.vxMetersPerSecond, RobotContainer.swerveState.Speeds.vyMetersPerSecond);
     if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
@@ -126,7 +120,7 @@ public class TargetHeadingScore extends Command
     if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", false))
     {
       SmartDashboard.putString("Drive State", "Fenced");
-    
+
       // Read down the list of geofence objects
       // Outer wall is index 0, so has highest authority by being processed last
       for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
@@ -141,14 +135,14 @@ public class TargetHeadingScore extends Command
     // Uninvert processing output when on red alliance
     if (redAlliance)
       {motionXY = motionXY.unaryMinus();}
-  
+    
     s_Swerve.setControl
-    (
-      driveRequest
-      .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
-      .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
-      .withTargetDirection(new Rotation2d(Units.degreesToRadians(targetHeading)))
-    );
+      (
+        driveRequest
+        .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
+        .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
+        .withTargetDirection(targetHeading.plus(rotationOffset))
+      );
   }
 
   // Returns true when the command should end.
@@ -158,49 +152,23 @@ public class TargetHeadingScore extends Command
 
   private void updateTargetHeading()
   {
-    robotPos = posSup.get();
+    robotX = xSup.getAsDouble();
 
-    nearestBargePoint = FieldUtils.getNearestBargePoint(robotPos);
+    if (FieldUtils.isRedAlliance()) 
+    {
+      if (robotX >= 8.774) 
+        {targetHeading = new Rotation2d(Units.degreesToRadians(-90));} 
 
-    // TODO: Confirm this works for both aliances
-    if 
-    (
-      MathUtil.isNear(robotPos.getX(), (FieldUtils.fieldLength / 2), Constants.GamePiecesManipulator.algaeRange)
-    ) 
-      {targetHeading = 0 - rotationOffset;}
+      else 
+        {targetHeading = new Rotation2d(Units.degreesToRadians(90));}
+    }
     else
     {
-      nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
-
-      switch (nearestReefFace) 
-      {
-        case 1:
-          targetHeading = 0 + rotationOffset;
-          break;
-
-        case 2:
-          targetHeading = 60 + rotationOffset;
-          break;
-
-        case 3:
-          targetHeading = 120 + rotationOffset;
-          break;
-
-        case 4:
-          targetHeading = 0 - rotationOffset;
-          break;
-
-        case 5:
-          targetHeading = -120 - rotationOffset;
-          break;
-
-        case 6:
-          targetHeading = -60 - rotationOffset;
-          break;
-          
-        default:
-          break;
-      }
-    }    
+      if (robotX >= 8.774) 
+        {targetHeading = new Rotation2d(Units.degreesToRadians(90));} 
+        
+      else 
+        {targetHeading = new Rotation2d(Units.degreesToRadians(-90));}
+    }
   }
 }

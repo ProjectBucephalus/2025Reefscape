@@ -17,5 +17,5 @@ import frc.robot.subsystems.Diffector;
 public class IntakeCoralSequence extends SequentialCommandGroup 
 {
   public IntakeCoralSequence(Diffector s_Diffector, CoralManipulator s_CoralManipulator) 
-    {addCommands(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralIntakePosition), new WaitCommand(3), new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferPosition));}
+    {addCommands(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralIntakePosition), new WaitCommand(1.5), new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferPosition));}
 }

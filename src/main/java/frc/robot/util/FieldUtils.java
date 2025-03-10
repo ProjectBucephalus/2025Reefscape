@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -107,13 +108,15 @@ public class FieldUtils
 
     /** Buffer zone for the field walls in metres */
     public static final double wallBuffer = 0.5;
+    /** Radius for the field walls in metres */
+    public static final double wallRadius = 0.25;
     
     /** Inscribed diameter of the reef hexagon (i.e. distance between opposite faces) in metres */
     public static final double inscribedReefDiameter = 1.663;
     /** Circumscribed diameter of the reef hexagon (i.e. distance between opposite points) in metres */
     public static final double circumscribedReefDiameter = 1.920;
     /** Circumscribed diameter of the reef zone hexagon (i.e. distance between opposite points) in metres */
-    public static final double circumscribedReefZoneDiameter = 2.742;
+    public static final double circumscribedReefZoneDiameter = 3;
     
     /** Buffer zone for the reef in metres */
     public static final double reefBuffer = 0.5;
@@ -131,7 +134,7 @@ public class FieldUtils
       fieldEast, 
       fieldNorth, 
       wallBuffer,
-      0.0,
+      wallRadius,
       ObjectTypes.walls
     );
 
@@ -153,7 +156,7 @@ public class FieldUtils
       reefBlue, 
       reefZoneRed, 
       bargeColumn, 
-      bargeZoneRed, 
+      bargeZoneRed, // TODO: Box objects are inverted
       cornerSBlue, 
       cornerNBlue, 
       cornerSRed, 
@@ -166,7 +169,7 @@ public class FieldUtils
       reefRed, 
       reefZoneBlue, 
       bargeColumn, 
-      bargeZoneBlue, 
+      bargeZoneBlue, // TODO: Box objects are inverted
       cornerSBlue, 
       cornerNBlue, 
       cornerSRed, 
@@ -174,14 +177,17 @@ public class FieldUtils
     };
     
     /** Radius from robot centre in metres where geofence is triggered */
-    public static final double robotRadiusInscribed = 0.45;
+    public static final double robotRadiusInscribed = 0.47;
     /** Radius from robot centre in metres where geofence is triggered */
-    public static final double robotRadiusCircumscribed = 0.55;
+    public static final double robotRadiusCircumscribed = 0.65;
     /** Speed threshold at which the robot changes between radii, in meters per second*/
     public static final double robotSpeedThreshold = 1.5;
     
+    public static final Pair<Translation2d, Translation2d> blueAllianceBargeDynamic = new Pair<Translation2d,Translation2d>(new Translation2d(8.19, 3.721), new Translation2d(9.358, 0));
+    public static final Pair<Translation2d, Translation2d> redAllianceBargeDynamic = new Pair<Translation2d,Translation2d>(new Translation2d(8.19, 4.331), new Translation2d(9.358, fieldWidth));
+
     /* Barge Exclusion Zone -> Keep the arm pivot far enough away from the net to prevent touching it */
-    public static final double bargeSafetyWidth = Constants.DiffectorConstants.IKGeometry.bargeSafetyWidth;
-    public static final GeoFenceObject netProtectionZone = new GeoFenceObject((fieldLength/2) - bargeSafetyWidth, fieldSouth, (fieldLength/2) + bargeSafetyWidth, fieldNorth, wallBuffer, 0, ObjectTypes.box);
+    public static final double bargeSafetyWidth = Constants.DiffectorConstants.IKGeometry.bargeSafetyWidth - robotRadiusInscribed;
+    public static final GeoFenceObject netProtectionZone = new GeoFenceObject((fieldLength/2), fieldSouth, (fieldLength/2), fieldNorth, 0.25, bargeSafetyWidth, ObjectTypes.line);
   }
 }

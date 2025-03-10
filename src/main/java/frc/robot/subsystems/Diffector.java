@@ -73,6 +73,8 @@ public class Diffector extends SubsystemBase
   //private GoalEndState armEndState = new GoalEndState(0, Rotation2d.kZero);
   private static ArrayList<Translation2d> plannedPathPoints = new ArrayList<Translation2d>();
 
+  private int calibrationCounter = 0;
+
   /** Creates a new Diffector. */
   public Diffector() 
   {
@@ -103,13 +105,17 @@ public class Diffector extends SubsystemBase
 
     m_diffectorUA.getConfigurator().apply(motorConfigUA);
     m_diffectorDA.getConfigurator().apply(motorConfigDA);
-
-    m_diffectorUA.setPosition(Units.degreesToRotations((targetPosition.getY() / rotationRatio) + (targetPosition.getX() / travelRatio)));
-    m_diffectorDA.setPosition(Units.degreesToRotations((targetPosition.getY() / rotationRatio) - (targetPosition.getX() / travelRatio)));
     
     motorTargets = calculateMotorTargets(targetPosition);
 
+    if (Conversions.mod(getEncoderPos(), 360) > Constants.DiffectorConstants.angleTolerance && Conversions.mod(getEncoderPos(), 360) < 360 - Constants.DiffectorConstants.angleTolerance) 
+    {
+      eStop = true;
+    }
+    positionOveride(targetElevation, getEncoderPos());
+
     calculatePosition();
+
     cargoState = updateCargoState();
 
     motionMagicRequester = new MotionMagicVoltage(0);
@@ -157,8 +163,28 @@ public class Diffector extends SubsystemBase
       if (elevation < targetElevation - DiffectorConstants.elevationTolerance)
         {eStop = true;}
     }
-    else if (elevation < arm.checkPosition(armPosition) - DiffectorConstants.elevationTolerance)
+    else if (elevation < arm.checkPosition(armPosition) - DiffectorConstants.elevationTolerance && !manualControl)
       {eStop = true;}
+
+    if 
+    (
+      atPosition() &&
+      (relativeTarget.equals(DiffectorConstants.algaeStowPosition) ||
+      relativeTarget.equals(DiffectorConstants.coralStowPosition) ||
+      relativeTarget.equals(DiffectorConstants.coralIntakePosition) ||
+      relativeTarget.equals(DiffectorConstants.algaeTransferPosition))
+    )
+    {
+      calibrationCounter++;
+      if (calibrationCounter == 30) 
+      {
+        SmartDashboard.putBoolean("Overide: Calibrate Arm", true);
+      }
+    }
+    else
+    {
+      calibrationCounter = 0;
+    }
 
     return armPosition;
   }
@@ -240,7 +266,7 @@ public class Diffector extends SubsystemBase
     {return atElevation() && atAngle();}
 
   /**
-   * Returns true if the diffector is at the given position
+   * Returns true if the diffector is at the given absolute position
    * @param checkTarget target elevation/rotation to check against
    */
   public boolean atPosition(Translation2d checkTarget)
@@ -248,6 +274,17 @@ public class Diffector extends SubsystemBase
     return
       Math.abs(elevation - checkTarget.getX()) < DiffectorConstants.elevationTolerance &&
       Math.abs(angle - checkTarget.getY()) < DiffectorConstants.angleTolerance;
+  }
+
+  /**
+   * Returns true if the diffector is at the given relative position
+   * @param checkTarget target elevation/rotation to check against
+   */
+  public boolean atRelativePosition(Translation2d checkTarget)
+  {
+    return
+      Math.abs(elevation - checkTarget.getX()) < DiffectorConstants.elevationTolerance &&
+      Math.abs(getRelativeRotation() - Conversions.mod(checkTarget.getY(), 360)) < DiffectorConstants.angleTolerance;
   }
 
   /** Returns true if the diffector is safely in climb position */
@@ -344,17 +381,18 @@ public class Diffector extends SubsystemBase
   @Override
   public void periodic() 
   { 
+    if (SmartDashboard.getBoolean("Overide: Calibrate Arm", false))
+    {
+      positionOveride(elevation, getEncoderPos());
+      SmartDashboard.putBoolean("Overide: Calibrate Arm", false);
+    }
+    
     if (SmartDashboard.getBoolean("OVERIDE MODE", false))
     {
-      if (SmartDashboard.getBoolean("Overide: Calibrate Arm", false))
-      {
-        positionOveride(elevation, getEncoderPos());
-        SmartDashboard.putBoolean("Overide: Calibrate Arm", false);
-      }
-
       if (SmartDashboard.getBoolean("Overide: Arm At Target", false))
       {
         positionOveride(targetElevation, targetAngle);
+        plannedPathPoints.clear();
         SmartDashboard.putBoolean("Overide: Arm At Target", false);
       }
     }
@@ -384,16 +422,6 @@ public class Diffector extends SubsystemBase
     {
       if (manualControl)
       {
-        if (manualElevation != 0) 
-        {
-          if 
-          (
-            (manualElevation < 0 && arm.checkAngle(angle) > elevation - projectionElevation) || 
-            (manualElevation > 0 && elevation + projectionElevation > DiffectorConstants.maxZ)
-          )
-            {manualElevation = 0;}
-        }
-
         if (manualRotation != 0)
         {
           if (arm.checkAngle(angle + Math.copySign(projectionAngle, manualRotation)) > elevation) 
@@ -402,8 +430,8 @@ public class Diffector extends SubsystemBase
 
         if (manualElevation == 0 && manualRotation == 0)
         {
-          goToAngle(angle);
-          setElevationTarget(elevation);
+          targetElevation = elevation;
+          targetAngle = angle;
           manualControl = false;
         }
       }
@@ -432,6 +460,7 @@ public class Diffector extends SubsystemBase
     SmartDashboard.putNumber("Arm Target", targetAngle);
     SmartDashboard.putNumber("Elevator Height", elevation);
     SmartDashboard.putNumber("Arm Rotation", angle);
+    SmartDashboard.putNumber("Relative Angle Target", relativeTarget.getY());
 
     SmartDashboard.putNumber("UA Error", motorTargets[0] - Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()));
     SmartDashboard.putNumber("DA Error", motorTargets[1] - Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble()));

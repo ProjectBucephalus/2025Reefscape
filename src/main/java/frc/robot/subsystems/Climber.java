@@ -4,6 +4,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
@@ -24,7 +25,7 @@ public class Climber extends SubsystemBase
   private double speed;
   private double manualScale;
   private TalonFXConfiguration config = CTREConfigs.climberWinchFXConfig;
-  private boolean diffectorAtIntakePosFlag = false;
+  private boolean climberClearanceFlag = false;
 
   public enum ClimberStatus 
   {
@@ -37,15 +38,15 @@ public class Climber extends SubsystemBase
 
   public Climber() 
   { 
-    setClimberStatus(ClimberStatus.STOW);
-
     m_ClimberWinch = new TalonFX(IDConstants.climberWinchMotorID);
     m_ClimberWinch.getConfigurator().apply(config);
-    m_ClimberWinch.setPosition(Constants.ClimberConstants.stowWinchPos / 360);
+    m_ClimberWinch.setPosition(Constants.ClimberConstants.stowWinchPos);
     
     manualScale = Constants.ClimberConstants.manualScale;
-
+    
     motionMagic = new MotionMagicVoltage(0);
+
+    setClimberStatus(ClimberStatus.STOW);
   }
 
   public double getClimberPos()
@@ -80,37 +81,49 @@ public class Climber extends SubsystemBase
   @Override
   public void periodic()
   {
-    if (RobotContainer.s_Diffector.getRelativeTarget() == Constants.DiffectorConstants.coralIntakePosition)
+    SmartDashboard.putNumber("Climber Position", m_ClimberWinch.getPosition().getValueAsDouble());
+    if (RobotContainer.s_Diffector.getRelativeTarget().equals(Constants.DiffectorConstants.coralIntakePosition) || RobotContainer.algae)
     {
-      if (!diffectorAtIntakePosFlag)
+      if (!climberClearanceFlag)
       {
         setClimberStatus(ClimberStatus.INTAKE);
-        diffectorAtIntakePosFlag = true;
+        climberClearanceFlag = true;
       }
     }
-    else if (diffectorAtIntakePosFlag)
+    else if (climberClearanceFlag)
     {
       setClimberStatus(ClimberStatus.STOW);
-      diffectorAtIntakePosFlag = false;
+      climberClearanceFlag = false;
     }
 
     switch (status)
     {
       case STOW:
         m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.stowWinchPos));
+        SmartDashboard.putNumber("Climber Target", Constants.ClimberConstants.stowWinchPos);
         break;
 
       case ACTIVE:
         m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos));
+        SmartDashboard.putNumber("Climber Target", Constants.ClimberConstants.activeWinchPos);
         break;
 
       case CLIMB:
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.climbWinchPos));
-        // TODO: Consider active hold using gyro pitch to balance
+        double adjustedClimberPos = Constants.ClimberConstants.climbWinchPos;
+
+        if (SmartDashboard.getBoolean("OVERIDE MODE", false)) 
+        {
+          adjustedClimberPos += RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() * Constants.ClimberConstants.winchBalanceScalar;
+        }
+
+        m_ClimberWinch.setControl(motionMagic.withPosition(adjustedClimberPos));
+        SmartDashboard.putNumber("Climber Target", adjustedClimberPos);
+        // TODO: Merge in active balancing, only in override mode
         break;
       
       case INTAKE:
         m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.intakeWinchPos));
+        SmartDashboard.putNumber("Climber Target", Constants.ClimberConstants.intakeWinchPos);
         break;
 
       case MANUAL:
@@ -118,6 +131,7 @@ public class Climber extends SubsystemBase
           {m_ClimberWinch.set(speed * manualScale);}
         else
           {m_ClimberWinch.setControl(motionMagic.withPosition(getClimberPos()));}
+        break;
     }
   }
 }

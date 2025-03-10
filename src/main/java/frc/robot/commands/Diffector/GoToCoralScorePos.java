@@ -30,6 +30,13 @@ public class GoToCoralScorePos extends Command
     this.posSup = posSup;
   }
 
+  public GoToCoralScorePos(int level, Diffector s_Diffector, Translation2d robotPos) 
+  {
+    this.s_Diffector = s_Diffector;
+    this.level = level;
+    this.posSup = () -> robotPos;
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() 
@@ -91,5 +98,9 @@ public class GoToCoralScorePos extends Command
   // Returns true when the command should end.
   @Override
   public boolean isFinished()
-    {return c_MoveCommand.isFinished();}
+    {return s_Diffector.atPosition();}
+
+  @Override
+  public boolean runsWhenDisabled() 
+    {return true;}
 }

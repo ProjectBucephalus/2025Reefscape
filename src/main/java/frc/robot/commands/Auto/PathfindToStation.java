@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Auto;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -19,10 +20,12 @@ import frc.robot.util.FieldUtils;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PathfindToStation extends Command 
 {
-  private final PathConstraints constraints = Constants.Auto.defaultConstraints;
+  private final PathConstraints defaultConstraints = Constants.Auto.defaultConstraints;
+  private final PathConstraints slowedConstraints = Constants.Auto.slowedConstraints;
   
   private DoubleSupplier ySup;
   private int stationPosition;
+  private BooleanSupplier brakeSup;
 
   private double robotY;
 
@@ -33,10 +36,11 @@ public class PathfindToStation extends Command
   private Command pathfindingCommand;
  
   /** Creates a new PathfindToStation. */
-  public PathfindToStation(int stationPosition, DoubleSupplier ySup, CommandSwerveDrivetrain s_Swerve) 
+  public PathfindToStation(int stationPosition, DoubleSupplier ySup, CommandSwerveDrivetrain s_Swerve, BooleanSupplier brakeSup) 
   {
     this.ySup = ySup;
     this.stationPosition = stationPosition;
+    this.brakeSup = brakeSup;
     addRequirements(s_Swerve);
   }
 
@@ -66,7 +70,17 @@ public class PathfindToStation extends Command
 
     path = FieldUtils.loadPath(pathName);
 
-    pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, constraints);
+    if (RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.pathFollowTolerance) 
+    {
+      pathfindingCommand = AutoBuilder.followPath(path);
+    }
+    else
+    {
+      if (brakeSup.getAsBoolean())
+        {pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, slowedConstraints);}
+      else
+        {pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, defaultConstraints);}
+    }
     pathfindingCommand.until(RobotContainer.driver.povCenter()).schedule();
   }
 

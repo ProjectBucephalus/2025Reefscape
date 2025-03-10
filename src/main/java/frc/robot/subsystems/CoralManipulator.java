@@ -35,6 +35,7 @@ public class CoralManipulator extends SubsystemBase
 
   /** For use in switch cases with smart directionality */
   private double speed;
+  private double armPos;
 
   public CoralManipulator() 
   {
@@ -76,11 +77,15 @@ public class CoralManipulator extends SubsystemBase
       case DELIVERY_SMART:
         int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
         speed = -Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed;
+        armPos = RobotContainer.s_Diffector.getRelativeRotation();
 
         if (nearestReefFace == 5 || nearestReefFace == 6) 
         {
           speed = -speed;
         }
+
+        if (armPos > 90 && armPos <= 270)
+          {speed = -speed;}
 
         setCoralManipulatorSpeed(speed);
         break;
@@ -89,7 +94,7 @@ public class CoralManipulator extends SubsystemBase
       case DELIVERY_RIGHT:
         speed = Constants.GamePiecesManipulator.coralManipulatorDeliverySpeed;
 
-        double armPos = RobotContainer.s_Diffector.getRelativeRotation();
+        armPos = RobotContainer.s_Diffector.getRelativeRotation();
         double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
 
         if (coralStatus == CoralManipulatorStatus.DELIVERY_RIGHT) 

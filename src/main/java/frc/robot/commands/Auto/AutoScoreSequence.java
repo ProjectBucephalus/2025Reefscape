@@ -105,12 +105,12 @@ public class AutoScoreSequence extends SequentialCommandGroup
     {
       addCommands
       (
-        new PathfindToReef(DpadOptions.CENTRE, posSup, s_Swerve)
+        new PathfindToReef(DpadOptions.CENTRE, posSup, s_Swerve, () -> false)
         .alongWith(new GoToAlgaeIntakePos(algaeLevel2, s_Diffector, posSup)),
         
         new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE),
         
-        new PathfindToReef(postSide, posSup, s_Swerve)
+        new PathfindToReef(postSide, posSup, s_Swerve, () -> false)
         .alongWith(new GoToCoralScorePos(coralLevel, s_Diffector, posSup)),
 
         new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT),

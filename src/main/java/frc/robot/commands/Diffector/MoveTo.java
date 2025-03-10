@@ -20,8 +20,6 @@ public class MoveTo extends Command
   {
     this.targetPosition = targetPosition;
     this.s_Diffector = s_Diffector;
-
-    addRequirements(s_Diffector);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -1,6 +1,7 @@
 package frc.robot.constants;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public final class CTREConfigs 
@@ -50,5 +51,6 @@ public final class CTREConfigs
     climberWinchFXConfig.Slot0.kI = Constants.ClimberConstants.winchKI;
     climberWinchFXConfig.Slot0.kD = Constants.ClimberConstants.winchKD;
     climberWinchFXConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    climberWinchFXConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
   }
 }

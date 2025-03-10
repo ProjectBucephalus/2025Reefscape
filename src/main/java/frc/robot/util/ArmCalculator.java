@@ -81,12 +81,13 @@ public class ArmCalculator
         relativeTarget.equals(DiffectorConstants.startPosition) ||
         relativeTarget.equals(DiffectorConstants.coralTransferPosition) ||
         relativeTarget.equals(DiffectorConstants.algaeIntakePosition) ||
+        relativeTarget.equals(DiffectorConstants.processorPosition) ||
         relativeTarget.equals(DiffectorConstants.climbPosition)
       )
     )
     { // Forced safe path for unsafe targets
-      pathOutput.add(new Translation2d(Math.min(safeElevation, startPosition.getX()), startPosition.getY()));
-      pathOutput.add(new Translation2d(Math.min(safeElevation, startPosition.getX()), targetPosition.getY()));
+      pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), startPosition.getY()));
+      pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), targetPosition.getY()));
       pathOutput.add(new Translation2d(safeElevation, targetPosition.getY())); // Ensuring arm is not rotating
       pathOutput.add(targetPosition);
 
