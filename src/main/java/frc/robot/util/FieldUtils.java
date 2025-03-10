@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -155,7 +156,7 @@ public class FieldUtils
       reefBlue, 
       reefZoneRed, 
       bargeColumn, 
-      //bargeZoneRed, // TODO: Box objects are inverted
+      bargeZoneRed, // TODO: Box objects are inverted
       cornerSBlue, 
       cornerNBlue, 
       cornerSRed, 
@@ -168,7 +169,7 @@ public class FieldUtils
       reefRed, 
       reefZoneBlue, 
       bargeColumn, 
-      //bargeZoneBlue, // TODO: Box objects are inverted
+      bargeZoneBlue, // TODO: Box objects are inverted
       cornerSBlue, 
       cornerNBlue, 
       cornerSRed, 
@@ -182,8 +183,11 @@ public class FieldUtils
     /** Speed threshold at which the robot changes between radii, in meters per second*/
     public static final double robotSpeedThreshold = 1.5;
     
+    public static final Pair<Translation2d, Translation2d> blueAllianceBargeDynamic = new Pair<Translation2d,Translation2d>(new Translation2d(8.19, 3.721), new Translation2d(9.358, 0));
+    public static final Pair<Translation2d, Translation2d> redAllianceBargeDynamic = new Pair<Translation2d,Translation2d>(new Translation2d(8.19, 4.331), new Translation2d(9.358, fieldWidth));
+
     /* Barge Exclusion Zone -> Keep the arm pivot far enough away from the net to prevent touching it */
-    public static final double bargeSafetyWidth = Constants.DiffectorConstants.IKGeometry.bargeSafetyWidth - robotRadiusInscribed - 0.2;
-    public static final GeoFenceObject netProtectionZone = new GeoFenceObject((fieldLength/2), fieldSouth, (fieldLength/2), fieldNorth, wallBuffer, bargeSafetyWidth, ObjectTypes.line);
+    public static final double bargeSafetyWidth = Constants.DiffectorConstants.IKGeometry.bargeSafetyWidth - robotRadiusInscribed;
+    public static final GeoFenceObject netProtectionZone = new GeoFenceObject((fieldLength/2), fieldSouth, (fieldLength/2), fieldNorth, 0.25, bargeSafetyWidth, ObjectTypes.line);
   }
 }

@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.commands.Manipulator.EjectAlgaeSmart;
 import frc.robot.commands.Manipulator.IntakeAlgaeSequence;
 import frc.robot.commands.Manipulator.IntakeCoralSequence;
 import frc.robot.commands.Manipulator.ScoreAlgaeSequence;
@@ -43,6 +44,8 @@ public final class Constants
     public static final double manualDiffectorElevationScalar = 2;
     /** Scalar for manual diffector rotation control */
     public static final double manualDiffectorRotationScalar = 2;
+    /** Scalar for braking effect of diffector arm being higher than 1m */
+    public static final double armBrakeRate = 1.5;
   }
 
   public static final class Vision
@@ -107,11 +110,11 @@ public final class Constants
   public static final class Auto
   {   
     /** m/s */
-    public static final double pathplannerMaxSpeed = 2;
+    public static final double pathplannerMaxSpeed = 3;
     /** m/s */
     public static final double pathplannerSlowedSpeed = 0.5;
     /** m/s^2 */
-    public static final double pathplannerMaxAcceleration = 2;
+    public static final double pathplannerMaxAcceleration = 3;
     /** degrees/s */
     public static final double pathplannerMaxAngularSpeed = 720;
     /** degrees/s^2 */
@@ -168,16 +171,19 @@ public final class Constants
         put("cr1", new AutoMapping("cr1", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
         put("cr2", new AutoMapping("cr2", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
         put("cr3", new AutoMapping("cr3", () -> new IntakeCoralSequence(RobotContainer.s_Diffector, RobotContainer.s_CoralManipulator)));
-        put("a1" , new AutoMapping("a1" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));
-        put("a2" , new AutoMapping("a2" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));                
-        put("a3" , new AutoMapping("a3" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));                
-        put("a4" , new AutoMapping("a4" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));                
-        put("a5" , new AutoMapping("a5" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));                
-        put("a6" , new AutoMapping("a6" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));
+        put("a1" , new AutoMapping("a1" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));
+        put("a2" , new AutoMapping("a2" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));                
+        put("a3" , new AutoMapping("a3" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));                
+        put("a4" , new AutoMapping("a4" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));                
+        put("a5" , new AutoMapping("a5" , () -> new IntakeAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));                
+        put("a6" , new AutoMapping("a6" , () -> new IntakeAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator, () -> RobotContainer.swerveState.Pose.getTranslation())));
         put("b1" , new AutoMapping("b1" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
         put("b2" , new AutoMapping("b3" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
         put("b3" , new AutoMapping("b5" , () -> new ScoreAlgaeSequence(true, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));
         put("p"  , new AutoMapping("p"  , () -> new ScoreAlgaeSequence(false, RobotContainer.s_Diffector, RobotContainer.s_AlgaeManipulator)));                
+        put("kl" , new AutoMapping("kl", null));
+        put("kr" , new AutoMapping("kr", null));
+        put("e"  , new AutoMapping(null, () -> new EjectAlgaeSmart(RobotContainer.s_AlgaeManipulator, RobotContainer.s_Diffector, () -> RobotContainer.swerveState.Pose.getTranslation())));
       }
     };
 
@@ -187,11 +193,11 @@ public final class Constants
     public static final ArrayList<Translation2d> blueBargePoints = new ArrayList<Translation2d>()
     {
       {
-        add(new Translation2d(FieldUtils.fieldLength / 2, 5.08));
-        add(new Translation2d(FieldUtils.fieldLength / 2, 5.6245));
-        add(new Translation2d(FieldUtils.fieldLength / 2, 6.169));
-        add(new Translation2d(FieldUtils.fieldLength / 2, 6.615));
         add(new Translation2d(FieldUtils.fieldLength / 2, 7.261));
+        add(new Translation2d(FieldUtils.fieldLength / 2, 6.615));
+        add(new Translation2d(FieldUtils.fieldLength / 2, 6.169));
+        add(new Translation2d(FieldUtils.fieldLength / 2, 5.6245));
+        add(new Translation2d(FieldUtils.fieldLength / 2, 5.08));
       }
     };
 
@@ -202,6 +208,8 @@ public final class Constants
       }
     };
 
+    /** How close we have to be to the path start point to just follow the path without using pathfinding */
+    public static final double pathFollowTolerance = 0.04;
 
     public static final String defaultAuto = "rc4,cr1,rb4,cl1,ra4,cl1,rl4";
   }
@@ -234,7 +242,7 @@ public final class Constants
     /** Desired cruise speed OF MOTOR, RPS */
     public static final double diffectorMotionMagicCruise = 90;
     /** Desired acceleration OF MOTOR, RPS^2 */
-    public static final double diffectorMotionMagicAccel  = 45;
+    public static final double diffectorMotionMagicAccel  = 70;
 
     public static final double coralElevatorLowTheshold = 0;
     public static final double coralElevatorHighThreshold = 0;
@@ -279,8 +287,8 @@ public final class Constants
     /** Physical lower limit of the elevator when horizontal, metres above the ground */
     public static final double minZ = 0.42;
     /** Elevation at which all rotations are safe */
-    public static final double safeElevation = 0.95; // TODO: Algae on deck‽
-    public static final double reefSafeElevation = 0.95;
+    public static final double safeElevation = 0.97; // TODO: Algae on deck‽
+    public static final double reefSafeElevation = 1;
     
     /** Arm rotation check tollerance, degrees */
     public static final double angleTolerance = 2;
@@ -305,33 +313,33 @@ public final class Constants
     public static final Translation2d algae2StbdPosition    = new Translation2d(0.97, 275); 
     public static final Translation2d processorPosition     = new Translation2d(0.44,  96);
 
-    public static final Translation2d coral4PortPosition    = new Translation2d(  maxZ,   -35); //TODO
-    public static final Translation2d coral4StbdPosition    = new Translation2d(  maxZ,  35); //TODO
-    public static final Translation2d coral3PortPosition    = new Translation2d(1.05,   -30);
-    public static final Translation2d coral3StbdPosition    = new Translation2d(1.05,  30);
-    public static final Translation2d coral2PortPosition    = new Translation2d(0.72,   -40); //TODO
-    public static final Translation2d coral2StbdPosition    = new Translation2d(0.72,  40); //TODO
-    public static final Translation2d coral1PortPosition    = new Translation2d(0.5,    -40); //TODO
-    public static final Translation2d coral1StbdPosition    = new Translation2d(0.5,   40); //TODO
+    public static final Translation2d coral4PortPosition    = new Translation2d(  maxZ, 310); //TODO
+    public static final Translation2d coral4StbdPosition    = new Translation2d(  maxZ,  50); //TODO
+    public static final Translation2d coral3PortPosition    = new Translation2d(0.98, 332);
+    public static final Translation2d coral3StbdPosition    = new Translation2d(0.98,  28);
+    public static final Translation2d coral2PortPosition    = new Translation2d(0.70, 315); 
+    public static final Translation2d coral2StbdPosition    = new Translation2d(0.70,  45); 
+    public static final Translation2d coral1PortPosition    = new Translation2d(0.82, 210);
+    public static final Translation2d coral1StbdPosition    = new Translation2d(0.82, 150);
 
     public static final Translation2d coralIntakePosition   = new Translation2d(0.90,  90);
-    public static final Translation2d coralTransferPosition = new Translation2d(0.61, 180);
+    public static final Translation2d coralTransferPosition = new Translation2d(0.625,180);
     public static final Translation2d coralStowPosition     = new Translation2d(0.80,   0);
 
     public static final Translation2d algaeIntakePosition   = new Translation2d(0.48,  60);
     public static final Translation2d algaeTransferPosition = new Translation2d(0.90,   0);
-    public static final Translation2d algaeStowPosition     = new Translation2d(0.80, 180); 
+    public static final Translation2d algaeStowPosition     = new Translation2d(0.825,180); 
         
     public static final class IKGeometry
     {
       /** Manipulator arm point-cloud */
       public static final Translation2d[] armGeometry = new Translation2d[]
       {
-        new Translation2d(0.16,0.42), new Translation2d(0.16,0.48),
-        new Translation2d(0.14,0.48), new Translation2d(0.12,0.48),
-        new Translation2d(0.00,0.48), new Translation2d( -0.12,0.48),
-        new Translation2d( -0.14,0.48), new Translation2d( -0.16,0.48),
-        new Translation2d( -0.16,0.42), new Translation2d( -0.24, -0.35),
+        new Translation2d(0.16,0.445), new Translation2d(0.16,0.505),
+        new Translation2d(0.14,0.505), new Translation2d(0.12,0.505),
+        new Translation2d(0.00,0.505), new Translation2d( -0.12,0.505),
+        new Translation2d( -0.14,0.505), new Translation2d( -0.16,0.505),
+        new Translation2d( -0.16,0.445), new Translation2d( -0.24, -0.35),
         new Translation2d( -0.24, -0.37), new Translation2d( -0.24, -0.40),
         new Translation2d( -0.24, -0.45), new Translation2d( -0.23, -0.46),
         new Translation2d( -0.22, -0.47), new Translation2d( -0.20, -0.47),
@@ -359,9 +367,9 @@ public final class Constants
 
       public static final double reefSafetyRadius = 1.7;
 
-      /** Distance from centre of barge where arm height needs to be checked, matres */
-      public static final double bargeSafetyWidth = 1;
-      /** Minimum height over ground where arm height needs to be checked, matres */
+      /** Distance from centre of barge where arm height needs to be checked, metres */
+      public static final double bargeSafetyWidth = 0.85;
+      /** Minimum height over ground where arm height needs to be checked, metres */
       public static final double bargeSafetyHeight = 1;
     }
   }
@@ -376,10 +384,10 @@ public final class Constants
     /* Algae manipulator speeds */
     public static final double algaeManipulatorIntakeSpeed    = 0.4;
     public static final double algaeManipulatorNetSpeed       = -0.9;
-    public static final double algaeManipulatorProcessorSpeed = -0.4;
+    public static final double algaeManipulatorProcessorSpeed = -0.3;
 
     /** Algae net shooting range for rotation snapping, m */
-    public static final double algaeRange = 1.7;
+    public static final double algaeRange = 2.5;
     /** How far towards the barge we have to be from field center to be able to score in the net (Y axis) */
     public static final double netScoringCenterDistance = 0.5;
     /** Target X distance from barge targetting points for scoring */
@@ -391,12 +399,13 @@ public final class Constants
     public static final double stowWinchPos = 0;
     public static final double activeWinchPos = 1.5;
     public static final double climbWinchPos  = -0.3;
-    public static final double intakeWinchPos = 0.2;
+    public static final double intakeWinchPos = 0.4;
     public static final double manualScale    = 0.25;
 
     public static final double winchKP = 150;
     public static final double winchKI = 0;
     public static final double winchKD = 0;
+    public static final double winchBalanceScalar = 0.05;
 
     public static final double winchPlanetaryRatio = 45;
     public static final double winchGearIn = 20;

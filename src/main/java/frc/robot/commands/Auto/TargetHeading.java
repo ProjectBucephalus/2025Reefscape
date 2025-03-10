@@ -82,7 +82,7 @@ public class TargetHeading extends Command
   {
     translationVal = translationSup.getAsDouble();
     strafeVal = strafeSup.getAsDouble();
-    brakeVal = Math.max(brakeSup.getAsDouble(), RobotContainer.s_Diffector.getElevation() - 1);
+    brakeVal = Math.max(brakeSup.getAsDouble(), Math.min((RobotContainer.s_Diffector.getElevation() - 1) * Constants.Control.armBrakeRate, 1));
     motionXY = new Translation2d(translationVal, strafeVal);
 
     /* Apply deadbands */
@@ -107,7 +107,7 @@ public class TargetHeading extends Command
       motionXY = FieldUtils.GeoFencing.netProtectionZone.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
     }
 
-    if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", true))
+    if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", false))
     {
       SmartDashboard.putString("Drive State", "Fenced");
 
@@ -118,13 +118,13 @@ public class TargetHeading extends Command
         Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
         motionXY = inputDamping;
       }
-
-      // Uninvert processing output when on red alliance
-      if (redAlliance)
-        {motionXY = motionXY.unaryMinus();}
     }
     else
-      {SmartDashboard.putString("Drive State", "Non-Fenced");}
+    {SmartDashboard.putString("Drive State", "Non-Fenced");}
+    
+    // Uninvert processing output when on red alliance
+    if (redAlliance)
+      {motionXY = motionXY.unaryMinus();}
     
     s_Swerve.setControl
       (

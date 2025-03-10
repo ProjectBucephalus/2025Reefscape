@@ -70,10 +70,17 @@ public class PathfindToStation extends Command
 
     path = FieldUtils.loadPath(pathName);
 
-    if (brakeSup.getAsBoolean())
-      {pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, slowedConstraints);}
+    if (RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.pathFollowTolerance) 
+    {
+      pathfindingCommand = AutoBuilder.followPath(path);
+    }
     else
-      {pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, defaultConstraints);}
+    {
+      if (brakeSup.getAsBoolean())
+        {pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, slowedConstraints);}
+      else
+        {pathfindingCommand = AutoBuilder.pathfindThenFollowPath(path, defaultConstraints);}
+    }
     pathfindingCommand.until(RobotContainer.driver.povCenter()).schedule();
   }
 

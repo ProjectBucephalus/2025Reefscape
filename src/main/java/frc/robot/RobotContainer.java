@@ -94,7 +94,7 @@ public class RobotContainer
   {
     swerveState = s_Swerve.getState();
 
-    SmartDashboard.putBoolean("IgnoreFence", true);
+    SmartDashboard.putBoolean("IgnoreFence", false);
     s_Swerve.setDefaultCommand
     (
       new TeleopSwerve
@@ -217,6 +217,7 @@ public class RobotContainer
       * Runs when the processor heading lock is active and right is pressed on the dpad 
       */ 
     processorDriveTrigger.and(driver.povRight()).onTrue(new PathfindToAndFollow("p", s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
+    processorDriveTrigger.and(driver.povLeft()).onTrue(new PathfindToAndFollow("pOpp", s_Swerve, () -> driver.rightTrigger().getAsBoolean()));
 
     /* 
       * Reef and Net pathfinding controls 
@@ -268,10 +269,11 @@ public class RobotContainer
     processorDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetHeading
+        new TargetHeadingProcessor
         (
           s_Swerve,
           Rotation2d.kCW_90deg, 
+          () -> swerveState.Pose.getX(),
           Rotation2d.kCW_90deg,
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
@@ -279,6 +281,8 @@ public class RobotContainer
           () -> !driver.leftStick().getAsBoolean()
         )
       );
+
+    processorDriveTrigger.whileTrue(new DynamicBargeObstacle(() -> swerveState.Pose.getTranslation()));
 
     scoreDriveTrigger.and(driver.povCenter())
       .whileTrue
@@ -403,6 +407,6 @@ public class RobotContainer
   public Command getAutoCommand()
   {
     // Gets the input string of command phrases, processes into a list of commands, and puts them into a sequential command group
-    return new RunAutoCommandList(DynamicAuto.getCommandList(SmartDashboard.getString("Auto Input", Constants.Auto.defaultAuto)));
+    return DynamicAuto.getCommandList(SmartDashboard.getString("Auto Input", Constants.Auto.defaultAuto));
   }
 }

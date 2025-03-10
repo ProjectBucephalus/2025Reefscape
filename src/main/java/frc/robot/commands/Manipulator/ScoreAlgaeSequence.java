@@ -4,8 +4,9 @@
 
 package frc.robot.commands.Manipulator;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.Diffector.*;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
@@ -17,16 +18,12 @@ import frc.robot.constants.*;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ScoreAlgaeSequence extends SequentialCommandGroup 
 {
-  Command diffectorPosCommand;
+  private Translation2d target;
 
   public ScoreAlgaeSequence(boolean toNet, Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator) 
   {
-    if (toNet)
-      {diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition);} 
-
-    else 
-      {diffectorPosCommand = new MoveTo(s_Diffector, Constants.DiffectorConstants.processorPosition);}
+    target = toNet ? Constants.DiffectorConstants.netPosition : Constants.DiffectorConstants.processorPosition;
       
-    addCommands(diffectorPosCommand, new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT));
+    addCommands(new MoveTo(s_Diffector, target), new WaitUntilCommand(() -> s_Diffector.atPosition()), new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT));
   }
 }
