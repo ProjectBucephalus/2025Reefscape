@@ -9,11 +9,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
-import frc.robot.commands.Diffector.GoToAlgaeIntakePos;
-import frc.robot.commands.Auto.PathfindToReef.DpadOptions;
-import frc.robot.commands.Diffector.GoToCoralScorePos;
-import frc.robot.commands.Diffector.MoveTo;
-import frc.robot.commands.Manipulator.*;
+import frc.robot.RobotContainer.DpadOptions;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.Diffector;
 import frc.robot.subsystems.AlgaeManipulator;
@@ -21,6 +17,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
+import frc.robot.util.AutoUtils;
 import frc.robot.util.FieldUtils;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -28,8 +25,6 @@ import frc.robot.util.FieldUtils;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoScoreSequence extends SequentialCommandGroup 
 {
-  private boolean coral;
-  private boolean algae;
   private boolean algaeLevel2;
   private int nearestReefFace;
   private DpadOptions postSide;
@@ -37,36 +32,17 @@ public class AutoScoreSequence extends SequentialCommandGroup
 
   private Translation2d robotPos;
 
-  public AutoScoreSequence(Diffector s_Diffector, AlgaeManipulator s_AlgaeManipulator, CoralManipulator s_CoralManipulator, CommandSwerveDrivetrain s_Swerve, Supplier<Translation2d> posSup) 
+  public AutoScoreSequence(Diffector s_Diffector, AlgaeManipulator s_Algae, CoralManipulator s_Coral, CommandSwerveDrivetrain s_Swerve, Supplier<Translation2d> posSup) 
   {
-    coral = s_CoralManipulator.getStatus() == CoralManipulatorStatus.DEFAULT;
-    algae = s_AlgaeManipulator.getStatus() == AlgaeManipulatorStatus.HOLDING;
     robotPos = posSup.get();
     nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
 
     if (RobotContainer.driver.povLeft().getAsBoolean()) 
       {postSide = DpadOptions.LEFT;}
-
     else if (RobotContainer.driver.povRight().getAsBoolean())
       {postSide = DpadOptions.RIGHT;}
-
     else 
-    {
-      switch (nearestReefFace) 
-      {
-        case 2:
-        case 3:
-        case 4:
-          postSide = DpadOptions.RIGHT;
-          break;
-      
-        case 1:
-        case 6:
-        case 5:
-          postSide = DpadOptions.LEFT;
-          break;
-      }
-    }
+      {postSide = nearestReefFace % 2 == 0 ? DpadOptions.RIGHT : DpadOptions.LEFT;}
 
     if (RobotContainer.copilot.a().getAsBoolean()) 
       {coralLevel = 1;}
@@ -101,21 +77,21 @@ public class AutoScoreSequence extends SequentialCommandGroup
         break;
     }
     
-    if (coral && !algae) 
+    if (RobotContainer.coral && !RobotContainer.algae) 
     {
       addCommands
       (
-        new PathfindToReef(DpadOptions.CENTRE, posSup, s_Swerve, () -> false)
-        .alongWith(new GoToAlgaeIntakePos(algaeLevel2, s_Diffector, posSup)),
+        AutoUtils.pathfindToReefCommand(DpadOptions.CENTRE, () -> false)
+        .alongWith(s_Diffector.algaeIntakePosCommand()),
         
-        new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE),
+        s_Algae.setStatusCommand(AlgaeManipulatorStatus.INTAKE),
         
-        new PathfindToReef(postSide, posSup, s_Swerve, () -> false)
-        .alongWith(new GoToCoralScorePos(coralLevel, s_Diffector, posSup)),
+        AutoUtils.pathfindToReefCommand(postSide, () -> false)
+        .alongWith(s_Diffector.coralScorePosCommand(coralLevel)),
 
-        new SetCoralStatus(s_CoralManipulator, CoralManipulatorStatus.DELIVERY_LEFT),
+        s_Coral.setStatusCommand(CoralManipulatorStatus.DELIVERY_LEFT),
 
-        new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeStowPosition)
+        s_Diffector.moveToCommand(Constants.DiffectorConstants.algaeStowPosition)
       );
     }
   }

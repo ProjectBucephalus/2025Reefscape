@@ -5,6 +5,8 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
@@ -66,6 +68,11 @@ public class Climber extends SubsystemBase
     {
       m_ClimberWinch.getConfigurator().apply(config.MotionMagic.withMotionMagicCruiseVelocity(Constants.ClimberConstants.winchDefaultCruise));
     }
+  }
+
+  public Command setStatusCommand(ClimberStatus status)
+  {
+    return Commands.runOnce(() -> this.setClimberStatus(status), this);
   }
 
   public boolean isUnlocked()

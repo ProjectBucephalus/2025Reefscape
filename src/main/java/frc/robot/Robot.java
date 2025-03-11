@@ -216,8 +216,8 @@ public class Robot extends TimedRobot
     if (autonomousCommand != null) 
       {autonomousCommand.cancel();}
 
-    RobotContainer.s_CoralManipulator.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT);
-    RobotContainer.s_AlgaeManipulator.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY);
+    RobotContainer.s_Coral.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT);
+    RobotContainer.s_Algae.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY);
   }
 
   @Override
