@@ -1,5 +1,7 @@
 package frc.robot;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -61,7 +63,7 @@ public class RobotContainer
   public static final CoralManipulator s_CoralManipulator = new CoralManipulator();
   public static final AlgaeManipulator s_AlgaeManipulator = new AlgaeManipulator();
   public static final CANifierAccess s_Canifier = new CANifierAccess();
-  public static Rumbler s_Rumbler = new Rumbler(driver, copilot);
+  public static final Rumbler s_Rumbler = new Rumbler(driver, copilot);
 
   /* Driver Control Axis */
   public static final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -73,7 +75,6 @@ public class RobotContainer
   public static final int manualClimberAxis            = XboxController.Axis.kLeftY.value;
   public static final int manualDiffectorElevationAxis = XboxController.Axis.kRightY.value;
   public static final int manualDiffectorRotationAxis  = XboxController.Axis.kRightX.value;
-
 
   /* Triggers */
   public static final Trigger unlockHeadingTrigger = new Trigger(() -> Math.abs(driver.getRawAxis(rotationAxis)) > Constants.Control.stickDeadband);
@@ -88,6 +89,9 @@ public class RobotContainer
   //private final Trigger driverRightRumblTrigger = new Trigger(() -> );
   // TODO: Ready to score rumble
   //private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.climbReady() && s_Climber.climbReady() && s_Diffector.climbReady() );
+
+  /* Control Modifiers */
+  private static final BooleanSupplier algaeModifier = copilot.rightTrigger();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() 
@@ -307,45 +311,88 @@ public class RobotContainer
       .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.CLIMB)));
     copilot.back()
       .onTrue(Commands.runOnce(() -> s_Climber.setClimberStatus(ClimberStatus.ACTIVE))
-      .andThen(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbPosition)));//Deploys the climber
+      .andThen(new MoveTo(s_Diffector, Constants.DiffectorConstants.climbPosition)));//Deploys the climber        
 
-    /* Coral scoring controls */
-    copilot.y().and(copilot.rightTrigger().negate())
-      .onTrue(new GoToCoralScorePos(4, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L4 scoring
-    copilot.x().and(copilot.rightTrigger().negate())
-      .onTrue(new GoToCoralScorePos(3, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L3 scoring
-    copilot.b().and(copilot.rightTrigger().negate())
-      .onTrue(new GoToCoralScorePos(2, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L2 scoring
-    copilot.a().and(copilot.rightTrigger().negate())
-      .onTrue(new GoToCoralScorePos(1, s_Diffector, () -> swerveState.Pose.getTranslation()));   //L1 scoring
-        
-    /* Algae scoring/intaking controls */
-    copilot.y().and(copilot.rightTrigger())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition)); //Net scoring
-    copilot.x().and(copilot.rightTrigger())
-      .onTrue(new GoToAlgaeIntakePos(false, s_Diffector, () -> swerveState.Pose.getTranslation())); //L3 pick up
-    copilot.b().and(copilot.rightTrigger())
-      .onTrue(new GoToAlgaeIntakePos(true, s_Diffector, () -> swerveState.Pose.getTranslation()));  //L2 pick up
-    copilot.a().and(copilot.rightTrigger())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.processorPosition)); //Processor scoring
+    /* Game piece scoring and intake positions */
+    copilot.y()
+      .onTrue
+      (
+        Commands.either
+        (
+          new MoveTo(s_Diffector, Constants.DiffectorConstants.netPosition), 
+          new GoToCoralScorePos(4, s_Diffector, () -> swerveState.Pose.getTranslation()), 
+          algaeModifier
+        )
+      );
+
+    copilot.x()
+      .onTrue
+      (
+        Commands.either
+        (
+          new GoToAlgaeIntakePos(false, s_Diffector, () -> swerveState.Pose.getTranslation()), 
+          new GoToCoralScorePos(3, s_Diffector, () -> swerveState.Pose.getTranslation()), 
+          algaeModifier
+        )
+      );
+
+    copilot.b()
+      .onTrue
+      (
+        Commands.either
+        (
+          new GoToAlgaeIntakePos(true, s_Diffector, () -> swerveState.Pose.getTranslation()), 
+          new GoToCoralScorePos(3, s_Diffector, () -> swerveState.Pose.getTranslation()), 
+          algaeModifier
+        )
+      );
+
+    copilot.a()
+      .onTrue
+      (
+        Commands.either
+        (
+          new MoveTo(s_Diffector, Constants.DiffectorConstants.processorPosition), 
+          new GoToCoralScorePos(1, s_Diffector, () -> swerveState.Pose.getTranslation()), 
+          algaeModifier
+        )
+      );
 
     /* Stow pos*/
-    copilot.povUp().and(copilot.rightTrigger())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeStowPosition));  //algae stow
-    copilot.povUp().and(copilot.rightTrigger().negate())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralStowPosition)); //coral stow
+    copilot.povUp()
+      .onTrue
+      (
+        Commands.either
+        (
+          new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeStowPosition), // Algae stow pos
+          new MoveTo(s_Diffector, Constants.DiffectorConstants.coralStowPosition), // Coral stow pos
+          algaeModifier
+        )
+      );
 
     /* Transfer pos */
-    copilot.povDown().and(copilot.rightTrigger())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferPosition)); //agae transer
-    copilot.povDown().and(copilot.rightTrigger().negate())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferPosition)); //coral transfer
+    copilot.povDown()
+      .onTrue
+      (
+        Commands.either
+        (
+          new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeTransferPosition), // Algae transfer pos
+          new MoveTo(s_Diffector, Constants.DiffectorConstants.coralTransferPosition), // Coral transfer pos
+          algaeModifier
+        )
+      );
 
     /* Game piece intake position controls */
-    copilot.rightBumper().and(copilot.rightTrigger().negate())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.coralIntakePosition));
-    copilot.rightBumper().and(copilot.rightTrigger())
-      .onTrue(new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeIntakePosition));
+    copilot.rightBumper()
+      .onTrue
+      (
+        Commands.either
+        (
+          new MoveTo(s_Diffector, Constants.DiffectorConstants.algaeIntakePosition), // Algae intake pos (ground)
+          new MoveTo(s_Diffector, Constants.DiffectorConstants.coralIntakePosition), // Coral intake pos (clearance for station)
+          algaeModifier
+        )
+      );
   }
 
   private void configureManualBindings()
@@ -371,9 +418,11 @@ public class RobotContainer
 
     /* Algae intake/outtake controls */
     copilot.leftTrigger()
-      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE)).onFalse(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.HOLDING)); //Intake algae through manipulator
+      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.INTAKE))
+      .onFalse(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.HOLDING)); //Intake algae through manipulator
      copilot.leftBumper()
-      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT)).onFalse(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EMPTY)); //Ejects algae from manipulator
+      .onTrue(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EJECT))
+      .onFalse(new SetAlgaeStatus(s_AlgaeManipulator, AlgaeManipulatorStatus.EMPTY)); //Ejects algae from manipulator
   }
 
   private void configureRumbleBindings()
