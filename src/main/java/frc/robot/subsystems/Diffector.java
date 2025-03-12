@@ -14,7 +14,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
@@ -376,6 +379,82 @@ public class Diffector extends SubsystemBase
     m_diffectorDA.setPosition(Units.degreesToRotations((setAngle / rotationRatio) - (setElevation / travelRatio)));
 
     return (!MathUtil.isNear(elevation, setElevation, DiffectorConstants.elevationTolerance) || !MathUtil.isNear(angle, setAngle, DiffectorConstants.angleTolerance));
+  }
+
+  public void setTargetPosition(Translation2d targetPosition)
+  {
+    setElevationTarget(targetPosition.getX());
+    goToAngle(targetPosition.getY());
+  }
+
+  public Command moveToCommand(Translation2d targetPosition)
+  {
+    return 
+    runOnce(() -> setTargetPosition(targetPosition))
+    .onlyIf(() -> !RobotState.isDisabled() || SmartDashboard.getBoolean("OVERIDE MODE", false))
+    .ignoringDisable(true);
+  }
+
+  public Command algaeIntakePosCommand(Translation2d robotPos, boolean level2, int nearestReefFace)
+  {
+    boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
+
+    Translation2d target = 
+    level2 
+    ?
+    portReefFace ? Constants.DiffectorConstants.algae2PortPosition : Constants.DiffectorConstants.algae2StbdPosition
+    :
+    portReefFace ? Constants.DiffectorConstants.algae3PortPosition : Constants.DiffectorConstants.algae3StbdPosition;
+
+    return moveToCommand(target).andThen(Commands.waitUntil(() -> atPosition())).ignoringDisable(true);
+  }
+
+  public Command algaeIntakePosCommand(Translation2d robotPos, boolean level2)
+  {
+    return algaeIntakePosCommand(robotPos, level2, FieldUtils.getNearestReefFace(robotPos));
+  }
+
+  public Command algaeIntakePosCommand(boolean level2)
+  {
+    return algaeIntakePosCommand(RobotContainer.swerveState.Pose.getTranslation(), level2);
+  }
+
+  public Command algaeIntakePosCommand(Translation2d robotPos)
+  {
+    int nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
+    return algaeIntakePosCommand(robotPos, nearestReefFace % 2 == 0, nearestReefFace);
+  }
+
+  public Command algaeIntakePosCommand()
+  {
+    return algaeIntakePosCommand(RobotContainer.swerveState.Pose.getTranslation());
+  }
+
+  public Command coralScorePosCommand(Translation2d robotPos, int level)
+  {
+    int nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
+    boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
+
+    Translation2d target = 
+    switch (level)
+    {
+      case 4 -> portReefFace ? Constants.DiffectorConstants.coral4PortPosition : Constants.DiffectorConstants.coral4StbdPosition;
+
+      case 3 -> portReefFace ? Constants.DiffectorConstants.coral3PortPosition : Constants.DiffectorConstants.coral3StbdPosition;
+
+      case 2 -> portReefFace ? Constants.DiffectorConstants.coral2PortPosition : Constants.DiffectorConstants.coral2StbdPosition;
+
+      case 1 -> portReefFace ? Constants.DiffectorConstants.coral1PortPosition : Constants.DiffectorConstants.coral1StbdPosition;
+
+      default -> Constants.DiffectorConstants.coralStowPosition;
+    };
+
+    return moveToCommand(target).andThen(Commands.waitUntil(() -> atPosition())).ignoringDisable(true);
+  }
+
+  public Command coralScorePosCommand(int level)
+  {
+    return coralScorePosCommand(RobotContainer.swerveState.Pose.getTranslation(), level);
   }
 
   @Override
