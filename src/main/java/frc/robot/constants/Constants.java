@@ -11,11 +11,8 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.RobotContainer;
-import frc.robot.subsystems.AlgaeManipulator;
-import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
-import frc.robot.subsystems.Diffector;
+import frc.robot.util.AutoUtils;
 import frc.robot.util.FieldUtils;
 
 public final class Constants 
@@ -149,48 +146,6 @@ public final class Constants
       }
     }
 
-    private static Command intakeAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae)
-    {
-      return 
-      Commands.sequence
-      (
-        s_Diffector.algaeIntakePosCommand(),
-        s_Algae.setStatusCommand(AlgaeManipulatorStatus.INTAKE)
-      );
-    }
-
-    private static Command scoreAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, boolean net)
-    {
-      return
-      Commands.sequence
-      (
-        s_Diffector.moveToCommand(net ? Constants.DiffectorConstants.netPosition : Constants.DiffectorConstants.processorPosition), 
-        Commands.waitUntil(() -> s_Diffector.atPosition()), 
-        s_Algae.setStatusCommand(AlgaeManipulatorStatus.EJECT)
-      );
-    }
-
-    private static Command ejectAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, Supplier<Translation2d> posSup)
-    {
-      int nearestReefFace = FieldUtils.getNearestReefFace(posSup.get());
-      boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
-
-      Translation2d target = 
-      nearestReefFace % 2 == 0 
-      ?
-      portReefFace ? Constants.DiffectorConstants.algae2StbdPosition : Constants.DiffectorConstants.algae2PortPosition
-      :
-      portReefFace ? Constants.DiffectorConstants.algae3StbdPosition : Constants.DiffectorConstants.algae3PortPosition;
-
-      return
-      Commands.sequence
-      (
-        s_Diffector.moveToCommand(target), 
-        Commands.waitUntil(() -> s_Diffector.atPosition()), 
-        s_Algae.setStatusCommand(AlgaeManipulatorStatus.EJECT)
-      );
-    }
-
     /* Maps all dynamic auto paths to the name used for them in the dashbord. Dashboard Name, Path Name */
     public static final Map<String, AutoMapping> autoMap = new HashMap<>(34)
     {
@@ -213,19 +168,19 @@ public final class Constants
         put("cr1", new AutoMapping("cr1", null));
         put("cr2", new AutoMapping("cr2", null));
         put("cr3", new AutoMapping("cr3", null));
-        put("a1" , new AutoMapping("a1" , () -> intakeAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae)));
-        put("a2" , new AutoMapping("a2" , () -> intakeAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae)));                
-        put("a3" , new AutoMapping("a3" , () -> intakeAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae)));                
-        put("a4" , new AutoMapping("a4" , () -> intakeAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae)));                
-        put("a5" , new AutoMapping("a5" , () -> intakeAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae)));                
-        put("a6" , new AutoMapping("a6" , () -> intakeAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae)));
-        put("b1" , new AutoMapping("b1" , () -> scoreAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, true)));
-        put("b2" , new AutoMapping("b3" , () -> scoreAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, true)));
-        put("b3" , new AutoMapping("b5" , () -> scoreAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, true)));
-        put("p"  , new AutoMapping("p"  , () -> scoreAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, false)));                
+        put("a1" , new AutoMapping("a1" , () -> AutoUtils.intakeAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae)));
+        put("a2" , new AutoMapping("a2" , () -> AutoUtils.intakeAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae)));                
+        put("a3" , new AutoMapping("a3" , () -> AutoUtils.intakeAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae)));                
+        put("a4" , new AutoMapping("a4" , () -> AutoUtils.intakeAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae)));                
+        put("a5" , new AutoMapping("a5" , () -> AutoUtils.intakeAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae)));                
+        put("a6" , new AutoMapping("a6" , () -> AutoUtils.intakeAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae)));
+        put("b1" , new AutoMapping("b1" , () -> AutoUtils.scoreAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, true)));
+        put("b2" , new AutoMapping("b3" , () -> AutoUtils.scoreAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, true)));
+        put("b3" , new AutoMapping("b5" , () -> AutoUtils.scoreAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, true)));
+        put("p"  , new AutoMapping("p"  , () -> AutoUtils.scoreAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, false)));                
         put("kl" , new AutoMapping("kl", null));
         put("kr" , new AutoMapping("kr", null));
-        put("e"  , new AutoMapping(null, () -> ejectAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, () -> RobotContainer.swerveState.Pose.getTranslation())));
+        put("e"  , new AutoMapping(null, () -> AutoUtils.ejectAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, () -> RobotContainer.swerveState.Pose.getTranslation())));
       }
     };
 

@@ -5,6 +5,8 @@ package frc.robot.util;
 
 import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
@@ -21,6 +23,7 @@ import frc.robot.RobotContainer.DpadOptions;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Auto.AutoMapping;
 import frc.robot.subsystems.AlgaeManipulator;
+import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
@@ -197,7 +200,6 @@ public class AutoUtils
   {
     int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
 
-
     String pathName =
     switch (dpadValue) 
     {
@@ -237,5 +239,81 @@ public class AutoUtils
     pathName = pathName.toLowerCase();
 
     return pathfindAndFollowCommand(pathName, brakeSup);
+  }
+
+  public static Command autoScoreSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, CoralManipulator s_Coral, IntSupplier reefLevel, BooleanSupplier brakeSup, IntSupplier povAngle, BooleanSupplier cancelTrigger)
+  {
+    int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
+    PathPlannerPath algaePath = FieldUtils.loadPath("a" + nearestReefFace);
+    int coralLevel =
+    switch (reefLevel.getAsInt())
+    {
+      case 1, 2, 3, 4 -> reefLevel.getAsInt();
+      default -> nearestReefFace % 2 == 0 ? 2 : 3;
+    };
+    DpadOptions dpadValue = 
+    switch (povAngle.getAsInt())
+    {
+      case 90 -> DpadOptions.RIGHT;
+      case 270 -> DpadOptions.LEFT;
+      default -> DpadOptions.LEFT;
+    };
+
+    return
+    Commands.sequence
+    (
+      Commands.parallel
+      (
+        AutoBuilder.pathfindToPose(algaePath.getStartingHolonomicPose().get(), brakeSup.getAsBoolean() ? slowedConstraints : defaultConstraints),
+        intakeAlgaeSequenceCommand(s_Diffector, s_Algae)
+      ),
+      AutoBuilder.followPath(algaePath),
+      s_Diffector.coralScorePosCommand(coralLevel),
+      pathfindToReefCommand(dpadValue, brakeSup),
+      s_Coral.setStatusCommand(CoralManipulatorStatus.DELIVERY_SMART)
+    )
+    .until(cancelTrigger);
+  }
+  
+  public static Command intakeAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae)
+  {
+    return 
+    Commands.sequence
+    (
+      s_Diffector.algaeIntakePosCommand(),
+      s_Algae.setStatusCommand(AlgaeManipulatorStatus.INTAKE)
+    );
+  }
+
+  public static Command scoreAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, boolean net)
+  {
+    return
+    Commands.sequence
+    (
+      s_Diffector.moveToCommand(net ? Constants.DiffectorConstants.netPosition : Constants.DiffectorConstants.processorPosition), 
+      Commands.waitUntil(() -> s_Diffector.atPosition()), 
+      s_Algae.setStatusCommand(AlgaeManipulatorStatus.EJECT)
+    );
+  }
+
+  public static Command ejectAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, Supplier<Translation2d> posSup)
+  {
+    int nearestReefFace = FieldUtils.getNearestReefFace(posSup.get());
+    boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
+
+    Translation2d target = 
+    nearestReefFace % 2 == 0 
+    ?
+    portReefFace ? Constants.DiffectorConstants.algae2StbdPosition : Constants.DiffectorConstants.algae2PortPosition
+    :
+    portReefFace ? Constants.DiffectorConstants.algae3StbdPosition : Constants.DiffectorConstants.algae3PortPosition;
+
+    return
+    Commands.sequence
+    (
+      s_Diffector.moveToCommand(target), 
+      Commands.waitUntil(() -> s_Diffector.atPosition()), 
+      s_Algae.setStatusCommand(AlgaeManipulatorStatus.EJECT)
+    );
   }
 }

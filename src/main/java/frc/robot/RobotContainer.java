@@ -81,11 +81,20 @@ public class RobotContainer
   public static final int manualDiffectorRotationAxis  = XboxController.Axis.kRightX.value;
 
   /* Triggers */
-  public static final Trigger unlockHeadingTrigger = new Trigger(() -> Math.abs(driver.getRawAxis(rotationAxis)) > Constants.Control.stickDeadband);
-  private final Trigger cageDriveTrigger           = new Trigger(() -> headingState == HeadingStates.CAGE_LOCK);
-  private final Trigger scoreDriveTrigger          = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
-  private final Trigger stationDriveTrigger        = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
-  private final Trigger processorDriveTrigger      = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
+  private static final Trigger unlockHeadingTrigger   = new Trigger(() -> Math.abs(driver.getRawAxis(rotationAxis)) > Constants.Control.stickDeadband);
+  private static final Trigger cageDriveTrigger       = new Trigger(() -> headingState == HeadingStates.CAGE_LOCK);
+  private static final Trigger scoreDriveTrigger      = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
+  private static final Trigger stationDriveTrigger    = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
+  private static final Trigger processorDriveTrigger  = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
+  private static final Trigger autoScoreCancelTrigger = new Trigger
+  (
+    unlockHeadingTrigger.or
+    (() -> 
+      driver.getRawAxis(translationAxis) > Constants.Control.stickDeadband ||
+      copilot.getRawAxis(manualDiffectorElevationAxis) > Constants.Control.manualDiffectorDeadband ||
+      copilot.getRawAxis(manualDiffectorRotationAxis) > Constants.Control.manualDiffectorDeadband
+    )
+  );
 //  private final Trigger driverLeftRumbleTrigger    = new Trigger(() -> s_Intake.getAlgaeState());
 //  private final Trigger copilotLeftRumbleTrigger   = new Trigger(
 //              () -> s_Intake.getAlgaeState() && (s_Diffector.getRelativeRotation() > 45 && s_Diffector.getRelativeRotation() < 315) ||
@@ -201,7 +210,39 @@ public class RobotContainer
       );
 
     driver.back()
-      .onTrue(new AutoScoreSequence(s_Diffector, s_Algae, s_Coral, s_Swerve, () -> swerveState.Pose.getTranslation()));
+      .onTrue
+      (
+        AutoUtils.autoScoreSequenceCommand
+        (
+          s_Diffector, 
+          s_Algae, 
+          s_Coral, 
+          () -> 
+          {
+            return 
+            copilot.y().getAsBoolean() 
+            ? 
+            4 
+            : 
+            copilot.x().getAsBoolean() 
+            ? 
+            3 
+            : 
+            copilot.b().getAsBoolean() 
+            ? 
+            2 
+            : 
+            copilot.a().getAsBoolean() 
+            ? 
+            1 
+            : 
+            0;
+          }, 
+          driver.rightTrigger(), 
+          () -> driver.getHID().getPOV(), 
+          autoScoreCancelTrigger
+        )
+      );
   }
 
   private void configureAutoDriveBindings()
@@ -451,8 +492,8 @@ public class RobotContainer
             double elevationBase = -copilot.getRawAxis(manualDiffectorElevationAxis);
             double rotationBase = -copilot.getRawAxis(manualDiffectorRotationAxis);
 
-            double rotation = Math.abs(elevationBase) > 2 * Math.abs(rotationBase) ? 0 : rotationBase;
-            double elevation = Math.abs(rotation) > 2 * Math.abs(elevationBase) ? 0 : elevationBase;
+            double elevation = Math.abs(elevationBase) < 2 * Math.abs(rotationBase) ? 0 : elevationBase;
+            double rotation = Math.abs(rotationBase) < 2 * Math.abs(elevationBase) ? 0 : rotationBase;
     
             s_Diffector.setManualDiffectorValues(elevation, rotation);
           }, 
