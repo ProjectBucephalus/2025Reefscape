@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -57,6 +58,11 @@ public class AlgaeManipulator extends SubsystemBase
 
   public void setAlgaeManipulatorStatus(AlgaeManipulatorStatus status)
     {algaeStatus = status;}
+
+  public Command setStatusCommand(AlgaeManipulatorStatus status)
+  {
+    return runOnce(() -> setAlgaeManipulatorStatus(status));
+  }
 
   public AlgaeManipulatorStatus getStatus()
     {return algaeStatus;}

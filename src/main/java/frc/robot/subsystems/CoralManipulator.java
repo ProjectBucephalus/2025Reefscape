@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -59,6 +60,11 @@ public class CoralManipulator extends SubsystemBase
 
   public void setCoralManipulatorStatus(CoralManipulatorStatus status)
     {coralStatus = status;}
+
+  public Command setStatusCommand(CoralManipulatorStatus status)
+  {
+    return runOnce(() -> setCoralManipulatorStatus(status));
+  }
 
   @Override
   public void periodic() 
