@@ -33,12 +33,11 @@ public class Diffector extends SubsystemBase
 {
   private boolean eStop;
 
-  public enum CargoStates{DEFAULT, SPRING}
-  private CargoStates cargoState;
+  private boolean springState = false;
 
   private boolean manualControl;
-  private double manualElevation;
-  private double manualRotation;
+  private double  manualElevation;
+  private double  manualRotation;
 
   private final MotionMagicVoltage motionMagicRequester;
   private final double rotationRatio;
@@ -72,8 +71,6 @@ public class Diffector extends SubsystemBase
 
   private double projectionElevation = IKGeometry.projectionElevation;
   private double projectionAngle     = IKGeometry.projectionAngle;
-  //private PathConstraints armPathConstraints = new PathConstraints(1, 1, 0, 0);
-  //private GoalEndState armEndState = new GoalEndState(0, Rotation2d.kZero);
   private static ArrayList<Translation2d> plannedPathPoints = new ArrayList<Translation2d>();
 
   private int calibrationCounter = 0;
@@ -119,7 +116,7 @@ public class Diffector extends SubsystemBase
 
     calculatePosition();
 
-    cargoState = updateCargoState();
+    updateSpringState();
 
     motionMagicRequester = new MotionMagicVoltage(0);
 
@@ -248,6 +245,17 @@ public class Diffector extends SubsystemBase
    */
   private double[] calculateMotorTargets(Translation2d target)
   {
+    if (MathUtil.isNear(angle, target.getY(), DiffectorConstants.angleTolerance))
+    { // If movement is only elevation, use elevation acceleration limits
+      m_diffectorUA.getConfigurator().apply(motorConfigUA.MotionMagic.withMotionMagicAcceleration(DiffectorConstants.diffectorElevationAcceleration));
+      m_diffectorDA.getConfigurator().apply(motorConfigDA.MotionMagic.withMotionMagicAcceleration(DiffectorConstants.diffectorElevationAcceleration));
+    }
+    else
+    { // If movement includes rotation, use rotation acceleration limits
+      m_diffectorUA.getConfigurator().apply(motorConfigUA.MotionMagic.withMotionMagicAcceleration(DiffectorConstants.diffectorRotationAcceleration));
+      m_diffectorDA.getConfigurator().apply(motorConfigDA.MotionMagic.withMotionMagicAcceleration(DiffectorConstants.diffectorRotationAcceleration));
+    }
+
     double[] calculatedTargets = new double[2];
 
     calculatedTargets[0] = (target.getY() / rotationRatio) + (target.getX() / travelRatio);
@@ -318,26 +326,18 @@ public class Diffector extends SubsystemBase
 
   public boolean safeToMoveClimber()
   {
-    return Constants.DiffectorConstants.climberElevatorLowTheshold < elevation 
-    && elevation < Constants.DiffectorConstants.climberElevatorHighThreshold;
+    return elevation < Constants.DiffectorConstants.climberClearanceThreshold;
   }
 
   /** Returns the ID of the motor control slot to use */
   private int getSlot()
   {
-    switch (cargoState) 
-    {
-      case DEFAULT: return 0;
-      case SPRING: return 1;
-      default: return 0;
-    }
+    if (springState) return 1;
+    else return 0;
   }
 
-  private CargoStates updateCargoState()
-  {
-   // Default state, should never be reached
-   {return CargoStates.DEFAULT;}
-  }
+  private boolean updateSpringState()
+   {return springState = false;}
 
   public void setManualDiffectorValues(double newManualElevation, double newManualRotation)
   {
@@ -477,7 +477,7 @@ public class Diffector extends SubsystemBase
     }
 
     calculatePosition();
-    cargoState = updateCargoState();
+    updateSpringState();
     
     if 
     (

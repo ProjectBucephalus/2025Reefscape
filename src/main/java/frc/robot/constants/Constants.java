@@ -215,39 +215,21 @@ public final class Constants
   {
     public static final double motorStallCurrent = 100; // TODO: Tune this to the point that it will reliably prevent stalls
 
-    public static final double diffectorMotorKGEmpty = 0.225;
-    public static final double diffectorMotorKSEmpty = 0.05;
-    public static final double diffectorMotorKVEmpty = 0.58;
-    public static final double diffectorMotorKPEmpty = 100;
-    public static final double diffectorMotorKIEmpty = 0;
-    public static final double diffectorMotorKDEmpty = 0;
+    public static final double diffectorMotorKG = 0.225;
+    public static final double diffectorMotorKS = 0.05;
+    public static final double diffectorMotorKV = 0.58;
+    public static final double diffectorMotorKP = 100;
+    public static final double diffectorMotorKI = 0;
+    public static final double diffectorMotorKD = 0;
 
-    public static final double diffectorMotorKGOneItem = 0;
-    public static final double diffectorMotorKSOneItem = 0;
-    public static final double diffectorMotorKVOneItem = 0;
-    public static final double diffectorMotorKPOneItem = 3;
-    public static final double diffectorMotorKIOneItem = 0;
-    public static final double diffectorMotorKDOneItem = 0;
+    public static final double diffectorMotorKGSpring = 0;
+    public static final double diffectorMotorKSSpring = 0;
+    public static final double diffectorMotorKVSpring = 0;
+    public static final double diffectorMotorKPSpring = 3;
+    public static final double diffectorMotorKISpring = 0;
+    public static final double diffectorMotorKDSpring = 0;
 
-    public static final double diffectorMotorKGTwoItem = 0;
-    public static final double diffectorMotorKSTwoItem = 0;
-    public static final double diffectorMotorKVTwoItem = 0;
-    public static final double diffectorMotorKPTwoItem = 3;
-    public static final double diffectorMotorKITwoItem = 0;
-    public static final double diffectorMotorKDTwoItem = 0;
-
-    /** Desired cruise speed OF MOTOR, RPS */
-    public static final double diffectorMotionMagicCruise = 90;
-    /** Desired acceleration OF MOTOR, RPS^2 */
-    public static final double diffectorMotionMagicAccel  = 70;
-
-    public static final double coralElevatorLowTheshold = 0;
-    public static final double coralElevatorHighThreshold = 0;
-    public static final double algaeElevatorLowTheshold = 0;
-    public static final double algaeElevatorHighThreshold = 0;
-    public static final double climberElevatorLowTheshold = 0;
-    public static final double climberElevatorHighThreshold = 0;
-
+    
     private static final double diffectorGearTeethIn = 8;
     private static final double diffectorGearTeethOut = 60;
     private static final double diffectorSprocketTeethIn  = 18;
@@ -258,7 +240,7 @@ public final class Constants
     public static final double sprocketRatio = (diffectorSprocketTeethIn / diffectorSprocketTeethOut);
     /** Pitch Diameter of the sprocket, in m */
     public static final double sprocketPitchDiameter = 0.036576;
-
+    
     /** 
      * Metres of chain moved per sprocket degree.
      */
@@ -269,23 +251,37 @@ public final class Constants
      * divided by 2 to give the contribution of a single motor
      */
     public static final double rotationRatio = (sprocketRatio);
-
+    
+    /** Desired cruise speed of Motor, RPS */
+    public static final double diffectorCruiseMotor = 90;
+    /** Desired cruise speed of Mechanism, RPS */
+    public static final double diffectorCruise = diffectorCruiseMotor / gearboxRatio;
+    /** Desired acceleration of Motor, RPS^2 */
+    public static final double diffectorElevationAccelerationMotor = 140;
+    /** Desired acceleration of Mechanism, RPS^2 */
+    public static final double diffectorElevationAcceleration = diffectorElevationAccelerationMotor / gearboxRatio;
+    /** Desired acceleration of Motor, RPS^2 */
+    public static final double diffectorRotationAccelerationMotor = 70;
+    /** Desired acceleration of Mechanism, RPS^2 */
+    public static final double diffectorRotationAcceleration = diffectorRotationAccelerationMotor / gearboxRatio;
+    
     public static final boolean startingCoralState = true;
     public static final boolean startingAlgaeState = false;
-
+    
     public static final double maxRotation = 5;
     /** Maximum total angle the arm is allowed to rotate away from centre */
     public static final double maxAbsAngle = maxRotation * 360;
     /** Above this angle, the arm can turn towards centre even if it's a longer path */
     public static final double turnBackThreshold = 135;
-
+    
     /** Physical upper limit of the elevator, metres above the ground */
     public static final double maxZ = 1.725;
     /** Physical lower limit of the elevator when horizontal, metres above the ground */
     public static final double minZ = 0.42;
     /** Elevation at which all rotations are safe */
-    public static final double safeElevation = 0.97; // TODO: Algae on deck‽
+    public static final double safeElevation = 0.97;
     public static final double reefSafeElevation = 1;
+    public static final double climberClearanceThreshold = 0;
     
     /** Arm rotation check tollerance, degrees */
     public static final double angleTolerance = 2;
