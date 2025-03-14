@@ -281,13 +281,17 @@ public final class Constants
     /** Elevation at which all rotations are safe */
     public static final double safeElevation = 0.97;
     public static final double reefSafeElevation = 1;
-    public static final double climberClearanceThreshold = 0;
+    public static final double algaeSafeElevation = 1.3;
+    public static final double climberClearanceThreshold = 0.55;
     
     /** Arm rotation check tollerance, degrees */
     public static final double angleTolerance = 2;
     
     /** Elevation height check tolerance, m */
     public static final double elevationTolerance = 0.01;
+
+    /** Number of clock cycles delay before arm is calibrated after reaching a target */
+    public static final int calibrationDelay = 30;
 
     public static final int algaeEjectSpeedAngleThreshold = 30;
     

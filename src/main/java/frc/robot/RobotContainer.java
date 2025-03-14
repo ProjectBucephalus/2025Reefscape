@@ -29,6 +29,7 @@ import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.Climber.ClimberStatus;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 import frc.robot.util.*;
+import frc.robot.util.SD.Key;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -111,7 +112,7 @@ public class RobotContainer
   {
     swerveState = s_Swerve.getState();
 
-    SmartDashboard.putBoolean("IgnoreFence", false);
+    SD.init(Key.IO_GEOFENCE);
     s_Swerve.setDefaultCommand
     (
       new TeleopSwerve
@@ -126,8 +127,8 @@ public class RobotContainer
       )
     );
 
+    SD.init(Key.IO_AUTO);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
-    SmartDashboard.putString("Auto Input", Constants.Auto.defaultAuto);
     SmartDashboard.putData
     (
       "Swerve Drive", 
@@ -550,6 +551,6 @@ public class RobotContainer
   public Command getAutoCommand()
   {
     // Gets the input string of command phrases, processes into a list of commands, and puts them into a sequential command group
-    return AutoUtils.getCommandList(SmartDashboard.getString("Auto Input", Constants.Auto.defaultAuto), s_Diffector, s_Coral, s_Algae);
+    return AutoUtils.getCommandList(SD.getString(Key.IO_AUTO), s_Diffector, s_Coral, s_Algae);
   }
 }

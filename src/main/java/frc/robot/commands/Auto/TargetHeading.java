@@ -12,7 +12,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -20,6 +19,8 @@ import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
+import frc.robot.util.SD;
+import frc.robot.util.SD.Key;
 import frc.robot.subsystems.Limelight;
 
 public class TargetHeading extends Command 
@@ -66,7 +67,7 @@ public class TargetHeading extends Command
   public void initialize()
   {
     redAlliance = FieldUtils.isRedAlliance();
-    SmartDashboard.putBoolean("redAlliance", redAlliance);
+    SD.put(Key.STATE_RED, redAlliance);
 
     if (redAlliance)
       {fieldGeoFence = FieldUtils.GeoFencing.fieldRedGeoFence;}
@@ -102,14 +103,14 @@ public class TargetHeading extends Command
     if (redAlliance)
     {motionXY = motionXY.unaryMinus();}
 
-    if (RobotContainer.s_Diffector.getElevation() > IKGeometry.bargeSafetyHeight && !SmartDashboard.getBoolean("OVERIDE MODE", false)) // TODO: Copy to other drive functions as needed
+    if (RobotContainer.s_Diffector.getElevation() > IKGeometry.bargeSafetyHeight && !SD.getBoolean(Key.OVERIDE)) // TODO: Copy to other drive functions as needed
     {
       motionXY = FieldUtils.GeoFencing.netProtectionZone.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
     }
 
-    if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", false))
+    if (fencedSup.getAsBoolean() && !SD.getBoolean(Key.IO_GEOFENCE))
     {
-      SmartDashboard.putString("Drive State", "Fenced");
+      SD.put(Key.STATE_DRIVE, "Fenced");
 
       // Read down the list of geofence objects
       // Outer wall is index 0, so has highest authority by being processed last
@@ -120,7 +121,7 @@ public class TargetHeading extends Command
       }
     }
     else
-    {SmartDashboard.putString("Drive State", "Non-Fenced");}
+    {SD.put(Key.STATE_DRIVE, "Non-Fenced");}
     
     // Uninvert processing output when on red alliance
     if (redAlliance)
