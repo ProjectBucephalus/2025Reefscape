@@ -14,6 +14,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -31,6 +32,8 @@ import frc.robot.util.FieldUtils;
 
 public class Diffector extends SubsystemBase 
 {
+  private AnalogPotentiometer potTest = new AnalogPotentiometer(0); // TODO: Interment properly
+
   private boolean eStop;
 
   public enum CargoStates{DEFAULT, SPRING}
@@ -547,5 +550,7 @@ public class Diffector extends SubsystemBase
     SmartDashboard.putNumber("Height over deck", elevation - arm.checkAngle(angle));
     SmartDashboard.putNumber("Encoder Reading", getEncoderPos());
     SmartDashboard.putNumber("Offset", angle - getEncoderPos());
+
+    SmartDashboard.putNumber("Test Potentiometer", potTest.get());
   }
 }
