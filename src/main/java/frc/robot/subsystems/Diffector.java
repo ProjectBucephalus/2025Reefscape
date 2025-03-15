@@ -331,8 +331,7 @@ public class Diffector extends SubsystemBase
   /** Returns the ID of the motor control slot to use */
   private int getSlot()
   {
-    if (springState) return 1;
-    else return 0;
+    return springState ? 1 : 0;
   }
 
   private boolean updateSpringState()
