@@ -6,7 +6,6 @@ package frc.robot.subsystems;
 
 import frc.robot.constants.IDConstants;
 import frc.robot.util.SD;
-import frc.robot.util.SD.Key;
 
 import com.ctre.phoenix.CANifier;
 
@@ -18,19 +17,19 @@ public class CANifierAccess
 
   public boolean algaeManiSensor()
   {
-    SD.put(Key.SENSOR_ALGAE, io_CANifier.getGeneralInput(IDConstants.algaeManipulatorDIO));
+    SD.SENSOR_ALGAE.put(io_CANifier.getGeneralInput(IDConstants.algaeManipulatorDIO));
     return io_CANifier.getGeneralInput(IDConstants.algaeManipulatorDIO);
   }
 
   public boolean coralManiStbdSensor()
   {
-    SD.put(Key.SENSOR_CORAL1, io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOStbd));
+    SD.SENSOR_CORAL1.put(io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOStbd));
     return io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOStbd);
   }
 
   public boolean coralManiPortSensor()
   {
-    SD.put(Key.SENSOR_CORAL2, io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOPort));
+    SD.SENSOR_CORAL2.put(io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOPort));
     return io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOPort);
   }
 }

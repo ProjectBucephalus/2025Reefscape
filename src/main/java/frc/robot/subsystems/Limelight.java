@@ -16,7 +16,6 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.SD;
-import frc.robot.util.SD.Key;
 
 public class Limelight extends SubsystemBase 
 {  
@@ -48,7 +47,7 @@ public class Limelight extends SubsystemBase
   {
     limelightName = name;
 
-    SD.init(Key.IO_LL);
+    SD.IO_LL.init();
   }
 
   public void setIMUMode(int mode)
@@ -87,7 +86,7 @@ public class Limelight extends SubsystemBase
   }
 
   public int updateLimelightPipeline()
-    {return (int)SD.getNumber(Key.IO_LL_EXPOSURE);}
+    {return SD.IO_LL_EXPOSURE.get().intValue();}
 
   @Override
   public void periodic() 
@@ -105,7 +104,7 @@ public class Limelight extends SubsystemBase
     
     LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, validIDs);
     
-    if (SD.getBoolean(Key.IO_LL))
+    if (SD.IO_LL.get())
     {
       mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
       
@@ -124,7 +123,7 @@ public class Limelight extends SubsystemBase
       }
     }
 
-    SD.put(Key.SENSOR_GYRO, headingDeg);
+    SD.SENSOR_GYRO.put(headingDeg);
     if (!getLimelightRotation().equals(Rotation2d.kZero))
     SmartDashboard.putNumber("Pose " + limelightName + " Estimate", getLimelightRotation().getDegrees());
     else SmartDashboard.putNumber("Pose " + limelightName + " Estimate", 0);

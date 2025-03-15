@@ -13,7 +13,6 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.IDConstants;
 import frc.robot.util.Conversions;
 import frc.robot.util.SD;
-import frc.robot.util.SD.Key;
 
 public class Climber extends SubsystemBase
 {
@@ -76,31 +75,31 @@ public class Climber extends SubsystemBase
   @Override
   public void periodic()
   {
-    SD.put(Key.CLIMBER_POS, m_ClimberWinch.getPosition().getValueAsDouble());
+    SD.CLIMBER_POS.put(m_ClimberWinch.getPosition().getValueAsDouble());
 
     switch (status)
     {
       case STOW:
         m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.stowWinchPos));
-        SD.put(Key.CLIMBER_TARGET, Constants.ClimberConstants.stowWinchPos);
+        SD.CLIMBER_TARGET.put(Constants.ClimberConstants.stowWinchPos);
         break;
 
       case ACTIVE:
         m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.activeWinchPos));
-        SD.put(Key.CLIMBER_TARGET, Constants.ClimberConstants.activeWinchPos);
+        SD.CLIMBER_TARGET.put(Constants.ClimberConstants.activeWinchPos);
         break;
 
       case CLIMB:
         double adjustedClimberPos = Constants.ClimberConstants.climbWinchPos;
 
-        if (SD.getBoolean(Key.OVERIDE)) 
+        if (SD.OVERRIDE.get()) 
         {
           adjustedClimberPos += RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() * Constants.ClimberConstants.winchBalanceScalar;
           adjustedClimberPos = Conversions.clamp(adjustedClimberPos, Constants.ClimberConstants.climbWinchInnerLimit, Constants.ClimberConstants.climbWinchOuterLimit);
         }
 
         m_ClimberWinch.setControl(motionMagic.withPosition(adjustedClimberPos));
-        SD.put(Key.CLIMBER_TARGET, adjustedClimberPos);
+        SD.CLIMBER_TARGET.put(adjustedClimberPos);
         break;
 
       case MANUAL:
