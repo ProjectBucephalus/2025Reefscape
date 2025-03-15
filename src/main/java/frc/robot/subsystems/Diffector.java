@@ -307,6 +307,7 @@ public class Diffector extends SubsystemBase
    */
   public boolean unwind()
   {
+    manualControl = false;
     targetAngle = Constants.DiffectorConstants.startPosition.getY();
     return (stowRequested = Math.abs(angle) < stowThreshold);
   }
@@ -318,7 +319,10 @@ public class Diffector extends SubsystemBase
     {return targetAngle;}
 
   public void setElevationTarget(double newTarget)
-    {targetElevation = Conversions.clamp(newTarget, Constants.DiffectorConstants.minZ, Constants.DiffectorConstants.maxZ);}
+  {
+    manualControl = false;
+    targetElevation = Conversions.clamp(newTarget, Constants.DiffectorConstants.minZ, Constants.DiffectorConstants.maxZ);
+  }
 
   public double getElevationTarget()
     {return targetElevation;}
@@ -348,6 +352,7 @@ public class Diffector extends SubsystemBase
 
   public void goToAngle(double newTarget) 
   {
+    manualControl = false;
     if (RobotContainer.algae)
     {
       if (getRelativeRotation() < 180 && Conversions.mod(newTarget, 360) > 180)
@@ -504,13 +509,6 @@ public class Diffector extends SubsystemBase
           if (arm.checkAngle(angle + Math.copySign(projectionAngle, manualRotation)) > elevation) 
             {manualRotation = 0;}
         }
-
-      }
-      if (manualElevation == 0 && manualRotation == 0)
-      {
-        targetElevation = elevation;
-        targetAngle = angle;
-        //manualControl = false;
       }
 
       if (manualControl)
