@@ -510,7 +510,7 @@ public class RobotContainer
     copilot.leftTrigger()
       .onTrue(s_Algae.setStatusCommand(AlgaeManipulatorStatus.INTAKE))
       .onFalse(s_Algae.setStatusCommand(AlgaeManipulatorStatus.HOLDING)); //Intake algae through manipulator
-     copilot.leftBumper()
+    copilot.leftBumper()
       .onTrue(s_Algae.setStatusCommand(AlgaeManipulatorStatus.EJECT))
       .onFalse(s_Algae.setStatusCommand(AlgaeManipulatorStatus.EMPTY)); //Ejects algae from manipulator
   }
