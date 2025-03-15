@@ -10,6 +10,7 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -164,6 +165,11 @@ public class Robot extends TimedRobot
   {
     RobotContainer.s_LimelightPort.setIMUMode(1);
     RobotContainer.s_LimelightStbd.setIMUMode(1);
+    if (rotationKnown)
+    {
+      NetworkTableInstance.getDefault().getTable("s_LimelightPort").getEntry("<throttle_set>").setNumber(150);
+      NetworkTableInstance.getDefault().getTable("s_LimelightStbd").getEntry("<throttle_set>").setNumber(150);
+    }
     SmartDashboard.putBoolean("OVERIDE MODE", false);
     SmartDashboard.putBoolean("Process Auto", false);
     rotationKnown = false;
