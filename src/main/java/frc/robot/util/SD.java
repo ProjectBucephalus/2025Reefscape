@@ -4,199 +4,110 @@
 
 package frc.robot.util;
 
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Constants;
 
 /** Simplified interface for most SmartDashboard interactions */
 public class SD 
 {
-  public static enum DataType
+  public static final BooleanKey IO_LL = new BooleanKey("Use Limelight", true);
+  public static final DoubleKey IO_LL_EXPOSURE = new DoubleKey("Exposure Setting", 0);
+
+  public static final BooleanKey CALIBRATE_BOT_ROTATION = new BooleanKey("Rotation Known", false);
+  public static final BooleanKey CALIBRATE_DIFF = new BooleanKey("Overide: Calibrate Arm", false);
+  public static final BooleanKey CALIBRATE_DIFF_TARGET = new BooleanKey("Overide: Arm At Target", false);
+
+  public static final StringKey STATE_HEADING = new StringKey("Heading State", "");
+
+  public static final BooleanKey IO_PROCESS_AUTO = new BooleanKey("Process Auto", false);
+  public static final BooleanKey IO_GEOFENCE = new BooleanKey("IgnoreFence", false);
+  public static final StringKey IO_AUTO = new StringKey("Auto Input", Constants.Auto.defaultAuto);
+  public static final DoubleKey IO_RUMBLE_D = new DoubleKey("Driver Rumble", Constants.RumblerConstants.driverDefault);
+  public static final DoubleKey IO_RUMBLE_C = new DoubleKey("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
+
+  public static final BooleanKey STATE_PP_WARMUP = new BooleanKey("Warmup Finished", false);
+  public static final BooleanKey STATE_RED = new BooleanKey("redAlliance", false);
+  public static final StringKey STATE_DRIVE = new StringKey("Drive State", "Disabled");
+  public static final BooleanKey STATE_HEADING_SNAP = new BooleanKey("Heading Snap Updating", true);
+
+  public static final DoubleKey BOT_SPEED = new DoubleKey("Robot Speed", 0);
+
+  public static final BooleanKey SENSOR_ALGAE = new BooleanKey("A Beam", false);
+  public static final BooleanKey SENSOR_CORAL1 = new BooleanKey("C Beam 1", false);
+  public static final BooleanKey SENSOR_CORAL2 = new BooleanKey("C Beam 2", false);
+  public static final DoubleKey SENSOR_GYRO = new DoubleKey("Gyro yaw", 0);
+  public static final DoubleKey SENSOR_DIFF_ELEVATION = new DoubleKey("Potentiometer Reading", 0);
+  public static final DoubleKey SENSOR_DIFF_ANGLE = new DoubleKey("Encoder Reading", 0);
+  public static final DoubleKey SENSOR_DIFF_POT = new DoubleKey("Elevator Potentiometer", 0);
+
+  public static final DoubleKey CLIMBER_POS = new DoubleKey("Climber Position", 0);
+  public static final DoubleKey CLIMBER_TARGET = new DoubleKey("Climber Target", 0);
+
+  public static final DoubleKey DIFF_ELEVATION = new DoubleKey("Elevator Height", 0);
+  public static final DoubleKey DIFF_ELEVATION_TARGET = new DoubleKey("Elevator Target", 0);
+  public static final DoubleKey DIFF_ANGLE = new DoubleKey("Arm Rotation", 0);
+  public static final DoubleKey DIFF_ANGLE_TARGET = new DoubleKey("Arm Target", 0);
+  public static final DoubleKey DIFF_UA_ER = new DoubleKey("UA Error", 0);
+  public static final DoubleKey DIFF_DA_ER = new DoubleKey("DA Error", 0);  
+  public static final DoubleKey DIFF_HEIGHT = new DoubleKey("Height over deck", 0);  
+  public static final DoubleKey DIFF_ANGLE_ER = new DoubleKey("Offset", 0);
+
+  public static final StringKey RUMBLE_D_R = new StringKey("DriverRight Rumble Queue", "");
+  public static final StringKey RUMBLE_D_L = new StringKey("DriverLeft Rumble Queue", "");
+  public static final StringKey RUMBLE_C_R = new StringKey("CopilotRight Rumble Queue", "");
+  public static final StringKey RUMBLE_C_L = new StringKey("CopilotLeft Rumble Queue", "");
+
+  public static final BooleanKey DIFF_ESTOP = new BooleanKey("Diffector E-Stop", false);
+  public static final BooleanKey OVERRIDE = new BooleanKey("OVERIDE MODE", false);
+
+  public record BooleanKey (String label, boolean defaultValue) implements Runnable, Supplier<Boolean>, Consumer<Boolean>
   {
-    STRING,
-    NUMBER,
-    BOOLEAN
+    @Override
+    public Boolean get() {return SmartDashboard.getBoolean(label, defaultValue);}
+
+    @Override
+    public void run() {SmartDashboard.putBoolean(label, defaultValue);}
+
+    @Override
+    public void accept(Boolean value) {SmartDashboard.putBoolean(label, value);}
+
+    public void init() {run();}
+
+    public void put(boolean value) {accept(value);}
   }
 
-  public static enum Key
+  public record DoubleKey (String label, double defaultValue) implements Runnable, Supplier<Double>, Consumer<Double>
   {
-    IO_LL("Use Limelight", true),
-    IO_LL_EXPOSURE("Exposure Setting", 0),
+    @Override
+    public Double get() {return SmartDashboard.getNumber(label, defaultValue);}
 
-    CALIBRATE_BOT_ROTATION("Rotation Known", false),
-    CALIBRATE_DIFF("Overide: Calibrate Arm", false),
-    CALIBRATE_DIFF_TARGET("Overide: Arm At Target", false),
+    @Override
+    public void run() {SmartDashboard.putNumber(label, defaultValue);}
 
-    STATE_HEADING("Heading State", ""),
+    @Override
+    public void accept(Double value) {SmartDashboard.putNumber(label, value);}
 
-    IO_PROCESS_AUTO("Process Auto", false),
-    IO_GEOFENCE("IgnoreFence", false),
-    IO_AUTO("Auto Input", Constants.Auto.defaultAuto),
-    IO_RUMBLE_D("Driver Rumble", Constants.RumblerConstants.driverDefault),
-    IO_RUMBLE_C("Copilot Rumble", Constants.RumblerConstants.copilotDefault),
+    public void init() {run();}
 
-    STATE_PP_WARMUP("Warmup Finished", false),
-    STATE_RED("redAlliance", false),
-    STATE_DRIVE("Drive State", "Disabled"),
-    STATE_HEADING_SNAP("Heading Snap Updating", true),
-
-    BOT_SPEED("Robot Speed", 0),
-
-    SENSOR_ALGAE("A Beam", false),
-    SENSOR_CORAL1("C Beam 1", false),
-    SENSOR_CORAL2("C Beam 2", false),
-    SENSOR_GYRO("Gyro yaw", 0),
-    SENSOR_DIFF_ELEVATION("Potentiometer Reading", 0),
-    SENSOR_DIFF_ANGLE("Encoder Reading", 0),
-    SENSOR_DIFF_POT("Elevator Potentiometer", 0),
-
-    CLIMBER_POS("Climber Position", 0),
-    CLIMBER_TARGET("Climber Target", 0),
-
-    DIFF_ELEVATION("Elevator Height", 0),
-    DIFF_ELEVATION_TARGET("Elevator Target", 0),
-    DIFF_ANGLE("Arm Rotation", 0),
-    DIFF_ANGLE_TARGET("Arm Target", 0),
-    DIFF_UA_ER("UA Error", 0),  
-    DIFF_DA_ER("DA Error", 0),  
-    DIFF_HEIGHT("Height over deck", 0),  
-    DIFF_ANGLE_ER("Offset", 0),
-
-    RUMBLE_D_R("DriverRight Rumble Queue", ""),
-    RUMBLE_D_L("DriverLeft Rumble Queue", ""),
-    RUMBLE_C_R("CopilotRight Rumble Queue", ""),
-    RUMBLE_C_L("CopilotLeft Rumble Queue", ""),
-
-    DIFF_ESTOP("Diffector E-Stop", false),
-    OVERIDE("OVERIDE MODE", false);
-
-    public final DataType dataType;
-    public final String label;
-    private final String defaultString;
-    private final double defualtNumber;
-    private final boolean defaultBoolean;
-
-    private Key(String label, String defaultValue)
-    {
-      this.dataType = DataType.STRING;
-      this.label = label;
-      this.defaultString = defaultValue;
-      
-      this.defualtNumber = 0;
-      this.defaultBoolean = false;
-    }
-
-    private Key(String label, double defaultValue)
-    {
-      this.dataType = DataType.NUMBER;
-      this.label = label;
-      this.defualtNumber = defaultValue;
-      
-      this.defaultString = "";
-      this.defaultBoolean = false;
-    }
-
-    private Key(String label, boolean defaultValue)
-    {
-      this.dataType = DataType.BOOLEAN;
-      this.label = label;
-      this.defaultBoolean = defaultValue;
-      
-      this.defaultString = "";
-      this.defualtNumber = 0;
-    }
+    public void put(double value) {accept(value);}
   }
 
-  /**
-   * Initialises the SmartDashboard field with the default value
-   * @param key Reference key tied to a SmartDashboard label
-   */
-  public static void init(Key key)
+  public record StringKey (String label, String defaultValue) implements Runnable, Supplier<String>, Consumer<String>
   {
-    switch (key.dataType) 
-    {
-      case STRING:
-        SmartDashboard.putString(key.label, key.defaultString);
-        break;
+    @Override
+    public String get() {return SmartDashboard.getString(label, defaultValue);}
 
-      case NUMBER:
-        SmartDashboard.putNumber(key.label, key.defualtNumber);
-        break;
+    @Override
+    public void run() {SmartDashboard.putString(label, defaultValue);}
 
-      case BOOLEAN:
-        SmartDashboard.putBoolean(key.label, key.defaultBoolean);
-        break;
-    
-      default:
-        break;
-    }
-  }
+    @Override
+    public void accept(String value) {SmartDashboard.putString(label, value);}
 
-  /**
-   * Send data to SmartDashboard
-   * @param key Reference key tied to a SmartDashboard label
-   * @param value String, Number, or Boolean value to send, as appropriate
-   */
-  public static void put(Key key, String value)
-  {
-    if (key.dataType == DataType.STRING)
-      SmartDashboard.putString(key.label, value);
-  }
+    public void init() {run();}
 
-  /**
-   * Send data to SmartDashboard
-   * @param key Reference key tied to a SmartDashboard label
-   * @param value String, Number, or Boolean value to send, as appropriate
-   */
-  public static void put(Key key, double value)
-  {
-    if (key.dataType == DataType.NUMBER)
-      SmartDashboard.putNumber(key.label, value);
-  }
-
-  /**
-   * Send data to SmartDashboard
-   * @param key Reference key tied to a SmartDashboard label
-   * @param value String, Number, or Boolean value to send, as appropriate
-   */
-  public static void put(Key key, boolean value)
-  {
-    if (key.dataType == DataType.BOOLEAN)
-      SmartDashboard.putBoolean(key.label, value);
-  }
-
-  /**
-   * Pull String from SmartDashboard
-   * @param key Reference key tied to a SmartDashboard label
-   * @return String found at associated index, otherwise returns empty string
-   */
-  public static String getString(Key key)
-  {
-    if (key.dataType == DataType.STRING)
-      return SmartDashboard.getString(key.label, key.defaultString);
-    else return "";
-  }
-
-  /**
-   * Pull Number from SmartDashboard
-   * @param key Reference key tied to a SmartDashboard label
-   * @return Number (double) found at associated index, otherwise returns 0
-   */
-  public static double getNumber(Key key)
-  {
-    if (key.dataType == DataType.NUMBER)
-      return SmartDashboard.getNumber(key.label, key.defualtNumber);
-    else return 0;
-  }
-
-  /**
-   * Pull Boolean from SmartDashboard
-   * @param key Reference key tied to a SmartDashboard label
-   * @return Boolean found at associated index, otherwise returns false
-   */
-  public static boolean getBoolean(Key key)
-  {
-    if (key.dataType == DataType.BOOLEAN)
-      return SmartDashboard.getBoolean(key.label, key.defaultBoolean);
-    else return false;
+    public void put(String value) {accept(value);}
   }
 }

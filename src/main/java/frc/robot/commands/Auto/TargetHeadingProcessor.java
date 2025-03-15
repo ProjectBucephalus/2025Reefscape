@@ -21,7 +21,6 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
 import frc.robot.util.SD;
-import frc.robot.util.SD.Key;
 import frc.robot.subsystems.Limelight;
 
 public class TargetHeadingProcessor extends Command 
@@ -53,7 +52,7 @@ public class TargetHeadingProcessor extends Command
 
   public TargetHeadingProcessor(CommandSwerveDrivetrain s_Swerve, Rotation2d rotationOffset, DoubleSupplier xSup, Rotation2d targetHeading, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
-    SD.init(Key.STATE_HEADING_SNAP);
+    SD.STATE_HEADING_SNAP.init();
 
     this.s_Swerve = s_Swerve;
     addRequirements(s_Swerve);
@@ -74,7 +73,7 @@ public class TargetHeadingProcessor extends Command
   {
     updateTargetHeading();
     redAlliance = FieldUtils.isRedAlliance();
-    SD.put(Key.STATE_RED, redAlliance);
+    SD.STATE_RED.put(redAlliance);
 
     if (redAlliance)
       {fieldGeoFence = FieldUtils.GeoFencing.fieldRedGeoFence;}
@@ -96,7 +95,7 @@ public class TargetHeadingProcessor extends Command
     /* Apply deadbands */
     if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
 
-    if (SD.getBoolean(Key.STATE_HEADING_SNAP)) 
+    if (SD.STATE_HEADING_SNAP.get()) 
       {updateTargetHeading();}
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
@@ -113,14 +112,14 @@ public class TargetHeadingProcessor extends Command
     if (redAlliance)
     {motionXY = motionXY.unaryMinus();}
 
-    if (RobotContainer.s_Diffector.getElevation() > IKGeometry.bargeSafetyHeight && !SD.getBoolean(Key.OVERIDE)) // TODO: Copy to other drive functions as needed
+    if (RobotContainer.s_Diffector.getElevation() > IKGeometry.bargeSafetyHeight && !SD.OVERRIDE.get()) // TODO: Copy to other drive functions as needed
     {
       motionXY = FieldUtils.GeoFencing.netProtectionZone.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
     }
 
-    if (fencedSup.getAsBoolean() && !SD.getBoolean(Key.IO_GEOFENCE))
+    if (fencedSup.getAsBoolean() && !SD.IO_GEOFENCE.get())
     {
-      SD.put(Key.STATE_DRIVE, "Fenced");
+      SD.STATE_DRIVE.put("Fenced");
 
       // Read down the list of geofence objects
       // Outer wall is index 0, so has highest authority by being processed last
@@ -131,7 +130,7 @@ public class TargetHeadingProcessor extends Command
       }
     }
     else
-    {SD.put(Key.STATE_DRIVE, "Non-Fenced");}
+    {SD.STATE_DRIVE.put("Non-Fenced");}
     
     // Uninvert processing output when on red alliance
     if (redAlliance)
