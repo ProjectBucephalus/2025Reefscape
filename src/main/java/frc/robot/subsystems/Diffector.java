@@ -515,6 +515,6 @@ public class Diffector extends SubsystemBase
     SD.SENSOR_DIFF_ANGLE.put(getEncoderPos());
     SD.DIFF_ANGLE_ER.put(angle - getEncoderPos());
 
-    SD.SENSOR_DIFF_POT.put(potTest.get());
+    SD.SENSOR_DIFF_POT.put(potentiometer.get());
   }
 }
