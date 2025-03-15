@@ -11,32 +11,27 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IDConstants;
+import frc.robot.util.Conversions;
 import frc.robot.util.SD;
 import frc.robot.util.SD.Key;
 
 public class Climber extends SubsystemBase
 {
-    /* Declarations of all the motor controllers */
+  /* Declarations of the motor controller */
   private TalonFX m_ClimberWinch;
-  private boolean climbActive;
   private ClimberStatus status;
-
-  //private DigitalInput dio;
 
   /* Declarations of all the motion magic variables */
   private final MotionMagicVoltage motionMagic;
   private double speed;
-  private double manualScale;
   private TalonFXConfiguration config = CTREConfigs.climberWinchFXConfig;
-  private boolean climberClearanceFlag = false;
 
   public enum ClimberStatus 
   {
     ACTIVE,
     STOW,
     MANUAL,
-    CLIMB,
-    INTAKE //TODO
+    CLIMB
   };
 
   public Climber() 
@@ -45,20 +40,12 @@ public class Climber extends SubsystemBase
     m_ClimberWinch.getConfigurator().apply(config);
     m_ClimberWinch.setPosition(Constants.ClimberConstants.stowWinchPos);
     
-    manualScale = Constants.ClimberConstants.manualScale;
-    
     motionMagic = new MotionMagicVoltage(0);
 
-    setClimberStatus(ClimberStatus.STOW);
+    setStatus(ClimberStatus.STOW);
   }
-
-  public double getClimberPos()
-    {return m_ClimberWinch.getPosition().getValueAsDouble();}
   
-  public ClimberStatus getClimberStatus()
-    {return status;}
-  
-  public void setClimberStatus(ClimberStatus newStatus)
+  private void setStatus(ClimberStatus newStatus)
   {
     status = newStatus;
     if (newStatus == ClimberStatus.CLIMB)
@@ -73,16 +60,16 @@ public class Climber extends SubsystemBase
 
   public Command setStatusCommand(ClimberStatus status)
   {
-    return Commands.runOnce(() -> this.setClimberStatus(status), this);
+    return Commands.runOnce(() -> this.setStatus(status), this);
   }
 
   public boolean isUnlocked()
-    {return climbActive;}
+    {return status == ClimberStatus.ACTIVE;}
 
   public boolean manualOveride(double motorSpeed)
   {
     speed = motorSpeed;
-    setClimberStatus(ClimberStatus.MANUAL);
+    setStatus(ClimberStatus.MANUAL);
     return true;
   }
 
@@ -90,19 +77,6 @@ public class Climber extends SubsystemBase
   public void periodic()
   {
     SD.put(Key.CLIMBER_POS, m_ClimberWinch.getPosition().getValueAsDouble());
-    if (RobotContainer.s_Diffector.getRelativeTarget().equals(Constants.DiffectorConstants.coralIntakePosition) || RobotContainer.algae)
-    {
-      if (!climberClearanceFlag)
-      {
-        setClimberStatus(ClimberStatus.INTAKE);
-        climberClearanceFlag = true;
-      }
-    }
-    else if (climberClearanceFlag)
-    {
-      setClimberStatus(ClimberStatus.STOW);
-      climberClearanceFlag = false;
-    }
 
     switch (status)
     {
@@ -122,23 +96,18 @@ public class Climber extends SubsystemBase
         if (SD.getBoolean(Key.OVERIDE)) 
         {
           adjustedClimberPos += RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() * Constants.ClimberConstants.winchBalanceScalar;
+          adjustedClimberPos = Conversions.clamp(adjustedClimberPos, Constants.ClimberConstants.climbWinchInnerLimit, Constants.ClimberConstants.climbWinchOuterLimit);
         }
 
         m_ClimberWinch.setControl(motionMagic.withPosition(adjustedClimberPos));
         SD.put(Key.CLIMBER_TARGET, adjustedClimberPos);
-        // TODO: Merge in active balancing, only in override mode
-        break;
-      
-      case INTAKE: // TODO: Climber is no longer needed for intaking
-        m_ClimberWinch.setControl(motionMagic.withPosition(Constants.ClimberConstants.intakeWinchPos));
-        SD.put(Key.CLIMBER_TARGET, Constants.ClimberConstants.intakeWinchPos);
         break;
 
       case MANUAL:
         if (speed != 0)
-          {m_ClimberWinch.set(speed * manualScale);}
+          {m_ClimberWinch.set(speed * Constants.ClimberConstants.manualScale);}
         else
-          {m_ClimberWinch.setControl(motionMagic.withPosition(getClimberPos()));}
+          {m_ClimberWinch.setControl(motionMagic.withPosition(m_ClimberWinch.getPosition().getValueAsDouble()));}
         break;
     }
   }

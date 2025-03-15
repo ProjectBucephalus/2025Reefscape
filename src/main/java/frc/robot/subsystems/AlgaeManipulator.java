@@ -48,21 +48,11 @@ public class AlgaeManipulator extends SubsystemBase
     algaeMotor = new TalonFX(IDConstants.algaeManipulatorID);
   }
 
-  /**
-   * Sets the speed of the algae manipulator motor
-   * 
-   * @param speed Algae manipulator motor speed, positive to eject [-1..1]
-   */
-  public void setAlgaeManipulatorSpeed(double speed)
-    {algaeMotor.set(speed);}
-
-  public void setAlgaeManipulatorStatus(AlgaeManipulatorStatus status)
+  public void setStatus(AlgaeManipulatorStatus status)
     {algaeStatus = status;}
 
   public Command setStatusCommand(AlgaeManipulatorStatus status)
-  {
-    return runOnce(() -> setAlgaeManipulatorStatus(status));
-  }
+    {return runOnce(() -> setStatus(status));}
 
   public AlgaeManipulatorStatus getStatus()
     {return algaeStatus;}
@@ -75,7 +65,7 @@ public class AlgaeManipulator extends SubsystemBase
     switch(algaeStatus)
     {
       case INTAKE:
-        setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorIntakeSpeed);
+        algaeMotor.set(Constants.GamePiecesManipulator.algaeManipulatorIntakeSpeed);
 
         if (RobotContainer.algae) 
           {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
@@ -93,13 +83,13 @@ public class AlgaeManipulator extends SubsystemBase
         double armPos = RobotContainer.s_Diffector.getRelativeRotation();
 
         if (armPos > 90 + Constants.DiffectorConstants.algaeEjectSpeedAngleThreshold && armPos <= 270 - Constants.DiffectorConstants.algaeEjectSpeedAngleThreshold)
-          {setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);}
+          {algaeMotor.set(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);}
         else
-          {setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorProcessorSpeed);}
+          {algaeMotor.set(Constants.GamePiecesManipulator.algaeManipulatorProcessorSpeed);}
         break;
 
       case EMPTY:
-        setAlgaeManipulatorSpeed(0);
+        algaeMotor.set(0);
 
         if (RobotContainer.algae) 
           {algaeStatus = AlgaeManipulatorStatus.HOLDING;}

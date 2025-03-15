@@ -119,6 +119,8 @@ public class Robot extends TimedRobot
             SD.put(Key.CALIBRATE_BOT_ROTATION, true);
             portRotationData.clear();
             stbdRotationData.clear();
+            RobotContainer.s_LimelightPort.setThrottle(150);
+            RobotContainer.s_LimelightStbd.setThrottle(150);
           }
 
         }
@@ -148,6 +150,8 @@ public class Robot extends TimedRobot
             SD.put(Key.CALIBRATE_BOT_ROTATION, true);
             portRotationData.clear();
             stbdRotationData.clear();
+            RobotContainer.s_LimelightPort.setThrottle(150);
+            RobotContainer.s_LimelightStbd.setThrottle(150);
           }
         }
       }
@@ -166,6 +170,11 @@ public class Robot extends TimedRobot
   {
     RobotContainer.s_LimelightPort.setIMUMode(1);
     RobotContainer.s_LimelightStbd.setIMUMode(1);
+    if (rotationKnown)
+    {
+      RobotContainer.s_LimelightPort.setThrottle(150);
+      RobotContainer.s_LimelightStbd.setThrottle(150);
+    }
     SD.init(Key.OVERIDE);
     SD.init(Key.IO_PROCESS_AUTO);
     SD.init(Key.CALIBRATE_BOT_ROTATION);
@@ -198,7 +207,9 @@ public class Robot extends TimedRobot
   public void autonomousInit() 
   {  
     RobotContainer.s_LimelightPort.setIMUMode(2);
-    RobotContainer.s_LimelightStbd.setIMUMode(2);
+    RobotContainer.s_LimelightStbd.setIMUMode(2);    
+    RobotContainer.s_LimelightPort.setThrottle(0);
+    RobotContainer.s_LimelightStbd.setThrottle(0);
     
     if (autonomousCommand == null) 
       {autonomousCommand = robotContainer.getAutoCommand();}
@@ -214,13 +225,15 @@ public class Robot extends TimedRobot
   public void teleopInit() 
   {
     RobotContainer.s_LimelightPort.setIMUMode(2);
-    RobotContainer.s_LimelightStbd.setIMUMode(2);
+    RobotContainer.s_LimelightStbd.setIMUMode(2);    
+    RobotContainer.s_LimelightPort.setThrottle(0);
+    RobotContainer.s_LimelightStbd.setThrottle(0);
 
     if (autonomousCommand != null) 
       {autonomousCommand.cancel();}
 
-    RobotContainer.s_Coral.setCoralManipulatorStatus(CoralManipulatorStatus.DEFAULT);
-    RobotContainer.s_Algae.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.EMPTY);
+    RobotContainer.s_Coral.setStatus(CoralManipulatorStatus.DEFAULT);
+    RobotContainer.s_Algae.setStatus(AlgaeManipulatorStatus.EMPTY);
   }
 
   @Override
@@ -231,6 +244,8 @@ public class Robot extends TimedRobot
   {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    RobotContainer.s_LimelightPort.setThrottle(0);
+    RobotContainer.s_LimelightStbd.setThrottle(0);
   }
 
   /** This function is called periodically during test mode. */
