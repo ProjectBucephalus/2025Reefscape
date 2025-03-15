@@ -28,6 +28,7 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.Climber.ClimberStatus;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
+import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
 
 /**
@@ -95,13 +96,12 @@ public class RobotContainer
       copilot.getRawAxis(manualDiffectorRotationAxis) > Constants.Control.manualDiffectorDeadband
     )
   );
-//  private final Trigger driverLeftRumbleTrigger    = new Trigger(() -> s_Intake.getAlgaeState());
-//  private final Trigger copilotLeftRumbleTrigger   = new Trigger(
-//              () -> s_Intake.getAlgaeState() && (s_Diffector.getRelativeRotation() > 45 && s_Diffector.getRelativeRotation() < 315) ||
-//              s_Intake.getAlgaeState() && (s_Diffector.getRelativeRotation() > 135 && s_Diffector.getRelativeRotation() < 225));
-  //private final Trigger driverRightRumblTrigger = new Trigger(() -> );
-  // TODO: Ready to score rumble
-  //private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Intake.climbReady() && s_Climber.climbReady() && s_Diffector.climbReady() );
+  private final Trigger driverLeftRumbleTrigger = new Trigger(() -> 
+  s_Coral.getStatus() == CoralManipulatorStatus.INTAKE && (s_Diffector.getRelativeRotation() > 45 && s_Diffector.getRelativeRotation() < 315) ||
+  s_Algae.getStatus() == AlgaeManipulatorStatus.HOLDING && (s_Diffector.getRelativeRotation() > 135 && s_Diffector.getRelativeRotation() < 225));
+  //private final Trigger copilotLeftRumbleTrigger   = new Trigger(() -> funnel);
+  private final Trigger driverRightRumbleTrigger = new Trigger(() -> s_Algae.getStatus() == AlgaeManipulatorStatus.HOLDING);
+  private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Climber.isUnlocked() && s_Diffector.climbReady() );
 
   /* Control Modifiers */
   private static final BooleanSupplier algaeModifier = copilot.rightTrigger();
@@ -191,7 +191,7 @@ public class RobotContainer
       .onTrue(s_Algae.setStatusCommand(AlgaeManipulatorStatus.EJECT)).onFalse(s_Algae.setStatusCommand(AlgaeManipulatorStatus.EMPTY));
 
     /* Smart Intake and Auto Score controls */
-    driver.rightBumper() // TODO: Intake is now part of Diffector system
+    driver.rightBumper()
       .whileTrue
       (
         new FunctionalCommand
@@ -347,12 +347,8 @@ public class RobotContainer
         (
           () -> 
           {
-            ArrayList<Pair<Translation2d, Translation2d>> bargeObstacle = new ArrayList<Pair<Translation2d, Translation2d>>()
-            {
-              {
-                add(FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.redAllianceBargeDynamic : FieldUtils.GeoFencing.blueAllianceBargeDynamic);
-              }
-            };
+            ArrayList<Pair<Translation2d, Translation2d>> bargeObstacle = new ArrayList<Pair<Translation2d, Translation2d>>();
+            bargeObstacle.add(FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.redAllianceBargeDynamic : FieldUtils.GeoFencing.blueAllianceBargeDynamic);
 
             Pathfinding.setDynamicObstacles(bargeObstacle, swerveState.Pose.getTranslation());
           }, 
@@ -521,13 +517,13 @@ public class RobotContainer
 
   private void configureRumbleBindings()
   {
-    /* Driver rumble bindings */ // TODO when reimplemented, replace command subclasses with Commands.runOnce()
-    //driverLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.DRIVER_RIGHT, "Intake Full"));
-    // TODO: Driver Rightside Rumble: Ready To Score
-    
+    /* Driver rumble bindings */
+    driverLeftRumbleTrigger.onTrue(s_Rumbler.runOnce(() -> s_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Ready to Score")));
+    driverRightRumbleTrigger.onTrue(s_Rumbler.runOnce(() -> s_Rumbler.addRequest(Sides.DRIVER_LEFT, "Pickup Waiting")));
+
     /* Copilot rumble bindings */
-    //copilotLeftRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_LEFT, "Transfer Ready"));
-    // TODO: copliotRightRumbleTrigger.onTrue(new SetRumble(s_Rumbler, Sides.COPILOT_RIGHT, "Climb Ready"));
+    //copilotLeftRumbleTrigger.onTrue(s_Rumbler.runOnce(() -> s_Rumbler.addRequest(Sides.COPILOT_LEFT, "Intake Full")));
+    copliotRightRumbleTrigger.onTrue(s_Rumbler.runOnce(() -> s_Rumbler.addRequest(Sides.COPILOT_RIGHT, "Climb Ready")));
   }
   
   @SuppressWarnings("unused")
