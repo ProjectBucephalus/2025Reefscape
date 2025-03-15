@@ -34,7 +34,7 @@ public class LightLayer
   public enum Mode {DRIVERFACE, WHOLESTRIP, TARGETFACE, STATICSEGMENT, NEARSEGMENT, FARSEGMENT}
   private Mode displayMode; // variable using the Mode enum to set how/where this layer will be displayed
   public enum LEDType {INDIVIDUAL, PROGRESS, STATUS, POINTER, DISCO}
-  private LEDType displayType; // variable using the LEDType enum, to set shich type of layer this is.
+  private LEDType displayType; // variable using the LEDType enum, to set which type of layer this is.
   int statusSegments = LEDStrip.defaultStatusSegments; // numberof segments for the STATUS displayType.
   Color[] statusOn = new Color[statusSegments];  // Arrays to store per segment on/off/current Colors for the STATUS displaytype.
   Color[] statusOff = new Color[statusSegments];

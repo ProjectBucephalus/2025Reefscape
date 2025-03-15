@@ -26,15 +26,14 @@ public class Rumbler extends SubsystemBase
 
   public Rumbler(CommandXboxController driver, CommandXboxController copilot)
   {
-    SmartDashboard.putNumber("Driver Rumble", Constants.RumblerConstants.driverDefault);
-    SmartDashboard.putNumber("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
 
-    // could drop the getHID method as setrumble has been added to the CommandXBoxController class in 2025, but this still works.
     rumbleDriver = driver;
     rumbleCopilot = copilot;  
     // Check if smartdashboard has existing settings for driver and copilot rumble strength, and put defaults if not.
     driverStrength = SmartDashboard.getNumber("Driver Rumble", Constants.RumblerConstants.driverDefault);
     copilotStrength = SmartDashboard.getNumber("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
+    SmartDashboard.putNumber("Driver Rumble", driverStrength);
+    SmartDashboard.putNumber("Copilot Rumble", copilotStrength);
   } 
 
   public boolean addRequest(Sides queue, String requestID)
