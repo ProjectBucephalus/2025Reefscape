@@ -392,25 +392,16 @@ public class Diffector extends SubsystemBase
     return moveAndWaitCommand(target);
   }
 
-  public Command algaeIntakePosCommand(Translation2d robotPos, boolean level2)
+  public Command algaeIntakePosCommand(int nearestReefFace)
   {
-    return algaeIntakePosCommand(robotPos, level2, FieldUtils.getNearestReefFace(robotPos));
+    return algaeIntakePosCommand(RobotContainer.swerveState.Pose.getTranslation(), nearestReefFace % 2 == 0, nearestReefFace);
   }
 
   public Command algaeIntakePosCommand(boolean level2)
   {
-    return algaeIntakePosCommand(RobotContainer.swerveState.Pose.getTranslation(), level2);
-  }
+    Translation2d robotPos = RobotContainer.swerveState.Pose.getTranslation();
 
-  public Command algaeIntakePosCommand(Translation2d robotPos)
-  {
-    int nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
-    return algaeIntakePosCommand(robotPos, nearestReefFace % 2 == 0, nearestReefFace);
-  }
-
-  public Command algaeIntakePosCommand()
-  {
-    return algaeIntakePosCommand(RobotContainer.swerveState.Pose.getTranslation());
+    return algaeIntakePosCommand(robotPos, level2, FieldUtils.getNearestReefFace(robotPos));
   }
 
   public Command coralScorePosInstantCommand(Translation2d robotPos, int level)
@@ -437,7 +428,7 @@ public class Diffector extends SubsystemBase
 
   public Command coralScorePosCommand(Translation2d robotPos, int level)
   {
-    return coralScorePosCommand(robotPos, level).andThen(Commands.waitUntil(() -> atPosition()));
+    return coralScorePosInstantCommand(robotPos, level).andThen(Commands.waitUntil(() -> atPosition()));
   }
 
   public Command coralScorePosCommand(int level)

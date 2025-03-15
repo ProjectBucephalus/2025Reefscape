@@ -254,7 +254,7 @@ public class AutoUtils
       Commands.parallel
       (
         AutoBuilder.pathfindToPose(algaePath.getStartingHolonomicPose().get(), brakeSup.getAsBoolean() ? slowedConstraints : defaultConstraints),
-        intakeAlgaeSequenceCommand(s_Diffector, s_Algae)
+        intakeAlgaeSequenceCommand(s_Diffector, s_Algae, nearestReefFace)
       ),
       AutoBuilder.followPath(algaePath),
       s_Diffector.coralScorePosCommand(coralLevel),
@@ -264,12 +264,12 @@ public class AutoUtils
     .until(cancelTrigger);
   }
   
-  public static Command intakeAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae)
+  public static Command intakeAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, int nearestReefFace)
   {
     return 
     Commands.sequence
     (
-      s_Diffector.algaeIntakePosCommand(),
+      s_Diffector.algaeIntakePosCommand(nearestReefFace),
       s_Algae.setStatusCommand(AlgaeManipulatorStatus.INTAKE)
     );
   }
