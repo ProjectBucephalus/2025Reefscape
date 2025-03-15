@@ -2,11 +2,10 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.constants.Constants;
+import frc.robot.util.SD;
+import frc.robot.util.SD.Key;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import java.util.ArrayList;
 
 public class Rumbler extends SubsystemBase 
@@ -26,15 +25,15 @@ public class Rumbler extends SubsystemBase
 
   public Rumbler(CommandXboxController driver, CommandXboxController copilot)
   {
-    SmartDashboard.putNumber("Driver Rumble", Constants.RumblerConstants.driverDefault);
-    SmartDashboard.putNumber("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
+    SD.init(Key.IO_RUMBLE_D);
+    SD.init(Key.IO_RUMBLE_C);
 
     // could drop the getHID method as setrumble has been added to the CommandXBoxController class in 2025, but this still works.
     rumbleDriver = driver;
     rumbleCopilot = copilot;  
     // Check if smartdashboard has existing settings for driver and copilot rumble strength, and put defaults if not.
-    driverStrength = SmartDashboard.getNumber("Driver Rumble", Constants.RumblerConstants.driverDefault);
-    copilotStrength = SmartDashboard.getNumber("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
+    driverStrength = SD.getNumber(Key.IO_RUMBLE_D);
+    copilotStrength = SD.getNumber(Key.IO_RUMBLE_C);
   } 
 
   public boolean addRequest(Sides queue, String requestID)
@@ -94,8 +93,8 @@ public class Rumbler extends SubsystemBase
   public void periodic()
   {
     // check for chages to rumble stregnths in smartdashboard, and update.
-    driverStrength = SmartDashboard.getNumber("Driver Rumble", Constants.RumblerConstants.driverDefault);
-    copilotStrength = SmartDashboard.getNumber("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
+    driverStrength  = SD.getNumber(Key.IO_RUMBLE_D);
+    copilotStrength = SD.getNumber(Key.IO_RUMBLE_C);
     // if there are any active requests in the queue for a rumble motor, rumble, otherwise stop.
     if (drRequest.size() > 0)
       {rumbleDriver.setRumble(GenericHID.RumbleType.kRightRumble, driverStrength);}
@@ -122,9 +121,9 @@ public class Rumbler extends SubsystemBase
       {rumbleCopilot.setRumble(RumbleType.kLeftRumble,0);}
 
     // put queue contents to dashboard, for debugging / verification.
-    SmartDashboard.putString("DriverRight Rumble Queue",drRequest.toString());
-    SmartDashboard.putString("CopilotLeft Rumbler Queue",clRequest.toString());
-    SmartDashboard.putString("DriverLeft Rumble Queue",dlRequest.toString());
-    SmartDashboard.putString("CopilotRight Rumble Queue",crRequest.toString());
+    SD.put(Key.RUMBLE_D_R, drRequest.toString());
+    SD.put(Key.RUMBLE_D_L, dlRequest.toString());
+    SD.put(Key.RUMBLE_C_R, crRequest.toString());
+    SD.put(Key.RUMBLE_C_L, clRequest.toString());
   }
 }

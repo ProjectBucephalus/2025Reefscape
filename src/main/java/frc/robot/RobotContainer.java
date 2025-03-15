@@ -30,6 +30,7 @@ import frc.robot.subsystems.Climber.ClimberStatus;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
+import frc.robot.util.SD.Key;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -111,7 +112,7 @@ public class RobotContainer
   {
     swerveState = s_Swerve.getState();
 
-    SmartDashboard.putBoolean("IgnoreFence", false);
+    SD.init(Key.IO_GEOFENCE);
     s_Swerve.setDefaultCommand
     (
       new TeleopSwerve
@@ -126,8 +127,8 @@ public class RobotContainer
       )
     );
 
+    SD.init(Key.IO_AUTO);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
-    SmartDashboard.putString("Auto Input", Constants.Auto.defaultAuto);
     SmartDashboard.putData
     (
       "Swerve Drive", 
@@ -184,7 +185,7 @@ public class RobotContainer
         )
       );
       
-    /* Intake controls */
+    /* Outtake controls */
     driver.leftTrigger()
       .onTrue(s_Coral.setStatusCommand(CoralManipulatorStatus.DELIVERY_SMART)).onFalse(s_Coral.setStatusCommand(CoralManipulatorStatus.DEFAULT));
     driver.leftBumper()
@@ -197,10 +198,10 @@ public class RobotContainer
         new FunctionalCommand
         (
           () -> s_Diffector.setTargetPosition(Constants.DiffectorConstants.algaeIntakePosition), 
-          () -> {if (s_Diffector.atPosition()) s_Algae.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE);}, 
+          () -> {if (s_Diffector.atPosition()) s_Algae.setStatus(AlgaeManipulatorStatus.INTAKE);}, 
           interrupted -> 
           {    
-            s_Algae.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.HOLDING);
+            s_Algae.setStatus(AlgaeManipulatorStatus.HOLDING);
             if (RobotContainer.algae)
               {s_Diffector.setTargetPosition(Constants.DiffectorConstants.algaeStowPosition);}
           }, 
@@ -376,16 +377,23 @@ public class RobotContainer
   {
     /* Climb controls */
     copilot.start()
-      .onTrue(s_Climber.setStatusCommand(ClimberStatus.CLIMB));
+      .onTrue
+      (
+        Commands.sequence
+        (
+          s_Diffector.moveAndWaitCommand(Constants.DiffectorConstants.climbPosition),
+          s_Climber.setStatusCommand(ClimberStatus.CLIMB)
+        )
+      );  
     copilot.back()
       .onTrue
       (
         Commands.sequence
         (
-          s_Climber.setStatusCommand(ClimberStatus.ACTIVE),
-          s_Diffector.moveToCommand(Constants.DiffectorConstants.climbPosition)
+          s_Diffector.moveAndWaitCommand(Constants.DiffectorConstants.climbPosition),
+          s_Climber.setStatusCommand(ClimberStatus.ACTIVE)
         )
-      ); //Deploys the climber        
+      );  
 
     /* Game piece scoring and intake positions */
     copilot.y()
@@ -451,7 +459,7 @@ public class RobotContainer
         Commands.either
         (
           s_Diffector.moveToCommand(Constants.DiffectorConstants.algaeTransferPosition), // Algae transfer pos
-          s_Diffector.moveToCommand(Constants.DiffectorConstants.coralTransferPosition), // Coral transfer pos
+          s_Diffector.moveToCommand(Constants.DiffectorConstants.coralClawIntakePosition), // Coral intake with algae claw pos
           algaeModifier
         )
       );
@@ -546,6 +554,6 @@ public class RobotContainer
   public Command getAutoCommand()
   {
     // Gets the input string of command phrases, processes into a list of commands, and puts them into a sequential command group
-    return AutoUtils.getCommandList(SmartDashboard.getString("Auto Input", Constants.Auto.defaultAuto), s_Diffector, s_Coral, s_Algae);
+    return AutoUtils.getCommandList(SD.getString(Key.IO_AUTO), s_Diffector, s_Coral, s_Algae);
   }
 }
