@@ -374,6 +374,13 @@ public final class Constants
       /** Minimum height over ground where arm height needs to be checked, metres */
       public static final double bargeSafetyHeight = 1;
     }
+
+    /** Raw value when fully released, indicating string has snapped or the sensor is unavailable */
+    public static final double potErrValue = 0.025;
+    /** Elevator height when potentiometer reads 0, metres over ground */
+    public static final double potMin = 0.0;
+    /** Elevator height when potentiometer reads 1, metres over ground */
+    public static final double potMax = 2.0;
   }
 
   public static final class GamePiecesManipulator 

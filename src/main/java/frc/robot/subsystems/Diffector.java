@@ -32,7 +32,6 @@ import frc.robot.util.SD;
 
 public class Diffector extends SubsystemBase 
 {
-  
   private boolean eStop;
   
   private boolean springState = false;
@@ -110,11 +109,13 @@ public class Diffector extends SubsystemBase
     
     motorTargets = calculateMotorTargets(targetPosition);
 
-    if (Conversions.mod(getEncoderPos(), 360) > Constants.DiffectorConstants.angleTolerance && Conversions.mod(getEncoderPos(), 360) < 360 - Constants.DiffectorConstants.angleTolerance) 
+    if (Conversions.mod(getMeasuredAngle(), 360) > Constants.DiffectorConstants.angleTolerance && Conversions.mod(getMeasuredAngle(), 360) < 360 - Constants.DiffectorConstants.angleTolerance) 
     {
       eStop = true;
     }
-    positionOveride(targetElevation, getEncoderPos());
+
+    elevation = targetElevation;
+    positionOveride(getMeasuredElevation(), getMeasuredAngle());
 
     calculatePosition();
 
@@ -186,10 +187,21 @@ public class Diffector extends SubsystemBase
    * Arm Rotation as measured from encoder
    * @return Arm rotation, degrees anticlockwise, 0 = coral at top
    */
-  public double getEncoderPos()
-  {
-    // Encoder outputs is geared 1:1 to the arm, so output is inverted
+  public double getMeasuredAngle()
+  { // Encoder outputs is geared 1:1 to the arm
     return Units.rotationsToDegrees(encoder.getPosition().getValueAsDouble());
+  }
+
+  /**
+   * Arm Elevation as measured from potentiometer
+   * @return Height of centre of rotation over ground, metres 
+   * Will return the estimated value if the sensor reading is invalid
+   */
+  public double getMeasuredElevation()
+  {
+    if (potentiometer.get() < DiffectorConstants.potErrValue)
+      {return elevation;}
+    return MathUtil.interpolate(DiffectorConstants.potMin, DiffectorConstants.potMax, potentiometer.get());
   }
 
   /**
@@ -292,6 +304,19 @@ public class Diffector extends SubsystemBase
   /** Returns true if the diffector is safely in climb position */
   public boolean climbReady()
     {return atPosition(DiffectorConstants.climbPosition);}
+
+  /** Returns true if the diffector is safely above the path of the climber */
+  public boolean climbSafe()
+  {
+    return
+    (
+      elevation >= DiffectorConstants.climberClearanceThreshold &&
+      (
+        MathUtil.isNear(getRelativeRotation(),  90, DiffectorConstants.angleTolerance) ||
+        MathUtil.isNear(getRelativeRotation(), 270, DiffectorConstants.angleTolerance)
+      )
+    );
+  }
 
   /** 
    * Sets the Diffector arm to unwind to starting position 
@@ -444,7 +469,7 @@ public class Diffector extends SubsystemBase
   { 
     if (SD.CALIBRATE_DIFF.get())
     {
-      positionOveride(elevation, getEncoderPos());
+      positionOveride(getMeasuredElevation(), getMeasuredAngle());
       SD.CALIBRATE_DIFF.put(false);
     }
     
@@ -512,8 +537,8 @@ public class Diffector extends SubsystemBase
     SD.DIFF_DA_ER.put(motorTargets[1] - Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble()));
 
     SD.DIFF_HEIGHT.put(elevation - arm.checkAngle(angle));
-    SD.SENSOR_DIFF_ANGLE.put(getEncoderPos());
-    SD.DIFF_ANGLE_ER.put(angle - getEncoderPos());
+    SD.SENSOR_DIFF_ANGLE.put(getMeasuredAngle());
+    SD.DIFF_ANGLE_ER.put(angle - getMeasuredAngle());
 
     SD.SENSOR_DIFF_POT.put(potentiometer.get());
   }
