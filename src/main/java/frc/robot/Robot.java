@@ -10,7 +10,6 @@ import com.pathplanner.lib.commands.PathfindingCommand;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -118,6 +117,8 @@ public class Robot extends TimedRobot
             SmartDashboard.putBoolean("Rotation Known", true);
             portRotationData.clear();
             stbdRotationData.clear();
+            RobotContainer.s_LimelightPort.setThrottle(150);
+            RobotContainer.s_LimelightStbd.setThrottle(150);
           }
 
         }
@@ -147,6 +148,8 @@ public class Robot extends TimedRobot
             SmartDashboard.putBoolean("Rotation Known", true);
             portRotationData.clear();
             stbdRotationData.clear();
+            RobotContainer.s_LimelightPort.setThrottle(150);
+            RobotContainer.s_LimelightStbd.setThrottle(150);
           }
         }
       }
@@ -167,8 +170,8 @@ public class Robot extends TimedRobot
     RobotContainer.s_LimelightStbd.setIMUMode(1);
     if (rotationKnown)
     {
-      NetworkTableInstance.getDefault().getTable("s_LimelightPort").getEntry("<throttle_set>").setNumber(150);
-      NetworkTableInstance.getDefault().getTable("s_LimelightStbd").getEntry("<throttle_set>").setNumber(150);
+      RobotContainer.s_LimelightPort.setThrottle(150);
+      RobotContainer.s_LimelightStbd.setThrottle(150);
     }
     SmartDashboard.putBoolean("OVERIDE MODE", false);
     SmartDashboard.putBoolean("Process Auto", false);
@@ -201,7 +204,9 @@ public class Robot extends TimedRobot
   public void autonomousInit() 
   {  
     RobotContainer.s_LimelightPort.setIMUMode(2);
-    RobotContainer.s_LimelightStbd.setIMUMode(2);
+    RobotContainer.s_LimelightStbd.setIMUMode(2);    
+    RobotContainer.s_LimelightPort.setThrottle(0);
+    RobotContainer.s_LimelightStbd.setThrottle(0);
     
     if (autonomousCommand == null) 
       {autonomousCommand = robotContainer.getAutoCommand();}
@@ -217,7 +222,9 @@ public class Robot extends TimedRobot
   public void teleopInit() 
   {
     RobotContainer.s_LimelightPort.setIMUMode(2);
-    RobotContainer.s_LimelightStbd.setIMUMode(2);
+    RobotContainer.s_LimelightStbd.setIMUMode(2);    
+    RobotContainer.s_LimelightPort.setThrottle(0);
+    RobotContainer.s_LimelightStbd.setThrottle(0);
 
     if (autonomousCommand != null) 
       {autonomousCommand.cancel();}
@@ -234,6 +241,8 @@ public class Robot extends TimedRobot
   {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    RobotContainer.s_LimelightPort.setThrottle(0);
+    RobotContainer.s_LimelightStbd.setThrottle(0);
   }
 
   /** This function is called periodically during test mode. */
