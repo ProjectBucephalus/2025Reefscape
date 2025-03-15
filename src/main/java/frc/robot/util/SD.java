@@ -47,6 +47,7 @@ public class SD
     SENSOR_GYRO("Gyro yaw", 0),
     SENSOR_DIFF_ELEVATION("Potentiometer Reading", 0),
     SENSOR_DIFF_ANGLE("Encoder Reading", 0),
+    SENSOR_DIFF_POT("Elevator Potentiometer", 0),
 
     CLIMBER_POS("Climber Position", 0),
     CLIMBER_TARGET("Climber Target", 0),

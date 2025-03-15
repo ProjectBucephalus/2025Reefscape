@@ -14,6 +14,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -32,6 +33,8 @@ import frc.robot.util.SD.Key;
 
 public class Diffector extends SubsystemBase 
 {
+  private AnalogPotentiometer potTest = new AnalogPotentiometer(0); // TODO: Interment properly
+
   private boolean eStop;
 
   private boolean springState = false;
@@ -511,5 +514,7 @@ public class Diffector extends SubsystemBase
     SD.put(Key.DIFF_HEIGHT, elevation - arm.checkAngle(angle));
     SD.put(Key.SENSOR_DIFF_ANGLE, getEncoderPos());
     SD.put(Key.DIFF_ANGLE_ER, angle - getEncoderPos());
+
+    SD.put(Key.SENSOR_DIFF_POT, potTest.get());
   }
 }
