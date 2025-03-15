@@ -24,6 +24,7 @@ import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
+import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.constants.IDConstants;
 import frc.robot.util.ArmCalculator;
 import frc.robot.util.Conversions;
@@ -97,7 +98,7 @@ public class Diffector extends SubsystemBase
     encoder = new CANcoder(IDConstants.armCANcoderID);
     potentiometer = new AnalogPotentiometer(IDConstants.armPotID);
 
-    targetPosition  = Constants.DiffectorConstants.startPosition;
+    targetPosition  = Presets.startPosition;
 
     targetElevation = targetPosition.getX();
     targetAngle     = targetPosition.getY();
@@ -152,7 +153,7 @@ public class Diffector extends SubsystemBase
     angle = ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) + Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) * rotationRatio) / 2;
     armPosition = new Translation2d(elevation, angle);
     
-    if (DiffectorConstants.lowDiffectorPositions.stream().anyMatch(position -> relativeTarget.equals(position)))
+    if (Presets.lowDiffectorPositions.stream().anyMatch(position -> relativeTarget.equals(position)))
     {
       if (elevation < targetElevation - DiffectorConstants.elevationTolerance)
         {eStop = true;}
@@ -303,7 +304,7 @@ public class Diffector extends SubsystemBase
 
   /** Returns true if the diffector is safely in climb position */
   public boolean climbReady()
-    {return atPosition(DiffectorConstants.climbPosition);}
+    {return atPosition(Presets.climbPosition);}
 
   /** Returns true if the diffector is safely above the path of the climber */
   public boolean climbSafe()
@@ -325,14 +326,14 @@ public class Diffector extends SubsystemBase
   public boolean unwind()
   {
     manualControl = false;
-    targetAngle = Constants.DiffectorConstants.startPosition.getY();
+    targetAngle = Presets.startPosition.getY();
     return Math.abs(angle) < stowThreshold;
   }
 
   public void setElevationTarget(double newTarget)
   {
     manualControl = false;
-    targetElevation = Conversions.clamp(newTarget, Constants.DiffectorConstants.minZ, Constants.DiffectorConstants.maxZ);
+    targetElevation = Conversions.clamp(newTarget, DiffectorConstants.minZ, DiffectorConstants.maxZ);
   }
 
   /** Returns the ID of the motor control slot to use */
@@ -413,9 +414,9 @@ public class Diffector extends SubsystemBase
     Translation2d target = 
     level2 
     ?
-    portReefFace ? Constants.DiffectorConstants.algae2PortPosition : Constants.DiffectorConstants.algae2StbdPosition
+    portReefFace ? Presets.algae2PortPosition : Presets.algae2StbdPosition
     :
-    portReefFace ? Constants.DiffectorConstants.algae3PortPosition : Constants.DiffectorConstants.algae3StbdPosition;
+    portReefFace ? Presets.algae3PortPosition : Presets.algae3StbdPosition;
 
     return moveAndWaitCommand(target);
   }
@@ -440,15 +441,15 @@ public class Diffector extends SubsystemBase
     Translation2d target = 
     switch (level)
     {
-      case 4 -> portReefFace ? Constants.DiffectorConstants.coral4PortPosition : Constants.DiffectorConstants.coral4StbdPosition;
+      case 4 -> portReefFace ? Presets.coral4PortPosition : Presets.coral4StbdPosition;
 
-      case 3 -> portReefFace ? Constants.DiffectorConstants.coral3PortPosition : Constants.DiffectorConstants.coral3StbdPosition;
+      case 3 -> portReefFace ? Presets.coral3PortPosition : Presets.coral3StbdPosition;
 
-      case 2 -> portReefFace ? Constants.DiffectorConstants.coral2PortPosition : Constants.DiffectorConstants.coral2StbdPosition;
+      case 2 -> portReefFace ? Presets.coral2PortPosition : Presets.coral2StbdPosition;
 
-      case 1 -> portReefFace ? Constants.DiffectorConstants.coral1PortPosition : Constants.DiffectorConstants.coral1StbdPosition;
+      case 1 -> portReefFace ? Presets.coral1PortPosition : Presets.coral1StbdPosition;
 
-      default -> Constants.DiffectorConstants.coralStowPosition;
+      default -> Presets.coralStowPosition;
     };
 
     return moveToCommand(target);

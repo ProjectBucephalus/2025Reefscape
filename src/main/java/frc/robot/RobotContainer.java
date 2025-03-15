@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.commands.Auto.*;
 import frc.robot.constants.*;
+import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.Climber.ClimberStatus;
@@ -196,13 +197,13 @@ public class RobotContainer
       (
         new FunctionalCommand
         (
-          () -> s_Diffector.setTargetPosition(Constants.DiffectorConstants.algaeIntakePosition), 
+          () -> s_Diffector.setTargetPosition(DiffectorConstants.Presets.algaeIntakePortPosition), 
           () -> {if (s_Diffector.atPosition()) s_Algae.setStatus(AlgaeManipulatorStatus.INTAKE);}, 
           interrupted -> 
           {    
             s_Algae.setStatus(AlgaeManipulatorStatus.HOLDING);
             if (RobotContainer.algae)
-              {s_Diffector.setTargetPosition(Constants.DiffectorConstants.algaeStowPosition);}
+              {s_Diffector.setTargetPosition(DiffectorConstants.Presets.algaeStowPosition);}
           }, 
           () -> false, 
           s_Diffector, s_Algae
@@ -380,7 +381,7 @@ public class RobotContainer
       (
         Commands.sequence
         (
-          s_Diffector.moveAndWaitCommand(Constants.DiffectorConstants.climbPosition),
+          s_Diffector.moveAndWaitCommand(DiffectorConstants.Presets.climbPosition),
           s_Climber.setStatusCommand(ClimberStatus.CLIMB)
         )
       );  
@@ -389,7 +390,7 @@ public class RobotContainer
       (
         Commands.sequence
         (
-          s_Diffector.moveAndWaitCommand(Constants.DiffectorConstants.climbPosition),
+          s_Diffector.moveAndWaitCommand(DiffectorConstants.Presets.climbPosition),
           s_Climber.setStatusCommand(ClimberStatus.ACTIVE)
         )
       );  
@@ -400,7 +401,7 @@ public class RobotContainer
       (
         Commands.either
         (
-          s_Diffector.moveToCommand(Constants.DiffectorConstants.netPosition), 
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.netPosition), 
           s_Diffector.coralScorePosCommand(4), 
           algaeModifier
         )
@@ -433,7 +434,7 @@ public class RobotContainer
       (
         Commands.either
         (
-          s_Diffector.moveToCommand(Constants.DiffectorConstants.processorPosition), 
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPosition), 
           s_Diffector.coralScorePosCommand(1), 
           algaeModifier
         )
@@ -445,8 +446,8 @@ public class RobotContainer
       (
         Commands.either
         (
-          s_Diffector.moveToCommand(Constants.DiffectorConstants.algaeStowPosition), // Algae stow pos
-          s_Diffector.moveToCommand(Constants.DiffectorConstants.coralStowPosition), // Coral stow pos
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeStowPosition), // Algae stow pos
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralStowPosition), // Coral stow pos
           algaeModifier
         )
       );
@@ -457,8 +458,8 @@ public class RobotContainer
       (
         Commands.either
         (
-          s_Diffector.moveToCommand(Constants.DiffectorConstants.algaeTransferPosition), // Algae transfer pos
-          s_Diffector.moveToCommand(Constants.DiffectorConstants.coralClawIntakePosition), // Coral intake with algae claw pos
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeStowPosition), // Algae stow pos // TODO: Set up a transfer position?
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralClawIntakePosition), // Coral intake with algae claw pos
           algaeModifier
         )
       );
@@ -469,8 +470,8 @@ public class RobotContainer
       (
         Commands.either
         (
-          s_Diffector.moveToCommand(Constants.DiffectorConstants.algaeIntakePosition), // Algae intake pos (ground)
-          s_Diffector.moveToCommand(Constants.DiffectorConstants.coralIntakePosition), // Coral intake pos (clearance for station)
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePortPosition), // Algae intake pos (ground)
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralIntakePosition), // Coral intake pos (clearance for station)
           algaeModifier
         )
       );

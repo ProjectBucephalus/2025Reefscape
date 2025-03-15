@@ -271,11 +271,11 @@ public final class Constants
     /** Physical upper limit of the elevator, metres above the ground */
     public static final double maxZ = 1.725;
     /** Physical lower limit of the elevator when horizontal, metres above the ground */
-    public static final double minZ = 0.42;
+    public static final double minZ = 0.36;
     /** Elevation at which all rotations are safe */
-    public static final double safeElevation = 0.97;
+    public static final double safeElevation = 0.72;
     public static final double reefSafeElevation = 1;
-    public static final double algaeSafeElevation = 1.3;
+    public static final double algaeSafeElevation = 1.4;
     public static final double climberClearanceThreshold = 0.55;
     
     /** Arm rotation check tollerance, degrees */
@@ -289,45 +289,48 @@ public final class Constants
 
     public static final int algaeEjectSpeedAngleThreshold = 30;
     
-    /* 
+    /** 
      * Preset arm positions:
      * height of centre of rotation above the ground, metres
      * degrees anticlockwise for Port-side usecase, 0 = coral at top 
      */
-    public static final Translation2d startPosition           = new Translation2d(0.57,  0);
-    public static final Translation2d climbPosition           = new Translation2d(0.43,  90);
+    public static class Presets
+    {
+      public static final Translation2d startPosition           = new Translation2d(0.616,  0);
+      public static final Translation2d climbPosition           = new Translation2d(0.365,  90);
 
-    public static final Translation2d netPosition             = new Translation2d(  maxZ,  170);
-    public static final Translation2d algae3PortPosition      = new Translation2d(1.19,  97);
-    public static final Translation2d algae3StbdPosition      = new Translation2d(1.37,  275);
-    public static final Translation2d algae2PortPosition      = new Translation2d(0.79,  95);
-    public static final Translation2d algae2StbdPosition      = new Translation2d(0.97,  275); 
-    public static final Translation2d processorPosition       = new Translation2d(0.44,  96);
+      public static final Translation2d netPosition             = new Translation2d(  maxZ, 170);
+      public static final Translation2d algae3PortPosition      = new Translation2d(1.19,  97); // TODO
+      public static final Translation2d algae3StbdPosition      = new Translation2d(1.19,   -97); // TODO
+      public static final Translation2d algae2PortPosition      = new Translation2d(0.79,  95); // TODO
+      public static final Translation2d algae2StbdPosition      = new Translation2d(0.79,   -95); // TODO
+      public static final Translation2d processorPosition       = new Translation2d(0.38,  90);
 
-    public static final Translation2d coral4PortPosition      = new Translation2d(  maxZ,  310); //TODO
-    public static final Translation2d coral4StbdPosition      = new Translation2d(  maxZ,  50); //TODO
-    public static final Translation2d coral3PortPosition      = new Translation2d(0.98,  332);
-    public static final Translation2d coral3StbdPosition      = new Translation2d(0.98,  28);
-    public static final Translation2d coral2PortPosition      = new Translation2d(0.70,  315); 
-    public static final Translation2d coral2StbdPosition      = new Translation2d(0.70,  45); 
-    public static final Translation2d coral1PortPosition      = new Translation2d(0.82,  210);
-    public static final Translation2d coral1StbdPosition      = new Translation2d(0.82,  150);
+      public static final Translation2d coral4PortPosition      = new Translation2d(1.62, 340);
+      public static final Translation2d coral4StbdPosition      = new Translation2d(1.62,  -340);
+      public static final Translation2d coral3PortPosition      = new Translation2d(0.98, 340);
+      public static final Translation2d coral3StbdPosition      = new Translation2d(0.98,  -340);
+      public static final Translation2d coral2PortPosition      = new Translation2d(0.68, 325);
+      public static final Translation2d coral2StbdPosition      = new Translation2d(0.68,  -325);
+      public static final Translation2d coral1PortPosition      = new Translation2d(0.71,  90);
+      public static final Translation2d coral1StbdPosition      = new Translation2d(0.71,   -90);
 
-    public static final Translation2d coralIntakePosition     = new Translation2d(0.90,  90);
-    public static final Translation2d coralClawIntakePosition = new Translation2d(0.625, 180);
-    public static final Translation2d coralStowPosition       = new Translation2d(0.80,  0);
+      public static final Translation2d coralIntakePosition     = new Translation2d(1.15, 145);
+      public static final Translation2d coralClawIntakePosition = new Translation2d(0.61,  47);
+      public static final Translation2d coralStowPosition       = new Translation2d(0.85,   0);
 
-    public static final Translation2d algaeIntakePosition     = new Translation2d(0.48,  60);
-    public static final Translation2d algaeTransferPosition   = new Translation2d(0.90,  0);
-    public static final Translation2d algaeStowPosition       = new Translation2d(0.825, 180); 
+      public static final Translation2d algaeIntakePortPosition = new Translation2d(0.38,  75);
+      public static final Translation2d algaeIntakeStbdPosition = new Translation2d(0.38,   -75);
+      public static final Translation2d algaeStowPosition       = new Translation2d(0.80, 180);
 
-    public static final ArrayList<Translation2d> lowDiffectorPositions = new ArrayList<Translation2d>()
-    {{
-      add(startPosition);
-      add(algaeIntakePosition);
-      add(climbPosition);
-      add(processorPosition);
-    }};
+      public static final ArrayList<Translation2d> lowDiffectorPositions = new ArrayList<Translation2d>()
+      {{
+        add(startPosition);
+        add(algaeIntakePortPosition);
+        add(climbPosition);
+        add(processorPosition);
+      }};
+    }
         
     public static final class IKGeometry
     {
@@ -386,12 +389,13 @@ public final class Constants
   public static final class GamePiecesManipulator 
   {
     /* Coral manipulator speeds */
-    public static final double coralManipulatorDeliverySpeed   = -0.7;
+    public static final double coralManipulatorDeliverySpeed = -0.7;
     public static final double coralManipulatorHoldingSpeed  = -0.05;
     public static final double coralHoldingkG = -0.035;
 
     /* Algae manipulator speeds */
-    public static final double algaeManipulatorIntakeSpeed    = 0.4;
+    public static final double algaeManipulatorIntakeSpeed    =  0.4;
+    public static final double algaeManipulatorHoldingSpeed   =  0.2;
     public static final double algaeManipulatorNetSpeed       = -0.9;
     public static final double algaeManipulatorProcessorSpeed = -0.3;
 

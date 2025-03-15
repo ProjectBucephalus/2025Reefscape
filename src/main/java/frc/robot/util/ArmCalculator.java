@@ -79,7 +79,7 @@ public class ArmCalculator
       {safeElevation = DiffectorConstants.safeElevation;}
 
     // Certain positions put the arm lower than it would otherwise be allowed to go
-    if (DiffectorConstants.lowDiffectorPositions.stream().anyMatch(position -> relativeTarget.equals(position)))
+    if (DiffectorConstants.Presets.lowDiffectorPositions.stream().anyMatch(position -> relativeTarget.equals(position)))
     { // Forced safe path for unsafe targets
       pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), startPosition.getY()));
       pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), targetPosition.getY()));

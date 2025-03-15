@@ -22,6 +22,7 @@ import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.DpadOptions;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Auto.AutoMapping;
+import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.CoralManipulator;
@@ -104,14 +105,14 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.moveAndWaitCommand(Constants.DiffectorConstants.coralIntakePosition)
+              s_Diffector.moveAndWaitCommand(Presets.coralIntakePosition)
             )
           );
 
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
 
           commandList.add(Commands.waitUntil(() -> RobotContainer.coral));
-          commandList.add(s_Diffector.moveToCommand(Constants.DiffectorConstants.coralStowPosition));
+          commandList.add(s_Diffector.moveToCommand(Presets.coralStowPosition));
           break;
 
         case 'a':
@@ -279,7 +280,7 @@ public class AutoUtils
     return
     Commands.sequence
     (
-      s_Diffector.moveAndWaitCommand(net ? Constants.DiffectorConstants.netPosition : Constants.DiffectorConstants.processorPosition), 
+      s_Diffector.moveAndWaitCommand(net ? Presets.netPosition : Presets.processorPosition), 
       s_Algae.setStatusCommand(AlgaeManipulatorStatus.EJECT)
     );
   }
@@ -292,9 +293,9 @@ public class AutoUtils
     Translation2d target = 
     nearestReefFace % 2 == 0 
     ?
-    portReefFace ? Constants.DiffectorConstants.algae2StbdPosition : Constants.DiffectorConstants.algae2PortPosition
+    portReefFace ? Presets.algae2StbdPosition : Presets.algae2PortPosition
     :
-    portReefFace ? Constants.DiffectorConstants.algae3StbdPosition : Constants.DiffectorConstants.algae3PortPosition;
+    portReefFace ? Presets.algae3StbdPosition : Presets.algae3PortPosition;
 
     return
     Commands.sequence
