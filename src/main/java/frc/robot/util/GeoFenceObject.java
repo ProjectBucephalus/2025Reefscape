@@ -341,8 +341,8 @@ public class GeoFenceObject
           }
           else // Center (you've met a terrible fate *insert kazoo music here*)
             {return pointDamping(centre, motionXY, robotR, robotXY);}
-          return new Translation2d(motionX, motionY);
         }
+        return new Translation2d(motionX, motionY);
 
       case walls:
         // Calculates distance to the relevant edge of the field
@@ -377,7 +377,7 @@ public class GeoFenceObject
       case polygon:
         // If the robot is touching (or past) the inscribed circle, process based on that circle
         if (robotXY.getDistance(centre) <= radius)
-            {return pointDamping(centre, motionXY, robotR, robotXY);}
+          {return pointDamping(centre, motionXY, robotR, robotXY);}
         else 
         {
           /* 

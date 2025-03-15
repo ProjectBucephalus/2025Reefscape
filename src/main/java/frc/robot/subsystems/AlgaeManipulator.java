@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -58,6 +59,11 @@ public class AlgaeManipulator extends SubsystemBase
   public void setAlgaeManipulatorStatus(AlgaeManipulatorStatus status)
     {algaeStatus = status;}
 
+  public Command setStatusCommand(AlgaeManipulatorStatus status)
+  {
+    return runOnce(() -> setAlgaeManipulatorStatus(status));
+  }
+
   public AlgaeManipulatorStatus getStatus()
     {return algaeStatus;}
 
@@ -78,6 +84,7 @@ public class AlgaeManipulator extends SubsystemBase
       case HOLDING:
         if (RobotContainer.algae) 
           {algaeMotor.set(0);} 
+
         else
           {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
         break;
@@ -86,13 +93,9 @@ public class AlgaeManipulator extends SubsystemBase
         double armPos = RobotContainer.s_Diffector.getRelativeRotation();
 
         if (armPos > 90 + Constants.DiffectorConstants.algaeEjectSpeedAngleThreshold && armPos <= 270 - Constants.DiffectorConstants.algaeEjectSpeedAngleThreshold)
-        {
-          setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);
-        }
+          {setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorNetSpeed);}
         else
-        {
-          setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorProcessorSpeed);
-        }
+          {setAlgaeManipulatorSpeed(Constants.GamePiecesManipulator.algaeManipulatorProcessorSpeed);}
         break;
 
       case EMPTY:

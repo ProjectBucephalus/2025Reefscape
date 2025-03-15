@@ -17,9 +17,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
+import frc.robot.subsystems.Limelight;
 
 public class TargetHeadingStation extends Command 
 {
@@ -72,10 +74,14 @@ public class TargetHeadingStation extends Command
     updateTargetHeading();
     redAlliance = FieldUtils.isRedAlliance();
     SmartDashboard.putBoolean("redAlliance", redAlliance);
+
     if (redAlliance)
       {fieldGeoFence = FieldUtils.GeoFencing.fieldRedGeoFence;}
+
     else
       {fieldGeoFence = FieldUtils.GeoFencing.fieldBlueGeoFence;}
+
+    Limelight.setActivePOI(Limelight.TagPOI.CORALSTATION);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -84,7 +90,7 @@ public class TargetHeadingStation extends Command
   {
     translationVal = translationSup.getAsDouble();
     strafeVal = strafeSup.getAsDouble();
-    brakeVal = brakeSup.getAsDouble();
+    brakeVal = Math.max(brakeSup.getAsDouble(), Math.min((RobotContainer.s_Diffector.getElevation() - 1) * Constants.Control.armBrakeRate, 1));
     motionXY = new Translation2d(translationVal, strafeVal);
 
     /* Apply deadbands */
@@ -95,19 +101,25 @@ public class TargetHeadingStation extends Command
 
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
     
-    if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", true))
+    robotSpeed = Math.hypot(RobotContainer.swerveState.Speeds.vxMetersPerSecond, RobotContainer.swerveState.Speeds.vyMetersPerSecond);
+    if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
+    {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
+    
+    else
+    {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
+    
+    // Invert processing input when on red alliance
+    if (redAlliance)
+    {motionXY = motionXY.unaryMinus();}
+    
+    if (RobotContainer.s_Diffector.getElevation() > IKGeometry.bargeSafetyHeight && !SmartDashboard.getBoolean("OVERIDE MODE", false)) // TODO: Copy to other drive functions as needed
+    {
+      motionXY = FieldUtils.GeoFencing.netProtectionZone.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
+    }
+
+    if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", false))
     {
       SmartDashboard.putString("Drive State", "Fenced");
-
-      robotSpeed = Math.hypot(RobotContainer.swerveState.Speeds.vxMetersPerSecond, RobotContainer.swerveState.Speeds.vyMetersPerSecond);
-      if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
-        {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
-      else
-        {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
-
-      // Invert processing input when on red alliance
-      if (redAlliance)
-        {motionXY = motionXY.unaryMinus();}
 
       // Read down the list of geofence objects
       // Outer wall is index 0, so has highest authority by being processed last
@@ -116,15 +128,15 @@ public class TargetHeadingStation extends Command
         Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
         motionXY = inputDamping;
       }
-
-      // Uninvert processing output when on red alliance
-      if (redAlliance)
-        {motionXY = motionXY.unaryMinus();}
     }
     else
-      {SmartDashboard.putString("Drive State", "Non-Fenced");}
+    {SmartDashboard.putString("Drive State", "Non-Fenced");}
     
-      s_Swerve.setControl
+    // Uninvert processing output when on red alliance
+    if (redAlliance)
+      {motionXY = motionXY.unaryMinus();}
+    
+    s_Swerve.setControl
     (
       driveRequest
       .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
@@ -146,6 +158,7 @@ public class TargetHeadingStation extends Command
     {
       if (robotY >= 4.026) 
         {targetHeading = new Rotation2d(Units.degreesToRadians(-126));} 
+
       else 
         {targetHeading = new Rotation2d(Units.degreesToRadians(126));}
     }
@@ -153,6 +166,7 @@ public class TargetHeadingStation extends Command
     {
       if (robotY >= 4.026) 
         {targetHeading = new Rotation2d(Units.degreesToRadians(126));} 
+        
       else 
         {targetHeading = new Rotation2d(Units.degreesToRadians(-126));}
     }

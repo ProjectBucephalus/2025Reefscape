@@ -9,6 +9,7 @@ import com.ctre.phoenix6.Utils;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -19,7 +20,7 @@ public class Limelight extends SubsystemBase
 {  
   private boolean useUpdate;
   private LimelightHelpers.PoseEstimate mt2;
-  private int[] validIDs = Constants.Vision.validIDs;
+  private static int[] validIDs = Constants.Vision.reefIDs;
   private LimelightHelpers.PoseEstimate mt1;
 
   
@@ -30,6 +31,16 @@ public class Limelight extends SubsystemBase
   private double rotStdDev;
   
   private final String limelightName;
+
+  private int pipelineIndex = 0;
+
+  public enum TagPOI 
+  {
+    REEF,
+    BARGE,
+    PROCESSOR,
+    CORALSTATION
+  }
   
   /** Creates a new Limelight. */
   public Limelight(String name) 
@@ -50,10 +61,42 @@ public class Limelight extends SubsystemBase
       {return mt1.pose.getRotation();}
     return Rotation2d.kZero;
   }
-   
+
+  public void setThrottle(int throttle)
+  {
+    NetworkTableInstance.getDefault().getTable(limelightName).getEntry("<throttle_set>").setNumber(throttle);
+  }
+
+  public static void setActivePOI(TagPOI activePOI) 
+  {
+    switch (activePOI) 
+    {
+      default:
+      case REEF:
+        validIDs = Constants.Vision.reefIDs;
+        break;
+      case BARGE:
+        validIDs = Constants.Vision.bargeIDs;
+        break;
+      case PROCESSOR:
+      case CORALSTATION:
+        validIDs = Constants.Vision.humanPlayerStationIDs;
+        break;
+    }
+  }
+
+  public int updateLimelightPipeline()
+    {return (int) SmartDashboard.getNumber("Exposure Setting", 0);}
+
   @Override
   public void periodic() 
   { 
+    if (updateLimelightPipeline() != pipelineIndex)
+    {
+      pipelineIndex = updateLimelightPipeline();
+      LimelightHelpers.setPipelineIndex(limelightName, pipelineIndex);
+    } // TODO: Set up multiple pipelines, the same except for exposure [150..600]
+
     headingDeg = RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble();
     omegaRps = Units.radiansToRotations(RobotContainer.swerveState.Speeds.omegaRadiansPerSecond);
     
@@ -84,5 +127,7 @@ public class Limelight extends SubsystemBase
     if (!getLimelightRotation().equals(Rotation2d.kZero))
     SmartDashboard.putNumber("Pose " + limelightName + " Estimate", getLimelightRotation().getDegrees());
     else SmartDashboard.putNumber("Pose " + limelightName + " Estimate", 0);
+
+    SmartDashboard.putNumber(limelightName + " HW Metrics", NetworkTableInstance.getDefault().getTable(limelightName).getEntry("hw").getDouble(0));
   }
 }
