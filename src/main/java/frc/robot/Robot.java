@@ -117,6 +117,8 @@ public class Robot extends TimedRobot
             SmartDashboard.putBoolean("Rotation Known", true);
             portRotationData.clear();
             stbdRotationData.clear();
+            RobotContainer.s_LimelightPort.setThrottle(150);
+            RobotContainer.s_LimelightStbd.setThrottle(150);
           }
 
         }
@@ -146,6 +148,8 @@ public class Robot extends TimedRobot
             SmartDashboard.putBoolean("Rotation Known", true);
             portRotationData.clear();
             stbdRotationData.clear();
+            RobotContainer.s_LimelightPort.setThrottle(150);
+            RobotContainer.s_LimelightStbd.setThrottle(150);
           }
         }
       }
@@ -164,6 +168,11 @@ public class Robot extends TimedRobot
   {
     RobotContainer.s_LimelightPort.setIMUMode(1);
     RobotContainer.s_LimelightStbd.setIMUMode(1);
+    if (rotationKnown)
+    {
+      RobotContainer.s_LimelightPort.setThrottle(150);
+      RobotContainer.s_LimelightStbd.setThrottle(150);
+    }
     SmartDashboard.putBoolean("OVERIDE MODE", false);
     SmartDashboard.putBoolean("Process Auto", false);
     rotationKnown = false;
@@ -195,7 +204,9 @@ public class Robot extends TimedRobot
   public void autonomousInit() 
   {  
     RobotContainer.s_LimelightPort.setIMUMode(2);
-    RobotContainer.s_LimelightStbd.setIMUMode(2);
+    RobotContainer.s_LimelightStbd.setIMUMode(2);    
+    RobotContainer.s_LimelightPort.setThrottle(0);
+    RobotContainer.s_LimelightStbd.setThrottle(0);
     
     if (autonomousCommand == null) 
       {autonomousCommand = robotContainer.getAutoCommand();}
@@ -211,7 +222,9 @@ public class Robot extends TimedRobot
   public void teleopInit() 
   {
     RobotContainer.s_LimelightPort.setIMUMode(2);
-    RobotContainer.s_LimelightStbd.setIMUMode(2);
+    RobotContainer.s_LimelightStbd.setIMUMode(2);    
+    RobotContainer.s_LimelightPort.setThrottle(0);
+    RobotContainer.s_LimelightStbd.setThrottle(0);
 
     if (autonomousCommand != null) 
       {autonomousCommand.cancel();}
@@ -228,6 +241,8 @@ public class Robot extends TimedRobot
   {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
+    RobotContainer.s_LimelightPort.setThrottle(0);
+    RobotContainer.s_LimelightStbd.setThrottle(0);
   }
 
   /** This function is called periodically during test mode. */

@@ -62,6 +62,11 @@ public class Limelight extends SubsystemBase
     return Rotation2d.kZero;
   }
 
+  public void setThrottle(int throttle)
+  {
+    NetworkTableInstance.getDefault().getTable(limelightName).getEntry("<throttle_set>").setNumber(throttle);
+  }
+
   public static void setActivePOI(TagPOI activePOI) 
   {
     switch (activePOI) 
