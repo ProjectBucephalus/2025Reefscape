@@ -34,6 +34,8 @@ public class ArmCalculator
 
   /** Unrotated virtual arm */
   private final Translation2d[] armGeometry;
+  /** Unrotated virtual arm when holding Algae*/
+  private final Translation2d[] armGeometryAlgae;
   
   public ArmCalculator()
   {
@@ -52,6 +54,7 @@ public class ArmCalculator
     deckHeight    = IKGeometry.deckHeight;
 
     armGeometry = IKGeometry.armGeometry;
+    armGeometryAlgae = IKGeometry.armGeometryAlgae;
   }
 
   /**
@@ -116,22 +119,46 @@ public class ArmCalculator
     )
     {
       // Any rotation taking the arm past vertical:
-      if 
+      if
+      ( // If goes past both uprights
+        // Over a full rotation
+        angleChange >= 360 ||
+        (angleRelative < 180 && angleRelative + angleChange >= 360) ||
+        (angleRelative > 180 && angleRelative + angleChange >= 540) ||
+        (angleRelative < 180 && angleRelative + angleChange <=   0) ||
+        (angleRelative > 180 && angleRelative + angleChange <=-180)
+      )
+      {
+        // Intermediate waypoint: Safe elevation at initial rotation
+        pathOutput.add(new Translation2d(Math.max(Math.max(checkAngle(0), checkAngle(180)), safeElevation), startPosition.getY()));
+        pathOutput.add(new Translation2d(Math.max(Math.max(checkAngle(0), checkAngle(180)), safeElevation), targetPosition.getY()));
+      }
+      
+      else if
       ( // Anticlockwise angle change goes past upright
         angleRelative + angleChange >= 360 || 
-        // Anticlockwise angle change goes past upside-down
-        (angleRelative < 180 && angleRelative + angleChange >= 180) ||
         // Clockwise angle change goes past upright
-        angleRelative + angleChange <= 0 || 
+        angleRelative + angleChange <= 0
+      )
+      {
+        // Intermediate waypoint: Safe elevation at initial rotation
+        pathOutput.add(new Translation2d(Math.max(checkAngle(0), safeElevation), startPosition.getY()));
+        pathOutput.add(new Translation2d(Math.max(checkAngle(0), safeElevation), targetPosition.getY()));
+      }
+
+      else if
+      ( // Anticlockwise angle change goes past upside-down
+        (angleRelative < 180 && angleRelative + angleChange >= 180) ||
         // Clockwise angle change goes past upside-down
         (angleRelative > 180 && angleRelative + angleChange <= 180)
       )
       {
         // Intermediate waypoint: Safe elevation at initial rotation
-        pathOutput.add(new Translation2d(safeElevation, startPosition.getY()));
-        pathOutput.add(new Translation2d(safeElevation, targetPosition.getY()));
+        pathOutput.add(new Translation2d(Math.max(checkAngle(180), safeElevation), startPosition.getY()));
+        pathOutput.add(new Translation2d(Math.max(checkAngle(180), safeElevation), targetPosition.getY()));
       }
-      
+
+
       // Rotation does not go past vertical -> never needs to go higher than start or end
       else if (startPosition.getX() < checkAngle(targetPosition.getY())) // Start is lower than is safe for final rotation
       { // Go to safe elevation for final rotation, then rotate
@@ -189,17 +216,20 @@ public class ArmCalculator
     // Running value of the lowest point relative to the deck/rail
     double lowestPoint = 0;
     
-    for (Translation2d geometryPoint : armGeometry)
+    if (RobotContainer.algae)
     {
-      geometryPointRotated = geometryPoint.rotateBy(rotation);
-      if (geometryPointRotated.getY() < 0)
+      for (Translation2d geometryPoint : armGeometryAlgae)
       {
-        if (Math.abs(geometryPointRotated.getX()) < railMedial)
-          {lowestPoint = Math.min(lowestPoint, geometryPointRotated.getY() - deckHeight);} // Point is directly over the deck
-        else if (Math.abs(geometryPointRotated.getX()) < railLateral)
-          {lowestPoint = Math.min(lowestPoint, geometryPointRotated.getY() - railHeight);} // Point is directly over the rail
-        else
-          {lowestPoint = Math.min(lowestPoint, geometryPointRotated.getY() - deckHeight);} // Point is beyond the rail
+        geometryPointRotated = geometryPoint.rotateBy(rotation);
+        lowestPoint = Math.min(lowestPoint, geometryPointRotated.getY() - deckHeight);
+      }
+    }
+    else
+    {
+      for (Translation2d geometryPoint : armGeometry)
+      {
+        geometryPointRotated = geometryPoint.rotateBy(rotation);
+        lowestPoint = Math.min(lowestPoint, geometryPointRotated.getY() - deckHeight);
       }
     }
 

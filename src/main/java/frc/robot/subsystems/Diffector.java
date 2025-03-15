@@ -33,16 +33,15 @@ import frc.robot.util.SD.Key;
 
 public class Diffector extends SubsystemBase 
 {
-  private AnalogPotentiometer potTest = new AnalogPotentiometer(0); // TODO: Interment properly
-
+  
   private boolean eStop;
-
+  
   private boolean springState = false;
-
+  
   private boolean manualControl;
   private double  manualElevation;
   private double  manualRotation;
-
+  
   private final MotionMagicVoltage motionMagicRequester;
   private final double rotationRatio;
   private final double travelRatio;
@@ -56,6 +55,7 @@ public class Diffector extends SubsystemBase
   /** port-side motor(?), forward direction drives carriage down and anticlockwise */
   private static TalonFX m_diffectorDA;
   private CANcoder encoder;
+  private AnalogPotentiometer potentiometer; // TODO: Implement properly
 
   private double[] motorTargets = new double[2];
 
@@ -97,6 +97,7 @@ public class Diffector extends SubsystemBase
     m_diffectorUA = new TalonFX(IDConstants.uaMotorID);
     m_diffectorDA = new TalonFX(IDConstants.daMotorID);
     encoder = new CANcoder(IDConstants.armCANcoderID);
+    potentiometer = new AnalogPotentiometer(IDConstants.armPotID);
 
     targetPosition  = Constants.DiffectorConstants.startPosition;
 
@@ -515,6 +516,6 @@ public class Diffector extends SubsystemBase
     SD.put(Key.SENSOR_DIFF_ANGLE, getEncoderPos());
     SD.put(Key.DIFF_ANGLE_ER, angle - getEncoderPos());
 
-    SD.put(Key.SENSOR_DIFF_POT, potTest.get());
+    SD.put(Key.SENSOR_DIFF_POT, potentiometer.get());
   }
 }

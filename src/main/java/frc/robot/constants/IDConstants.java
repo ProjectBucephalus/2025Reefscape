@@ -33,9 +33,11 @@ public final class IDConstants
   /* Diffector */
   /* _________ */
   public static final int armCANcoderID = 13;
-  public static final int uaMotorID    = 14; // Port
-  public static final int daMotorID    = 15; // Stbd
+  public static final int uaMotorID     = 14; // Port
+  public static final int daMotorID     = 15; // Stbd
 
+  public static final int armPotID = 0; // Analog input port
+  
   /* Intake */
   /* ______ */
   public static final int algaeIntakeRollerID = 16;

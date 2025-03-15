@@ -349,6 +349,9 @@ public final class Constants
         new Translation2d(0.24, -0.45), new Translation2d(0.24, -0.40),
         new Translation2d(0.24, -0.37), new Translation2d(0.24, -0.35)
       };
+      /** Manipulator arm point-cloud when holding Algae */
+      public static final Translation2d[] armGeometryAlgae = new Translation2d[]
+      {};
 
       /* Deck obstruction geometry */
       public static final double railHeight  = 0.2;
