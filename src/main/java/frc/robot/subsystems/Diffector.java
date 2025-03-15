@@ -515,6 +515,6 @@ public class Diffector extends SubsystemBase
     SD.put(Key.SENSOR_DIFF_ANGLE, getEncoderPos());
     SD.put(Key.DIFF_ANGLE_ER, angle - getEncoderPos());
 
-    SmartDashboard.putNumber("Test Potentiometer", potTest.get());
+    SD.put(Key.SENSOR_DIFF_POT, potTest.get());
   }
 }
