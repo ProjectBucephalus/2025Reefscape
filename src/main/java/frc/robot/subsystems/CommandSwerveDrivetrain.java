@@ -34,7 +34,6 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TunerConstants.TunerSwerveDrivetrain;
 import frc.robot.util.SD;
-import frc.robot.util.SD.Key;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -333,7 +332,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       );
     }
     field.setRobotPose(RobotContainer.swerveState.Pose);
-    SD.put(Key.BOT_SPEED, RobotContainer.swerveState.Speeds.vxMetersPerSecond);
+    SD.BOT_SPEED.put(RobotContainer.swerveState.Speeds.vxMetersPerSecond);
   }
 
   private void startSimThread() 

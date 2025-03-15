@@ -22,7 +22,6 @@ import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.SD;
-import frc.robot.util.SD.Key;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -65,8 +64,8 @@ public class Robot extends TimedRobot
     RobotContainer.s_LimelightStbd.setIMUMode(1);
 
     SmartDashboard.putData("Field", autoPosition);
-    SD.init(Key.IO_LL_EXPOSURE);
-    SD.init(Key.CALIBRATE_BOT_ROTATION);
+    SD.IO_LL_EXPOSURE.init();
+    SD.CALIBRATE_BOT_ROTATION.init();
   }
 
   /**
@@ -91,7 +90,7 @@ public class Robot extends TimedRobot
 
     RobotContainer.swerveState = RobotContainer.s_Swerve.getState();
 
-    rotationKnown = SD.getBoolean(Key.CALIBRATE_BOT_ROTATION);
+    rotationKnown = SD.CALIBRATE_BOT_ROTATION.get();
 
     if (!rotationKnown)
     {
@@ -116,7 +115,7 @@ public class Robot extends TimedRobot
           if (highest - lowest < 1)
           {
             RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
-            SD.put(Key.CALIBRATE_BOT_ROTATION, true);
+            SD.CALIBRATE_BOT_ROTATION.put(true);
             portRotationData.clear();
             stbdRotationData.clear();
             RobotContainer.s_LimelightPort.setThrottle(150);
@@ -147,7 +146,7 @@ public class Robot extends TimedRobot
           if (highest - lowest < 1)
           {
             RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
-            SD.put(Key.CALIBRATE_BOT_ROTATION, true);
+            SD.CALIBRATE_BOT_ROTATION.put(true);
             portRotationData.clear();
             stbdRotationData.clear();
             RobotContainer.s_LimelightPort.setThrottle(150);
@@ -161,7 +160,7 @@ public class Robot extends TimedRobot
 
     CommandScheduler.getInstance().run();
 
-    SD.put(Key.STATE_HEADING, RobotContainer.headingState.toString());
+    SD.STATE_HEADING.put(RobotContainer.headingState.toString());
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -175,21 +174,21 @@ public class Robot extends TimedRobot
       RobotContainer.s_LimelightPort.setThrottle(150);
       RobotContainer.s_LimelightStbd.setThrottle(150);
     }
-    SD.init(Key.OVERIDE);
-    SD.init(Key.IO_PROCESS_AUTO);
-    SD.init(Key.CALIBRATE_BOT_ROTATION);
+    SD.OVERRIDE.init();
+    SD.IO_PROCESS_AUTO.init();
+    SD.CALIBRATE_BOT_ROTATION.init();
     rotationKnown = false;
   }
 
   @Override
   public void disabledPeriodic()
   {
-    SD.put(Key.STATE_PP_WARMUP, !c_WarmupCommand.isScheduled());
+    SD.STATE_PP_WARMUP.put(!c_WarmupCommand.isScheduled());
 
-    if (SD.getBoolean(Key.IO_PROCESS_AUTO))
+    if (SD.IO_PROCESS_AUTO.get())
     {
       autonomousCommand = robotContainer.getAutoCommand();
-      SD.put(Key.IO_PROCESS_AUTO, false);
+      SD.IO_PROCESS_AUTO.put(false);
     }
 
     if (!allianceKnown) 

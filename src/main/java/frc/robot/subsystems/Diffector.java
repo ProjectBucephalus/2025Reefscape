@@ -29,7 +29,6 @@ import frc.robot.util.ArmCalculator;
 import frc.robot.util.Conversions;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.SD;
-import frc.robot.util.SD.Key;
 
 public class Diffector extends SubsystemBase 
 {
@@ -81,7 +80,7 @@ public class Diffector extends SubsystemBase
   public Diffector() 
   {
     eStop = false;
-    SD.init(Key.DIFF_ESTOP);
+    SD.DIFF_ESTOP.init();
     manualControl = false;
     arm = new ArmCalculator();
     
@@ -126,8 +125,8 @@ public class Diffector extends SubsystemBase
     plannedPathPoints.clear();
     plannedPathPoints.add(targetPosition);
 
-    SD.init(Key.CALIBRATE_DIFF);
-    SD.init(Key.CALIBRATE_DIFF_TARGET);
+    SD.CALIBRATE_DIFF.init();
+    SD.CALIBRATE_DIFF_TARGET.init();
   }
 
   /**
@@ -172,7 +171,7 @@ public class Diffector extends SubsystemBase
       calibrationCounter++;
       if (calibrationCounter == DiffectorConstants.calibrationDelay) 
       {
-        SD.put(Key.CALIBRATE_DIFF, true);
+        SD.CALIBRATE_DIFF.put(true);
       }
     }
     else
@@ -373,7 +372,7 @@ public class Diffector extends SubsystemBase
   {
     return 
     runOnce(() -> setTargetPosition(targetPosition))
-    .onlyIf(() -> !RobotState.isDisabled() || SD.getBoolean(Key.OVERIDE))
+    .onlyIf(() -> !RobotState.isDisabled() || SD.OVERRIDE.get())
     .ignoringDisable(true);
   }
 
@@ -443,19 +442,19 @@ public class Diffector extends SubsystemBase
   @Override
   public void periodic() 
   { 
-    if (SD.getBoolean(Key.CALIBRATE_DIFF))
+    if (SD.CALIBRATE_DIFF.get())
     {
       positionOveride(elevation, getEncoderPos());
-      SD.put(Key.CALIBRATE_DIFF, false);
+      SD.CALIBRATE_DIFF.put(false);
     }
     
-    if (SD.getBoolean(Key.OVERIDE))
+    if (SD.OVERRIDE.get())
     {
-      if (SD.getBoolean(Key.CALIBRATE_DIFF_TARGET))
+      if (SD.CALIBRATE_DIFF_TARGET.get())
       {
         positionOveride(targetElevation, targetAngle);
         plannedPathPoints.clear();
-        SD.put(Key.CALIBRATE_DIFF_TARGET, false);
+        SD.CALIBRATE_DIFF_TARGET.put(false);
       }
     }
 
@@ -469,16 +468,16 @@ public class Diffector extends SubsystemBase
     )
     {
       eStop = true;
-      SD.put(Key.DIFF_ESTOP, true);
+      SD.DIFF_ESTOP.put(true);
     }
     else
-      {eStop = SD.getBoolean(Key.DIFF_ESTOP);}
+      {eStop = SD.DIFF_ESTOP.get();}
     
     if (eStop)
     {
       m_diffectorUA.set(0);
       m_diffectorDA.set(0);
-      eStop = SD.getBoolean(Key.DIFF_ESTOP);
+      eStop = SD.DIFF_ESTOP.get();
     }
     else
     {
@@ -504,18 +503,18 @@ public class Diffector extends SubsystemBase
         m_diffectorDA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])));//.withSlot(getSlot()));
       }
     }
-    SD.put(Key.DIFF_ELEVATION_TARGET, targetElevation);
-    SD.put(Key.DIFF_ANGLE_TARGET, targetAngle);
-    SD.put(Key.DIFF_ELEVATION, elevation);
-    SD.put(Key.DIFF_ANGLE, angle);
+    SD.DIFF_ELEVATION_TARGET.put(targetElevation);
+    SD.DIFF_ANGLE_TARGET.put(targetAngle);
+    SD.DIFF_ELEVATION.put(elevation);
+    SD.DIFF_ANGLE.put(angle);
 
-    SD.put(Key.DIFF_UA_ER, motorTargets[0] - Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()));
-    SD.put(Key.DIFF_DA_ER, motorTargets[1] - Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble()));
+    SD.DIFF_UA_ER.put(motorTargets[0] - Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()));
+    SD.DIFF_DA_ER.put(motorTargets[1] - Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble()));
 
-    SD.put(Key.DIFF_HEIGHT, elevation - arm.checkAngle(angle));
-    SD.put(Key.SENSOR_DIFF_ANGLE, getEncoderPos());
-    SD.put(Key.DIFF_ANGLE_ER, angle - getEncoderPos());
+    SD.DIFF_HEIGHT.put(elevation - arm.checkAngle(angle));
+    SD.SENSOR_DIFF_ANGLE.put(getEncoderPos());
+    SD.DIFF_ANGLE_ER.put(angle - getEncoderPos());
 
-    SD.put(Key.SENSOR_DIFF_POT, potentiometer.get());
+    SD.SENSOR_DIFF_POT.put(potTest.get());
   }
 }
