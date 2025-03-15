@@ -64,14 +64,7 @@ public class AutoUtils
         case 't':
           double targetMatchTimeElapsed = Double.parseDouble(splitCommand.substring(1));
 
-          commandList.add
-          (
-            Commands.idle()
-            .until
-            (
-              () -> Timer.getMatchTime() < (15 - targetMatchTimeElapsed)
-            )
-          );
+          commandList.add(Commands.waitUntil(() -> Timer.getMatchTime() < (15 - targetMatchTimeElapsed)));
           break;
 
         case 'r':
@@ -94,11 +87,10 @@ public class AutoUtils
           if (splitCommand.charAt(2) == '4') 
           {
             commandList.add(Commands.waitSeconds(0.1));
-            commandList.add(s_Diffector.coralScorePosCommand(prevEndPoint, 3).withTimeout(0.05));
+            commandList.add(s_Diffector.coralScorePosInstantCommand(prevEndPoint, 3));
           }
           
           commandList.add(Commands.waitUntil(() -> !RobotContainer.coral));
-          commandList.add(Commands.waitSeconds(0.1));
           commandList.add(s_Coral.setStatusCommand(CoralManipulatorStatus.DEFAULT));
           break;
 
@@ -112,16 +104,13 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.moveToCommand(Constants.DiffectorConstants.coralIntakePosition)
+              s_Diffector.moveAndWaitCommand(Constants.DiffectorConstants.coralIntakePosition)
             )
           );
 
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
 
-          commandList.add(Commands.waitSeconds(0.1));
-
-          commandList.add(s_Diffector.moveToCommand(Constants.DiffectorConstants.coralTransferPosition));
-          commandList.add(Commands.waitUntil(() -> s_Diffector.atPosition()));
+          commandList.add(Commands.waitUntil(() -> RobotContainer.coral));
           commandList.add(s_Diffector.moveToCommand(Constants.DiffectorConstants.coralStowPosition));
           break;
 
@@ -290,8 +279,7 @@ public class AutoUtils
     return
     Commands.sequence
     (
-      s_Diffector.moveToCommand(net ? Constants.DiffectorConstants.netPosition : Constants.DiffectorConstants.processorPosition), 
-      Commands.waitUntil(() -> s_Diffector.atPosition()), 
+      s_Diffector.moveAndWaitCommand(net ? Constants.DiffectorConstants.netPosition : Constants.DiffectorConstants.processorPosition), 
       s_Algae.setStatusCommand(AlgaeManipulatorStatus.EJECT)
     );
   }
@@ -311,8 +299,7 @@ public class AutoUtils
     return
     Commands.sequence
     (
-      s_Diffector.moveToCommand(target), 
-      Commands.waitUntil(() -> s_Diffector.atPosition()), 
+      s_Diffector.moveAndWaitCommand(target), 
       s_Algae.setStatusCommand(AlgaeManipulatorStatus.EJECT)
     );
   }

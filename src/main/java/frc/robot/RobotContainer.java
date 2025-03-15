@@ -184,7 +184,7 @@ public class RobotContainer
         )
       );
       
-    /* Intake controls */
+    /* Outtake controls */
     driver.leftTrigger()
       .onTrue(s_Coral.setStatusCommand(CoralManipulatorStatus.DELIVERY_SMART)).onFalse(s_Coral.setStatusCommand(CoralManipulatorStatus.DEFAULT));
     driver.leftBumper()
@@ -197,10 +197,10 @@ public class RobotContainer
         new FunctionalCommand
         (
           () -> s_Diffector.setTargetPosition(Constants.DiffectorConstants.algaeIntakePosition), 
-          () -> {if (s_Diffector.atPosition()) s_Algae.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.INTAKE);}, 
+          () -> {if (s_Diffector.atPosition()) s_Algae.setStatus(AlgaeManipulatorStatus.INTAKE);}, 
           interrupted -> 
           {    
-            s_Algae.setAlgaeManipulatorStatus(AlgaeManipulatorStatus.HOLDING);
+            s_Algae.setStatus(AlgaeManipulatorStatus.HOLDING);
             if (RobotContainer.algae)
               {s_Diffector.setTargetPosition(Constants.DiffectorConstants.algaeStowPosition);}
           }, 
@@ -376,16 +376,23 @@ public class RobotContainer
   {
     /* Climb controls */
     copilot.start()
-      .onTrue(s_Climber.setStatusCommand(ClimberStatus.CLIMB));
+      .onTrue
+      (
+        Commands.sequence
+        (
+          s_Diffector.moveAndWaitCommand(Constants.DiffectorConstants.climbPosition),
+          s_Climber.setStatusCommand(ClimberStatus.CLIMB)
+        )
+      );  
     copilot.back()
       .onTrue
       (
         Commands.sequence
         (
-          s_Climber.setStatusCommand(ClimberStatus.ACTIVE),
-          s_Diffector.moveToCommand(Constants.DiffectorConstants.climbPosition)
+          s_Diffector.moveAndWaitCommand(Constants.DiffectorConstants.climbPosition),
+          s_Climber.setStatusCommand(ClimberStatus.ACTIVE)
         )
-      ); //Deploys the climber        
+      );  
 
     /* Game piece scoring and intake positions */
     copilot.y()
@@ -451,7 +458,7 @@ public class RobotContainer
         Commands.either
         (
           s_Diffector.moveToCommand(Constants.DiffectorConstants.algaeTransferPosition), // Algae transfer pos
-          s_Diffector.moveToCommand(Constants.DiffectorConstants.coralTransferPosition), // Coral transfer pos
+          s_Diffector.moveToCommand(Constants.DiffectorConstants.coralClawIntakePosition), // Coral intake with algae claw pos
           algaeModifier
         )
       );

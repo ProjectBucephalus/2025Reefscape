@@ -34,5 +34,3 @@ public class CANifierAccess
     return io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOPort);
   }
 }
-
-// io_CANifier.getGeneralInput(GeneralPin.SPI_CLK_PWM0P);  PWM1, PWM2, PWM0

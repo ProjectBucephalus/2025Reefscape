@@ -22,7 +22,6 @@ public class Limelight extends SubsystemBase
   private LimelightHelpers.PoseEstimate mt2;
   private static int[] validIDs = Constants.Vision.reefIDs;
   private LimelightHelpers.PoseEstimate mt1;
-
   
   private double headingDeg;
   private double omegaRps;
@@ -86,7 +85,7 @@ public class Limelight extends SubsystemBase
   }
 
   public int updateLimelightPipeline()
-    {return (int) SmartDashboard.getNumber("Exposure Setting", 0);}
+    {return (int)SmartDashboard.getNumber("Exposure Setting", 0);}
 
   @Override
   public void periodic() 

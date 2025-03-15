@@ -47,24 +47,14 @@ public class CoralManipulator extends SubsystemBase
   public CoralManipulatorStatus getStatus()
     {return coralStatus;}
 
-  /**
-   * Sets the coral manipulator motor speed
-   * 
-   * @param speed Coral manipulator motor speed, positive to eject [-1..1]
-   */
-  private void setCoralManipulatorSpeed(double speed)
-    {coralMotor.set(speed);}
-
-  private void setCoralManipulatorSpeedFeedforward(double speed)
+  private void setSpeedFeedforward(double speed)
     {coralMotor.set(speed + Math.sin(Units.degreesToRadians(RobotContainer.s_Diffector.getAngle())) * Constants.GamePiecesManipulator.coralHoldingkG);}
 
-  public void setCoralManipulatorStatus(CoralManipulatorStatus status)
+  public void setStatus(CoralManipulatorStatus status)
     {coralStatus = status;}
 
   public Command setStatusCommand(CoralManipulatorStatus status)
-  {
-    return runOnce(() -> setCoralManipulatorStatus(status));
-  }
+    {return runOnce(() -> setStatus(status));}
 
   @Override
   public void periodic() 
@@ -74,11 +64,11 @@ public class CoralManipulator extends SubsystemBase
     switch(coralStatus)
     {
       case INTAKE:
-        setCoralManipulatorSpeed(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
+        coralMotor.set(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);
         
         if (RobotContainer.coral) 
           {coralStatus = CoralManipulatorStatus.DEFAULT;}
-          break;
+      break;
 
       case DELIVERY_SMART:
         int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
@@ -93,8 +83,8 @@ public class CoralManipulator extends SubsystemBase
         if (armPos > 90 && armPos <= 270)
           {speed = -speed;}
 
-        setCoralManipulatorSpeed(speed);
-        break;
+        coralMotor.set(speed);
+      break;
 
       case DELIVERY_LEFT:
       case DELIVERY_RIGHT:
@@ -112,22 +102,22 @@ public class CoralManipulator extends SubsystemBase
         if (robotRotation > 90 - Constants.Control.driverVisionTolerance && robotRotation <= 270 + Constants.Control.driverVisionTolerance) 
           {speed = -speed;}
 
-        setCoralManipulatorSpeed(speed);
-        break;
+        coralMotor.set(speed);
+      break;
 
       case DEFAULT:
         if (RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor())
-          {setCoralManipulatorSpeed(0);}
+          {coralMotor.set(0);}
 
         else if (RobotContainer.s_Canifier.coralManiPortSensor() && !RobotContainer.s_Canifier.coralManiStbdSensor())
-          {setCoralManipulatorSpeedFeedforward(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);}
+          {setSpeedFeedforward(Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);}
 
         else if (!RobotContainer.s_Canifier.coralManiPortSensor() && RobotContainer.s_Canifier.coralManiStbdSensor()) 
-          {setCoralManipulatorSpeedFeedforward(-Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);} 
+          {setSpeedFeedforward(-Constants.GamePiecesManipulator.coralManipulatorHoldingSpeed);} 
           
         else if (!RobotContainer.s_Canifier.coralManiPortSensor() && !RobotContainer.s_Canifier.coralManiStbdSensor()) 
-          {setCoralManipulatorSpeedFeedforward(0);}
-          break;
+          {setSpeedFeedforward(0);}
+      break;
     }
   }
 }

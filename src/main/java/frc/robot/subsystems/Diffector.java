@@ -66,15 +66,13 @@ public class Diffector extends SubsystemBase
   private double elevation;
   private Translation2d armPosition;
 
-  public static ArmCalculator arm;
-  public static boolean transferRequested = false;
-  public static boolean stowRequested = true;
+  private static ArmCalculator arm;
 
   private double projectionElevation = IKGeometry.projectionElevation;
   private double projectionAngle     = IKGeometry.projectionAngle;
   //private PathConstraints armPathConstraints = new PathConstraints(1, 1, 0, 0);
   //private GoalEndState armEndState = new GoalEndState(0, Rotation2d.kZero);
-  private static ArrayList<Translation2d> plannedPathPoints = new ArrayList<Translation2d>();
+  private ArrayList<Translation2d> plannedPathPoints = new ArrayList<Translation2d>();
 
   private int calibrationCounter = 0;
 
@@ -123,9 +121,6 @@ public class Diffector extends SubsystemBase
 
     motionMagicRequester = new MotionMagicVoltage(0);
 
-    //ArmPathPlanner.ensureInitialized();
-    //ArmPathPlanner.setStartPosition(ArmPathPlanner.fromArmRelative(armPosition));
-    //ArmPathPlanner.setGoalPosition(ArmPathPlanner.fromArmRelative(targetPosition, false));
     plannedPathPoints.clear();
     plannedPathPoints.add(targetPosition);
 
@@ -155,13 +150,7 @@ public class Diffector extends SubsystemBase
     angle = ((Units.rotationsToDegrees(m_diffectorUA.getPosition().getValueAsDouble()) + Units.rotationsToDegrees(m_diffectorDA.getPosition().getValueAsDouble())) * rotationRatio) / 2;
     armPosition = new Translation2d(elevation, angle);
     
-    if 
-    (
-      relativeTarget.equals(DiffectorConstants.startPosition) ||
-      relativeTarget.equals(DiffectorConstants.coralTransferPosition) ||
-      relativeTarget.equals(DiffectorConstants.algaeIntakePosition) ||
-      relativeTarget.equals(DiffectorConstants.climbPosition)
-    )
+    if (DiffectorConstants.lowDiffectorPositions.stream().anyMatch(position -> relativeTarget.equals(position)))
     {
       if (elevation < targetElevation - DiffectorConstants.elevationTolerance)
         {eStop = true;}
@@ -301,26 +290,11 @@ public class Diffector extends SubsystemBase
   public boolean unwind()
   {
     targetAngle = Constants.DiffectorConstants.startPosition.getY();
-    return (stowRequested = Math.abs(angle) < stowThreshold);
+    return Math.abs(angle) < stowThreshold;
   }
-
-  public Translation2d getRelativeTarget()
-    {return relativeTarget;}
-
-  public double getAngleTarget()
-    {return targetAngle;}
 
   public void setElevationTarget(double newTarget)
     {targetElevation = Conversions.clamp(newTarget, Constants.DiffectorConstants.minZ, Constants.DiffectorConstants.maxZ);}
-
-  public double getElevationTarget()
-    {return targetElevation;}
-
-  public boolean safeToMoveClimber()
-  {
-    return Constants.DiffectorConstants.climberElevatorLowTheshold < elevation 
-    && elevation < Constants.DiffectorConstants.climberElevatorHighThreshold;
-  }
 
   /** Returns the ID of the motor control slot to use */
   private int getSlot()
@@ -395,6 +369,11 @@ public class Diffector extends SubsystemBase
     .ignoringDisable(true);
   }
 
+  public Command moveAndWaitCommand(Translation2d targetPosition)
+  {
+    return moveToCommand(targetPosition).andThen(Commands.waitUntil(() -> atPosition()));
+  }
+
   public Command algaeIntakePosCommand(Translation2d robotPos, boolean level2, int nearestReefFace)
   {
     boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
@@ -406,7 +385,7 @@ public class Diffector extends SubsystemBase
     :
     portReefFace ? Constants.DiffectorConstants.algae3PortPosition : Constants.DiffectorConstants.algae3StbdPosition;
 
-    return moveToCommand(target).andThen(Commands.waitUntil(() -> atPosition())).ignoringDisable(true);
+    return moveAndWaitCommand(target);
   }
 
   public Command algaeIntakePosCommand(Translation2d robotPos, boolean level2)
@@ -430,7 +409,7 @@ public class Diffector extends SubsystemBase
     return algaeIntakePosCommand(RobotContainer.swerveState.Pose.getTranslation());
   }
 
-  public Command coralScorePosCommand(Translation2d robotPos, int level)
+  public Command coralScorePosInstantCommand(Translation2d robotPos, int level)
   {
     int nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
     boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
@@ -449,7 +428,12 @@ public class Diffector extends SubsystemBase
       default -> Constants.DiffectorConstants.coralStowPosition;
     };
 
-    return moveToCommand(target).andThen(Commands.waitUntil(() -> atPosition())).ignoringDisable(true);
+    return moveToCommand(target);
+  }
+
+  public Command coralScorePosCommand(Translation2d robotPos, int level)
+  {
+    return coralScorePosCommand(robotPos, level).andThen(Commands.waitUntil(() -> atPosition()));
   }
 
   public Command coralScorePosCommand(int level)
@@ -527,13 +511,6 @@ public class Diffector extends SubsystemBase
         m_diffectorUA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[0])).withSlot(0));//getSlot()));
         m_diffectorDA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])).withSlot(0));//getSlot()));
       }
-      
-      if (transferRequested && !MathUtil.isNear(180, getRelativeRotation(), DiffectorConstants.angleTolerance))
-        {transferRequested = false;}
-        
-      if (transferRequested && !MathUtil.isNear(0, angle, DiffectorConstants.angleTolerance))
-        {stowRequested = false;}
-
     }
     SmartDashboard.putNumber("Elevator Target", targetElevation);
     SmartDashboard.putNumber("Arm Target", targetAngle);
