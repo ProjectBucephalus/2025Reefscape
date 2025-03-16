@@ -156,7 +156,7 @@ public class FieldUtils
       reefBlue, 
       reefZoneRed, 
       bargeColumn, 
-      bargeZoneRed, // TODO: Check that Box objects are fixed
+      bargeZoneRed,
       cornerSBlue, 
       cornerNBlue, 
       cornerSRed, 
@@ -169,7 +169,7 @@ public class FieldUtils
       reefRed, 
       reefZoneBlue, 
       bargeColumn, 
-      bargeZoneBlue, // TODO: Check that Box objects are fixed
+      bargeZoneBlue,
       cornerSBlue, 
       cornerNBlue, 
       cornerSRed, 

@@ -54,7 +54,7 @@ public class Diffector extends SubsystemBase
   /** port-side motor(?), forward direction drives carriage down and anticlockwise */
   private static TalonFX m_diffectorDA;
   private CANcoder encoder;
-  private AnalogPotentiometer potentiometer; // TODO: Implement properly
+  private AnalogPotentiometer potentiometer;
 
   private double[] motorTargets = new double[2];
 

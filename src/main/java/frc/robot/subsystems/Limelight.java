@@ -95,7 +95,7 @@ public class Limelight extends SubsystemBase
     {
       pipelineIndex = updateLimelightPipeline();
       LimelightHelpers.setPipelineIndex(limelightName, pipelineIndex);
-    } // TODO: Set up multiple pipelines, the same except for exposure [150..600]
+    }
 
     headingDeg = RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble();
     omegaRps = Units.radiansToRotations(RobotContainer.swerveState.Speeds.omegaRadiansPerSecond);

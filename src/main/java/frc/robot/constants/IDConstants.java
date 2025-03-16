@@ -37,15 +37,6 @@ public final class IDConstants
   public static final int daMotorID     = 15; // Stbd
 
   public static final int armPotID = 0; // Analog input port
-  
-  /* Intake */
-  /* ______ */
-  public static final int algaeIntakeRollerID = 16;
-  public static final int algaeIntakeArmID    = 18;
-
-  public static final int coralIntakeDIOPort = 1;
-  public static final int coralIntakeDIOStbd = 2;
-  public static final int algaeIntakeDIO     = 3;
 
   /* Climber */
   /* _______ */

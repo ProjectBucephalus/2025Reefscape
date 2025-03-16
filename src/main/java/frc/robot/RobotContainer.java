@@ -458,7 +458,7 @@ public class RobotContainer
       (
         Commands.either
         (
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeStowPosition), // Algae stow pos // TODO: Set up a transfer position?
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeStowPosition), // Algae stow pos
           s_Diffector.moveToCommand(DiffectorConstants.Presets.coralClawIntakePosition), // Coral intake with algae claw pos
           algaeModifier
         )
