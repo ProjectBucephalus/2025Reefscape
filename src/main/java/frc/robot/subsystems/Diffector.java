@@ -450,7 +450,9 @@ public class Diffector extends SubsystemBase
 
       case 2 -> portReefFace ? Presets.coral2PortPosition : Presets.coral2StbdPosition;
 
-      case 1 -> portReefFace ? Presets.coral1PortPosition : Presets.coral1StbdPosition;
+      case 1 -> portReefFace ? Presets.coral1ClawPortPosition : Presets.coral1ClawStbdPosition;
+
+      case 0 -> portReefFace ? Presets.coral1PortPosition : Presets.coral1StbdPosition;
 
       default -> Presets.coralStowPosition;
     };

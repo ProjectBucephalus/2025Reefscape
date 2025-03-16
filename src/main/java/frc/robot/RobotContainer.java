@@ -412,7 +412,7 @@ public class RobotContainer
       (
         Commands.sequence
         (
-          s_Diffector.moveAndWaitCommand(DiffectorConstants.Presets.climbPosition),
+          s_Diffector.moveAndWaitCommand(DiffectorConstants.Presets.climbSafePosition),
           s_Climber.setStatusCommand(ClimberStatus.ACTIVE)
         )
       );  
@@ -480,8 +480,8 @@ public class RobotContainer
       (
         Commands.either
         (
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeStowPosition), // Algae stow pos
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralClawPortPosition), // Coral intake with algae claw pos
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePortPosition), // Algae intake pos
+          s_Diffector.coralScorePosCommand(0), // Coral score level 1 with coral manipulator
           algaeModifier
         )
       );
@@ -492,7 +492,7 @@ public class RobotContainer
       (
         Commands.either
         (
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePortPosition), // Algae intake pos (ground)
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralClawPortPosition), // Algae intake pos (ground)
           s_Diffector.moveToCommand(DiffectorConstants.Presets.coralIntakePortPosition), // Coral intake pos (clearance for station)
           algaeModifier
         )
