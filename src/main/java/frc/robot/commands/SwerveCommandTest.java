@@ -10,6 +10,7 @@ import frc.robot.util.GeoFenceObject;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
@@ -18,6 +19,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+
+import edu.wpi.first.math.util.Units;
+
+import edu.wpi.first.math.MathUtil;
 
 public class SwerveCommandTest extends Command 
 {    
@@ -49,10 +54,23 @@ public class SwerveCommandTest extends Command
     private boolean redAlliance;
     private double deadband = Constants.Control.stickDeadband;
 
+    //TargetHeadingProccessor
+    private double robotX;
+
     //Target Heading
     private Rotation2d rotationOffset;
     private Rotation2d targetHeading;
 
+    //TargetHeadingScore
+   private Supplier<Translation2d> posSup;
+   private int nearestReefFace;
+   private Translation2d robotPos;
+   private Translation2d nearestBargePoint;
+
+   //TargetHeadingStation
+   private DoubleSupplier ySup;
+   private double robotY;
+  
   public SwerveCommandTest(CommandSwerveDrivetrain s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fieldCentricSup, BooleanSupplier fencedSup) 
   {
     this.s_Swerve = s_Swerve;
@@ -65,15 +83,24 @@ public class SwerveCommandTest extends Command
     this.fieldCentricSup = fieldCentricSup;
     this.fencedSup = fencedSup;
 
+    //TargetHeadingStation
+    this.ySup = ySup;
+
     //Target Heading
     this.targetHeading = targetHeading;
     this.rotationOffset = rotationOffset;
     driveRequest.HeadingController.setPID(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
+
+    //TargetHeadingScore
+    SmartDashboard.putBoolean("Heading Snap Updating", true);
   }
 
     @Override
     public void initialize()
     {
+      //TargetHeadingProccessor
+      updateTargetHeading();
+
       redAlliance = FieldUtils.isRedAlliance();
 
       //Target Heading 
@@ -85,8 +112,13 @@ public class SwerveCommandTest extends Command
       else
         {fieldGeoFence = FieldUtils.GeoFencing.fieldBlueGeoFence;}
 
-      
       Limelight.setActivePOI(Limelight.TagPOI.REEF);
+
+      //TargetHeadingProccessor
+      Limelight.setActivePOI(Limelight.TagPOI.PROCESSOR);
+
+      //TargetHeadingStation
+      Limelight.setActivePOI(Limelight.TagPOI.CORALSTATION);
     }
 
   @Override
@@ -102,6 +134,10 @@ public class SwerveCommandTest extends Command
     /* Apply deadbands */
     if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
     if (Math.abs(rotationVal) <= deadband) {rotationVal = 0;}
+
+    //TargetHeadingProccessor
+    if (SmartDashboard.getBoolean("Heading Snap Updating", true)) 
+    {updateTargetHeading();}
 
     /* Apply braking */
     motionXY = motionXY.times(Constants.Control.maxThrottle - ((Constants.Control.maxThrottle - Constants.Control.minThrottle) * brakeVal));
@@ -128,7 +164,6 @@ public class SwerveCommandTest extends Command
       if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", false))
       {
         SmartDashboard.putString("Drive State", "Fenced");
-
         
         // Read down the list of geofence objects
         // Outer wall is index 0, so has highest authority by being processed last
@@ -163,6 +198,107 @@ public class SwerveCommandTest extends Command
         .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
         .withRotationalRate(rotationVal * Constants.Swerve.maxAngularVelocity)
       );
+    }
+    /* Target Heading \/
+    s_Swerve.setControl
+    (
+      driveRequest
+      .withVelocityX(motionXY.getX() * Constants.Swerve.maxSpeed)
+      .withVelocityY(motionXY.getY() * Constants.Swerve.maxSpeed)
+      .withTargetDirection(targetHeading.plus(rotationOffset))
+    );*/
+
+    //TargetHeadingProccessor
+    private void updateTargetHeading()
+    {
+      robotX = xSup.getAsDouble();
+  
+      if (FieldUtils.isRedAlliance()) 
+      {
+        if (robotX >= 8.774) 
+          {targetHeading = new Rotation2d(Units.degreesToRadians(-90));} 
+  
+        else 
+          {targetHeading = new Rotation2d(Units.degreesToRadians(90));}
+      }
+      else
+      {
+        if (robotX >= 8.774) 
+          {targetHeading = new Rotation2d(Units.degreesToRadians(90));} 
+          
+        else 
+          {targetHeading = new Rotation2d(Units.degreesToRadians(-90));}
+      }
+    }
+
+    private void updateTargetHeading()
+    {
+      robotPos = posSup.get();
+  
+      nearestBargePoint = FieldUtils.getNearestBargePoint(robotPos);
+  
+      // TODO: Confirm this works for both aliances
+      if 
+      (
+        MathUtil.isNear(robotPos.getX(), (FieldUtils.fieldLength / 2), Constants.GamePiecesManipulator.algaeRange)
+      ) 
+        {targetHeading = 0 - rotationOffset;}
+      else
+      {
+        nearestReefFace = FieldUtils.getNearestReefFace(robotPos);
+  
+        switch (nearestReefFace) 
+        {
+          case 1:
+            targetHeading = 0 + rotationOffset;
+            break;
+  
+          case 2:
+            targetHeading = 60 + rotationOffset;
+            break;
+  
+          case 3:
+            targetHeading = 120 + rotationOffset;
+            break;
+  
+          case 4:
+            targetHeading = 0 - rotationOffset;
+            break;
+  
+          case 5:
+            targetHeading = -120 - rotationOffset;
+            break;
+  
+          case 6:
+            targetHeading = -60 - rotationOffset;
+            break;
+            
+          default:
+            break;
+        }
+      }    
+    }
+    
+    private void updateTargetHeading()
+    {
+      robotY = ySup.getAsDouble();
+  
+      if (FieldUtils.isRedAlliance()) 
+      {
+        if (robotY >= 4.026) 
+          {targetHeading = new Rotation2d(Units.degreesToRadians(-126));} 
+  
+        else 
+          {targetHeading = new Rotation2d(Units.degreesToRadians(126));}
+      }
+      else
+      {
+        if (robotY >= 4.026) 
+          {targetHeading = new Rotation2d(Units.degreesToRadians(126));} 
+          
+        else 
+          {targetHeading = new Rotation2d(Units.degreesToRadians(-126));}
+      }
     }
   }
 }
