@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.util.SD;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -62,7 +63,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
   private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
   /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
-  @SuppressWarnings("unused")
   private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine
   (
     new SysIdRoutine.Config
@@ -331,7 +331,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       );
     }
     field.setRobotPose(RobotContainer.swerveState.Pose);
-    SmartDashboard.putNumber("Robot Speed", RobotContainer.swerveState.Speeds.vxMetersPerSecond);
+    SD.BOT_SPEED.put(RobotContainer.swerveState.Speeds.vxMetersPerSecond);
   }
 
   private void startSimThread() 

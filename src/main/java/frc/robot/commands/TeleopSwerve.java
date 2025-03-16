@@ -7,6 +7,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Limelight;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
+import frc.robot.util.SD;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
@@ -15,7 +16,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class TeleopSwerve extends Command 
@@ -66,7 +66,7 @@ public class TeleopSwerve extends Command
     {
       redAlliance = FieldUtils.isRedAlliance();
 
-      SmartDashboard.putBoolean("redAlliance", redAlliance);
+      SD.STATE_RED.put(redAlliance);
       if (redAlliance)
         {fieldGeoFence = FieldUtils.GeoFencing.fieldRedGeoFence;}
       else
@@ -106,16 +106,15 @@ public class TeleopSwerve extends Command
       if (redAlliance)
         {motionXY = motionXY.unaryMinus();}
 
-      if (RobotContainer.s_Diffector.getElevation() > IKGeometry.bargeSafetyHeight && !SmartDashboard.getBoolean("OVERIDE MODE", false)) // TODO: Copy to other drive functions as needed
+      if (RobotContainer.s_Diffector.getElevation() > IKGeometry.bargeSafetyHeight && !SD.OVERRIDE.get()) // TODO: Copy to other drive functions as needed
       {
         motionXY = FieldUtils.GeoFencing.netProtectionZone.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
       }
       
-      if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", false))
+      if (fencedSup.getAsBoolean() && !SD.IO_GEOFENCE.get())
       {
-        SmartDashboard.putString("Drive State", "Fenced");
+        SD.STATE_DRIVE.put("Fenced");
 
-        
         // Read down the list of geofence objects
         // Outer wall is index 0, so has highest authority by being processed last
         for (int i = fieldGeoFence.length - 1; i >= 0; i--) // ERROR: Stick input seems to have been inverted for the new swerve library, verify and impliment a better fix
@@ -125,7 +124,7 @@ public class TeleopSwerve extends Command
         }
       } 
       else 
-      {SmartDashboard.putString("Drive State", "Non-Fenced");}
+      {SD.STATE_DRIVE.put("Non Fenced");}
       
       // Uninvert processing output when on red alliance
       if (redAlliance)
@@ -141,7 +140,7 @@ public class TeleopSwerve extends Command
     }
     else
     {
-      SmartDashboard.putString("Drive State", "Robot-Relative");
+      SD.STATE_DRIVE.put("Robot Relative");
       s_Swerve.setControl
       (
         driveRequestRoboCentric

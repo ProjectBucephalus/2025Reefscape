@@ -2,11 +2,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.constants.Constants;
-import edu.wpi.first.wpilibj.GenericHID;
+import frc.robot.util.SD;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
 import java.util.ArrayList;
 
 public class Rumbler extends SubsystemBase 
@@ -26,14 +23,14 @@ public class Rumbler extends SubsystemBase
 
   public Rumbler(CommandXboxController driver, CommandXboxController copilot)
   {
+    SD.IO_RUMBLE_D.init();
+    SD.IO_RUMBLE_C.init();
 
     rumbleDriver = driver;
     rumbleCopilot = copilot;  
     // Check if smartdashboard has existing settings for driver and copilot rumble strength, and put defaults if not.
-    driverStrength = SmartDashboard.getNumber("Driver Rumble", Constants.RumblerConstants.driverDefault);
-    copilotStrength = SmartDashboard.getNumber("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
-    SmartDashboard.putNumber("Driver Rumble", driverStrength);
-    SmartDashboard.putNumber("Copilot Rumble", copilotStrength);
+    driverStrength = SD.IO_RUMBLE_D.get();
+    copilotStrength = SD.IO_RUMBLE_C.get();
   } 
 
   public boolean addRequest(Sides queue, String requestID)
@@ -93,37 +90,18 @@ public class Rumbler extends SubsystemBase
   public void periodic()
   {
     // check for chages to rumble stregnths in smartdashboard, and update.
-    driverStrength = SmartDashboard.getNumber("Driver Rumble", Constants.RumblerConstants.driverDefault);
-    copilotStrength = SmartDashboard.getNumber("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
+    driverStrength  = SD.IO_RUMBLE_D.get();
+    copilotStrength = SD.IO_RUMBLE_C.get();
     // if there are any active requests in the queue for a rumble motor, rumble, otherwise stop.
-    if (drRequest.size() > 0)
-      {rumbleDriver.setRumble(GenericHID.RumbleType.kRightRumble, driverStrength);}
-
-    else
-      {rumbleDriver.setRumble(GenericHID.RumbleType.kRightRumble, 0);}
-
-    if(dlRequest.size() > 0)
-      {rumbleDriver.setRumble(GenericHID.RumbleType.kLeftRumble,driverStrength);}
-
-    else
-      {rumbleDriver.setRumble(GenericHID.RumbleType.kLeftRumble,0);}
-
-    if(crRequest.size() > 0)
-      {rumbleCopilot.setRumble(RumbleType.kRightRumble,copilotStrength);}
-
-    else
-      {rumbleCopilot.setRumble(RumbleType.kRightRumble,0);}
-
-    if(clRequest.size() > 0)
-      {rumbleCopilot.setRumble(RumbleType.kLeftRumble,copilotStrength);}
-
-    else
-      {rumbleCopilot.setRumble(RumbleType.kLeftRumble,0);}
+    rumbleDriver.setRumble(RumbleType.kRightRumble, drRequest.isEmpty() ? 0 : driverStrength);
+    rumbleDriver.setRumble(RumbleType.kLeftRumble, dlRequest.isEmpty() ? 0 : driverStrength);
+    rumbleCopilot.setRumble(RumbleType.kRightRumble, crRequest.isEmpty() ? 0 : copilotStrength);
+    rumbleCopilot.setRumble(RumbleType.kLeftRumble, clRequest.isEmpty() ? 0 : copilotStrength);
 
     // put queue contents to dashboard, for debugging / verification.
-    SmartDashboard.putString("DriverRight Rumble Queue",drRequest.toString());
-    SmartDashboard.putString("CopilotLeft Rumbler Queue",clRequest.toString());
-    SmartDashboard.putString("DriverLeft Rumble Queue",dlRequest.toString());
-    SmartDashboard.putString("CopilotRight Rumble Queue",crRequest.toString());
+    SD.RUMBLE_D_R.put(drRequest.toString());
+    SD.RUMBLE_D_L.put(dlRequest.toString());
+    SD.RUMBLE_C_R.put(crRequest.toString());
+    SD.RUMBLE_C_L.put(clRequest.toString());
   }
 }
