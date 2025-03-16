@@ -22,9 +22,6 @@ public class ArmCalculator
   private double projectionAngle;
   private double projectionElevation;
 
-  private double railHeight;
-  private double railLateral;
-  private double railMedial;
   private double deckHeight;
 
   private double offset;
@@ -48,9 +45,6 @@ public class ArmCalculator
     maxAbsPos = DiffectorConstants.maxAbsAngle;
     turnBackThreshold = DiffectorConstants.turnBackThreshold;
     
-    railHeight    = IKGeometry.railHeight;
-    railLateral   = IKGeometry.railLateral;
-    railMedial    = IKGeometry.railMedial;
     deckHeight    = IKGeometry.deckHeight;
 
     armGeometry = IKGeometry.armGeometry;
@@ -190,9 +184,6 @@ public class ArmCalculator
    */
   public double checkPosition(Translation2d position)
     {return Conversions.clamp(position.getX(), checkAngle(position.getY()), maxElevation);}
-
-  public double checkPosition(double elevation, double angle)
-    {return Conversions.clamp(elevation, checkAngle(angle), maxElevation);}
 
   /**
    * Returns the minimum safe arm height for a given angle

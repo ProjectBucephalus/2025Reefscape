@@ -26,7 +26,6 @@ public class Rumbler extends SubsystemBase
     SD.IO_RUMBLE_D.init();
     SD.IO_RUMBLE_C.init();
 
-    // could drop the getHID method as setrumble has been added to the CommandXBoxController class in 2025, but this still works.
     rumbleDriver = driver;
     rumbleCopilot = copilot;  
     // Check if smartdashboard has existing settings for driver and copilot rumble strength, and put defaults if not.

@@ -24,6 +24,18 @@ public class FieldUtils
     return alliance.isPresent() && alliance.get() == Alliance.Red;
   }
 
+  public static final int getDriverLocation()
+  {
+    if (DriverStation.getLocation().isPresent())
+    {
+      return DriverStation.getLocation().getAsInt();
+    }
+    else
+    {
+      return 0;
+    }
+  }
+
   public static Pose2d flipPose(Pose2d pose) 
   {
     // flip pose when red
@@ -156,7 +168,7 @@ public class FieldUtils
       reefBlue, 
       reefZoneRed, 
       bargeColumn, 
-      bargeZoneRed, // TODO: Check that Box objects are fixed
+      bargeZoneRed,
       cornerSBlue, 
       cornerNBlue, 
       cornerSRed, 
@@ -169,7 +181,7 @@ public class FieldUtils
       reefRed, 
       reefZoneBlue, 
       bargeColumn, 
-      bargeZoneBlue, // TODO: Check that Box objects are fixed
+      bargeZoneBlue,
       cornerSBlue, 
       cornerNBlue, 
       cornerSRed, 
@@ -189,5 +201,16 @@ public class FieldUtils
     /* Barge Exclusion Zone -> Keep the arm pivot far enough away from the net to prevent touching it */
     public static final double bargeSafetyWidth = Constants.DiffectorConstants.IKGeometry.bargeSafetyWidth - robotRadiusInscribed;
     public static final GeoFenceObject netProtectionZone = new GeoFenceObject((fieldLength/2), fieldSouth, (fieldLength/2), fieldNorth, 0.25, bargeSafetyWidth, ObjectTypes.line);
+  }
+
+  public static final class DriverFieldRefs
+  {
+    public static final Translation2d driverBlue1 = new Translation2d(0.0, 5.278);
+    public static final Translation2d driverBlue2 = new Translation2d(0.0, 4.026);
+    public static final Translation2d driverBlue3 = new Translation2d(0.0,2.278);
+    public static final Translation2d driverRed1 = new Translation2d(fieldLength,2.278);
+    public static final Translation2d driverRed2 = new Translation2d(fieldLength,4.026);
+    public static final Translation2d driverRed3 = new Translation2d(fieldLength,5.278);
+
   }
 }

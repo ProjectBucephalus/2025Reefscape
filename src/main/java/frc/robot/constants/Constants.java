@@ -10,6 +10,7 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.util.AutoUtils;
@@ -391,15 +392,16 @@ public final class Constants
   public static final class GamePiecesManipulator 
   {
     /* Coral manipulator speeds */
-    public static final double coralManipulatorDeliverySpeed = -0.7;
-    public static final double coralManipulatorHoldingSpeed  = -0.05;
+    public static final double coralDeliverySpeed = -0.7;
+    public static final double coralHoldingSpeed  = -0.05;
     public static final double coralHoldingkG = -0.035;
 
     /* Algae manipulator speeds */
-    public static final double algaeManipulatorIntakeSpeed    =  0.4;
-    public static final double algaeManipulatorHoldingSpeed   =  0.2;
-    public static final double algaeManipulatorNetSpeed       = -0.9;
-    public static final double algaeManipulatorProcessorSpeed = -0.3;
+    public static final double algaeIntakeSpeed    =  0.4;
+    public static final double algaeHoldingSpeed   =  0.2;
+    public static final double algaeNetSpeed       = -0.9;
+    public static final double algaeProcessorSpeed = -0.3;
+    public static final double algaeHeldCurrent = 30;
 
     /** Algae net shooting range for rotation snapping, m */
     public static final double algaeRange = 2.5;
@@ -432,5 +434,35 @@ public final class Constants
     public static final double winchDefaultCruise = 1;
     public static final double winchClimbCruise = 0.5;
     public static final double winchMotionMagicAccel  = 1;
+  }
+
+  public static final class LEDStrip
+  {
+    /**
+     * Constants used by the addressable LED classes.
+     */
+    public static final int LEDPWMPort = IDConstants.LEDPWM; // PWM port the strip is connected to.
+    public static final int lightsLen = 120; // # of LED's in the strip, if more than one strip daisy-chained, total # of LED's
+    public static final int viewWidth = 30; // default width for a partial display layer. a good number is about 1/4 lightsLen
+    public static final int startOffset = 1; // LED # at 0 degrees
+    public static final double degreesPerLED = 360/lightsLen;  // used to calculate the LED pointing in a particular direction
+    public static final Color defaultBackColor = Color.kRed; // default background / off Color
+    public static final Color defaultFrontColor = Color.kGreen; // default foreground / on Color
+    public static final Color displayBorderColor = Color.kBlue; // default Color for border dots
+    public static final int defaultStatusSegments = 3; // default # of segments in a status display
+    public static final int pointerGradientThreshold = 5; // length of pointer layer above which a gradient will be applied rather than solid colour
+    public static final int stbdLEDsStart = 0; // start and end LED #'s for the 'starboard' segment
+    public static final int stbdLEDsEnd = 59;
+    public static final int portLEDsStart = 60; // start and end LED #'s for the 'port' segment
+    public static final int portLEDsEnd = 119;
+    public static final int discoMax = 10;  // maximum colour layers in disco mode
+    public static final int discoMin = 3;  // minimum colour layers in disco mode
+    public static final int discoAgeLimit = 10; //disco layers will randomly die of age between discoAgeLimit and 2x discoAgeLimit cycles
+    public static final double discoChangeChance = 0.9; // the probability of accel or growthrate changing in any update is 1 - this: (1 - 0.9 = 0.1 = 10% chance of change)
+    public static final double discoMaxVelMultiplier = 0.3; // used to calculate maxVel based on viewWidth, at maximum velocity it will take 1/this seconds to traverse the strip.
+    public static final double discoMaxAccelMultiplier = 0.1; // used to calculate maxAccel, maxVel will be multiplied by this to get the value.
+    public static final double discoMaxGrowMultiplier = 0.1; // used to calculate maxGrow based on viewWidth.
+    public static final double discoMaxGrowRateMultiplier = 0.1; // multipied by maxGrow to get maxGrowRate
+    public static final double discoColorThreshold = 0.5; // at least one color value (r,g,b) must be above this for the colour to be valid
   }
 }
