@@ -296,37 +296,39 @@ public final class Constants
      */
     public static class Presets
     {
-      public static final Translation2d startPosition           = new Translation2d(0.616,  0);
-      public static final Translation2d climbPosition           = new Translation2d(0.365,  90);
+      public static final Translation2d startPosition           = new Translation2d(0.62,   0);
+      public static final Translation2d climbSafePosition       = new Translation2d(0.70,  90);
+      public static final Translation2d climbPosition           = new Translation2d(0.36,  90);
 
       public static final Translation2d netPosition             = new Translation2d(  maxZ, 170);
       public static final Translation2d algae3PortPosition      = new Translation2d(1.19,  97); // TODO
-      public static final Translation2d algae3StbdPosition      = new Translation2d(1.19,   -97); // TODO
+      public static final Translation2d algae3StbdPosition      = new Translation2d(1.19, 263); // TODO
       public static final Translation2d algae2PortPosition      = new Translation2d(0.79,  95); // TODO
-      public static final Translation2d algae2StbdPosition      = new Translation2d(0.79,   -95); // TODO
+      public static final Translation2d algae2StbdPosition      = new Translation2d(0.79, 265); // TODO
       public static final Translation2d processorPosition       = new Translation2d(0.38,  90);
 
       public static final Translation2d coral4PortPosition      = new Translation2d(1.62, 340);
-      public static final Translation2d coral4StbdPosition      = new Translation2d(1.62,  -340);
+      public static final Translation2d coral4StbdPosition      = new Translation2d(1.62,  20);
       public static final Translation2d coral3PortPosition      = new Translation2d(0.98, 340);
-      public static final Translation2d coral3StbdPosition      = new Translation2d(0.98,  -340);
+      public static final Translation2d coral3StbdPosition      = new Translation2d(0.98,  20);
       public static final Translation2d coral2PortPosition      = new Translation2d(0.68, 325);
-      public static final Translation2d coral2StbdPosition      = new Translation2d(0.68,  -325);
+      public static final Translation2d coral2StbdPosition      = new Translation2d(0.68,  35);
       public static final Translation2d coral1PortPosition      = new Translation2d(0.71,  90);
-      public static final Translation2d coral1StbdPosition      = new Translation2d(0.71,   -90);
+      public static final Translation2d coral1StbdPosition      = new Translation2d(0.71, 270);
 
       public static final Translation2d coralIntakePosition     = new Translation2d(1.15, 145);
       public static final Translation2d coralClawIntakePosition = new Translation2d(0.61,  47);
       public static final Translation2d coralStowPosition       = new Translation2d(0.85,   0);
 
       public static final Translation2d algaeIntakePortPosition = new Translation2d(0.38,  75);
-      public static final Translation2d algaeIntakeStbdPosition = new Translation2d(0.38,   -75);
+      public static final Translation2d algaeIntakeStbdPosition = new Translation2d(0.38, 285);
       public static final Translation2d algaeStowPosition       = new Translation2d(0.80, 180);
 
       public static final ArrayList<Translation2d> lowDiffectorPositions = new ArrayList<Translation2d>()
       {{
         add(startPosition);
         add(algaeIntakePortPosition);
+        add(algaeIntakeStbdPosition);
         add(climbPosition);
         add(processorPosition);
       }};
@@ -413,9 +415,9 @@ public final class Constants
     public static final double activeWinchPos = 1.5;
     public static final double climbWinchPos  = 0.75;
     /** The furthest into the robot the climber can attempt to go whilst balancing */
-    public static final double climbWinchInnerLimit = 0.65;
+    public static final double climbActiveInnerLimit = 0.65;
     /** The furthest out of the robot the climber can attempt to go whilst balancing */
-    public static final double climbWinchOuterLimit = 0.85;
+    public static final double climbActiveOuterLimit = 0.85;
     public static final double manualScale    = 0.25;
 
     public static final double winchKP = 150;
