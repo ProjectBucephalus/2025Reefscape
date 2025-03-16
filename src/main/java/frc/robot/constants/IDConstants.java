@@ -57,4 +57,8 @@ public final class IDConstants
   public static final String llPortName = "limelight-port";
   public static final String llStbdName = "limelight-stbd";
 
+  /* LED Strip */
+  /* _________ */
+  public static final int LEDPWM = 1;
+
 }

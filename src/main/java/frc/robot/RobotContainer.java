@@ -15,6 +15,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -31,6 +32,8 @@ import frc.robot.subsystems.Climber.ClimberStatus;
 import frc.robot.subsystems.CoralManipulator.CoralStatus;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
+import frc.robot.util.LightLayer.LEDType;
+import frc.robot.util.LightLayer.Mode;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -69,7 +72,13 @@ public class RobotContainer
   public static final CoralManipulator s_Coral = new CoralManipulator();
   public static final AlgaeManipulator s_Algae = new AlgaeManipulator();
   public static final CANifierAccess s_Canifier = new CANifierAccess();
-  public static final Rumbler s_Rumbler = new Rumbler(driver, copilot);
+  public static Rumbler s_Rumbler = new Rumbler(driver, copilot);
+  private final LEDRenderer s_Lights = new LEDRenderer();
+  private LightLayer progressLayer = new LightLayer(s_Swerve, "Progress");
+  private LightLayer statusLayer = new LightLayer(s_Swerve, "Status");
+  private LightLayer reefPointerLayer = new LightLayer(s_Swerve, "ReefPointer");
+  private LightLayer processorPointerLayer = new LightLayer(s_Swerve, "ProcPointer");
+
 
   /* Driver Control Axis */
   public static final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -165,6 +174,7 @@ public class RobotContainer
     configureManualBindings();
 
     s_Swerve.registerTelemetry(logger::telemeterize);
+    initLED();
   }
 
   private void configureDriverBindings()
@@ -562,6 +572,47 @@ public class RobotContainer
 
   public Limelight getLimelightStbd()
     {return s_LimelightStbd;}
+
+  private void initLED()
+  {
+    progressLayer.setBorder(true);
+    progressLayer.setMode(Mode.DRIVERFACE);
+    progressLayer.setType(LEDType.PROGRESS);
+    progressLayer.setPriority(9);
+    progressLayer.setBorderColor(Color.kBlueViolet);
+    progressLayer.setProgress(0.5);
+    progressLayer.setWidth(30);
+
+    statusLayer.setMode(Mode.TARGETFACE);
+    statusLayer.setType(LEDType.STATUS);
+    statusLayer.setPriority(8);
+    statusLayer.setStatus(0, true);
+    statusLayer.setStatus(2, true);
+    statusLayer.setBorder(true);
+    statusLayer.setTarget(new Translation2d(1.0,FieldUtils.fieldWidth));
+
+    reefPointerLayer.setMode(Mode.TARGETFACE);
+    reefPointerLayer.setType(LEDType.POINTER);
+    reefPointerLayer.setWidth(3);
+    reefPointerLayer.setBorder(false);
+    reefPointerLayer.setColor(Color.kPurple, Color.kBlack);
+    reefPointerLayer.setPriority(4);
+    reefPointerLayer.setTarget(new Translation2d(4.5,4));
+
+    processorPointerLayer.setMode(Mode.TARGETFACE);
+    processorPointerLayer.setType(LEDType.POINTER);
+    processorPointerLayer.setColor(Color.kCoral, Color.kBlack);
+    processorPointerLayer.setWidth(7);
+    processorPointerLayer.setBorder(false);
+    processorPointerLayer.setPriority(3);
+    processorPointerLayer.setTarget(FieldUtils.DriverFieldRefs.driverRed1);
+
+    s_Lights.addLayer(progressLayer);
+    s_Lights.addLayer(statusLayer);
+    s_Lights.addLayer(reefPointerLayer);
+    s_Lights.addLayer(processorPointerLayer);
+
+  }
 
   public Command getAutoCommand()
   {
