@@ -252,7 +252,7 @@ public final class Constants
     /** Desired cruise speed of Mechanism, RPS */
     public static final double diffectorCruise = diffectorCruiseMotor / gearboxRatio;
     /** Desired acceleration of Motor, RPS^2 */
-    public static final double diffectorElevationAccelerationMotor = 140;
+    public static final double diffectorElevationAccelerationMotor = 70;
     /** Desired acceleration of Mechanism, RPS^2 */
     public static final double diffectorElevationAcceleration = diffectorElevationAccelerationMotor / gearboxRatio;
     /** Desired acceleration of Motor, RPS^2 */
@@ -393,7 +393,7 @@ public final class Constants
     }
 
     /** Raw value when fully released, indicating string has snapped or the sensor is unavailable */
-    public static final double potErrValue = 0.025;
+    public static final double potErrValue = 1;
     /** Elevator height when potentiometer reads 0, metres over ground */
     public static final double potMin = 0.0;
     /** Elevator height when potentiometer reads 1, metres over ground */
