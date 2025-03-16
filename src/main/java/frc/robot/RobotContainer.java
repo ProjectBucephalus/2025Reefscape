@@ -23,6 +23,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.*;
 import frc.robot.commands.Auto.*;
+import frc.robot.commands.swerve.HeadingLockedDrive;
+import frc.robot.commands.swerve.ManualDrive;
+import frc.robot.commands.swerve.TargetProcessorDrive;
+import frc.robot.commands.swerve.TargetScoreDrive;
+import frc.robot.commands.swerve.TargetStationDrive;
 import frc.robot.constants.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
@@ -114,14 +119,13 @@ public class RobotContainer
     SmartDashboard.putBoolean("IgnoreFence", false);
     s_Swerve.setDefaultCommand
     (
-      new TeleopSwerve
+      new ManualDrive
       (
         s_Swerve, 
         () -> -driver.getRawAxis(translationAxis), 
         () -> -driver.getRawAxis(strafeAxis), 
         () -> -driver.getRawAxis(rotationAxis), 
         () -> driver.getRawAxis(brakeAxis),
-        () -> true,
         () -> true
       )
     );
@@ -297,46 +301,44 @@ public class RobotContainer
     cageDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetHeading
+        new HeadingLockedDrive
         (
           s_Swerve,
-          Rotation2d.kZero, 
-          Rotation2d.kZero,
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
+          Rotation2d.kZero, 
+          Rotation2d.kZero,
           () -> driver.getRawAxis(brakeAxis),
-          () -> !driver.leftStick().getAsBoolean()
+          () -> true
         )
       );
 
     stationDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetHeadingStation
+        new TargetStationDrive
         (
           s_Swerve, 
-          Rotation2d.kZero,
-          () -> swerveState.Pose.getY(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
+          Rotation2d.kZero,
           () -> driver.getRawAxis(brakeAxis),
-          () -> !driver.leftStick().getAsBoolean()
+          () -> true
         )
       );
   
     processorDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetHeadingProcessor
+        new TargetProcessorDrive
         (
           s_Swerve,
-          Rotation2d.kCW_90deg, 
-          () -> swerveState.Pose.getX(),
-          Rotation2d.kCW_90deg,
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
+          Rotation2d.kCW_90deg, 
+          Rotation2d.kCW_90deg,
           () -> driver.getRawAxis(brakeAxis),
-          () -> !driver.leftStick().getAsBoolean()
+          () -> true
         )
       );
 
@@ -363,15 +365,14 @@ public class RobotContainer
     scoreDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetHeadingScore
+        new TargetScoreDrive
         (
           s_Swerve, 
-          90,
-          () -> swerveState.Pose.getTranslation(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
+          Rotation2d.kCW_90deg,
           () -> driver.getRawAxis(brakeAxis),
-          () -> !driver.leftStick().getAsBoolean()
+          () -> true
         )
       );
   }

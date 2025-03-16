@@ -25,7 +25,8 @@ import frc.robot.subsystems.Limelight;
 
 public class TargetHeadingStation extends Command 
 {
-  private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest.FieldCentricFacingAngle()
+  private final SwerveRequest.FieldCentricFacingAngle driveRequest = new SwerveRequest
+    .FieldCentricFacingAngle()
     .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
