@@ -15,6 +15,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -158,77 +159,87 @@ public class AutoUtils
     return new SequentialCommandGroup(commandList.toArray(Command[]::new));
   }
 
-  public static Command pathfindAndFollowCommand(String pathName, BooleanSupplier brakeSup)
+  public static Command pathfindAndFollowCommand(Supplier<String> pathNameSup, BooleanSupplier brakeSup)
   {
-    PathPlannerPath path = FieldUtils.loadPath(pathName);
-    boolean atPathStart = RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.pathFollowTolerance;
+    PathPlannerPath path = FieldUtils.loadPath(pathNameSup.get());
+    BooleanSupplier atPathStart = () -> RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.pathFollowTolerance;
     
-    Command c_PathfindingCommand = 
-    atPathStart 
-    ? 
-    AutoBuilder.followPath(path) 
-    : 
-    AutoBuilder.pathfindThenFollowPath(path, brakeSup.getAsBoolean() ? slowedConstraints : defaultConstraints);
-    
-    return c_PathfindingCommand.until(RobotContainer.driver.povCenter());
+    return 
+    Commands.either
+    (
+      AutoBuilder.followPath(path), 
+      Commands.either
+      (
+        AutoBuilder.pathfindThenFollowPath(path, slowedConstraints), 
+        AutoBuilder.pathfindThenFollowPath(path, defaultConstraints), 
+        brakeSup
+      ),
+      atPathStart
+    ).until(RobotContainer.driver.povCenter());
   }
 
-  public static Command pathfindToBargeCommand(BooleanSupplier brakeSup)
+  public static Supplier<String> getBargePathName()
   {
-    Translation2d nearestBargePoint = FieldUtils.getNearestBargePoint(RobotContainer.swerveState.Pose.getTranslation());
-
-    ArrayList<Translation2d> localList = FieldUtils.isRedAlliance() ? Constants.Auto.redBargePoints : Constants.Auto.blueBargePoints;
-
-    int nearestBargePointNumber = localList.indexOf(nearestBargePoint) + 1;
-
-    String pathName = ("b" + nearestBargePointNumber).toLowerCase();
-
-    return pathfindAndFollowCommand(pathName, brakeSup);
-  }
-
-  public static Command pathfindToReefCommand(DpadOptions dpadValue, BooleanSupplier brakeSup)
-  {
-    int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
-
-    String pathName =
-    switch (dpadValue) 
+    return 
+    () ->
     {
-      case CENTRE -> "a" + nearestReefFace;
-    
-      case LEFT, RIGHT -> 
-        {
-          boolean flippedFace = (nearestReefFace == 3 || nearestReefFace == 4 || nearestReefFace == 5);
-          int unicodeValueOffset = 
-          dpadValue == DpadOptions.RIGHT 
-          ? 
-          flippedFace ? 63 : 64
-          : 
-          flippedFace ? 64 : 63;
-          
-          yield "r" + (char)((nearestReefFace * 2) + unicodeValueOffset);
-        }
+      Translation2d nearestBargePoint = FieldUtils.getNearestBargePoint(RobotContainer.swerveState.Pose.getTranslation());
+
+      ArrayList<Translation2d> localList = FieldUtils.isRedAlliance() ? Constants.Auto.redBargePoints : Constants.Auto.blueBargePoints;
+  
+      int nearestBargePointNumber = localList.indexOf(nearestBargePoint) + 1;
+  
+      return ("b" + nearestBargePointNumber).toLowerCase();
     };
-
-    pathName = pathName.toLowerCase();
-
-    return pathfindAndFollowCommand(pathName, brakeSup);
   }
 
-  public static Command pathfindToStationCommand(int stationPosition, BooleanSupplier brakeSup)
+  public static Supplier<String> getReefPathName(DpadOptions dpadValue)
   {
-    double robotY = RobotContainer.swerveState.Pose.getY();
+    return 
+    () ->
+    {
+      int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
 
-    char stationSide = 
-    FieldUtils.isRedAlliance() 
-    ? 
-    robotY >= 4.026 ? 'r' : 'l'
-    : 
-    robotY >= 4.026 ? 'l' : 'r';
+      String pathName =
+      switch (dpadValue) 
+      {
+        case CENTRE -> "a" + nearestReefFace;
+      
+        case LEFT, RIGHT -> 
+          {
+            boolean flippedFace = (nearestReefFace == 3 || nearestReefFace == 4 || nearestReefFace == 5);
+            int unicodeValueOffset = 
+            dpadValue == DpadOptions.RIGHT 
+            ? 
+            flippedFace ? 63 : 64
+            : 
+            flippedFace ? 64 : 63;
+            
+            yield "r" + (char)((nearestReefFace * 2) + unicodeValueOffset);
+          }
+      };
 
-    String pathName = "c" + stationSide + stationPosition;
-    pathName = pathName.toLowerCase();
+      SmartDashboard.putString("pathName", pathName);
+      return pathName.toLowerCase();
+    };
+  }
 
-    return pathfindAndFollowCommand(pathName, brakeSup);
+  public static Supplier<String> getStationPathName(int stationPosition)
+  {
+    return 
+    () ->
+    {
+      double robotY = RobotContainer.swerveState.Pose.getY();
+
+      char stationSide = 
+      FieldUtils.isRedAlliance() 
+      ? 
+      robotY >= 4.026 ? 'r' : 'l'
+      : 
+      robotY >= 4.026 ? 'l' : 'r';
+
+      return ("c" + stationSide + stationPosition).toLowerCase();
+    };
   }
 
   public static Command autoScoreSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, CoralManipulator s_Coral, IntSupplier reefLevel, BooleanSupplier brakeSup, IntSupplier povAngle, BooleanSupplier cancelTrigger)
@@ -259,7 +270,7 @@ public class AutoUtils
       ),
       AutoBuilder.followPath(algaePath),
       s_Diffector.coralScorePosCommand(coralLevel),
-      pathfindToReefCommand(dpadValue, brakeSup),
+      pathfindAndFollowCommand(getReefPathName(dpadValue), brakeSup),
       s_Coral.setStatusCommand(CoralStatus.DELIVERY_SMART)
     )
     .until(cancelTrigger);

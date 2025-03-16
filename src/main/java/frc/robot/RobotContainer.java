@@ -22,8 +22,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.*;
-import frc.robot.commands.Auto.*;
+import frc.robot.commands.swerve.*;
 import frc.robot.constants.*;
 import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.subsystems.*;
@@ -124,14 +123,13 @@ public class RobotContainer
     SD.IO_GEOFENCE.init();
     s_Swerve.setDefaultCommand
     (
-      new TeleopSwerve
+      new ManualDrive
       (
         s_Swerve, 
         () -> -driver.getRawAxis(translationAxis), 
         () -> -driver.getRawAxis(strafeAxis), 
         () -> -driver.getRawAxis(rotationAxis), 
         () -> driver.getRawAxis(brakeAxis),
-        () -> true,
         () -> true
       )
     );
@@ -281,34 +279,34 @@ public class RobotContainer
       * Cage pathfinding controls 
       * Drives to the nearest reef face when the cage heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    cageDriveTrigger.and(driver.povUp())   .onTrue(AutoUtils.pathfindAndFollowCommand("cage2", driver.rightTrigger()));
-    cageDriveTrigger.and(driver.povLeft()) .onTrue(AutoUtils.pathfindAndFollowCommand("cage3", driver.rightTrigger()));
-    cageDriveTrigger.and(driver.povRight()).onTrue(AutoUtils.pathfindAndFollowCommand("cage1", driver.rightTrigger()));
+    cageDriveTrigger.and(driver.povUp())   .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage2", driver.rightTrigger())));
+    cageDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage3", driver.rightTrigger())));
+    cageDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage1", driver.rightTrigger())));
 
     /* 
       * Station pathfinding controls 
       * Drives to the nearest coral station when the station heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    stationDriveTrigger.and(driver.povUp())   .onTrue(AutoUtils.pathfindToStationCommand(2, driver.rightTrigger()));
-    stationDriveTrigger.and(driver.povLeft()) .onTrue(AutoUtils.pathfindToStationCommand(1, driver.rightTrigger()));
-    stationDriveTrigger.and(driver.povRight()).onTrue(AutoUtils.pathfindToStationCommand(3, driver.rightTrigger()));
+    stationDriveTrigger.and(driver.povUp())   .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(2), driver.rightTrigger())));
+    stationDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(1), driver.rightTrigger())));
+    stationDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(3), driver.rightTrigger())));
 
     /* 
       * Processor pathfinding control 
       * Runs when the processor heading lock is active and right is pressed on the dpad 
       */ 
-    processorDriveTrigger.and(driver.povRight()).onTrue(AutoUtils.pathfindAndFollowCommand("p", driver.rightTrigger()));
-    processorDriveTrigger.and(driver.povLeft()).onTrue(AutoUtils.pathfindAndFollowCommand("pOpp", driver.rightTrigger()));
+    processorDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "p", driver.rightTrigger())));
+    processorDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "pOpp", driver.rightTrigger())));
 
     /* 
       * Reef and Net pathfinding controls 
       * Drives to the nearest reef face when the reef heading lock is active and a corresponding dpad direction is pressed 
       * Drives to the nearest net position when the scoring heading lock is active and down is pressed on the dpad
       */ 
-    scoreDriveTrigger.and(driver.povUp())   .onTrue(AutoUtils.pathfindToReefCommand(DpadOptions.CENTRE, driver.rightTrigger()));
-    scoreDriveTrigger.and(driver.povLeft()) .onTrue(AutoUtils.pathfindToReefCommand(DpadOptions.LEFT, driver.rightTrigger()));
-    scoreDriveTrigger.and(driver.povRight()).onTrue(AutoUtils.pathfindToReefCommand(DpadOptions.RIGHT, driver.rightTrigger()));
-    scoreDriveTrigger.and(driver.povDown()) .onTrue(AutoUtils.pathfindToBargeCommand(driver.rightTrigger()));
+    scoreDriveTrigger.and(driver.povUp())   .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.CENTRE), driver.rightTrigger())));
+    scoreDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.LEFT), driver.rightTrigger())));
+    scoreDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.RIGHT), driver.rightTrigger())));
+    scoreDriveTrigger.and(driver.povDown()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getBargePathName(), driver.rightTrigger())));
 
     /* 
       * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed
@@ -320,46 +318,44 @@ public class RobotContainer
     cageDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetHeading
+        new HeadingLockedDrive
         (
           s_Swerve,
-          Rotation2d.kZero, 
-          Rotation2d.kZero,
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
+          Rotation2d.kZero, 
+          Rotation2d.kZero,
           () -> driver.getRawAxis(brakeAxis),
-          () -> !driver.leftStick().getAsBoolean()
+          () -> true
         )
       );
 
     stationDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetHeadingStation
+        new TargetStationDrive
         (
           s_Swerve, 
-          Rotation2d.kZero,
-          () -> swerveState.Pose.getY(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
+          Rotation2d.kZero,
           () -> driver.getRawAxis(brakeAxis),
-          () -> !driver.leftStick().getAsBoolean()
+          () -> true
         )
       );
   
     processorDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetHeadingProcessor
+        new TargetProcessorDrive
         (
           s_Swerve,
-          Rotation2d.kCW_90deg, 
-          () -> swerveState.Pose.getX(),
-          Rotation2d.kCW_90deg,
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
+          Rotation2d.kCW_90deg, 
+          Rotation2d.kCW_90deg,
           () -> driver.getRawAxis(brakeAxis),
-          () -> !driver.leftStick().getAsBoolean()
+          () -> true
         )
       );
 
@@ -382,15 +378,14 @@ public class RobotContainer
     scoreDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetHeadingScore
+        new TargetScoreDrive
         (
           s_Swerve, 
-          90,
-          () -> swerveState.Pose.getTranslation(),
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
+          Rotation2d.kCW_90deg,
           () -> driver.getRawAxis(brakeAxis),
-          () -> !driver.leftStick().getAsBoolean()
+          () -> true
         )
       );
   }
