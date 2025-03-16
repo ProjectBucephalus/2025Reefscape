@@ -274,10 +274,10 @@ public final class Constants
     /** Physical lower limit of the elevator when horizontal, metres above the ground */
     public static final double minZ = 0.36;
     /** Elevation at which all rotations are safe */
-    public static final double safeElevation = 0.72;
-    public static final double reefSafeElevation = 1;
-    public static final double algaeSafeElevation = 1.4;
-    public static final double climberClearanceThreshold = 0.55;
+    public static final double safeElevation = 0.71;
+    public static final double reefSafeElevation = 1; // TODO
+    public static final double algaeSafeElevation = 1.5;
+    public static final double climberClearanceThreshold = 0.6; // TODO
     
     /** Arm rotation check tollerance, degrees */
     public static final double angleTolerance = 2;
@@ -297,33 +297,37 @@ public final class Constants
      */
     public static class Presets
     {
-      public static final Translation2d startPosition           = new Translation2d(0.62,   0);
+      public static final Translation2d startPosition           = new Translation2d(0.616,  0);
       public static final Translation2d climbSafePosition       = new Translation2d(0.70,  90);
-      public static final Translation2d climbPosition           = new Translation2d(0.36,  90);
-
+      public static final Translation2d climbPosition           = new Translation2d(0.425, 90);
+ 
       public static final Translation2d netPosition             = new Translation2d(  maxZ, 170);
-      public static final Translation2d algae3PortPosition      = new Translation2d(1.19,  97); // TODO
-      public static final Translation2d algae3StbdPosition      = new Translation2d(1.19, 263); // TODO
-      public static final Translation2d algae2PortPosition      = new Translation2d(0.79,  95); // TODO
-      public static final Translation2d algae2StbdPosition      = new Translation2d(0.79, 265); // TODO
-      public static final Translation2d processorPosition       = new Translation2d(0.38,  90);
-
+      public static final Translation2d algae3PortPosition      = new Translation2d(1.08, 113);
+      public static final Translation2d algae3StbdPosition      = new Translation2d(1.08, 247);
+      public static final Translation2d algae2PortPosition      = new Translation2d(0.65, 113);
+      public static final Translation2d algae2StbdPosition      = new Translation2d(0.65, 247);
+      public static final Translation2d processorPosition       = new Translation2d(0.43,  90);
+ 
       public static final Translation2d coral4PortPosition      = new Translation2d(1.62, 340);
       public static final Translation2d coral4StbdPosition      = new Translation2d(1.62,  20);
       public static final Translation2d coral3PortPosition      = new Translation2d(0.98, 340);
       public static final Translation2d coral3StbdPosition      = new Translation2d(0.98,  20);
       public static final Translation2d coral2PortPosition      = new Translation2d(0.68, 325);
       public static final Translation2d coral2StbdPosition      = new Translation2d(0.68,  35);
-      public static final Translation2d coral1PortPosition      = new Translation2d(0.71,  90);
-      public static final Translation2d coral1StbdPosition      = new Translation2d(0.71, 270);
-
-      public static final Translation2d coralIntakePosition     = new Translation2d(1.15, 145);
-      public static final Translation2d coralClawIntakePosition = new Translation2d(0.61,  47);
-      public static final Translation2d coralStowPosition       = new Translation2d(0.85,   0);
-
+      public static final Translation2d coral1ClawPortPosition  = new Translation2d(0.71,  90);
+      public static final Translation2d coral1ClawStbdPosition  = new Translation2d(0.71, 270);
+      public static final Translation2d coral1PortPosition      = new Translation2d(0.78, 150);
+      public static final Translation2d coral1StbdPosition      = new Translation2d(0.78, 210);
+ 
+      public static final Translation2d coralIntakePortPosition = new Translation2d(1.15, 215);
+      public static final Translation2d coralIntakeStbdPosition = new Translation2d(1.15, 145);
+      public static final Translation2d coralClawPortPosition   = new Translation2d(0.61, 133);
+      public static final Translation2d coralClawStbdPosition   = new Translation2d(0.61, 227);
+      public static final Translation2d coralStowPosition       = new Translation2d(0.70,   0);
+ 
       public static final Translation2d algaeIntakePortPosition = new Translation2d(0.38,  75);
       public static final Translation2d algaeIntakeStbdPosition = new Translation2d(0.38, 285);
-      public static final Translation2d algaeStowPosition       = new Translation2d(0.80, 180);
+      public static final Translation2d algaeStowPosition       = new Translation2d(0.65, 180);
 
       public static final ArrayList<Translation2d> lowDiffectorPositions = new ArrayList<Translation2d>()
       {{
@@ -340,30 +344,37 @@ public final class Constants
       /** Manipulator arm point-cloud */
       public static final Translation2d[] armGeometry = new Translation2d[]
       {
-        new Translation2d(0.16,0.445), new Translation2d(0.16,0.505),
-        new Translation2d(0.14,0.505), new Translation2d(0.12,0.505),
-        new Translation2d(0.00,0.505), new Translation2d( -0.12,0.505),
-        new Translation2d( -0.14,0.505), new Translation2d( -0.16,0.505),
-        new Translation2d( -0.16,0.445), new Translation2d( -0.24, -0.35),
-        new Translation2d( -0.24, -0.37), new Translation2d( -0.24, -0.40),
-        new Translation2d( -0.24, -0.45), new Translation2d( -0.23, -0.46),
-        new Translation2d( -0.22, -0.47), new Translation2d( -0.20, -0.47),
-        new Translation2d( -0.18, -0.46), new Translation2d(0.12, -0.50),
-        new Translation2d(0.12, -0.55), new Translation2d(0.15, -0.58),
-        new Translation2d(0.20, -0.58), new Translation2d(0.23, -0.55),
-        new Translation2d(0.23, -0.53), new Translation2d(0.24, -0.50),
-        new Translation2d(0.24, -0.45), new Translation2d(0.24, -0.40),
-        new Translation2d(0.24, -0.37), new Translation2d(0.24, -0.35)
+        new Translation2d(0.275, 0.295),
+        new Translation2d(0.275, 0.445),
+        new Translation2d(0.000, 0.490),
+        new Translation2d(-0.275, 0.445),
+        new Translation2d(-0.275, 0.295),
+        new Translation2d(-0.110, -0.545),
+        new Translation2d(0.000, -0.555),
+        new Translation2d(0.110, -545)
       };
       /** Manipulator arm point-cloud when holding Algae */
       public static final Translation2d[] armGeometryAlgae = new Translation2d[]
-      {};
+      {
+        new Translation2d(0.275, 0.295),
+        new Translation2d(0.275, 0.445),
+        new Translation2d(0.000, 0.490),
+        new Translation2d(-0.275, 0.445),
+        new Translation2d(-0.275, 0.295),
+        new Translation2d(0.216, -0.646),
+        new Translation2d(0.187, -0.753),
+        new Translation2d(0.108, -0.833),
+        new Translation2d(0.000, -0.861),
+        new Translation2d(-0.108, -0.833),
+        new Translation2d(-0.187, -0.753),
+        new Translation2d(-0.216, -0.646)
+      };
 
       /* Deck obstruction geometry */
+      public static final double deckHeight  = 0.16;
       public static final double railHeight  = 0.2;
       public static final double railLateral = 0.45;
       public static final double railMedial  = 0.37;
-      public static final double deckHeight  = 0.165;
 
       /** For IK, angle the arm is projected to test for immediate collisions, degrees */
       public static final double projectionAngle = 5;

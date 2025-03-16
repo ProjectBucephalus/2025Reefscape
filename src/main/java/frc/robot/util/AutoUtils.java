@@ -105,7 +105,7 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.moveAndWaitCommand(Presets.coralIntakePosition)
+              s_Diffector.moveAndWaitCommand(Presets.coralIntakePortPosition)
             )
           );
 

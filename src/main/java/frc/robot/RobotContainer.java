@@ -481,7 +481,7 @@ public class RobotContainer
         Commands.either
         (
           s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeStowPosition), // Algae stow pos
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralClawIntakePosition), // Coral intake with algae claw pos
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralClawPortPosition), // Coral intake with algae claw pos
           algaeModifier
         )
       );
@@ -493,7 +493,7 @@ public class RobotContainer
         Commands.either
         (
           s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePortPosition), // Algae intake pos (ground)
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralIntakePosition), // Coral intake pos (clearance for station)
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralIntakePortPosition), // Coral intake pos (clearance for station)
           algaeModifier
         )
       );

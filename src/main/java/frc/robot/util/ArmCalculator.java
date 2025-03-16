@@ -67,7 +67,9 @@ public class ArmCalculator
 
     GeoFenceObject allianceReef = FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.reefRed : FieldUtils.GeoFencing.reefBlue;
 
-    if (robotPos.getDistance(allianceReef.getCentre()) <= DiffectorConstants.IKGeometry.reefSafetyRadius) 
+    if (RobotContainer.algae)
+      {safeElevation = DiffectorConstants.algaeSafeElevation;}
+    else if (robotPos.getDistance(allianceReef.getCentre()) <= DiffectorConstants.IKGeometry.reefSafetyRadius) 
       {safeElevation = DiffectorConstants.reefSafeElevation;}
     else
       {safeElevation = DiffectorConstants.safeElevation;}
@@ -124,8 +126,8 @@ public class ArmCalculator
       )
       {
         // Intermediate waypoint: Safe elevation at initial rotation
-        pathOutput.add(new Translation2d(Math.max(Math.max(checkAngle(0), checkAngle(180)), safeElevation), startPosition.getY()));
-        pathOutput.add(new Translation2d(Math.max(Math.max(checkAngle(0), checkAngle(180)), safeElevation), targetPosition.getY()));
+        pathOutput.add(new Translation2d(Math.max(startPosition.getX(), safeElevation), startPosition.getY()));
+        pathOutput.add(new Translation2d(Math.max(startPosition.getX(), safeElevation), targetPosition.getY()));
       }
       
       else if
@@ -136,8 +138,8 @@ public class ArmCalculator
       )
       {
         // Intermediate waypoint: Safe elevation at initial rotation
-        pathOutput.add(new Translation2d(Math.max(checkAngle(0), safeElevation), startPosition.getY()));
-        pathOutput.add(new Translation2d(Math.max(checkAngle(0), safeElevation), targetPosition.getY()));
+        pathOutput.add(new Translation2d(Math.max(checkAngle(0), startPosition.getX()), startPosition.getY()));
+        pathOutput.add(new Translation2d(Math.max(checkAngle(0), startPosition.getX()), targetPosition.getY()));
       }
 
       else if
@@ -148,8 +150,8 @@ public class ArmCalculator
       )
       {
         // Intermediate waypoint: Safe elevation at initial rotation
-        pathOutput.add(new Translation2d(Math.max(checkAngle(180), safeElevation), startPosition.getY()));
-        pathOutput.add(new Translation2d(Math.max(checkAngle(180), safeElevation), targetPosition.getY()));
+        pathOutput.add(new Translation2d(Math.max(checkAngle(180), startPosition.getX()), startPosition.getY()));
+        pathOutput.add(new Translation2d(Math.max(checkAngle(180), startPosition.getX()), targetPosition.getY()));
       }
 
 
