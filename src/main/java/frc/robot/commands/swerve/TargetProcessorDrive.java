@@ -26,13 +26,12 @@ public class TargetProcessorDrive extends HeadingLockedDrive
   }
 
   @Override
-  protected Rotation2d updateTargetHeading()
+  protected void updateTargetHeading()
   {
     if (FieldUtils.isRedAlliance()) 
     {
       if (robotXY.getX() >= 8.774) 
         {targetHeading = new Rotation2d(Units.degreesToRadians(-90));} 
-
       else 
         {targetHeading = new Rotation2d(Units.degreesToRadians(90));}
     }
@@ -40,11 +39,8 @@ public class TargetProcessorDrive extends HeadingLockedDrive
     {
       if (robotXY.getX() >= 8.774) 
         {targetHeading = new Rotation2d(Units.degreesToRadians(90));} 
-        
       else 
         {targetHeading = new Rotation2d(Units.degreesToRadians(-90));}
     }
-
-    return targetHeading;
   }
 }

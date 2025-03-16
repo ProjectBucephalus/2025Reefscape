@@ -50,5 +50,5 @@ public class HeadingLockedDrive extends SwerveCommandBase
   }
 
   /** Processing to dynamicaly update the target heading */
-  protected Rotation2d updateTargetHeading() {return targetHeading;}
+  protected void updateTargetHeading() {}
 }

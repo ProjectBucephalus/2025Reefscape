@@ -9,9 +9,6 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class TargetStationDrive extends HeadingLockedDrive 
 {
-  private Rotation2d rStationL = new Rotation2d(Units.degreesToRadians(126));
-  private Rotation2d rStationR = new Rotation2d(Units.degreesToRadians(-126));
-
   /** Creates a new TargetStationDrive. */
   public TargetStationDrive
   (
@@ -27,25 +24,23 @@ public class TargetStationDrive extends HeadingLockedDrive
   }
 
   @Override
-  protected Rotation2d updateTargetHeading()
+  protected void updateTargetHeading()
   {
     if (redAlliance) 
     {
       if (robotXY.getY() >= 4.026) 
-        {targetHeading = rStationR;} 
+        {targetHeading = new Rotation2d(Units.degreesToRadians(-126));} 
 
       else 
-        {targetHeading = rStationL;}
+        {targetHeading = new Rotation2d(Units.degreesToRadians(126));}
     }
     else
     {
       if (robotXY.getY() >= 4.026) 
-        {targetHeading = rStationL;} 
+        {targetHeading = new Rotation2d(Units.degreesToRadians(126));} 
         
       else 
-        {targetHeading = rStationR;}
+        {targetHeading = new Rotation2d(Units.degreesToRadians(-126));}
     }
-
-    return targetHeading;
   }
 }
