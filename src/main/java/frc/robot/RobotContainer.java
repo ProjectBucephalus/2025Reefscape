@@ -256,34 +256,34 @@ public class RobotContainer
       * Cage pathfinding controls 
       * Drives to the nearest reef face when the cage heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    cageDriveTrigger.and(driver.povUp())   .onTrue(AutoUtils.pathfindAndFollowCommand(() -> "cage2", driver.rightTrigger()));
-    cageDriveTrigger.and(driver.povLeft()) .onTrue(AutoUtils.pathfindAndFollowCommand(() -> "cage3", driver.rightTrigger()));
-    cageDriveTrigger.and(driver.povRight()).onTrue(AutoUtils.pathfindAndFollowCommand(() -> "cage1", driver.rightTrigger()));
+    cageDriveTrigger.and(driver.povUp())   .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage2", driver.rightTrigger())));
+    cageDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage3", driver.rightTrigger())));
+    cageDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage1", driver.rightTrigger())));
 
     /* 
       * Station pathfinding controls 
       * Drives to the nearest coral station when the station heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    stationDriveTrigger.and(driver.povUp())   .onTrue(AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(2), driver.rightTrigger()));
-    stationDriveTrigger.and(driver.povLeft()) .onTrue(AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(1), driver.rightTrigger()));
-    stationDriveTrigger.and(driver.povRight()).onTrue(AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(3), driver.rightTrigger()));
+    stationDriveTrigger.and(driver.povUp())   .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(2), driver.rightTrigger())));
+    stationDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(1), driver.rightTrigger())));
+    stationDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(3), driver.rightTrigger())));
 
     /* 
       * Processor pathfinding control 
       * Runs when the processor heading lock is active and right is pressed on the dpad 
       */ 
-    processorDriveTrigger.and(driver.povRight()).onTrue(AutoUtils.pathfindAndFollowCommand(() -> "p", driver.rightTrigger()));
-    processorDriveTrigger.and(driver.povLeft()) .onTrue(AutoUtils.pathfindAndFollowCommand(() -> "pOpp", driver.rightTrigger()));
+    processorDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "p", driver.rightTrigger())));
+    processorDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "pOpp", driver.rightTrigger())));
 
     /* 
       * Reef and Net pathfinding controls 
       * Drives to the nearest reef face when the reef heading lock is active and a corresponding dpad direction is pressed 
       * Drives to the nearest net position when the scoring heading lock is active and down is pressed on the dpad
       */ 
-    scoreDriveTrigger.and(driver.povUp())   .onTrue(AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.CENTRE), driver.rightTrigger()));
-    scoreDriveTrigger.and(driver.povLeft()) .onTrue(AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.LEFT), driver.rightTrigger()));
-    scoreDriveTrigger.and(driver.povRight()).onTrue(AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.RIGHT), driver.rightTrigger()));
-    scoreDriveTrigger.and(driver.povDown()) .onTrue(AutoUtils.pathfindAndFollowCommand(AutoUtils.getBargePathName(), driver.rightTrigger()));
+    scoreDriveTrigger.and(driver.povUp())   .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.CENTRE), driver.rightTrigger())));
+    scoreDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.LEFT), driver.rightTrigger())));
+    scoreDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.RIGHT), driver.rightTrigger())));
+    scoreDriveTrigger.and(driver.povDown()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getBargePathName(), driver.rightTrigger())));
 
     /* 
       * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed

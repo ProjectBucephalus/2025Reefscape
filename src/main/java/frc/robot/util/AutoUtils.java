@@ -169,19 +169,19 @@ public class AutoUtils
     return new SequentialCommandGroup(commandList.toArray(Command[]::new));
   }
 
-  public static Command pathfindAndFollowCommand(Supplier<String> pathName, BooleanSupplier brakeSup)
+  public static Command pathfindAndFollowCommand(Supplier<String> pathNameSup, BooleanSupplier brakeSup)
   {
-    Supplier<PathPlannerPath> path = () -> FieldUtils.loadPath(pathName.get());
-    BooleanSupplier atPathStart = () -> RobotContainer.swerveState.Pose.getTranslation().getDistance(path.get().getPoint(0).position) <= Constants.Auto.pathFollowTolerance;
+    PathPlannerPath path = FieldUtils.loadPath(pathNameSup.get());
+    BooleanSupplier atPathStart = () -> RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.pathFollowTolerance;
     
     return 
     Commands.either
     (
-      AutoBuilder.followPath(path.get()), 
+      AutoBuilder.followPath(path), 
       Commands.either
       (
-        AutoBuilder.pathfindThenFollowPath(path.get(), slowedConstraints), 
-        AutoBuilder.pathfindThenFollowPath(path.get(), defaultConstraints), 
+        AutoBuilder.pathfindThenFollowPath(path, slowedConstraints), 
+        AutoBuilder.pathfindThenFollowPath(path, defaultConstraints), 
         brakeSup
       ),
       atPathStart
