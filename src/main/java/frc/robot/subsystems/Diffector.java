@@ -212,6 +212,9 @@ public class Diffector extends SubsystemBase
   public double getRelativeRotation()
     {return Conversions.mod(angle, 360);}
 
+  public Translation2d getRelativeTarget()
+    {return relativeTarget;}
+
   private void calculatePath()
   {
     targetPosition = new Translation2d(targetElevation, targetAngle);

@@ -26,7 +26,7 @@ public class AlgaeManipulator extends SubsystemBase
   private TalonFX algaeMotor;
 
   /* Declaration of the enum variable */
-  private AlgaeManipulatorStatus algaeStatus;
+  private AlgaeStatus algaeStatus;
 
   /**
    * Enum representing the status this manipulator is in
@@ -34,7 +34,7 @@ public class AlgaeManipulator extends SubsystemBase
    * Spins outwards at full speed to shoot at the net, spins outwards to shoot in the processor,
    * And does nothing while empty)
    */
-  public enum AlgaeManipulatorStatus
+  public enum AlgaeStatus
   {
     INTAKE,
     HOLDING,
@@ -44,17 +44,17 @@ public class AlgaeManipulator extends SubsystemBase
 
   public AlgaeManipulator() 
   {
-    algaeStatus = AlgaeManipulatorStatus.EMPTY;
+    algaeStatus = AlgaeStatus.EMPTY;
     algaeMotor = new TalonFX(IDConstants.algaeManipulatorID);
   }
 
-  public void setStatus(AlgaeManipulatorStatus status)
+  public void setStatus(AlgaeStatus status)
     {algaeStatus = status;}
 
-  public Command setStatusCommand(AlgaeManipulatorStatus status)
+  public Command setStatusCommand(AlgaeStatus status)
     {return runOnce(() -> setStatus(status));}
 
-  public AlgaeManipulatorStatus getStatus()
+  public AlgaeStatus getStatus()
     {return algaeStatus;}
 
   @Override
@@ -68,7 +68,7 @@ public class AlgaeManipulator extends SubsystemBase
         algaeMotor.set(Constants.GamePiecesManipulator.algaeIntakeSpeed);
 
         if (RobotContainer.algae) 
-          {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
+          {algaeStatus = AlgaeStatus.HOLDING;}
         break;
 
       case HOLDING:
@@ -76,7 +76,7 @@ public class AlgaeManipulator extends SubsystemBase
           {algaeMotor.set(Constants.GamePiecesManipulator.algaeHoldingSpeed);} 
 
         else
-          {algaeStatus = AlgaeManipulatorStatus.EMPTY;}
+          {algaeStatus = AlgaeStatus.EMPTY;}
         break;
 
       case EJECT:
@@ -92,7 +92,7 @@ public class AlgaeManipulator extends SubsystemBase
         algaeMotor.set(0);
 
         if (RobotContainer.algae) 
-          {algaeStatus = AlgaeManipulatorStatus.HOLDING;}
+          {algaeStatus = AlgaeStatus.HOLDING;}
         break;
     }
   }

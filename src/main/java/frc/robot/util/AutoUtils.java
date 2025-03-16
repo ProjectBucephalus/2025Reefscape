@@ -24,10 +24,10 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Auto.AutoMapping;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.AlgaeManipulator;
-import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
+import frc.robot.subsystems.AlgaeManipulator.AlgaeStatus;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
-import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
+import frc.robot.subsystems.CoralManipulator.CoralStatus;
 
 public class AutoUtils 
 {
@@ -83,7 +83,7 @@ public class AutoUtils
             )
           );
 
-          commandList.add(s_Coral.setStatusCommand(CoralManipulatorStatus.DELIVERY_SMART));
+          commandList.add(s_Coral.setStatusCommand(CoralStatus.DELIVERY_SMART));
           
           if (splitCommand.charAt(2) == '4') 
           {
@@ -92,7 +92,7 @@ public class AutoUtils
           }
           
           commandList.add(Commands.waitUntil(() -> !RobotContainer.coral));
-          commandList.add(s_Coral.setStatusCommand(CoralManipulatorStatus.DEFAULT));
+          commandList.add(s_Coral.setStatusCommand(CoralStatus.DEFAULT));
           break;
 
         case 'c':
@@ -260,7 +260,7 @@ public class AutoUtils
       AutoBuilder.followPath(algaePath),
       s_Diffector.coralScorePosCommand(coralLevel),
       pathfindToReefCommand(dpadValue, brakeSup),
-      s_Coral.setStatusCommand(CoralManipulatorStatus.DELIVERY_SMART)
+      s_Coral.setStatusCommand(CoralStatus.DELIVERY_SMART)
     )
     .until(cancelTrigger);
   }
@@ -271,7 +271,7 @@ public class AutoUtils
     Commands.sequence
     (
       s_Diffector.algaeIntakePosCommand(nearestReefFace),
-      s_Algae.setStatusCommand(AlgaeManipulatorStatus.INTAKE)
+      s_Algae.setStatusCommand(AlgaeStatus.INTAKE)
     );
   }
 
@@ -281,7 +281,7 @@ public class AutoUtils
     Commands.sequence
     (
       s_Diffector.moveAndWaitCommand(net ? Presets.netPosition : Presets.processorPosition), 
-      s_Algae.setStatusCommand(AlgaeManipulatorStatus.EJECT)
+      s_Algae.setStatusCommand(AlgaeStatus.EJECT)
     );
   }
 
@@ -301,7 +301,7 @@ public class AutoUtils
     Commands.sequence
     (
       s_Diffector.moveAndWaitCommand(target), 
-      s_Algae.setStatusCommand(AlgaeManipulatorStatus.EJECT)
+      s_Algae.setStatusCommand(AlgaeStatus.EJECT)
     );
   }
 }
