@@ -389,15 +389,16 @@ public final class Constants
   public static final class GamePiecesManipulator 
   {
     /* Coral manipulator speeds */
-    public static final double coralManipulatorDeliverySpeed = -0.7;
-    public static final double coralManipulatorHoldingSpeed  = -0.05;
+    public static final double coralDeliverySpeed = -0.7;
+    public static final double coralHoldingSpeed  = -0.05;
     public static final double coralHoldingkG = -0.035;
 
     /* Algae manipulator speeds */
-    public static final double algaeManipulatorIntakeSpeed    =  0.4;
-    public static final double algaeManipulatorHoldingSpeed   =  0.2;
-    public static final double algaeManipulatorNetSpeed       = -0.9;
-    public static final double algaeManipulatorProcessorSpeed = -0.3;
+    public static final double algaeIntakeSpeed    =  0.4;
+    public static final double algaeHoldingSpeed   =  0.2;
+    public static final double algaeNetSpeed       = -0.9;
+    public static final double algaeProcessorSpeed = -0.3;
+    public static final double algaeHeldCurrent = 30;
 
     /** Algae net shooting range for rotation snapping, m */
     public static final double algaeRange = 2.5;

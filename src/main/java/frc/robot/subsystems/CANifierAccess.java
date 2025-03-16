@@ -15,12 +15,6 @@ public class CANifierAccess
 
   public CANifierAccess() {}
 
-  public boolean algaeManiSensor()
-  {
-    SD.SENSOR_ALGAE.put(io_CANifier.getGeneralInput(IDConstants.algaeManipulatorDIO));
-    return io_CANifier.getGeneralInput(IDConstants.algaeManipulatorDIO);
-  }
-
   public boolean coralManiStbdSensor()
   {
     SD.SENSOR_CORAL1.put(io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOStbd));
