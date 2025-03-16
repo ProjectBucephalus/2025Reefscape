@@ -297,7 +297,7 @@ public final class Constants
     public static class Presets
     {
       public static final Translation2d startPosition           = new Translation2d(0.616,  0);
-      public static final Translation2d climbPosition           = new Translation2d(0.365,  90);
+      public static final Translation2d climbPosition           = new Translation2d(0.373, 90);
 
       public static final Translation2d netPosition             = new Translation2d(  maxZ, 170);
       public static final Translation2d algae3PortPosition      = new Translation2d(1.19,  97); // TODO
