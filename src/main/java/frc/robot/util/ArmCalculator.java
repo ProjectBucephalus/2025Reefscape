@@ -43,7 +43,7 @@ public class ArmCalculator
     maxElevation  = DiffectorConstants.maxZ;
     minElevation  = DiffectorConstants.minZ;
     safeElevation = DiffectorConstants.safeElevation;
-    coralClawElevation = DiffectorConstants.coralClawElevation;
+    coralClawElevation = DiffectorConstants.coralFunnelElevation;
     algaeClawElevation = DiffectorConstants.algaeClawElevation;
     uprightTolerance = DiffectorConstants.uprightTolerance;
     downsideTolerance = DiffectorConstants.downsideTolerance;
@@ -121,10 +121,14 @@ public class ArmCalculator
     ( // If goes past both uprights
       // Over a full rotation
       angleChange >= 360 ||
-      (angleRelative < 180 && angleRelative + angleChange >= 360) ||
-      (angleRelative > 180 && angleRelative + angleChange >= 540) ||
-      (angleRelative < 180 && angleRelative + angleChange <=   0) ||
-      (angleRelative > 180 && angleRelative + angleChange <=-180)
+      //(angleRelative < 0 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) || // TODO
+      //(angleRelative < 0 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) ||
+      //(angleRelative < 0 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) ||
+      //(angleRelative < 0 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) ||
+      (angleRelative < 180 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) ||
+      (angleRelative > 180 - downsideTolerance && angleRelative + angleChange >= 540 - uprightTolerance) ||
+      (angleRelative > 180 - downsideTolerance && angleRelative + angleChange <=   0 + uprightTolerance) ||
+      (angleRelative < 180 + downsideTolerance && angleRelative + angleChange <=-180 + uprightTolerance)
     )
     {
       // Intermediate waypoint: Safe elevation at initial rotation

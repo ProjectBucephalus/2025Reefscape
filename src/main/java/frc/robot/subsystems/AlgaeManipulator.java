@@ -18,7 +18,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
  * Of the algae for the algae manipulator.
  * 
  * @author 5985
- * @author Sebastian Aiello
  */
 public class AlgaeManipulator extends SubsystemBase 
 {
@@ -37,6 +36,7 @@ public class AlgaeManipulator extends SubsystemBase
    */
   public enum AlgaeStatus
   {
+    MANUAL_INTAKE,
     INTAKE,
     HOLDING,
     EJECT,
@@ -47,6 +47,7 @@ public class AlgaeManipulator extends SubsystemBase
   {
     algaeStatus = AlgaeStatus.EMPTY;
     algaeMotor = new TalonFX(IDConstants.algaeManipulatorID);
+    SD.IO_ALGAE_HOLD.init();
   }
 
   public void setStatus(AlgaeStatus status)
@@ -61,11 +62,20 @@ public class AlgaeManipulator extends SubsystemBase
   @Override
   public void periodic() 
   {
-    RobotContainer.algae = algaeMotor.getTorqueCurrent().getValueAsDouble() >= Constants.GamePiecesManipulator.algaeHeldCurrent;
+    RobotContainer.algae = 
+      Math.abs(algaeMotor.getStatorCurrent().getValueAsDouble()) >= Constants.GamePiecesManipulator.algaeHeldCurrent ||
+      (RobotContainer.algae); // && Math.abs(algaeMotor.getStatorCurrent().getValueAsDouble()) >= Constants.GamePiecesManipulator.algaeReleaseCurrent);
     SD.SENSOR_ALGAE.put(RobotContainer.algae);
+    SD.STATE_ALGAE.put(algaeStatus.name());
+    SD.SENSOR_ALGAE_CURRENT.put(Math.abs(algaeMotor.getStatorCurrent().getValueAsDouble()));
+    double algaeHoldingSpeed = SD.IO_ALGAE_HOLD.get();
 
     switch(algaeStatus)
     {
+      case MANUAL_INTAKE:
+        algaeMotor.set(Constants.GamePiecesManipulator.algaeIntakeSpeed);
+        break;
+
       case INTAKE:
         algaeMotor.set(Constants.GamePiecesManipulator.algaeIntakeSpeed);
 
@@ -75,7 +85,7 @@ public class AlgaeManipulator extends SubsystemBase
 
       case HOLDING:
         if (RobotContainer.algae) 
-          {algaeMotor.set(Constants.GamePiecesManipulator.algaeHoldingSpeed);} 
+          {algaeMotor.set(algaeHoldingSpeed);}
 
         else
           {algaeStatus = AlgaeStatus.EMPTY;}
@@ -92,9 +102,7 @@ public class AlgaeManipulator extends SubsystemBase
 
       case EMPTY:
         algaeMotor.set(0);
-
-        if (RobotContainer.algae) 
-          {algaeStatus = AlgaeStatus.HOLDING;}
+        RobotContainer.algae = false;
         break;
     }
   }
