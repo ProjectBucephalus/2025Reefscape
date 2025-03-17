@@ -35,6 +35,8 @@ public class AutoUtils
   private static final PathConstraints defaultConstraints = Constants.Auto.defaultConstraints;
   private static final PathConstraints slowedConstraints = Constants.Auto.slowedConstraints;
 
+  private static Translation2d prevEndPoint;
+
   /**
    * Splits a string of auto command phrases and gets the path command and robot command associated with each command phrase
    * @param commandInput The string of commands to split, seperated by commas with no spaces (e.g. "a1,rA1,p,cR3")
@@ -52,7 +54,7 @@ public class AutoUtils
     PathPlannerPath nextPath;
 
     // Tracks the end point of the previous path, used so each path properly pathfinds from the end point of the previous one
-    Translation2d prevEndPoint = RobotContainer.swerveState.Pose.getTranslation();
+    prevEndPoint = RobotContainer.swerveState.Pose.getTranslation();
 
     // For each command phrase, adds the associated path and then the associated command to the command list
     for (String splitCommand : splitCommands) 
@@ -89,7 +91,7 @@ public class AutoUtils
           if (splitCommand.charAt(2) == '4') 
           {
             commandList.add(Commands.waitSeconds(0.1));
-            commandList.add(s_Diffector.coralScorePosInstantCommand(prevEndPoint, 3));
+            commandList.add(s_Diffector.defer(() -> s_Diffector.coralScorePosInstantCommand(prevEndPoint, 3)));
           }
           
           commandList.add(Commands.waitUntil(() -> !RobotContainer.coral));

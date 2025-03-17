@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -20,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.swerve.*;
@@ -233,35 +235,45 @@ public class RobotContainer
     driver.back()
       .onTrue
       (
-        AutoUtils.autoScoreSequenceCommand
+        Commands.defer
         (
-          s_Diffector, 
-          s_Algae, 
-          s_Coral, 
-          () -> 
-          {
-            return 
-            copilot.y().getAsBoolean() 
-            ? 
-            4 
-            : 
-            copilot.x().getAsBoolean() 
-            ? 
-            3 
-            : 
-            copilot.b().getAsBoolean() 
-            ? 
-            2 
-            : 
-            copilot.a().getAsBoolean() 
-            ? 
-            1 
-            : 
-            0;
-          }, 
-          driver.rightTrigger(), 
-          () -> driver.getHID().getPOV(), 
-          autoScoreCancelTrigger
+          () ->
+          AutoUtils.autoScoreSequenceCommand
+          (
+            s_Diffector, 
+            s_Algae, 
+            s_Coral, 
+            () -> 
+            {
+              return 
+              copilot.y().getAsBoolean() 
+              ? 
+              4 
+              : 
+              copilot.x().getAsBoolean() 
+              ? 
+              3 
+              : 
+              copilot.b().getAsBoolean() 
+              ? 
+              2 
+              : 
+              copilot.a().getAsBoolean() 
+              ? 
+              1 
+              : 
+              0;
+            }, 
+            driver.rightTrigger(), 
+            () -> driver.getHID().getPOV(), 
+            autoScoreCancelTrigger
+          ),
+          new HashSet<Subsystem>() 
+          {{
+            add(s_Diffector);
+            add(s_Algae);
+            add(s_Coral);
+          }}
         )
       );
   }
@@ -498,8 +510,8 @@ public class RobotContainer
   {
     /* Manual climber controls */
     copilot.axisMagnitudeGreaterThan(manualClimberAxis, Constants.Control.stickDeadband)
-      .whileTrue(Commands.run(() -> s_Climber.manualOveride(copilot.getRawAxis(manualClimberAxis))))
-      .onFalse(Commands.runOnce(() -> s_Climber.manualOveride(0)));
+      .whileTrue(s_Climber.run(() -> s_Climber.manualOveride(copilot.getRawAxis(manualClimberAxis))))
+      .onFalse(s_Climber.runOnce(() -> s_Climber.manualOveride(0)));
 
     /* Manual arm controls */
     copilot.axisMagnitudeGreaterThan(manualDiffectorElevationAxis, Constants.Control.manualDiffectorDeadband)
@@ -521,7 +533,7 @@ public class RobotContainer
           () -> s_Diffector.setManualDiffectorValues(0, 0)
         )
       );
-    copilot.rightStick().whileTrue(Commands.run(() -> s_Diffector.unwind(), s_Diffector));
+    copilot.rightStick().whileTrue(s_Diffector.run(() -> s_Diffector.unwind()));
 
     /* Coral outtake controls */
     copilot.povLeft()
