@@ -279,7 +279,7 @@ public final class Constants
     /** Elevation at which all rotations are safe */
     public static final double safeElevation = 0.71;
     public static final double reefSafeElevation = 1; // TODO
-    public static final double algaeSafeElevation = 1.5;
+    public static final double algaeSafeElevation = 1;
     public static final double climberClearanceThreshold = 0.6; // TODO
     
     /** Arm rotation check tollerance, degrees */
@@ -354,7 +354,7 @@ public final class Constants
         new Translation2d(-0.275, 0.295),
         new Translation2d(-0.110, -0.545),
         new Translation2d(0.000, -0.555),
-        new Translation2d(0.110, -545)
+        new Translation2d(0.110, -0.545)
       };
       /** Manipulator arm point-cloud when holding Algae */
       public static final Translation2d[] armGeometryAlgae = new Translation2d[]
@@ -382,7 +382,7 @@ public final class Constants
       /** For IK, angle the arm is projected to test for immediate collisions, degrees */
       public static final double projectionAngle = 5;
       /** For IK, distance the arm is projected down to test for immediate collisions, m */
-      public static final double projectionElevation = 0.1;
+      public static final double projectionElevation = 0.05;
 
       /** For pathfollowing, elevation/rotation "distance" to set the dynamic target position at */
       public static final Translation2d unitTravel = new Translation2d(projectionElevation, projectionAngle);
