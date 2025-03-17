@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.util.leds;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +7,7 @@ import java.util.Map;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
+import frc.robot.util.FieldUtils;
 import frc.robot.util.FieldUtils.DriverFieldRefs;
 import frc.robot.constants.Constants.LEDStrip;
 import frc.robot.subsystems.CommandSwerveDrivetrain;

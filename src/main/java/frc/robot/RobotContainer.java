@@ -9,9 +9,7 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -24,13 +22,11 @@ import frc.robot.commands.swerve.*;
 import frc.robot.constants.*;
 import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.AlgaeManipulator;
-import frc.robot.subsystems.Climber.ClimberStatus;
-import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
-import frc.robot.util.LightLayer.LEDType;
-import frc.robot.util.LightLayer.Mode;
+import frc.robot.util.leds.LightLayer;
+import frc.robot.util.leds.LightLayer.*;
+import frc.robot.util.libraries.Telemetry;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -372,7 +368,7 @@ public class RobotContainer
         Commands.sequence
         (
           diffector.moveAndWaitCommand(DiffectorConstants.Presets.climbPosition),
-          climber.setStatusCommand(ClimberStatus.CLIMB)
+          climber.setStatusCommand(Climber.Status.CLIMB)
         )
       );  
     copilot.back()
@@ -381,7 +377,7 @@ public class RobotContainer
         Commands.sequence
         (
           diffector.moveAndWaitCommand(DiffectorConstants.Presets.climbSafePosition),
-          climber.setStatusCommand(ClimberStatus.ACTIVE)
+          climber.setStatusCommand(Climber.Status.ACTIVE)
         )
       );  
 

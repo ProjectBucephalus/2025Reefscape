@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants.LEDStrip;
-import frc.robot.util.LightLayer;
+import frc.robot.util.leds.LightLayer;
 import edu.wpi.first.wpilibj.util.Color;
 import java.util.ArrayList;
 import java.util.Comparator;

@@ -212,6 +212,5 @@ public class FieldUtils
     public static final Translation2d driverRed1 = new Translation2d(fieldLength,2.278);
     public static final Translation2d driverRed2 = new Translation2d(fieldLength,4.026);
     public static final Translation2d driverRed3 = new Translation2d(fieldLength,5.278);
-
   }
 }
