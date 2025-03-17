@@ -49,7 +49,7 @@ public final class IDConstants
   
   public static final int canifierID = 23;
 
-  public static final GeneralPin coralManipulatorDIOPort = GeneralPin.SPI_CLK_PWM0P;
+  public static final GeneralPin coralManipulatorDIOPort = GeneralPin.SPI_MISO_PWM2P;
   public static final GeneralPin coralManipulatorDIOStbd = GeneralPin.SPI_MOSI_PWM1P;
 
   /* Vision */

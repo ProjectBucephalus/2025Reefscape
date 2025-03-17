@@ -453,7 +453,7 @@ public class RobotContainer
         Commands.either
         (
           s_Diffector.algaeIntakePosCommand(true),
-          s_Diffector.coralScorePosCommand(3), 
+          s_Diffector.coralScorePosCommand(2),
           algaeModifier
         )
       );

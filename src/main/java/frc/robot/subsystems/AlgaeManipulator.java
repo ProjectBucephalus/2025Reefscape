@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IDConstants;
+import frc.robot.util.SD;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -61,6 +62,7 @@ public class AlgaeManipulator extends SubsystemBase
   public void periodic() 
   {
     RobotContainer.algae = algaeMotor.getTorqueCurrent().getValueAsDouble() >= Constants.GamePiecesManipulator.algaeHeldCurrent;
+    SD.SENSOR_ALGAE.put(RobotContainer.algae);
 
     switch(algaeStatus)
     {
