@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -227,6 +229,7 @@ public final class Constants
     public static final double diffectorMotorKISpring = 0;
     public static final double diffectorMotorKDSpring = 0;
 
+    public static final NeutralModeValue neutralMode = NeutralModeValue.Brake;
     
     private static final double diffectorGearTeethIn = 8;
     private static final double diffectorGearTeethOut = 60;

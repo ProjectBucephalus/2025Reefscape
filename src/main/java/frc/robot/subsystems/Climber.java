@@ -3,15 +3,17 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.constants.CTREConfigs;
+import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.ClimberConstants;
 import frc.robot.constants.IDConstants;
-import frc.robot.util.Conversions;
 import frc.robot.util.SD;
 
 public class Climber extends SubsystemBase
@@ -23,7 +25,18 @@ public class Climber extends SubsystemBase
   /* Declarations of all the motion magic variables */
   private final MotionMagicVoltage motionMagic;
   private double speed;
-  private TalonFXConfiguration config = CTREConfigs.climberWinchFXConfig;
+  private TalonFXConfiguration config = new TalonFXConfiguration()
+  {{
+    /* Climber Values */
+    Feedback.SensorToMechanismRatio = Constants.ClimberConstants.winchGearRatio;
+    MotionMagic.MotionMagicCruiseVelocity = Constants.ClimberConstants.winchDefaultCruise;
+    MotionMagic.MotionMagicAcceleration = Constants.ClimberConstants.winchMotionMagicAccel;
+    Slot0.kP = Constants.ClimberConstants.winchKP;
+    Slot0.kI = Constants.ClimberConstants.winchKI;
+    Slot0.kD = Constants.ClimberConstants.winchKD;
+    MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+  }};
 
   public enum ClimberStatus 
   {
@@ -113,7 +126,7 @@ public class Climber extends SubsystemBase
           if (SD.OVERRIDE.get()) 
           {
             adjustedClimberPos += RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() * ClimberConstants.winchBalanceScalar;
-            adjustedClimberPos = Conversions.clamp(adjustedClimberPos, ClimberConstants.climbActiveInnerLimit, ClimberConstants.climbActiveOuterLimit);
+            adjustedClimberPos = MathUtil.clamp(adjustedClimberPos, ClimberConstants.climbActiveInnerLimit, ClimberConstants.climbActiveOuterLimit);
           }
 
           m_ClimberWinch.setControl(motionMagic.withPosition(adjustedClimberPos));

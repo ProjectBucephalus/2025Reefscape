@@ -185,7 +185,7 @@ public class ArmCalculator
    * @return maximum of the intended elevation and the safe elevation for the given angle
    */
   public double checkPosition(Translation2d position)
-    {return Conversions.clamp(position.getX(), checkAngle(position.getY()), maxElevation);}
+    {return MathUtil.clamp(position.getX(), checkAngle(position.getY()), maxElevation);}
 
   /**
    * Returns the minimum safe arm height for a given angle

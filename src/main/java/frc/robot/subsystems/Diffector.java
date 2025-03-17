@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
@@ -44,8 +43,33 @@ public class Diffector extends SubsystemBase
   private final MotionMagicVoltage motionMagicRequester;
   private final double rotationRatio;
   private final double travelRatio;
-  private final TalonFXConfiguration motorConfigUA;
-  private final TalonFXConfiguration motorConfigDA;
+  private final TalonFXConfiguration motorConfigUA = new TalonFXConfiguration()
+  {{
+    /* Diffector Motor Gneral Config */
+    MotorOutput.NeutralMode = Constants.DiffectorConstants.neutralMode;
+    Feedback.SensorToMechanismRatio = Constants.DiffectorConstants.gearboxRatio;
+
+    /* Diffector Motor Config (Default) */
+    Slot0.kG = Constants.DiffectorConstants.diffectorMotorKG;
+    Slot0.kS = Constants.DiffectorConstants.diffectorMotorKS;
+    Slot0.kV = Constants.DiffectorConstants.diffectorMotorKV;
+    Slot0.kP = Constants.DiffectorConstants.diffectorMotorKP;
+    Slot0.kI = Constants.DiffectorConstants.diffectorMotorKI;
+    Slot0.kD = Constants.DiffectorConstants.diffectorMotorKD;
+    
+    /* Diffector Motor Config (Virtual Spring) */
+    Slot1.kG = Constants.DiffectorConstants.diffectorMotorKGSpring;
+    Slot1.kS = Constants.DiffectorConstants.diffectorMotorKSSpring;
+    Slot1.kV = Constants.DiffectorConstants.diffectorMotorKVSpring;
+    Slot1.kP = Constants.DiffectorConstants.diffectorMotorKPSpring;
+    Slot1.kI = Constants.DiffectorConstants.diffectorMotorKISpring;
+    Slot1.kD = Constants.DiffectorConstants.diffectorMotorKDSpring;
+
+    /* Diffector MotionMagic Default Config */
+    MotionMagic.MotionMagicCruiseVelocity = Constants.DiffectorConstants.diffectorCruise;
+    MotionMagic.MotionMagicAcceleration = Constants.DiffectorConstants.diffectorRotationAcceleration;
+  }};
+  private final TalonFXConfiguration motorConfigDA = motorConfigUA;
   private final double stowThreshold = Constants.DiffectorConstants.angleTolerance;
   
   /* Name is effect of motor when running anticlockwise/positive (e.g. elevator Up, arm Anticlockwise) */
@@ -84,8 +108,6 @@ public class Diffector extends SubsystemBase
     manualControl = false;
     arm = new ArmCalculator();
     
-    motorConfigUA = CTREConfigs.diffectorFXConfig;
-    motorConfigDA = motorConfigUA;
     motorConfigDA.Slot0.kG = -motorConfigUA.Slot0.kG;
     motorConfigDA.Slot1.kG = -motorConfigUA.Slot1.kG;
     motorConfigDA.Slot2.kG = -motorConfigUA.Slot2.kG;
@@ -336,7 +358,7 @@ public class Diffector extends SubsystemBase
   public void setElevationTarget(double newTarget)
   {
     manualControl = false;
-    targetElevation = Conversions.clamp(newTarget, DiffectorConstants.minZ, DiffectorConstants.maxZ);
+    targetElevation = MathUtil.clamp(newTarget, DiffectorConstants.minZ, DiffectorConstants.maxZ);
   }
 
   /** Returns the ID of the motor control slot to use */
@@ -384,7 +406,7 @@ public class Diffector extends SubsystemBase
    */
   public boolean positionOveride(double setElevation, double setAngle)
   {
-    setElevation = Conversions.clamp(setElevation, DiffectorConstants.minZ, DiffectorConstants.maxZ);
+    setElevation = MathUtil.clamp(setElevation, DiffectorConstants.minZ, DiffectorConstants.maxZ);
     m_diffectorUA.setPosition(Units.degreesToRotations((setAngle / rotationRatio) + (setElevation / travelRatio)));
     m_diffectorDA.setPosition(Units.degreesToRotations((setAngle / rotationRatio) - (setElevation / travelRatio)));
 

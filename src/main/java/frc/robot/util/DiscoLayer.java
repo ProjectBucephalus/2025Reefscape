@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.constants.Constants.LEDStrip;
@@ -82,13 +83,13 @@ public class DiscoLayer
     
     if (start > maxPos) {start -= (maxPos + 1);}
     if (start < 0) {start += maxPos + 1;}
-    velocity = Conversions.clamp(velocity, -maxVel, maxVel);
+    velocity = MathUtil.clamp(velocity, -maxVel, maxVel);
     
     //if we are at max velocity, flip the acceleration so it starts changing
     if (((velocity == -maxVel) && (accel < 0)) || ((velocity == maxVel) && (accel > 0))) {accel = -accel;}
     
-    length = Conversions.clamp(length, 1, maxLen);
-    growth = Conversions.clamp(growth, -maxGrow, maxGrow);
+    length = MathUtil.clamp(length, 1, maxLen);
+    growth = MathUtil.clamp(growth, -maxGrow, maxGrow);
     
     // if at max or min size, flip growth so it will start changing 
     if (((length == 1) && (growth < 0)) || ((length == maxLen) && (growth > 0))) {growth = -growth;}
@@ -100,12 +101,12 @@ public class DiscoLayer
     if (Math.random() > LEDStrip.discoChangeChance)
     {
       accel += (Math.random() - 0.5) * LEDStrip.discoMaxAccelMultiplier; // change by up to half max accel
-      accel = Conversions.clamp(accel, -maxAcc, maxAcc); // make sure not out of bounds
+      accel = MathUtil.clamp(accel, -maxAcc, maxAcc); // make sure not out of bounds
     }
     if (Math.random() > LEDStrip.discoChangeChance)
     {
       growthRate += (Math.random() - 0.5) * LEDStrip.discoMaxGrowRateMultiplier; //change by up to half max growrate
-      growthRate = Conversions.clamp(growthRate, -maxGrowRate, maxGrowRate); //make sure not out of bounds
+      growthRate = MathUtil.clamp(growthRate, -maxGrowRate, maxGrowRate); //make sure not out of bounds
     }
   }
 

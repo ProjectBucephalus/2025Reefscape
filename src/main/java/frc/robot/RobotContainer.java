@@ -1,7 +1,7 @@
 package frc.robot;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -12,16 +12,12 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.swerve.*;
@@ -80,7 +76,6 @@ public class RobotContainer
   private LightLayer reefPointerLayer = new LightLayer(s_Swerve, "ReefPointer");
   private LightLayer processorPointerLayer = new LightLayer(s_Swerve, "ProcPointer");
 
-
   /* Driver Control Axis */
   public static final int translationAxis = XboxController.Axis.kLeftY.value;
   public static final int strafeAxis      = XboxController.Axis.kLeftX.value;
@@ -93,12 +88,12 @@ public class RobotContainer
   public static final int manualDiffectorRotationAxis  = XboxController.Axis.kRightX.value;
 
   /* Triggers */
-  private static final Trigger unlockHeadingTrigger   = new Trigger(() -> Math.abs(driver.getRawAxis(rotationAxis)) > Constants.Control.stickDeadband);
-  private static final Trigger cageDriveTrigger       = new Trigger(() -> headingState == HeadingStates.CAGE_LOCK);
-  private static final Trigger scoreDriveTrigger      = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
-  private static final Trigger stationDriveTrigger    = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
-  private static final Trigger processorDriveTrigger  = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
-  private static final Trigger autoScoreCancelTrigger = new Trigger
+  private final Trigger unlockHeadingTrigger   = new Trigger(() -> Math.abs(driver.getRawAxis(rotationAxis)) > Constants.Control.stickDeadband);
+  private final Trigger cageDriveTrigger       = new Trigger(() -> headingState == HeadingStates.CAGE_LOCK);
+  private final Trigger scoreDriveTrigger      = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
+  private final Trigger stationDriveTrigger    = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
+  private final Trigger processorDriveTrigger  = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
+  private final Trigger autoScoreCancelTrigger = new Trigger
   (
     unlockHeadingTrigger.or
     (() -> 
@@ -138,32 +133,6 @@ public class RobotContainer
 
     SD.IO_AUTO.init();
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
-    SmartDashboard.putData
-    (
-      "Swerve Drive", 
-      new Sendable() 
-      {
-        @Override
-        public void initSendable(SendableBuilder builder) 
-        {
-          builder.setSmartDashboardType("SwerveDrive");
-
-          builder.addDoubleProperty("Front Left Angle", () -> s_Swerve.getModule(0).getCurrentState().angle.getRadians(), null);
-          builder.addDoubleProperty("Front Left Velocity", () -> s_Swerve.getModule(0).getCurrentState().speedMetersPerSecond, null);
-
-          builder.addDoubleProperty("Front Right Angle", () -> s_Swerve.getModule(1).getCurrentState().angle.getRadians(), null);
-          builder.addDoubleProperty("Front Right Velocity", () -> s_Swerve.getModule(1).getCurrentState().speedMetersPerSecond, null);
-
-          builder.addDoubleProperty("Back Left Angle", () ->s_Swerve.getModule(2).getCurrentState().angle.getRadians(), null);
-          builder.addDoubleProperty("Back Left Velocity", () ->s_Swerve.getModule(2).getCurrentState().speedMetersPerSecond, null);
-
-          builder.addDoubleProperty("Back Right Angle", () -> s_Swerve.getModule(3).getCurrentState().angle.getRadians(), null);
-          builder.addDoubleProperty("Back Right Velocity", () -> s_Swerve.getModule(3).getCurrentState().speedMetersPerSecond, null);
-
-          builder.addDoubleProperty("Robot Angle", () -> swerveState.Pose.getRotation().getRadians(), null);
-        }
-      }
-    );
 
     // Configure button bindings
     configureDriverBindings();
@@ -217,18 +186,16 @@ public class RobotContainer
     driver.rightBumper()
       .whileTrue
       (
-        new FunctionalCommand
+        s_Diffector.runOnce(() -> s_Diffector.setTargetPosition(DiffectorConstants.Presets.algaeIntakePortPosition))
+        .andThen(s_Algae.run(() -> {if (s_Diffector.atPosition()) s_Algae.setStatus(AlgaeStatus.INTAKE);}))
+        .finallyDo
         (
-          () -> s_Diffector.setTargetPosition(DiffectorConstants.Presets.algaeIntakePortPosition), 
-          () -> {if (s_Diffector.atPosition()) s_Algae.setStatus(AlgaeStatus.INTAKE);}, 
-          interrupted -> 
+          () -> 
           {    
             s_Algae.setStatus(AlgaeStatus.HOLDING);
             if (RobotContainer.algae)
               {s_Diffector.setTargetPosition(DiffectorConstants.Presets.algaeStowPosition);}
-          }, 
-          () -> false, 
-          s_Diffector, s_Algae
+          }
         )
       );
 
@@ -268,12 +235,7 @@ public class RobotContainer
             () -> driver.getHID().getPOV(), 
             autoScoreCancelTrigger
           ),
-          new HashSet<Subsystem>() 
-          {{
-            add(s_Diffector);
-            add(s_Algae);
-            add(s_Coral);
-          }}
+          Set.of(s_Diffector, s_Algae, s_Coral)
         )
       );
   }
@@ -562,23 +524,6 @@ public class RobotContainer
     //copilotLeftRumbleTrigger.onTrue(s_Rumbler.runOnce(() -> s_Rumbler.addRequest(Sides.COPILOT_LEFT, "Intake Full")));
     copliotRightRumbleTrigger.onTrue(s_Rumbler.runOnce(() -> s_Rumbler.addRequest(Sides.COPILOT_RIGHT, "Climb Ready")));
   }
-  
-  @SuppressWarnings("unused")
-  private void configureTestBindings()
-  {}
-
-  @SuppressWarnings("unused")
-  private void configureButtonBoxBindings()
-  {}
-
-  public CommandSwerveDrivetrain getSwerve()
-    {return s_Swerve;}
-
-  public Limelight getLimelightPort()
-    {return s_LimelightPort;}
-
-  public Limelight getLimelightStbd()
-    {return s_LimelightStbd;}
 
   private void initLED()
   {

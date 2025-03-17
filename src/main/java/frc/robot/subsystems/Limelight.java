@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.VecBuilder;
@@ -33,6 +36,9 @@ public class Limelight extends SubsystemBase
   private final String limelightName;
 
   private int pipelineIndex = 0;
+  public static boolean rotationKnown;
+  private ArrayList<Double> rotationData = new ArrayList<Double>();
+  private boolean lastCycleRotationKnown = false;
 
   public enum TagPOI 
   {
@@ -91,6 +97,43 @@ public class Limelight extends SubsystemBase
   @Override
   public void periodic() 
   { 
+    rotationKnown = SD.CALIBRATE_BOT_ROTATION.get();
+
+    if (!rotationKnown) 
+    {
+      if (!getLimelightRotation().equals(Rotation2d.kZero))
+      {
+        rotationData.add(0, RobotContainer.s_LimelightPort.getLimelightRotation().getDegrees());
+  
+        if (rotationData.size() > 5)
+          {rotationData.remove(5);}
+  
+        if (rotationData.size() == 5)
+        {
+          Collections.sort(rotationData);
+          double lowest = rotationData.get(0);
+          double highest = rotationData.get(rotationData.size() - 1);
+          
+          if (highest - lowest < 1)
+          {
+            rotationKnown = true;
+            SD.CALIBRATE_BOT_ROTATION.put(true);
+            RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
+          }
+        }
+      }
+    }
+
+    if (!lastCycleRotationKnown) 
+    {
+      if (rotationKnown) 
+      {
+        rotationData.clear();
+        setThrottle(150);
+        lastCycleRotationKnown = true;
+      }
+    }
+
     if (updateLimelightPipeline() != pipelineIndex)
     {
       pipelineIndex = updateLimelightPipeline();
