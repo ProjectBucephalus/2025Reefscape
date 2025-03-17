@@ -44,13 +44,13 @@ public final class IDConstants
 
   /* Manipulator */
   /* ___________ */
-  public static final int coralManipulatorID = 21;
-  public static final int algaeManipulatorID = 22;
+  public static final int coralMotorID = 21;
+  public static final int algaeMotorID = 22;
   
   public static final int canifierID = 23;
 
-  public static final GeneralPin coralManipulatorDIOPort = GeneralPin.SPI_CLK_PWM0P;
-  public static final GeneralPin coralManipulatorDIOStbd = GeneralPin.SPI_MOSI_PWM1P;
+  public static final GeneralPin coralSensorDIOPort = GeneralPin.SPI_CLK_PWM0P;
+  public static final GeneralPin coralSensorDIOStbd = GeneralPin.SPI_MOSI_PWM1P;
 
   /* Vision */
   /* ______ */

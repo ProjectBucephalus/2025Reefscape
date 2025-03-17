@@ -103,7 +103,7 @@ public class Limelight extends SubsystemBase
     {
       if (!getLimelightRotation().equals(Rotation2d.kZero))
       {
-        rotationData.add(0, RobotContainer.s_LimelightPort.getLimelightRotation().getDegrees());
+        rotationData.add(0, RobotContainer.limelightPort.getLimelightRotation().getDegrees());
   
         if (rotationData.size() > 5)
           {rotationData.remove(5);}
@@ -118,7 +118,7 @@ public class Limelight extends SubsystemBase
           {
             rotationKnown = true;
             SD.CALIBRATE_BOT_ROTATION.put(true);
-            RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
+            RobotContainer.swerve.getPigeon2().setYaw((highest + lowest) / 2);
           }
         }
       }
@@ -140,7 +140,7 @@ public class Limelight extends SubsystemBase
       LimelightHelpers.setPipelineIndex(limelightName, pipelineIndex);
     }
 
-    headingDeg = RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble();
+    headingDeg = RobotContainer.swerve.getPigeon2().getYaw().getValueAsDouble();
     omegaRps = Units.radiansToRotations(RobotContainer.swerveState.Speeds.omegaRadiansPerSecond);
     
     LimelightHelpers.SetRobotOrientation(limelightName, headingDeg, 0, 0, 0, 0, 0);
@@ -161,8 +161,8 @@ public class Limelight extends SubsystemBase
         linearStdDev = Constants.Vision.linearStdDevBaseline * stdDevFactor;
         rotStdDev = Constants.Vision.rotStdDevBaseline * stdDevFactor;
 
-        RobotContainer.s_Swerve.setVisionMeasurementStdDevs(VecBuilder.fill(linearStdDev, linearStdDev, rotStdDev));
-        RobotContainer.s_Swerve.addVisionMeasurement(mt2.pose, Utils.fpgaToCurrentTime(mt2.timestampSeconds));
+        RobotContainer.swerve.setVisionMeasurementStdDevs(VecBuilder.fill(linearStdDev, linearStdDev, rotStdDev));
+        RobotContainer.swerve.addVisionMeasurement(mt2.pose, Utils.fpgaToCurrentTime(mt2.timestampSeconds));
       }
     }
 

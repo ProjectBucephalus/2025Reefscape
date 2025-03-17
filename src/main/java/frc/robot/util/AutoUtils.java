@@ -25,10 +25,8 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.Auto.AutoMapping;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.AlgaeManipulator;
-import frc.robot.subsystems.AlgaeManipulator.AlgaeStatus;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
-import frc.robot.subsystems.CoralManipulator.CoralStatus;
 
 public class AutoUtils 
 {
@@ -42,7 +40,7 @@ public class AutoUtils
    * @param commandInput The string of commands to split, seperated by commas with no spaces (e.g. "a1,rA1,p,cR3")
    * @return An array of commands, from the input command phrase string, in the same order
    */
-  public static Command getCommandList(String commandInput, Diffector s_Diffector, CoralManipulator s_Coral, AlgaeManipulator s_Algae)
+  public static Command getCommandList(String commandInput, Diffector diffector, CoralManipulator coralManip, AlgaeManipulator algaeManip)
   {
     // Removes all space characters from the single-String command phrases, ensures it's all lowercase, and then splits it into individual strings, which are stored in an array
     String[] splitCommands = commandInput.replaceAll("//s", "").toLowerCase().split(",");
@@ -82,20 +80,20 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.coralScorePosCommand(prevEndPoint, Integer.parseInt(splitCommand.substring(2)))
+              diffector.coralScorePosCommand(prevEndPoint, Integer.parseInt(splitCommand.substring(2)))
             )
           );
 
-          commandList.add(s_Coral.setStatusCommand(CoralStatus.DELIVERY_SMART));
+          commandList.add(coralManip.setStatusCommand(CoralManipulator.Status.DELIVERY_SMART));
           
           if (splitCommand.charAt(2) == '4') 
           {
             commandList.add(Commands.waitSeconds(0.1));
-            commandList.add(s_Diffector.defer(() -> s_Diffector.coralScorePosInstantCommand(prevEndPoint, 3)));
+            commandList.add(diffector.defer(() -> diffector.coralScorePosInstantCommand(prevEndPoint, 3)));
           }
           
           commandList.add(Commands.waitUntil(() -> !RobotContainer.coral));
-          commandList.add(s_Coral.setStatusCommand(CoralStatus.DEFAULT));
+          commandList.add(coralManip.setStatusCommand(CoralManipulator.Status.DEFAULT));
           break;
 
         case 'c':
@@ -108,14 +106,14 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.moveAndWaitCommand(Presets.coralIntakePortPosition)
+              diffector.moveAndWaitCommand(Presets.coralIntakePortPosition)
             )
           );
 
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
 
           commandList.add(Commands.waitUntil(() -> RobotContainer.coral));
-          commandList.add(s_Diffector.moveToCommand(Presets.coralStowPosition));
+          commandList.add(diffector.moveToCommand(Presets.coralStowPosition));
           break;
 
         case 'a':
@@ -244,7 +242,7 @@ public class AutoUtils
     };
   }
 
-  public static Command autoScoreSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, CoralManipulator s_Coral, IntSupplier reefLevel, BooleanSupplier brakeSup, IntSupplier povAngle, BooleanSupplier cancelTrigger)
+  public static Command autoScoreSequenceCommand(Diffector diffector, AlgaeManipulator algaeManip, CoralManipulator coralManip, IntSupplier reefLevel, BooleanSupplier brakeSup, IntSupplier povAngle, BooleanSupplier cancelTrigger)
   {
     int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
     PathPlannerPath algaePath = FieldUtils.loadPath("a" + nearestReefFace);
@@ -268,37 +266,37 @@ public class AutoUtils
       Commands.parallel
       (
         AutoBuilder.pathfindToPose(algaePath.getStartingHolonomicPose().get(), brakeSup.getAsBoolean() ? slowedConstraints : defaultConstraints),
-        intakeAlgaeSequenceCommand(s_Diffector, s_Algae, nearestReefFace)
+        intakeAlgaeSequenceCommand(diffector, algaeManip, nearestReefFace)
       ),
       AutoBuilder.followPath(algaePath),
-      s_Diffector.coralScorePosCommand(coralLevel),
+      diffector.coralScorePosCommand(coralLevel),
       pathfindAndFollowCommand(getReefPathName(dpadValue), brakeSup),
-      s_Coral.setStatusCommand(CoralStatus.DELIVERY_SMART)
+      coralManip.setStatusCommand(CoralManipulator.Status.DELIVERY_SMART)
     )
     .until(cancelTrigger);
   }
   
-  public static Command intakeAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, int nearestReefFace)
+  public static Command intakeAlgaeSequenceCommand(Diffector diffector, AlgaeManipulator algaeManip, int nearestReefFace)
   {
     return 
     Commands.sequence
     (
-      s_Diffector.algaeIntakePosCommand(nearestReefFace),
-      s_Algae.setStatusCommand(AlgaeStatus.INTAKE)
+      diffector.algaeIntakePosCommand(nearestReefFace),
+      algaeManip.setStatusCommand(AlgaeManipulator.Status.INTAKE)
     );
   }
 
-  public static Command scoreAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, boolean net)
+  public static Command scoreAlgaeSequenceCommand(Diffector diffector, AlgaeManipulator algaeManip, boolean net)
   {
     return
     Commands.sequence
     (
-      s_Diffector.moveAndWaitCommand(net ? Presets.netPosition : Presets.processorPosition), 
-      s_Algae.setStatusCommand(AlgaeStatus.EJECT)
+      diffector.moveAndWaitCommand(net ? Presets.netPosition : Presets.processorPosition), 
+      algaeManip.setStatusCommand(AlgaeManipulator.Status.EJECT)
     );
   }
 
-  public static Command ejectAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, Supplier<Translation2d> posSup)
+  public static Command ejectAlgaeSequenceCommand(Diffector diffector, AlgaeManipulator algaeManip, Supplier<Translation2d> posSup)
   {
     int nearestReefFace = FieldUtils.getNearestReefFace(posSup.get());
     boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
@@ -313,8 +311,8 @@ public class AutoUtils
     return
     Commands.sequence
     (
-      s_Diffector.moveAndWaitCommand(target), 
-      s_Algae.setStatusCommand(AlgaeStatus.EJECT)
+      diffector.moveAndWaitCommand(target), 
+      algaeManip.setStatusCommand(AlgaeManipulator.Status.EJECT)
     );
   }
 }

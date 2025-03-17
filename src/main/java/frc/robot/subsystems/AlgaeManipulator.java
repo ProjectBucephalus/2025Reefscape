@@ -23,10 +23,10 @@ public class AlgaeManipulator extends SubsystemBase
 {
 
   /* Declaration of the motor controllers */
-  private TalonFX algaeMotor;
+  private TalonFX motor;
 
   /* Declaration of the enum variable */
-  private AlgaeStatus algaeStatus;
+  private Status status;
 
   /**
    * Enum representing the status this manipulator is in
@@ -34,7 +34,7 @@ public class AlgaeManipulator extends SubsystemBase
    * Spins outwards at full speed to shoot at the net, spins outwards to shoot in the processor,
    * And does nothing while empty)
    */
-  public enum AlgaeStatus
+  public enum Status
   {
     INTAKE,
     HOLDING,
@@ -44,55 +44,55 @@ public class AlgaeManipulator extends SubsystemBase
 
   public AlgaeManipulator() 
   {
-    algaeStatus = AlgaeStatus.EMPTY;
-    algaeMotor = new TalonFX(IDConstants.algaeManipulatorID);
+    status = Status.EMPTY;
+    motor = new TalonFX(IDConstants.algaeMotorID);
   }
 
-  public void setStatus(AlgaeStatus status)
-    {algaeStatus = status;}
+  public void setStatus(Status newStatus)
+    {status = newStatus;}
 
-  public Command setStatusCommand(AlgaeStatus status)
+  public Command setStatusCommand(Status status)
     {return runOnce(() -> setStatus(status));}
 
-  public AlgaeStatus getStatus()
-    {return algaeStatus;}
+  public Status getStatus()
+    {return status;}
 
   @Override
   public void periodic() 
   {
-    RobotContainer.algae = algaeMotor.getTorqueCurrent().getValueAsDouble() >= Constants.GamePiecesManipulator.algaeHeldCurrent;
+    RobotContainer.algae = motor.getTorqueCurrent().getValueAsDouble() >= Constants.Manipulators.algaeHeldCurrent;
 
-    switch(algaeStatus)
+    switch(status)
     {
       case INTAKE:
-        algaeMotor.set(Constants.GamePiecesManipulator.algaeIntakeSpeed);
+        motor.set(Constants.Manipulators.algaeIntakeSpeed);
 
         if (RobotContainer.algae) 
-          {algaeStatus = AlgaeStatus.HOLDING;}
+          {status = Status.HOLDING;}
         break;
 
       case HOLDING:
         if (RobotContainer.algae) 
-          {algaeMotor.set(Constants.GamePiecesManipulator.algaeHoldingSpeed);} 
+          {motor.set(Constants.Manipulators.algaeHoldingSpeed);} 
 
         else
-          {algaeStatus = AlgaeStatus.EMPTY;}
+          {status = Status.EMPTY;}
         break;
 
       case EJECT:
-        double armPos = RobotContainer.s_Diffector.getRelativeRotation();
+        double armPos = RobotContainer.diffector.getRelativeRotation();
 
         if (armPos > 90 + Constants.DiffectorConstants.algaeEjectSpeedAngleThreshold && armPos <= 270 - Constants.DiffectorConstants.algaeEjectSpeedAngleThreshold)
-          {algaeMotor.set(Constants.GamePiecesManipulator.algaeNetSpeed);}
+          {motor.set(Constants.Manipulators.algaeNetSpeed);}
         else
-          {algaeMotor.set(Constants.GamePiecesManipulator.algaeProcessorSpeed);}
+          {motor.set(Constants.Manipulators.algaeProcessorSpeed);}
         break;
 
       case EMPTY:
-        algaeMotor.set(0);
+        motor.set(0);
 
         if (RobotContainer.algae) 
-          {algaeStatus = AlgaeStatus.HOLDING;}
+          {status = Status.HOLDING;}
         break;
     }
   }

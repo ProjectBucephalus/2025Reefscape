@@ -19,13 +19,13 @@ import frc.robot.util.SD;
 public class Climber extends SubsystemBase
 {
   /* Declarations of the motor controller */
-  private TalonFX m_ClimberWinch;
+  private TalonFX winchMotor;
   private ClimberStatus status;
 
   /* Declarations of all the motion magic variables */
   private final MotionMagicVoltage motionMagic;
   private double speed;
-  private TalonFXConfiguration config = new TalonFXConfiguration()
+  private TalonFXConfiguration motorConfig = new TalonFXConfiguration()
   {{
     /* Climber Values */
     Feedback.SensorToMechanismRatio = Constants.ClimberConstants.winchGearRatio;
@@ -48,9 +48,9 @@ public class Climber extends SubsystemBase
 
   public Climber() 
   { 
-    m_ClimberWinch = new TalonFX(IDConstants.climberWinchMotorID);
-    m_ClimberWinch.getConfigurator().apply(config);
-    m_ClimberWinch.setPosition(ClimberConstants.stowWinchPos);
+    winchMotor = new TalonFX(IDConstants.climberWinchMotorID);
+    winchMotor.getConfigurator().apply(motorConfig);
+    winchMotor.setPosition(ClimberConstants.stowWinchPos);
     
     motionMagic = new MotionMagicVoltage(0);
 
@@ -68,13 +68,13 @@ public class Climber extends SubsystemBase
       }
       else
       {
-        m_ClimberWinch.getConfigurator().apply(config.MotionMagic.withMotionMagicCruiseVelocity(ClimberConstants.winchClimbCruise));
+        winchMotor.getConfigurator().apply(motorConfig.MotionMagic.withMotionMagicCruiseVelocity(ClimberConstants.winchClimbCruise));
         status = newStatus;
       }
     }
     else
     {
-      m_ClimberWinch.getConfigurator().apply(config.MotionMagic.withMotionMagicCruiseVelocity(ClimberConstants.winchDefaultCruise));
+      winchMotor.getConfigurator().apply(motorConfig.MotionMagic.withMotionMagicCruiseVelocity(ClimberConstants.winchDefaultCruise));
       status = newStatus;
     }
   }
@@ -97,53 +97,53 @@ public class Climber extends SubsystemBase
   @Override
   public void periodic()
   {
-    SD.CLIMBER_POS.put(m_ClimberWinch.getPosition().getValueAsDouble());
+    SD.CLIMBER_POS.put(winchMotor.getPosition().getValueAsDouble());
 
     switch (status)
     {
       case STOW:
-        m_ClimberWinch.setControl(motionMagic.withPosition(ClimberConstants.stowWinchPos));
+        winchMotor.setControl(motionMagic.withPosition(ClimberConstants.stowWinchPos));
         SD.CLIMBER_TARGET.put(ClimberConstants.stowWinchPos);
         break;
 
       case ACTIVE:
-        if (RobotContainer.s_Diffector.climbSafe())
+        if (RobotContainer.diffector.climbSafe())
         {
-          m_ClimberWinch.setControl(motionMagic.withPosition(ClimberConstants.activeWinchPos));
+          winchMotor.setControl(motionMagic.withPosition(ClimberConstants.activeWinchPos));
           SD.CLIMBER_TARGET.put(ClimberConstants.activeWinchPos);
         }
         else
         {
-          m_ClimberWinch.setControl(motionMagic.withPosition(m_ClimberWinch.getPosition().getValueAsDouble()));
+          winchMotor.setControl(motionMagic.withPosition(winchMotor.getPosition().getValueAsDouble()));
         }
         break;
 
       case CLIMB:
-        if (RobotContainer.s_Diffector.climbReady())
+        if (RobotContainer.diffector.climbReady())
         {
           double adjustedClimberPos = ClimberConstants.climbWinchPos;
           
           if (SD.OVERRIDE.get()) 
           {
-            adjustedClimberPos += RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() * ClimberConstants.winchBalanceScalar;
+            adjustedClimberPos += RobotContainer.swerve.getPigeon2().getPitch().getValueAsDouble() * ClimberConstants.winchBalanceScalar;
             adjustedClimberPos = MathUtil.clamp(adjustedClimberPos, ClimberConstants.climbActiveInnerLimit, ClimberConstants.climbActiveOuterLimit);
           }
 
-          m_ClimberWinch.setControl(motionMagic.withPosition(adjustedClimberPos));
+          winchMotor.setControl(motionMagic.withPosition(adjustedClimberPos));
           SD.CLIMBER_TARGET.put(adjustedClimberPos);
         }
         else
         {
-          m_ClimberWinch.setControl(motionMagic.withPosition(m_ClimberWinch.getPosition().getValueAsDouble()));
+          winchMotor.setControl(motionMagic.withPosition(winchMotor.getPosition().getValueAsDouble()));
         }
       
         break;
 
       case MANUAL:
         if (speed != 0)
-          {m_ClimberWinch.set(speed * ClimberConstants.manualScale);}
+          {winchMotor.set(speed * ClimberConstants.manualScale);}
         else
-          {m_ClimberWinch.setControl(motionMagic.withPosition(m_ClimberWinch.getPosition().getValueAsDouble()));}
+          {winchMotor.setControl(motionMagic.withPosition(winchMotor.getPosition().getValueAsDouble()));}
         break;
     }
   }

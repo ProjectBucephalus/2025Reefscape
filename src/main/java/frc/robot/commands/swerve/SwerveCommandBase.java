@@ -22,7 +22,7 @@ public abstract class SwerveCommandBase extends Command
 {
   protected final double deadband = Constants.Control.stickDeadband;
 
-  protected CommandSwerveDrivetrain s_Swerve;
+  protected CommandSwerveDrivetrain swerve;
 
   protected DoubleSupplier translationSup;
   protected DoubleSupplier strafeSup;
@@ -42,16 +42,16 @@ public abstract class SwerveCommandBase extends Command
   protected boolean redAlliance;
 
   /** Creates a new SwerveCommandBase. This has no rotation or drive-request methods or objects */
-  public SwerveCommandBase(CommandSwerveDrivetrain s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  public SwerveCommandBase(CommandSwerveDrivetrain swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
-    this.s_Swerve = s_Swerve;
+    this.swerve = swerve;
     
     this.translationSup = translationSup;
     this.strafeSup = strafeSup;    
     this.brakeSup = brakeSup;
     this.fencedSup = fencedSup;
 
-    addRequirements(s_Swerve);
+    addRequirements(swerve);
   }
 
   @Override
@@ -102,7 +102,7 @@ public abstract class SwerveCommandBase extends Command
     if (redAlliance)
       {motionXY = motionXY.unaryMinus();}
 
-    if (RobotContainer.s_Diffector.getElevation() > IKGeometry.bargeSafetyHeight && !SmartDashboard.getBoolean("OVERIDE MODE", false))
+    if (RobotContainer.diffector.getElevation() > IKGeometry.bargeSafetyHeight && !SmartDashboard.getBoolean("OVERIDE MODE", false))
     {
       motionXY = FieldUtils.GeoFencing.netProtectionZone.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
     }
@@ -142,7 +142,7 @@ public abstract class SwerveCommandBase extends Command
         brakeSup.getAsDouble(), 
         Math.min
         (
-          (RobotContainer.s_Diffector.getElevation() - 1) * Constants.Control.armBrakeRate, 
+          (RobotContainer.diffector.getElevation() - 1) * Constants.Control.armBrakeRate, 
           1
         )
       )

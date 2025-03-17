@@ -21,7 +21,7 @@ public class LEDRenderer extends SubsystemBase
   AddressableLED lights;
   AddressableLEDBuffer lightBuffer;
   final LEDPattern patternBlack = LEDPattern.solid(Color.kBlack); //Useful to wipe the buffer before each render pass
-//    private CommandSwerveDrivetrain s_Swerve;
+//    private CommandSwerveDrivetrain swerve;
   ArrayList<LightLayer> renderQueue = new ArrayList<LightLayer>(); //List of layers to be rendered
   LightLayer layer; //temporary layer object
   

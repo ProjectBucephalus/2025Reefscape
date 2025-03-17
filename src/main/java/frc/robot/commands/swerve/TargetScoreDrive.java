@@ -18,7 +18,7 @@ public class TargetScoreDrive extends HeadingLockedDrive
   /** Creates a new TargetScoreDrive. */
   public TargetScoreDrive
   (
-    CommandSwerveDrivetrain s_Swerve, 
+    CommandSwerveDrivetrain swerve, 
     DoubleSupplier translationSup, 
     DoubleSupplier strafeSup,
     Rotation2d rotationOffset, 
@@ -26,14 +26,14 @@ public class TargetScoreDrive extends HeadingLockedDrive
     BooleanSupplier fencedSup
   ) 
   {
-    super(s_Swerve, translationSup, strafeSup, Rotation2d.kZero, rotationOffset, brakeSup, fencedSup);
+    super(swerve, translationSup, strafeSup, Rotation2d.kZero, rotationOffset, brakeSup, fencedSup);
     this.rotationOffsetBase = rotationOffset;
   }
 
   @Override
   protected void updateTargetHeading()
   {  
-    if (MathUtil.isNear(robotXY.getX(), (FieldUtils.fieldLength / 2), Constants.GamePiecesManipulator.algaeRange)) 
+    if (MathUtil.isNear(robotXY.getX(), (FieldUtils.fieldLength / 2), Constants.Manipulators.algaeRange)) 
     {
       targetHeading = Rotation2d.kZero;
       super.rotationOffset = this.rotationOffsetBase.unaryMinus();

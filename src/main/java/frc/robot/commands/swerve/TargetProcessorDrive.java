@@ -13,7 +13,7 @@ public class TargetProcessorDrive extends HeadingLockedDrive
   /** Creates a new TargetProcessorDrive. */
   public TargetProcessorDrive
   (
-    CommandSwerveDrivetrain s_Swerve, 
+    CommandSwerveDrivetrain swerve, 
     DoubleSupplier translationSup, 
     DoubleSupplier strafeSup, 
     Rotation2d targetHeading, 
@@ -22,7 +22,7 @@ public class TargetProcessorDrive extends HeadingLockedDrive
     BooleanSupplier fencedSup
   ) 
   {
-    super(s_Swerve, translationSup, strafeSup, targetHeading, rotationOffset, brakeSup, fencedSup);
+    super(swerve, translationSup, strafeSup, targetHeading, rotationOffset, brakeSup, fencedSup);
   }
 
   @Override
