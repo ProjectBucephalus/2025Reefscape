@@ -158,17 +158,17 @@ public class Diffector extends SubsystemBase
       if (elevation < targetElevation - DiffectorConstants.elevationTolerance)
         {eStop = true;}
     }
-    else if (elevation < arm.checkPosition(armPosition) - DiffectorConstants.elevationTolerance && !manualControl)
-      {eStop = true;}
-
-    if 
+    else if 
     (
-      atPosition()// &&
-      //(relativeTarget.equals(DiffectorConstants.algaeStowPosition) ||
-      //relativeTarget.equals(DiffectorConstants.coralStowPosition) ||
-      //relativeTarget.equals(DiffectorConstants.coralIntakePosition) ||
-      //relativeTarget.equals(DiffectorConstants.algaeTransferPosition))
+      (
+        elevation < arm.checkPosition(armPosition) - DiffectorConstants.elevationTolerance || 
+        elevation > DiffectorConstants.maxZ + projectionElevation
+      ) 
+      && !manualControl
     )
+    {eStop = true;}
+
+    if (atPosition())
     {
       calibrationCounter++;
       if (calibrationCounter == DiffectorConstants.calibrationDelay) 
