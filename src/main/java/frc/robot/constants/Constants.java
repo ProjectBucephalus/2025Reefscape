@@ -255,14 +255,22 @@ public final class Constants
     public static final double diffectorCruiseMotor = 90;
     /** Desired cruise speed of Mechanism, RPS */
     public static final double diffectorCruise = diffectorCruiseMotor / gearboxRatio;
-    /** Desired acceleration of Motor, RPS^2 */
+    /** Desired cruise speed of Motor when holding Algae, RPS */
+    public static final double diffectorAlgaeCruiseMotor = 75;
+    /** Desired cruise speed of Mechanism when holding Algae, RPS */
+    public static final double diffectorAlgaeCruise = diffectorAlgaeCruiseMotor / gearboxRatio;
+    /** Desired acceleration of Motor for Elevation, RPS^2 */
     public static final double diffectorElevationAccelerationMotor = 70;
-    /** Desired acceleration of Mechanism, RPS^2 */
+    /** Desired acceleration of Mechanism for Elevation, RPS^2 */
     public static final double diffectorElevationAcceleration = diffectorElevationAccelerationMotor / gearboxRatio;
-    /** Desired acceleration of Motor, RPS^2 */
+    /** Desired acceleration of Motor for Rotation, RPS^2 */
     public static final double diffectorRotationAccelerationMotor = 70;
-    /** Desired acceleration of Mechanism, RPS^2 */
+    /** Desired acceleration of Mechanism for Rotation, RPS^2 */
     public static final double diffectorRotationAcceleration = diffectorRotationAccelerationMotor / gearboxRatio;
+    /** Desired acceleration of Motor for Rotation when holding Algae, RPS^2 */
+    public static final double diffectorAlgaeRotationAccelerationMotor = 35;
+    /** Desired acceleration of Mechanism for Rotation when holding Algae, RPS^2 */
+    public static final double diffectorAlgaeRotationAcceleration = diffectorAlgaeRotationAccelerationMotor / gearboxRatio;
     
     public static final boolean startingCoralState = true;
     public static final boolean startingAlgaeState = false;
