@@ -26,6 +26,7 @@ import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
+import frc.robot.util.FieldUtils.GeoFencing;
 import frc.robot.util.leds.LightLayer;
 import frc.robot.util.leds.LightLayer.*;
 import frc.robot.util.libraries.Telemetry;
@@ -127,10 +128,17 @@ public class RobotContainer
   (
     () -> 
     {
+      boolean northHalf = swerveState.Pose.getTranslation().getX() >= FieldUtils.fieldWidth / 2;
+      GeoFenceObject nearestCoralStation =
+      FieldUtils.isRedAlliance() ?
+      northHalf ? GeoFencing.cornerNRed : GeoFencing.cornerSRed
+      :
+      northHalf ? GeoFencing.cornerNBlue : GeoFencing.cornerSBlue;
+
       return 
       (driver.rightBumper().getAsBoolean() && algae)
       ||
-      (copilotLeftRumbleTrigger.getAsBoolean() && true);
+      (copilotLeftRumbleTrigger.getAsBoolean() && nearestCoralStation.getDistance(swerveState.Pose.getTranslation()) < Constants.Control.atObjectTolerance);
     }
   );
   private final Trigger copliotRightRumbleTrigger = new Trigger
