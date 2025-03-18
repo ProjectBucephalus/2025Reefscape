@@ -20,7 +20,7 @@ public class MechanismConstants
     public static final double winchClimbCruise = 0.5;
     public static final double winchMotionMagicAccel  = 1;
 
-    public static final TalonFXConfiguration climberMotorConfig = new TalonFXConfiguration()
+    public static final TalonFXConfiguration climberMotorConfig = new TalonFXConfiguration();
     {{
       climberMotorConfig.Feedback.SensorToMechanismRatio = winchGearRatio;
       climberMotorConfig.MotionMagic.MotionMagicCruiseVelocity = winchDefaultCruise;
