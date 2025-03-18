@@ -71,8 +71,8 @@ public class Climber extends SubsystemBase
     return runOnce(() -> setStatus(status)).withName("SetClimberStatus");
   }
 
-  public boolean isUnlocked()
-    {return status != Status.STOW;}
+  public boolean climbReady()
+    {return status == Status.ACTIVE;}
 
   public boolean manualOveride(double motorSpeed)
   {
