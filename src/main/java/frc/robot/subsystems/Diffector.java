@@ -96,28 +96,28 @@ public class Diffector extends SubsystemBase
     m_DA = new TalonFX(IDConstants.daMotorID);
     io_Rotation = new CANcoder(IDConstants.armCANcoderID);
     io_Elevation = new AnalogPotentiometer(IDConstants.armPotID);
-
-    targetPosition  = Presets.startPosition;
-
-    targetElevation = targetPosition.getX();
-    targetAngle     = targetPosition.getY();
-    oldTarget       = targetPosition;
-    relativeTarget  = targetPosition;
-
+    
     m_UA.getConfigurator().apply(motorConfigUA);
     m_DA.getConfigurator().apply(motorConfigDA);
     
+    if (Conversions.mod(getMeasuredAngle(), 360) > DiffectorGeometry.angleTolerance && Conversions.mod(getMeasuredAngle(), 360) < 360 - DiffectorGeometry.angleTolerance) 
+      {eStop = true;}
+    
+    elevation = Presets.startPosition.getX();
+
+    positionOveride(getMeasuredElevation(), getMeasuredAngle());
+    calculatePosition();
+
+    targetElevation = elevation;
+    targetAngle     = angle;
+
+    targetPosition  = new Translation2d(targetElevation, targetAngle);
+
+    oldTarget       = targetPosition;
+    relativeTarget  = targetPosition;
+
     motorTargets = calculateMotorTargets(targetPosition);
 
-    if (Conversions.mod(getMeasuredAngle(), 360) > DiffectorGeometry.angleTolerance && Conversions.mod(getMeasuredAngle(), 360) < 360 - DiffectorGeometry.angleTolerance) 
-    {
-      eStop = true;
-    }
-
-    elevation = targetElevation;
-    positionOveride(getMeasuredElevation(), getMeasuredAngle());
-
-    calculatePosition();
 
     updateSpringState();
 

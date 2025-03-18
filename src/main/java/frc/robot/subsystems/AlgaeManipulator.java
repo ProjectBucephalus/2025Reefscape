@@ -69,6 +69,7 @@ public class AlgaeManipulator extends SubsystemBase
     SD.SENSOR_ALGAE.put(RobotContainer.algae);
     SD.STATE_ALGAE.put(status.name());
     SD.SENSOR_ALGAE_CURRENT.put(Math.abs(m_Algae.getStatorCurrent().getValueAsDouble()));
+    SD.SENSOR_ALGAE_TMEP.put(m_Algae.getDeviceTemp().getValueAsDouble());
     double algaeHoldingSpeed = SD.IO_ALGAE_HOLD.get();
 
     switch(status)
@@ -86,7 +87,7 @@ public class AlgaeManipulator extends SubsystemBase
 
       case HOLDING:
         if (RobotContainer.algae) 
-          {m_Algae.set(algaeHoldingSpeed);}
+          {m_Algae.setVoltage(algaeHoldingSpeed);}
 
         else
           {status = Status.EMPTY;}
