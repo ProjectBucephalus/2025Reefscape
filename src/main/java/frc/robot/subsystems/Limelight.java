@@ -9,6 +9,7 @@ import java.util.Collections;
 
 import com.ctre.phoenix6.Utils;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -91,7 +92,20 @@ public class Limelight extends SubsystemBase
   }
 
   public int updateLimelightPipeline()
-    {return SD.IO_LL_EXPOSURE.get().intValue();}
+  {
+    if (SD.IO_LL_EXPOSURE_UP.get())
+    {
+      SD.IO_LL_EXPOSURE.put(MathUtil.clamp(SD.IO_LL_EXPOSURE.get().intValue() + 1, 0, 7));
+      SD.IO_LL_EXPOSURE_UP.put(false);
+    }
+    if (SD.IO_LL_EXPOSURE_DOWN.get())
+    {
+      SD.IO_LL_EXPOSURE.put(MathUtil.clamp(SD.IO_LL_EXPOSURE.get().intValue() - 1, 0, 7));
+      SD.IO_LL_EXPOSURE_DOWN.put(false);
+    }
+    
+    return SD.IO_LL_EXPOSURE.get().intValue();
+  }
 
   @Override
   public void periodic() 
