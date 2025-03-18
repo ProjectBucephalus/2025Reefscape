@@ -260,7 +260,7 @@ public final class Constants
     /** Desired cruise speed of Mechanism when holding Algae, RPS */
     public static final double diffectorAlgaeCruise = diffectorAlgaeCruiseMotor / gearboxRatio;
     /** Desired acceleration of Motor for Elevation, RPS^2 */
-    public static final double diffectorElevationAccelerationMotor = 70;
+    public static final double diffectorElevationAccelerationMotor = 120;
     /** Desired acceleration of Mechanism for Elevation, RPS^2 */
     public static final double diffectorElevationAcceleration = diffectorElevationAccelerationMotor / gearboxRatio;
     /** Desired acceleration of Motor for Rotation, RPS^2 */
@@ -271,6 +271,11 @@ public final class Constants
     public static final double diffectorAlgaeRotationAccelerationMotor = 35;
     /** Desired acceleration of Mechanism for Rotation when holding Algae, RPS^2 */
     public static final double diffectorAlgaeRotationAcceleration = diffectorAlgaeRotationAccelerationMotor / gearboxRatio;
+
+    /** Linear acceleration of the elevator, MPS^2 */
+    public static final double diffectorElevationAccelerationLinear = diffectorElevationAcceleration * (sprocketPitchDiameter * Math.PI);
+    /** Linear max speed of the elevator, MPS */
+    public static final double diffectorCruiseLinear = diffectorCruise * (sprocketPitchDiameter * Math.PI);
     
     public static final boolean startingCoralState = true;
     public static final boolean startingAlgaeState = false;
