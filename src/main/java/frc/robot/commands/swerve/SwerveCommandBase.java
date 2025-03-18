@@ -22,7 +22,7 @@ public abstract class SwerveCommandBase extends Command
 {
   protected final double deadband = Constants.Control.stickDeadband;
 
-  protected CommandSwerveDrivetrain swerve;
+  protected CommandSwerveDrivetrain s_Swerve;
 
   protected DoubleSupplier translationSup;
   protected DoubleSupplier strafeSup;
@@ -42,16 +42,16 @@ public abstract class SwerveCommandBase extends Command
   protected boolean redAlliance;
 
   /** Creates a new SwerveCommandBase. This has no rotation or drive-request methods or objects */
-  public SwerveCommandBase(CommandSwerveDrivetrain swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  public SwerveCommandBase(CommandSwerveDrivetrain s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
-    this.swerve = swerve;
+    this.s_Swerve = s_Swerve;
     
     this.translationSup = translationSup;
     this.strafeSup = strafeSup;    
     this.brakeSup = brakeSup;
     this.fencedSup = fencedSup;
 
-    addRequirements(swerve);
+    addRequirements(s_Swerve);
   }
 
   @Override
