@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IDConstants;
+import frc.robot.util.SD;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -17,7 +18,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
  * Of the algae for the algae manipulator.
  * 
  * @author 5985
- * @author Sebastian Aiello
  */
 public class AlgaeManipulator extends SubsystemBase 
 {
@@ -36,6 +36,7 @@ public class AlgaeManipulator extends SubsystemBase
    */
   public enum Status
   {
+    MANUAL_INTAKE,
     INTAKE,
     HOLDING,
     EJECT,
@@ -46,6 +47,7 @@ public class AlgaeManipulator extends SubsystemBase
   {
     status = Status.EMPTY;
     motor = new TalonFX(IDConstants.algaeMotorID);
+    SD.IO_ALGAE_HOLD.init();
   }
 
   public void setStatus(Status newStatus)
@@ -60,10 +62,20 @@ public class AlgaeManipulator extends SubsystemBase
   @Override
   public void periodic() 
   {
-    RobotContainer.algae = motor.getTorqueCurrent().getValueAsDouble() >= Constants.Manipulators.algaeHeldCurrent;
+    RobotContainer.algae = 
+      Math.abs(motor.getStatorCurrent().getValueAsDouble()) >= Constants.Manipulators.algaeHeldCurrent ||
+      (RobotContainer.algae); // && Math.abs(algaeMotor.getStatorCurrent().getValueAsDouble()) >= Constants.GamePiecesManipulator.algaeReleaseCurrent);
+    SD.SENSOR_ALGAE.put(RobotContainer.algae);
+    SD.STATE_ALGAE.put(status.name());
+    SD.SENSOR_ALGAE_CURRENT.put(Math.abs(motor.getStatorCurrent().getValueAsDouble()));
+    double algaeHoldingSpeed = SD.IO_ALGAE_HOLD.get();
 
     switch(status)
     {
+      case MANUAL_INTAKE:
+        motor.set(Constants.Manipulators.algaeIntakeSpeed);
+        break;
+
       case INTAKE:
         motor.set(Constants.Manipulators.algaeIntakeSpeed);
 
@@ -73,7 +85,7 @@ public class AlgaeManipulator extends SubsystemBase
 
       case HOLDING:
         if (RobotContainer.algae) 
-          {motor.set(Constants.Manipulators.algaeHoldingSpeed);} 
+          {motor.set(algaeHoldingSpeed);}
 
         else
           {status = Status.EMPTY;}
@@ -90,9 +102,7 @@ public class AlgaeManipulator extends SubsystemBase
 
       case EMPTY:
         motor.set(0);
-
-        if (RobotContainer.algae) 
-          {status = Status.HOLDING;}
+        RobotContainer.algae = false;
         break;
     }
   }

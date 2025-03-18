@@ -208,7 +208,7 @@ public class RobotContainer
             () -> 
             {
               return 
-              copilot.y().getAsBoolean() 
+              copilot.y().getAsBoolean()
               ? 
               4 
               : 
@@ -307,7 +307,7 @@ public class RobotContainer
           swerve, 
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
-          Rotation2d.kZero,
+          Rotation2d.kCW_90deg, // TODO: Need to have bot facing drivers, and invert arm positions accordingly
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
@@ -352,7 +352,7 @@ public class RobotContainer
           swerve, 
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
-          Rotation2d.kCW_90deg,
+          Rotation2d.kCCW_90deg,
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
@@ -410,7 +410,7 @@ public class RobotContainer
         Commands.either
         (
           diffector.algaeIntakePosCommand(true),
-          diffector.coralScorePosCommand(3), 
+          diffector.coralScorePosCommand(2),
           algaeModifier
         )
       );
@@ -502,7 +502,7 @@ public class RobotContainer
 
     /* Algae intake/outtake controls */
     copilot.leftTrigger()
-      .onTrue(algaeManip.setStatusCommand(AlgaeManipulator.Status.INTAKE))
+      .onTrue(algaeManip.setStatusCommand(AlgaeManipulator.Status.MANUAL_INTAKE))
       .onFalse(algaeManip.setStatusCommand(AlgaeManipulator.Status.HOLDING)); //Intake algae through manipulator
     copilot.leftBumper()
       .onTrue(algaeManip.setStatusCommand(AlgaeManipulator.Status.EJECT))

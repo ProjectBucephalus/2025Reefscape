@@ -14,22 +14,28 @@ import frc.robot.constants.Constants;
 public class SD 
 {
   public static final BooleanKey IO_LL = new BooleanKey("Use Limelight", true);
-  public static final DoubleKey IO_LL_EXPOSURE = new DoubleKey("Exposure Setting", 0);
+  public static final DoubleKey  IO_LL_EXPOSURE = new DoubleKey("Exposure Setting", 0);
 
   public static final BooleanKey CALIBRATE_BOT_ROTATION = new BooleanKey("Rotation Known", false);
   public static final BooleanKey CALIBRATE_DIFF = new BooleanKey("Overide: Calibrate Arm", false);
   public static final BooleanKey CALIBRATE_DIFF_TARGET = new BooleanKey("Overide: Arm At Target", false);
 
-  public static final StringKey STATE_HEADING = new StringKey("Heading State", "");
+  public static final StringKey  STATE_HEADING = new StringKey("Heading State", "");
 
+  public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Speed", Constants.Manipulators.algaeHoldingSpeed);
   public static final BooleanKey IO_PROCESS_AUTO = new BooleanKey("Process Auto", false);
   public static final BooleanKey IO_GEOFENCE = new BooleanKey("IgnoreFence", false);
-  public static final StringKey IO_AUTO = new StringKey("Auto Input", Constants.Auto.defaultAuto);
-  public static final DoubleKey IO_RUMBLE_D = new DoubleKey("Driver Rumble", Constants.RumblerConstants.driverDefault);
-  public static final DoubleKey IO_RUMBLE_C = new DoubleKey("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
+  public static final StringKey  IO_AUTO = new StringKey("Auto Input", Constants.Auto.defaultAuto);
+  public static final DoubleKey  IO_RUMBLE_D = new DoubleKey("Driver Rumble", Constants.RumblerConstants.driverDefault);
+  public static final DoubleKey  IO_RUMBLE_C = new DoubleKey("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
 
   public static final BooleanKey STATE_PP_WARMUP = new BooleanKey("Warmup Finished", false);
+  public static final StringKey  STATE_ALGAE = new StringKey("Algae Manipulator State", "Empty");
+  public static final StringKey  STATE_DRIVE = new StringKey("Drive State", "Disabled");
+  public static final BooleanKey STATE_HEADING_SNAP = new BooleanKey("Heading Snap Updating", true);
 
+  public static final DoubleKey SENSOR_ALGAE_CURRENT = new DoubleKey("Algae Current", 0);
+  public static final BooleanKey SENSOR_ALGAE = new BooleanKey("A Beam", false);
   public static final BooleanKey SENSOR_CORAL1 = new BooleanKey("C Beam 1", false);
   public static final BooleanKey SENSOR_CORAL2 = new BooleanKey("C Beam 2", false);
   public static final DoubleKey SENSOR_GYRO = new DoubleKey("Gyro yaw", 0);

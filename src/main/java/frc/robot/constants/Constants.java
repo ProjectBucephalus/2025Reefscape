@@ -13,6 +13,7 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -25,8 +26,8 @@ public final class Constants
 {
   public static final class RumblerConstants 
   {
-    public static final double driverDefault = 1;
-    public static final double copilotDefault = 1;  
+    public static final double driverDefault = 0;
+    public static final double copilotDefault = 0;
   }
 
   public static final class Control
@@ -34,7 +35,7 @@ public final class Constants
     public static final double manualDiffectorDeadband = 0.25;
     public static final double stickDeadband = 0.15;
     /** Normal maximum robot speed, relative to maximum uncapped speed */
-    public static final double maxThrottle = 0.7;
+    public static final double maxThrottle = 0.4;
     /** Minimum robot speed when braking, relative to maximum uncapped speed */
     public static final double minThrottle = 0.1;
     /** Normal maximum rotational robot speed, relative to maximum uncapped rotational speed */
@@ -213,7 +214,7 @@ public final class Constants
 
   public static final class DiffectorConstants
   {
-    public static final double motorStallCurrent = 100; // TODO: Tune this to the point that it will reliably prevent stalls
+    public static final double motorStallCurrent = 80; // TODO: Tune this to the point that it will reliably prevent stalls
 
     public static final double diffectorMotorKG = 0.225;
     public static final double diffectorMotorKS = 0.05;
@@ -257,14 +258,22 @@ public final class Constants
     public static final double diffectorCruiseMotor = 90;
     /** Desired cruise speed of Mechanism, RPS */
     public static final double diffectorCruise = diffectorCruiseMotor / gearboxRatio;
-    /** Desired acceleration of Motor, RPS^2 */
+    /** Desired cruise speed of Motor when holding Algae, RPS */
+    public static final double diffectorAlgaeCruiseMotor = 75;
+    /** Desired cruise speed of Mechanism when holding Algae, RPS */
+    public static final double diffectorAlgaeCruise = diffectorAlgaeCruiseMotor / gearboxRatio;
+    /** Desired acceleration of Motor for Elevation, RPS^2 */
     public static final double diffectorElevationAccelerationMotor = 70;
-    /** Desired acceleration of Mechanism, RPS^2 */
+    /** Desired acceleration of Mechanism for Elevation, RPS^2 */
     public static final double diffectorElevationAcceleration = diffectorElevationAccelerationMotor / gearboxRatio;
-    /** Desired acceleration of Motor, RPS^2 */
+    /** Desired acceleration of Motor for Rotation, RPS^2 */
     public static final double diffectorRotationAccelerationMotor = 70;
-    /** Desired acceleration of Mechanism, RPS^2 */
+    /** Desired acceleration of Mechanism for Rotation, RPS^2 */
     public static final double diffectorRotationAcceleration = diffectorRotationAccelerationMotor / gearboxRatio;
+    /** Desired acceleration of Motor for Rotation when holding Algae, RPS^2 */
+    public static final double diffectorAlgaeRotationAccelerationMotor = 35;
+    /** Desired acceleration of Mechanism for Rotation when holding Algae, RPS^2 */
+    public static final double diffectorAlgaeRotationAcceleration = diffectorAlgaeRotationAccelerationMotor / gearboxRatio;
     
     public static final boolean startingCoralState = true;
     public static final boolean startingAlgaeState = false;
@@ -280,13 +289,19 @@ public final class Constants
     /** Physical lower limit of the elevator when horizontal, metres above the ground */
     public static final double minZ = 0.36;
     /** Elevation at which all rotations are safe */
-    public static final double safeElevation = 0.71;
+    public static final double safeElevation = 0.9;
+    public static final double coralFunnelElevation = 0.9;
+    public static final double algaeClawElevation = 0.75;
     public static final double reefSafeElevation = 1; // TODO
-    public static final double algaeSafeElevation = 1;
-    public static final double climberClearanceThreshold = 0.6; // TODO
+    public static final double algaeSafeElevation = 1.3;
+    public static final double climberClearanceThreshold = 0.8; // TODO
     
     /** Arm rotation check tollerance, degrees */
     public static final double angleTolerance = 2;
+    /** Angle either side of 0 to consider "vertical" */
+    public static final double uprightTolerance = 15;
+    /** Angle either side of 180 to consider "vertical" */
+    public static final double downsideTolerance = 45;
     
     /** Elevation height check tolerance, m */
     public static final double elevationTolerance = 0.01;
@@ -307,7 +322,7 @@ public final class Constants
       public static final Translation2d climbSafePosition       = new Translation2d(0.70,  90);
       public static final Translation2d climbPosition           = new Translation2d(0.425, 90);
  
-      public static final Translation2d netPosition             = new Translation2d(  maxZ, 170);
+      public static final Translation2d netPosition             = new Translation2d(  maxZ, 160);
       public static final Translation2d algae3PortPosition      = new Translation2d(1.08, 113);
       public static final Translation2d algae3StbdPosition      = new Translation2d(1.08, 247);
       public static final Translation2d algae2PortPosition      = new Translation2d(0.65, 113);
@@ -318,22 +333,22 @@ public final class Constants
       public static final Translation2d coral4StbdPosition      = new Translation2d(1.62,  20);
       public static final Translation2d coral3PortPosition      = new Translation2d(0.98, 340);
       public static final Translation2d coral3StbdPosition      = new Translation2d(0.98,  20);
-      public static final Translation2d coral2PortPosition      = new Translation2d(0.68, 325);
-      public static final Translation2d coral2StbdPosition      = new Translation2d(0.68,  35);
-      public static final Translation2d coral1ClawPortPosition  = new Translation2d(0.71,  90);
-      public static final Translation2d coral1ClawStbdPosition  = new Translation2d(0.71, 270);
-      public static final Translation2d coral1PortPosition      = new Translation2d(0.78, 150);
-      public static final Translation2d coral1StbdPosition      = new Translation2d(0.78, 210);
+      public static final Translation2d coral2PortPosition      = new Translation2d(0.70, 325);
+      public static final Translation2d coral2StbdPosition      = new Translation2d(0.70,  35);
+      public static final Translation2d coral1ClawPortPosition  = new Translation2d(algaeClawElevation,  76);
+      public static final Translation2d coral1ClawStbdPosition  = new Translation2d(algaeClawElevation, 284);
+      public static final Translation2d coral1PortPosition      = new Translation2d(coralFunnelElevation, 210);
+      public static final Translation2d coral1StbdPosition      = new Translation2d(coralFunnelElevation, 150);
  
-      public static final Translation2d coralIntakePortPosition = new Translation2d(1.15, 215);
-      public static final Translation2d coralIntakeStbdPosition = new Translation2d(1.15, 145);
-      public static final Translation2d coralClawPortPosition   = new Translation2d(0.61, 133);
-      public static final Translation2d coralClawStbdPosition   = new Translation2d(0.61, 227);
-      public static final Translation2d coralStowPosition       = new Translation2d(0.70,   0);
+      public static final Translation2d coralIntakePortPosition = new Translation2d(1.12, 215); // TODO
+      public static final Translation2d coralIntakeStbdPosition = new Translation2d(1.12, 145); // TODO
+      public static final Translation2d coralClawPortPosition   = new Translation2d(0.66, 130); // TODO
+      public static final Translation2d coralClawStbdPosition   = new Translation2d(0.66, 230); // TODO
+      public static final Translation2d coralStowPosition       = new Translation2d(0.72,   0);
  
-      public static final Translation2d algaeIntakePortPosition = new Translation2d(0.38,  75);
-      public static final Translation2d algaeIntakeStbdPosition = new Translation2d(0.38, 285);
-      public static final Translation2d algaeStowPosition       = new Translation2d(0.65, 180);
+      public static final Translation2d algaeIntakePortPosition = new Translation2d(0.45,  70);
+      public static final Translation2d algaeIntakeStbdPosition = new Translation2d(0.45, 290);
+      public static final Translation2d algaeStowPosition       = new Translation2d(0.72, 180);
 
       public static final ArrayList<Translation2d> lowDiffectorPositions = new ArrayList<Translation2d>()
       {{
@@ -341,7 +356,8 @@ public final class Constants
         add(algaeIntakePortPosition);
         add(algaeIntakeStbdPosition);
         add(climbPosition);
-        add(processorPosition);
+        add(algaeStowPosition);
+        //add(processorPosition);
       }};
     }
         
@@ -410,15 +426,16 @@ public final class Constants
   {
     /* Coral manipulator speeds */
     public static final double coralDeliverySpeed = -0.7;
-    public static final double coralHoldingSpeed  = -0.05;
-    public static final double coralHoldingkG = -0.035;
+    public static final double coralHoldingSpeed  = -0.15;
+    public static final double coralHoldingkG     = 0;//-0.035;
 
     /* Algae manipulator speeds */
-    public static final double algaeIntakeSpeed    =  0.4;
-    public static final double algaeHoldingSpeed   =  0.2;
-    public static final double algaeNetSpeed       = -0.9;
-    public static final double algaeProcessorSpeed = -0.3;
-    public static final double algaeHeldCurrent = 30;
+    public static final double algaeIntakeSpeed    = -1;
+    public static final double algaeHoldingSpeed   = -0.3;
+    public static final double algaeNetSpeed       =  1;
+    public static final double algaeProcessorSpeed = 0.23;
+    public static final double algaeHeldCurrent    = 60;
+    public static final double algaeReleaseCurrent =  4;
 
     /** Algae net shooting range for rotation snapping, m */
     public static final double algaeRange = 2.5;
@@ -430,24 +447,27 @@ public final class Constants
 
   public static final class ClimberConstants
   {
-    public static final double stowWinchPos = 0;
-    public static final double activeWinchPos = 1.5;
-    public static final double climbWinchPos  = 0.75;
+    public static final double stowWinchPos   = Units.degreesToRotations(-150); // TODO
+    public static final double safeWinchPos   = Units.degreesToRotations(0);
+    public static final double activeWinchPos = Units.degreesToRotations(90);
+    public static final double climbWinchPos  = Units.degreesToRotations(-90);
     /** The furthest into the robot the climber can attempt to go whilst balancing */
-    public static final double climbActiveInnerLimit = 0.65;
+    public static final double climbActiveInnerLimit = Units.degreesToRotations(-100); // TODO
     /** The furthest out of the robot the climber can attempt to go whilst balancing */
-    public static final double climbActiveOuterLimit = 0.85;
-    public static final double manualScale    = 0.25;
+    public static final double climbActiveOuterLimit = Units.degreesToRotations(-70); // TODO
+    public static final double manualScale    = 0.5;
 
     public static final double winchKP = 150;
     public static final double winchKI = 0;
     public static final double winchKD = 0;
     public static final double winchBalanceScalar = 0.05;
 
-    public static final double winchPlanetaryRatio = 45;
-    public static final double winchGearIn = 20;
-    public static final double winchGearOut = 60;
-    public static final double winchGearRatio = ((winchGearOut / winchGearIn) * winchPlanetaryRatio);
+    public static final double winchPlanetaryRatio = 75;
+    public static final double winchGearIn   = 20;
+    public static final double winchGearOut  = 60;
+    public static final double winchChainIn  = 12;
+    public static final double winchChainOut = 24;
+    public static final double winchGearRatio = ((winchGearOut / winchGearIn) * (winchChainOut / winchChainIn) * winchPlanetaryRatio);
     public static final double winchDefaultCruise = 1;
     public static final double winchClimbCruise = 0.5;
     public static final double winchMotionMagicAccel  = 1;
@@ -458,28 +478,49 @@ public final class Constants
     /**
      * Constants used by the addressable LED classes.
      */
-    public static final int LEDPWMPort = IDConstants.LEDPWM; // PWM port the strip is connected to.
-    public static final int lightsLen = 120; // # of LED's in the strip, if more than one strip daisy-chained, total # of LED's
-    public static final int viewWidth = 30; // default width for a partial display layer. a good number is about 1/4 lightsLen
-    public static final int startOffset = 1; // LED # at 0 degrees
-    public static final double degreesPerLED = 360/lightsLen;  // used to calculate the LED pointing in a particular direction
-    public static final Color defaultBackColor = Color.kRed; // default background / off Color
-    public static final Color defaultFrontColor = Color.kGreen; // default foreground / on Color
-    public static final Color displayBorderColor = Color.kBlue; // default Color for border dots
-    public static final int defaultStatusSegments = 3; // default # of segments in a status display
-    public static final int pointerGradientThreshold = 5; // length of pointer layer above which a gradient will be applied rather than solid colour
-    public static final int stbdLEDsStart = 0; // start and end LED #'s for the 'starboard' segment
+    /** PWM port the strip is connected to. */
+    public static final int LEDPWMPort = IDConstants.LEDPWM; 
+    /** # of LED's in the strip, if more than one strip daisy-chained, total # of LED's */
+    public static final int lightsLen = 120; 
+    /** default width for a partial display layer. a good number is about 1/4 lightsLen */
+    public static final int viewWidth = 30; 
+    /** LED # at 0 degrees */
+    public static final int startOffset = 1; 
+    /** used to calculate the LED pointing in a particular direction */
+    public static final double degreesPerLED = 360/lightsLen;  
+    /** default background / off Color */
+    public static final Color defaultBackColor = Color.kRed; 
+    /** default foreground / on Color */
+    public static final Color defaultFrontColor = Color.kGreen; 
+    /** default Color for border dots */
+    public static final Color displayBorderColor = Color.kBlue; 
+    /** default # of segments in a status display */
+    public static final int defaultStatusSegments = 3; 
+    /** length of pointer layer above which a gradient will be applied rather than solid colour */
+    public static final int pointerGradientThreshold = 5; 
+    /** start and end LED #'s for the 'starboard' segment */
+    public static final int stbdLEDsStart = 0; 
     public static final int stbdLEDsEnd = 59;
-    public static final int portLEDsStart = 60; // start and end LED #'s for the 'port' segment
+    /** start and end LED #'s for the 'port' segment */
+    public static final int portLEDsStart = 60; 
     public static final int portLEDsEnd = 119;
-    public static final int discoMax = 10;  // maximum colour layers in disco mode
-    public static final int discoMin = 3;  // minimum colour layers in disco mode
-    public static final int discoAgeLimit = 10; //disco layers will randomly die of age between discoAgeLimit and 2x discoAgeLimit cycles
-    public static final double discoChangeChance = 0.9; // the probability of accel or growthrate changing in any update is 1 - this: (1 - 0.9 = 0.1 = 10% chance of change)
-    public static final double discoMaxVelMultiplier = 0.3; // used to calculate maxVel based on viewWidth, at maximum velocity it will take 1/this seconds to traverse the strip.
-    public static final double discoMaxAccelMultiplier = 0.1; // used to calculate maxAccel, maxVel will be multiplied by this to get the value.
-    public static final double discoMaxGrowMultiplier = 0.1; // used to calculate maxGrow based on viewWidth.
-    public static final double discoMaxGrowRateMultiplier = 0.1; // multipied by maxGrow to get maxGrowRate
-    public static final double discoColorThreshold = 0.5; // at least one color value (r,g,b) must be above this for the colour to be valid
+    /** maximum colour layers in disco mode */
+    public static final int discoMax = 10;  
+    /** minimum colour layers in disco mode */
+    public static final int discoMin = 3;  
+    /**disco layers will randomly die of age between discoAgeLimit and 2x discoAgeLimit cycles */
+    public static final int discoAgeLimit = 10; 
+    /** the probability of accel or growthrate changing in any update is 1 - this: (1 - 0.9 = 0.1 = 10% chance of change) */
+    public static final double discoChangeChance = 0.9; 
+    /** used to calculate maxVel based on viewWidth, at maximum velocity it will take 1/this seconds to traverse the strip. */
+    public static final double discoMaxVelMultiplier = 0.3; 
+    /** used to calculate maxAccel, maxVel will be multiplied by this to get the value. */
+    public static final double discoMaxAccelMultiplier = 0.1; 
+    /** used to calculate maxGrow based on viewWidth. */
+    public static final double discoMaxGrowMultiplier = 0.1; 
+    /** multipied by maxGrow to get maxGrowRate */
+    public static final double discoMaxGrowRateMultiplier = 0.1; 
+    /** at least one color value (r,g,b) must be above this for the colour to be valid */
+    public static final double discoColorThreshold = 0.5; 
   }
 }

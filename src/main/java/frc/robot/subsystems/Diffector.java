@@ -180,17 +180,17 @@ public class Diffector extends SubsystemBase
       if (elevation < targetElevation - DiffectorConstants.elevationTolerance)
         {eStop = true;}
     }
-    else if (elevation < arm.checkPosition(armPosition) - DiffectorConstants.elevationTolerance && !manualControl)
-      {eStop = true;}
-
-    if 
+    else if 
     (
-      atPosition()// &&
-      //(relativeTarget.equals(DiffectorConstants.algaeStowPosition) ||
-      //relativeTarget.equals(DiffectorConstants.coralStowPosition) ||
-      //relativeTarget.equals(DiffectorConstants.coralIntakePosition) ||
-      //relativeTarget.equals(DiffectorConstants.algaeTransferPosition))
+      (
+        elevation < arm.checkPosition(armPosition) - DiffectorConstants.elevationTolerance || 
+        elevation > DiffectorConstants.maxZ + projectionElevation
+      ) 
+      && !manualControl
     )
+    {eStop = true;}
+
+    if (atPosition())
     {
       calibrationCounter++;
       if (calibrationCounter == DiffectorConstants.calibrationDelay) 
@@ -274,6 +274,17 @@ public class Diffector extends SubsystemBase
    */
   private double[] calculateMotorTargets(Translation2d target)
   {
+    if (RobotContainer.algae)
+    { // Reduce speed when holding Algae
+      uaMotor.getConfigurator().apply(motorConfigUA.MotionMagic.withMotionMagicCruiseVelocity(DiffectorConstants.diffectorAlgaeCruise));
+      daMotor.getConfigurator().apply(motorConfigDA.MotionMagic.withMotionMagicCruiseVelocity(DiffectorConstants.diffectorAlgaeCruise));
+    }
+    else
+    {
+      uaMotor.getConfigurator().apply(motorConfigUA.MotionMagic.withMotionMagicCruiseVelocity(DiffectorConstants.diffectorCruise));
+      daMotor.getConfigurator().apply(motorConfigDA.MotionMagic.withMotionMagicCruiseVelocity(DiffectorConstants.diffectorCruise));
+    }
+
     if (MathUtil.isNear(angle, target.getY(), DiffectorConstants.angleTolerance))
     { // If movement is only elevation, use elevation acceleration limits
       uaMotor.getConfigurator().apply(motorConfigUA.MotionMagic.withMotionMagicAcceleration(DiffectorConstants.diffectorElevationAcceleration));
@@ -281,8 +292,16 @@ public class Diffector extends SubsystemBase
     }
     else
     { // If movement includes rotation, use rotation acceleration limits
-      uaMotor.getConfigurator().apply(motorConfigUA.MotionMagic.withMotionMagicAcceleration(DiffectorConstants.diffectorRotationAcceleration));
-      daMotor.getConfigurator().apply(motorConfigDA.MotionMagic.withMotionMagicAcceleration(DiffectorConstants.diffectorRotationAcceleration));
+      if (RobotContainer.algae)
+      {
+        uaMotor.getConfigurator().apply(motorConfigUA.MotionMagic.withMotionMagicAcceleration(DiffectorConstants.diffectorAlgaeRotationAcceleration));
+        daMotor.getConfigurator().apply(motorConfigDA.MotionMagic.withMotionMagicAcceleration(DiffectorConstants.diffectorAlgaeRotationAcceleration));
+      }
+      else
+      {
+        uaMotor.getConfigurator().apply(motorConfigUA.MotionMagic.withMotionMagicAcceleration(DiffectorConstants.diffectorRotationAcceleration));
+        daMotor.getConfigurator().apply(motorConfigDA.MotionMagic.withMotionMagicAcceleration(DiffectorConstants.diffectorRotationAcceleration));
+      }
     }
 
     double[] calculatedTargets = new double[2];

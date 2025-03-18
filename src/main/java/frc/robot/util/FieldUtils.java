@@ -127,7 +127,7 @@ public class FieldUtils
     /** Inscribed diameter of the reef hexagon (i.e. distance between opposite faces) in metres */
     public static final double inscribedReefDiameter = 1.663;
     /** Circumscribed diameter of the reef hexagon (i.e. distance between opposite points) in metres */
-    public static final double circumscribedReefDiameter = 1.920;
+    public static final double circumscribedReefDiameter = 1.820;
     /** Circumscribed diameter of the reef zone hexagon (i.e. distance between opposite points) in metres */
     public static final double circumscribedReefZoneDiameter = 3;
     

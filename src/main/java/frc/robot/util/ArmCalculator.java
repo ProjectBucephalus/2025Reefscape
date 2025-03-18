@@ -19,6 +19,10 @@ public class ArmCalculator
   private double minElevation;
   private double maxElevation;
   private double safeElevation;
+  private double coralClawElevation;
+  private double algaeClawElevation;
+  private double uprightTolerance;
+  private double downsideTolerance;
   private double projectionAngle;
   private double projectionElevation;
 
@@ -39,6 +43,10 @@ public class ArmCalculator
     maxElevation  = DiffectorConstants.maxZ;
     minElevation  = DiffectorConstants.minZ;
     safeElevation = DiffectorConstants.safeElevation;
+    coralClawElevation = DiffectorConstants.coralFunnelElevation;
+    algaeClawElevation = DiffectorConstants.algaeClawElevation;
+    uprightTolerance = DiffectorConstants.uprightTolerance;
+    downsideTolerance = DiffectorConstants.downsideTolerance;
     projectionAngle = IKGeometry.projectionAngle;
     projectionElevation = IKGeometry.projectionElevation;
 
@@ -108,69 +116,72 @@ public class ArmCalculator
       return pathOutput;
     }
     
-    if // Arm is not vertical:
-    (
-      Conversions.mod(angleRelative, 180) > DiffectorConstants.angleTolerance && 
-      Conversions.mod(angleRelative, 180) < 180 - DiffectorConstants.angleTolerance
+    // Any rotation taking the arm past vertical:
+    if
+    ( // If goes past both uprights
+      // Over a full rotation
+      angleChange >= 360 ||
+      //(angleRelative < 0 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) || // TODO
+      //(angleRelative < 0 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) ||
+      //(angleRelative < 0 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) ||
+      //(angleRelative < 0 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) ||
+      (angleRelative < 180 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) ||
+      (angleRelative > 180 - downsideTolerance && angleRelative + angleChange >= 540 - uprightTolerance) ||
+      (angleRelative > 180 - downsideTolerance && angleRelative + angleChange <=   0 + uprightTolerance) ||
+      (angleRelative < 180 + downsideTolerance && angleRelative + angleChange <=-180 + uprightTolerance)
     )
     {
-      // Any rotation taking the arm past vertical:
-      if
-      ( // If goes past both uprights
-        // Over a full rotation
-        angleChange >= 360 ||
-        (angleRelative < 180 && angleRelative + angleChange >= 360) ||
-        (angleRelative > 180 && angleRelative + angleChange >= 540) ||
-        (angleRelative < 180 && angleRelative + angleChange <=   0) ||
-        (angleRelative > 180 && angleRelative + angleChange <=-180)
-      )
-      {
-        // Intermediate waypoint: Safe elevation at initial rotation
-        pathOutput.add(new Translation2d(Math.max(startPosition.getX(), safeElevation), startPosition.getY()));
-        pathOutput.add(new Translation2d(Math.max(startPosition.getX(), safeElevation), targetPosition.getY()));
-      }
-      
-      else if
-      ( // Anticlockwise angle change goes past upright
-        angleRelative + angleChange >= 360 || 
-        // Clockwise angle change goes past upright
-        angleRelative + angleChange <= 0
-      )
-      {
-        // Intermediate waypoint: Safe elevation at initial rotation
-        pathOutput.add(new Translation2d(Math.max(checkAngle(0), startPosition.getX()), startPosition.getY()));
-        pathOutput.add(new Translation2d(Math.max(checkAngle(0), startPosition.getX()), targetPosition.getY()));
-      }
-
-      else if
-      ( // Anticlockwise angle change goes past upside-down
-        (angleRelative < 180 && angleRelative + angleChange >= 180) ||
-        // Clockwise angle change goes past upside-down
-        (angleRelative > 180 && angleRelative + angleChange <= 180)
-      )
-      {
-        // Intermediate waypoint: Safe elevation at initial rotation
-        pathOutput.add(new Translation2d(Math.max(checkAngle(180), startPosition.getX()), startPosition.getY()));
-        pathOutput.add(new Translation2d(Math.max(checkAngle(180), startPosition.getX()), targetPosition.getY()));
-      }
-
-
-      // Rotation does not go past vertical -> never needs to go higher than start or end
-      else if (startPosition.getX() < checkAngle(targetPosition.getY())) // Start is lower than is safe for final rotation
-      { // Go to safe elevation for final rotation, then rotate
-        pathOutput.add(new Translation2d(checkAngle(targetPosition.getY()), startPosition.getY()));
-        pathOutput.add(new Translation2d(checkAngle(targetPosition.getY()), targetPosition.getY()));
-      }
-      else // Start is high enough to rotate to final rotation
-        {pathOutput.add(new Translation2d(startPosition.getX(), targetPosition.getY()));}
+      // Intermediate waypoint: Safe elevation at initial rotation
+      pathOutput.add(new Translation2d(Math.max(startPosition.getX(), safeElevation), startPosition.getY()));
+      pathOutput.add(new Translation2d(Math.max(startPosition.getX(), safeElevation), targetPosition.getY()));
+    }
+    
+    else if
+    ( // Starts upright
+      (angleRelative > 360 - uprightTolerance || angleRelative < 0 + uprightTolerance) ||
+      // Anticlockwise angle change goes past upright
+      angleRelative + angleChange >= 360 - uprightTolerance || 
+      // Clockwise angle change goes past upright
+      angleRelative + angleChange <= 0 + uprightTolerance
+    )
+    {
+      // Intermediate waypoint: Safe elevation at initial rotation
+      pathOutput.add(new Translation2d(Math.max(algaeClawElevation, startPosition.getX()), startPosition.getY()));
+      pathOutput.add(new Translation2d(Math.max(algaeClawElevation, startPosition.getX()), targetPosition.getY()));
     }
 
-    // Arm starts vertical and starts lower than is safe
+    else if
+    ( // Starts upside-down
+      (angleRelative > 180 - downsideTolerance && angleRelative < 180 + downsideTolerance) ||
+      // Anticlockwise angle change goes past upside-down
+      (angleRelative < 180 + downsideTolerance && angleRelative + angleChange >= 180 - downsideTolerance) ||
+      // Clockwise angle change goes past upside-down
+      (angleRelative > 180 - downsideTolerance && angleRelative + angleChange <= 180 + downsideTolerance)
+    )
+    {
+      // Intermediate waypoint: Safe elevation at initial rotation
+      pathOutput.add(new Translation2d(Math.max(coralClawElevation, startPosition.getX()), startPosition.getY()));
+      pathOutput.add(new Translation2d(Math.max(coralClawElevation, startPosition.getX()), targetPosition.getY()));
+    }
+
+
+    // Rotation does not go past vertical -> never needs to go higher than start or end
+    else if (startPosition.getX() < checkAngle(targetPosition.getY())) // Start is lower than is safe for final rotation
+    { // Go to safe elevation for final rotation, then rotate
+      pathOutput.add(new Translation2d(checkAngle(targetPosition.getY()), startPosition.getY()));
+      pathOutput.add(new Translation2d(checkAngle(targetPosition.getY()), targetPosition.getY()));
+    }
+
+    /* Arm starts lower than is safe
     else if (startPosition.getX() <= checkAngle(startPosition.getY()))
     { // Ensure the arm is safe before moving from vertical
       pathOutput.add(new Translation2d(safeElevation, startPosition.getY()));
       pathOutput.add(new Translation2d(safeElevation, targetPosition.getY()));
-    }
+    }*/
+
+    else // Start is high enough to rotate to final rotation
+      {pathOutput.add(new Translation2d(startPosition.getX(), targetPosition.getY()));}
+
 
     // Add Target waypoint:
     pathOutput.add(targetPosition);
