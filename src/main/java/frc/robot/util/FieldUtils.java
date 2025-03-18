@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -67,7 +66,7 @@ public class FieldUtils
 
     nearestReefFace = localList.indexOf(robotPos.nearest(localList)); 
 
-    nearestReefFace = (int)MathUtil.inputModulus(nearestReefFace, 1, 6);
+    nearestReefFace = (int)Conversions.wrap(nearestReefFace, 1, 6);
     
     return nearestReefFace;
   }

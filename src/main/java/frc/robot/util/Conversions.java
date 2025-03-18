@@ -14,4 +14,19 @@ public class Conversions
     if (value < 0) {value += base;}
     return value;
   }
+  
+  public static int wrap(int value, int min, int max)
+  {
+    if (value < min)
+    {
+      value += ((max-min) + 1);
+      value = wrap(value, min, max);
+    }
+    else if (value > max)
+    {
+      value -= ((max-min) + 1);
+      value = wrap(value,min,max);
+    }
+    return  value;
+  }
 }
