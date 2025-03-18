@@ -284,14 +284,14 @@ public final class Constants
     /* Coral manipulator speeds */
     public static final double coralDeliverySpeed = -0.7;
     public static final double coralHoldingSpeed  = -0.15;
-    public static final double coralHoldingG     = 0;//-0.035;
+    public static final double coralHoldingG      = 0;//-0.035;
 
     /* Algae manipulator speeds */
     public static final double algaeIntakeSpeed    = -1;
-    public static final double algaeHoldingSpeed   = -0.3;
+    public static final double algaeHoldingVoltage = -0.9;
     public static final double algaeNetSpeed       =  1;
     public static final double algaeProcessorSpeed = 0.23;
-    public static final double algaeHeldCurrent    = 60;
+    public static final double algaeHeldCurrent    = 55;
     public static final double algaeReleaseCurrent =  4;
 
     /** Algae net shooting range for rotation snapping, m */
