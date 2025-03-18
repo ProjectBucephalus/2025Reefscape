@@ -80,7 +80,7 @@ public class CoralManipulator extends SubsystemBase
         
         if (RobotContainer.coral) 
           {status = Status.DEFAULT;}
-      break;
+        break;
 
       case DELIVERY_SMART:
         int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
@@ -96,7 +96,7 @@ public class CoralManipulator extends SubsystemBase
           {speed = -speed;}
 
         motor.set(speed);
-      break;
+        break;
 
       case DELIVERY_LEFT:
       case DELIVERY_RIGHT:
@@ -115,7 +115,7 @@ public class CoralManipulator extends SubsystemBase
           {speed = -speed;}
 
         motor.set(speed);
-      break;
+        break;
 
       case DEFAULT:
         if (RobotContainer.canifier.coralPortSensor() && RobotContainer.canifier.coralStbdSensor())
@@ -129,7 +129,7 @@ public class CoralManipulator extends SubsystemBase
           
         else if (!RobotContainer.canifier.coralPortSensor() && !RobotContainer.canifier.coralStbdSensor()) 
           {setSpeedFeedforward(0);}
-      break;
+        break;
     }
   }
 }

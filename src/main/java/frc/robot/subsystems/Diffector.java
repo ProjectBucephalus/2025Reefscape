@@ -50,20 +50,20 @@ public class Diffector extends SubsystemBase
     Feedback.SensorToMechanismRatio = Constants.DiffectorConstants.gearboxRatio;
 
     /* Diffector Motor Config (Default) */
-    Slot0.kG = Constants.DiffectorConstants.diffectorMotorKG;
-    Slot0.kS = Constants.DiffectorConstants.diffectorMotorKS;
-    Slot0.kV = Constants.DiffectorConstants.diffectorMotorKV;
-    Slot0.kP = Constants.DiffectorConstants.diffectorMotorKP;
-    Slot0.kI = Constants.DiffectorConstants.diffectorMotorKI;
-    Slot0.kD = Constants.DiffectorConstants.diffectorMotorKD;
+    Slot0.kG = Constants.DiffectorConstants.diffectorKG;
+    Slot0.kS = Constants.DiffectorConstants.diffectorKS;
+    Slot0.kV = Constants.DiffectorConstants.diffectorKV;
+    Slot0.kP = Constants.DiffectorConstants.diffectorKP;
+    Slot0.kI = Constants.DiffectorConstants.diffectorKI;
+    Slot0.kD = Constants.DiffectorConstants.diffectorKD;
     
     /* Diffector Motor Config (Virtual Spring) */
-    Slot1.kG = Constants.DiffectorConstants.diffectorMotorKGSpring;
-    Slot1.kS = Constants.DiffectorConstants.diffectorMotorKSSpring;
-    Slot1.kV = Constants.DiffectorConstants.diffectorMotorKVSpring;
-    Slot1.kP = Constants.DiffectorConstants.diffectorMotorKPSpring;
-    Slot1.kI = Constants.DiffectorConstants.diffectorMotorKISpring;
-    Slot1.kD = Constants.DiffectorConstants.diffectorMotorKDSpring;
+    Slot1.kG = Constants.DiffectorConstants.diffectorKGSpring;
+    Slot1.kS = Constants.DiffectorConstants.diffectorKSSpring;
+    Slot1.kV = Constants.DiffectorConstants.diffectorKVSpring;
+    Slot1.kP = Constants.DiffectorConstants.diffectorKPSpring;
+    Slot1.kI = Constants.DiffectorConstants.diffectorKISpring;
+    Slot1.kD = Constants.DiffectorConstants.diffectorKDSpring;
 
     /* Diffector MotionMagic Default Config */
     MotionMagic.MotionMagicCruiseVelocity = Constants.DiffectorConstants.diffectorCruise;

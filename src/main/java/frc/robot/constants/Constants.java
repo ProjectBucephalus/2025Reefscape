@@ -216,19 +216,19 @@ public final class Constants
   {
     public static final double motorStallCurrent = 80; // TODO: Tune this to the point that it will reliably prevent stalls
 
-    public static final double diffectorMotorKG = 0.225;
-    public static final double diffectorMotorKS = 0.05;
-    public static final double diffectorMotorKV = 0.58;
-    public static final double diffectorMotorKP = 100;
-    public static final double diffectorMotorKI = 0;
-    public static final double diffectorMotorKD = 0;
+    public static final double diffectorKG = 0.225;
+    public static final double diffectorKS = 0.05;
+    public static final double diffectorKV = 0.58;
+    public static final double diffectorKP = 100;
+    public static final double diffectorKI = 0;
+    public static final double diffectorKD = 0;
 
-    public static final double diffectorMotorKGSpring = 0;
-    public static final double diffectorMotorKSSpring = 0;
-    public static final double diffectorMotorKVSpring = 0;
-    public static final double diffectorMotorKPSpring = 3;
-    public static final double diffectorMotorKISpring = 0;
-    public static final double diffectorMotorKDSpring = 0;
+    public static final double diffectorKGSpring = 0;
+    public static final double diffectorKSSpring = 0;
+    public static final double diffectorKVSpring = 0;
+    public static final double diffectorKPSpring = 3;
+    public static final double diffectorKISpring = 0;
+    public static final double diffectorKDSpring = 0;
 
     public static final NeutralModeValue neutralMode = NeutralModeValue.Brake;
     
