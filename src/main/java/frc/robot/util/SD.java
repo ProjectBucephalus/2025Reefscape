@@ -19,6 +19,8 @@ public class SD
 {
   public static final BooleanKey IO_LL = new BooleanKey("Use Limelight", true);
   public static final DoubleKey  IO_LL_EXPOSURE = new DoubleKey("Exposure Setting", 0);
+  public static final BooleanKey IO_LL_EXPOSURE_UP = new BooleanKey("Increase Exposure", false);
+  public static final BooleanKey IO_LL_EXPOSURE_DOWN = new BooleanKey("Decrease Exposure", false);
 
   public static final BooleanKey CALIBRATE_BOT_ROTATION = new BooleanKey("Rotation Known", false);
   public static final BooleanKey CALIBRATE_DIFF = new BooleanKey("Overide: Calibrate Arm", false);
@@ -38,6 +40,7 @@ public class SD
   public static final StringKey  STATE_DRIVE = new StringKey("Drive State", "Disabled");
   public static final BooleanKey STATE_HEADING_SNAP = new BooleanKey("Heading Snap Updating", true);
 
+  public static final DoubleKey SENSOR_ALGAE_TMEP = new DoubleKey("Algae Temperature", 0);
   public static final DoubleKey SENSOR_ALGAE_CURRENT = new DoubleKey("Algae Current", 0);
   public static final BooleanKey SENSOR_ALGAE = new BooleanKey("A Beam", false);
   public static final BooleanKey SENSOR_CORAL1 = new BooleanKey("C Beam 1", false);
