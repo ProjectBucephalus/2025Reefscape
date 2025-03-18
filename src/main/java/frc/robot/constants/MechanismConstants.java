@@ -21,7 +21,8 @@ public class MechanismConstants
     public static final double winchMotionMagicAccel  = 1;
 
     public static final TalonFXConfiguration climberMotorConfig = new TalonFXConfiguration();
-    {{
+    static
+    {
       climberMotorConfig.Feedback.SensorToMechanismRatio = winchGearRatio;
       climberMotorConfig.MotionMagic.MotionMagicCruiseVelocity = winchDefaultCruise;
       climberMotorConfig.MotionMagic.MotionMagicAcceleration = winchMotionMagicAccel;
@@ -30,7 +31,7 @@ public class MechanismConstants
       climberMotorConfig.Slot0.kD = 0;
       climberMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       climberMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-    }};
+    };
   }
   
   public static class DiffectorConfigs
@@ -79,7 +80,8 @@ public class MechanismConstants
     public static final double diffectorAlgaeRotationAcceleration = diffectorAlgaeRotationAccelerationMotor / gearboxRatio;
     
     public static final TalonFXConfiguration diffectorMotorConfig = new TalonFXConfiguration();
-    {{
+    static
+    {
       /* Diffector Motor Gneral Config */
       diffectorMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
       diffectorMotorConfig.Feedback.SensorToMechanismRatio = gearboxRatio;
@@ -103,6 +105,6 @@ public class MechanismConstants
       /* Diffector MotionMagic Default Config */
       diffectorMotorConfig.MotionMagic.MotionMagicCruiseVelocity = diffectorCruise;
       diffectorMotorConfig.MotionMagic.MotionMagicAcceleration = diffectorRotationAcceleration;
-    }};
+    };
   }
 }
