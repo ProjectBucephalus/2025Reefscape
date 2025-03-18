@@ -14,6 +14,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -114,6 +115,7 @@ public class Limelight extends SubsystemBase
 
     if (!rotationKnown) 
     {
+      lastCycleRotationKnown = false;
       if (!getLimelightRotation().equals(Rotation2d.kZero))
       {
         rotationData.add(0, RobotContainer.io_LimelightPort.getLimelightRotation().getDegrees());
@@ -131,6 +133,7 @@ public class Limelight extends SubsystemBase
           {
             rotationKnown = true;
             SD.CALIBRATE_BOT_ROTATION.put(true);
+            SmartDashboard.putNumber("limelight " + limelightName + " average rotation reading", (highest + lowest) / 2);
             RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
           }
         }
