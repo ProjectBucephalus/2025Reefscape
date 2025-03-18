@@ -37,7 +37,7 @@ public class Limelight extends SubsystemBase
   private final String limelightName;
 
   private int pipelineIndex = 0;
-  public static boolean rotationKnown;
+  public static boolean rotationKnown = false;
   private ArrayList<Double> rotationData = new ArrayList<Double>();
   private boolean lastCycleRotationKnown = false;
 
@@ -116,7 +116,7 @@ public class Limelight extends SubsystemBase
     if (!rotationKnown) 
     {
       lastCycleRotationKnown = false;
-      if (!getLimelightRotation().equals(Rotation2d.kZero))
+      if (!MathUtil.isNear(0, getLimelightRotation().getDegrees(), 0.1))
       {
         rotationData.add(0, RobotContainer.io_LimelightPort.getLimelightRotation().getDegrees());
   
@@ -125,9 +125,14 @@ public class Limelight extends SubsystemBase
   
         if (rotationData.size() == 5)
         {
-          Collections.sort(rotationData);
-          double lowest = rotationData.get(0);
-          double highest = rotationData.get(rotationData.size() - 1);
+          double lowest = rotationData.get(0).doubleValue();
+          double highest = rotationData.get(0).doubleValue();
+          
+          for(int i = 1; i < 5; i++)
+          {
+            lowest = Math.min(lowest, rotationData.get(i).doubleValue());
+            highest = Math.max(highest, rotationData.get(i).doubleValue());
+          }
           
           if (highest - lowest < 1)
           {
