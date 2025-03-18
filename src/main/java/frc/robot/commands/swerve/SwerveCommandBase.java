@@ -2,8 +2,8 @@ package frc.robot.commands.swerve;
 
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.DiffectorGeometry;
 import frc.robot.constants.Constants.Control;
-import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
@@ -102,7 +102,7 @@ public abstract class SwerveCommandBase extends Command
     if (redAlliance)
       {motionXY = motionXY.unaryMinus();}
 
-    if (RobotContainer.diffector.getElevation() > IKGeometry.bargeSafetyHeight && !SD.OVERRIDE.get())
+    if (RobotContainer.s_Diffector.getElevation() > DiffectorGeometry.bargeSafetyHeight && !SD.OVERRIDE.get())
     {
       motionXY = FieldUtils.GeoFencing.netProtectionZone.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
     }
@@ -138,7 +138,7 @@ public abstract class SwerveCommandBase extends Command
         brakeSup.getAsDouble(), 
         Math.min
         (
-          (RobotContainer.diffector.getElevation() - 1) * Constants.Control.armBrakeRate, 
+          (RobotContainer.s_Diffector.getElevation() - 1) * Constants.Control.armBrakeRate, 
           1
         )
       )

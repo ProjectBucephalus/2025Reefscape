@@ -79,7 +79,7 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              diffector.coralScorePosCommand(prevEndPoint, Integer.parseInt(splitCommand.substring(2)))
+              diffector.coralScorePosCommandUndeferred(() -> prevEndPoint, Integer.parseInt(splitCommand.substring(2)))
             )
           );
 
@@ -88,7 +88,7 @@ public class AutoUtils
           if (splitCommand.charAt(2) == '4') 
           {
             commandList.add(Commands.waitSeconds(0.1));
-            commandList.add(diffector.defer(() -> diffector.coralScorePosInstantCommand(prevEndPoint, 3)));
+            commandList.add(diffector.coralScorePosInstantCommand(() -> prevEndPoint, 3));
           }
           
           commandList.add(Commands.waitUntil(() -> !RobotContainer.coral));

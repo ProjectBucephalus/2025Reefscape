@@ -21,7 +21,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 public class CoralManipulator extends SubsystemBase 
 {
   /* Declaration of the motor controllers */
-  private TalonFX motor;
+  private TalonFX m_Climber;
 
   /**
    * Enum representing the status this manipulator is in
@@ -42,14 +42,14 @@ public class CoralManipulator extends SubsystemBase
   public CoralManipulator() 
   {
     status = Status.DEFAULT;
-    motor = new TalonFX(IDConstants.coralMotorID);
+    m_Climber = new TalonFX(IDConstants.coralMotorID);
   }
 
   public Status getStatus()
     {return status;}
 
   private void setSpeedFeedforward(double speed)
-    {motor.set(speed + Math.sin(Units.degreesToRadians(RobotContainer.diffector.getAngle())) * Constants.Manipulators.coralHoldingkG);}
+    {m_Climber.set(speed + Math.sin(Units.degreesToRadians(RobotContainer.s_Diffector.getAngle())) * Constants.Manipulators.coralHoldingG);}
 
   public void setStatus(Status newStatus)
     {status = newStatus;}
@@ -71,12 +71,12 @@ public class CoralManipulator extends SubsystemBase
   @Override
   public void periodic() 
   {
-    RobotContainer.coral = !RobotContainer.canifier.coralPortSensor() || !RobotContainer.canifier.coralStbdSensor();
+    RobotContainer.coral = !RobotContainer.io_Canifier.coralPortSensor() || !RobotContainer.io_Canifier.coralStbdSensor();
 
     switch(status)
     {
       case INTAKE:
-        motor.set(Constants.Manipulators.coralHoldingSpeed);
+        m_Climber.set(Constants.Manipulators.coralHoldingSpeed);
         
         if (RobotContainer.coral) 
           {status = Status.DEFAULT;}
@@ -85,7 +85,7 @@ public class CoralManipulator extends SubsystemBase
       case DELIVERY_SMART:
         int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
         speed = -Constants.Manipulators.coralDeliverySpeed;
-        armPos = RobotContainer.diffector.getRelativeRotation();
+        armPos = RobotContainer.s_Diffector.getRelativeRotation();
 
         if (nearestReefFace == 5 || nearestReefFace == 6) 
         {
@@ -95,14 +95,14 @@ public class CoralManipulator extends SubsystemBase
         if (armPos > 90 && armPos <= 270)
           {speed = -speed;}
 
-        motor.set(speed);
+        m_Climber.set(speed);
         break;
 
       case DELIVERY_LEFT:
       case DELIVERY_RIGHT:
         speed = Constants.Manipulators.coralDeliverySpeed;
 
-        armPos = RobotContainer.diffector.getRelativeRotation();
+        armPos = RobotContainer.s_Diffector.getRelativeRotation();
         double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
 
         if (status == Status.DELIVERY_RIGHT) 
@@ -114,20 +114,20 @@ public class CoralManipulator extends SubsystemBase
         if (robotRotation > 90 - Constants.Control.driverVisionTolerance && robotRotation <= 270 + Constants.Control.driverVisionTolerance) 
           {speed = -speed;}
 
-        motor.set(speed);
+        m_Climber.set(speed);
         break;
 
       case DEFAULT:
-        if (RobotContainer.canifier.coralPortSensor() && RobotContainer.canifier.coralStbdSensor())
-          {motor.set(0);}
+        if (RobotContainer.io_Canifier.coralPortSensor() && RobotContainer.io_Canifier.coralStbdSensor())
+          {m_Climber.set(0);}
 
-        else if (RobotContainer.canifier.coralPortSensor() && !RobotContainer.canifier.coralStbdSensor())
+        else if (RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor())
           {setSpeedFeedforward(Constants.Manipulators.coralHoldingSpeed);}
 
-        else if (!RobotContainer.canifier.coralPortSensor() && RobotContainer.canifier.coralStbdSensor()) 
+        else if (!RobotContainer.io_Canifier.coralPortSensor() && RobotContainer.io_Canifier.coralStbdSensor()) 
           {setSpeedFeedforward(-Constants.Manipulators.coralHoldingSpeed);} 
           
-        else if (!RobotContainer.canifier.coralPortSensor() && !RobotContainer.canifier.coralStbdSensor()) 
+        else if (!RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor()) 
           {setSpeedFeedforward(0);}
         break;
     }

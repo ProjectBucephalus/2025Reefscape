@@ -44,8 +44,8 @@ public class Robot extends TimedRobot
 
     warmupCommand.schedule();
 
-    RobotContainer.limelightPort.setIMUMode(1);
-    RobotContainer.limelightStbd.setIMUMode(1);
+    RobotContainer.io_LimelightPort.setIMUMode(1);
+    RobotContainer.io_LimelightStbd.setIMUMode(1);
     SD.IO_LL_EXPOSURE.init();
     SD.CALIBRATE_BOT_ROTATION.init();
   }
@@ -65,14 +65,14 @@ public class Robot extends TimedRobot
     if (robotPose.getX() <= 0.25 && robotPose.getY() <= 0.25) 
     {
       if (allianceKnown && DriverStation.getAlliance().get() == Alliance.Blue)
-        RobotContainer.swerve.resetPose(new Pose2d((FieldUtils.fieldLength/2) - 1.5, FieldUtils.fieldWidth/2, robotPose.getRotation()));
+        RobotContainer.s_Swerve.resetPose(new Pose2d((FieldUtils.fieldLength/2) - 1.5, FieldUtils.fieldWidth/2, robotPose.getRotation()));
       else
-        RobotContainer.swerve.resetPose(new Pose2d((FieldUtils.fieldLength/2) + 1.5, FieldUtils.fieldWidth/2, robotPose.getRotation()));
+        RobotContainer.s_Swerve.resetPose(new Pose2d((FieldUtils.fieldLength/2) + 1.5, FieldUtils.fieldWidth/2, robotPose.getRotation()));
     }
 
-    RobotContainer.swerveState = RobotContainer.swerve.getState();
+    RobotContainer.swerveState = RobotContainer.s_Swerve.getState();
 
-    RobotContainer.swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.swerve.getPigeon2().getYaw().getValueAsDouble()))));
+    RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
     
     CommandScheduler.getInstance().run();
     
@@ -83,12 +83,12 @@ public class Robot extends TimedRobot
   @Override
   public void disabledInit() 
   {
-    RobotContainer.limelightPort.setIMUMode(1);
-    RobotContainer.limelightStbd.setIMUMode(1);
+    RobotContainer.io_LimelightPort.setIMUMode(1);
+    RobotContainer.io_LimelightStbd.setIMUMode(1);
     if (Limelight.rotationKnown)
     {
-      RobotContainer.limelightPort.setThrottle(150);
-      RobotContainer.limelightStbd.setThrottle(150);
+      RobotContainer.io_LimelightPort.setThrottle(150);
+      RobotContainer.io_LimelightStbd.setThrottle(150);
     }
     SD.OVERRIDE.init();
     SD.IO_PROCESS_AUTO.init();
@@ -113,7 +113,7 @@ public class Robot extends TimedRobot
       {
         allianceKnown = true;
         if (DriverStation.getAlliance().get() == Alliance.Blue && !Limelight.rotationKnown) 
-          {RobotContainer.swerve.getPigeon2().setYaw(180);}
+          {RobotContainer.s_Swerve.getPigeon2().setYaw(180);}
       }  
     }
   }
@@ -121,10 +121,10 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit() 
   {  
-    RobotContainer.limelightPort.setIMUMode(2);
-    RobotContainer.limelightStbd.setIMUMode(2);    
-    RobotContainer.limelightPort.setThrottle(0);
-    RobotContainer.limelightStbd.setThrottle(0);
+    RobotContainer.io_LimelightPort.setIMUMode(2);
+    RobotContainer.io_LimelightStbd.setIMUMode(2);    
+    RobotContainer.io_LimelightPort.setThrottle(0);
+    RobotContainer.io_LimelightStbd.setThrottle(0);
     
     if (autonomousCommand == null) 
       {autonomousCommand = robotContainer.getAutoCommand();}
@@ -139,16 +139,16 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit() 
   {
-    RobotContainer.limelightPort.setIMUMode(2);
-    RobotContainer.limelightStbd.setIMUMode(2);    
-    RobotContainer.limelightPort.setThrottle(0);
-    RobotContainer.limelightStbd.setThrottle(0);
+    RobotContainer.io_LimelightPort.setIMUMode(2);
+    RobotContainer.io_LimelightStbd.setIMUMode(2);    
+    RobotContainer.io_LimelightPort.setThrottle(0);
+    RobotContainer.io_LimelightStbd.setThrottle(0);
 
     if (autonomousCommand != null) 
       {autonomousCommand.cancel();}
 
-    RobotContainer.coralManip.setStatus(CoralManipulator.Status.DEFAULT);
-    RobotContainer.algaeManip.setStatus(AlgaeManipulator.Status.EMPTY);
+    RobotContainer.s_Coral.setStatus(CoralManipulator.Status.DEFAULT);
+    RobotContainer.s_Algae.setStatus(AlgaeManipulator.Status.EMPTY);
   }
 
   @Override
@@ -159,8 +159,8 @@ public class Robot extends TimedRobot
   {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    RobotContainer.limelightPort.setThrottle(0);
-    RobotContainer.limelightStbd.setThrottle(0);
+    RobotContainer.io_LimelightPort.setThrottle(0);
+    RobotContainer.io_LimelightStbd.setThrottle(0);
   }
 
   /** This function is called periodically during test mode. */
