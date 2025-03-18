@@ -106,19 +106,17 @@ public class Diffector extends SubsystemBase
     elevation = Presets.startPosition.getX();
 
     positionOveride(getMeasuredElevation(), getMeasuredAngle());
-    calculatePosition();
-
+    
     targetElevation = elevation;
     targetAngle     = angle;
-
+    
     targetPosition  = new Translation2d(targetElevation, targetAngle);
-
+    
     oldTarget       = targetPosition;
     relativeTarget  = targetPosition;
-
+    
     motorTargets = calculateMotorTargets(targetPosition);
-
-
+    
     updateSpringState();
 
     motionMagicRequester = new MotionMagicVoltage(0);
