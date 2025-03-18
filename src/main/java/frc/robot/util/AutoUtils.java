@@ -288,7 +288,7 @@ public class AutoUtils
     return
     Commands.sequence
     (
-      diffector.moveAndWaitCommand(net ? Presets.netPosition : Presets.processorPosition), 
+      diffector.moveAndWaitCommand(net ? Presets.netPosition : Presets.processorPositionPort), 
       algaeManip.setStatusCommand(AlgaeManipulator.Status.EJECT)
     );
   }

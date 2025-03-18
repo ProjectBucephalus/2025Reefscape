@@ -236,7 +236,8 @@ public final class Constants
       public static final Translation2d algae3StbdPosition      = new Translation2d(1.08, 247);
       public static final Translation2d algae2PortPosition      = new Translation2d(0.65, 113);
       public static final Translation2d algae2StbdPosition      = new Translation2d(0.65, 247);
-      public static final Translation2d processorPosition       = new Translation2d(0.43,  90);
+      public static final Translation2d processorPositionPort   = new Translation2d(0.43,  90);
+      public static final Translation2d processorPositionStbd   = new Translation2d(0.43,  270);
  
       public static final Translation2d coral4PortPosition      = new Translation2d(1.62, 340);
       public static final Translation2d coral4StbdPosition      = new Translation2d(1.62,  20);

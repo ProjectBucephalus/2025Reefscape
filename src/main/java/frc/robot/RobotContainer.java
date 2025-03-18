@@ -407,7 +407,12 @@ public class RobotContainer
       (
         Commands.either
         (
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPosition), 
+          Commands.either
+          (
+            s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPositionStbd), 
+            s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPositionPort), 
+            () -> swerveState.Pose.getX() >= 8.774
+          ),
           s_Diffector.coralScorePosCommand(1), 
           algaeModifier
         )
