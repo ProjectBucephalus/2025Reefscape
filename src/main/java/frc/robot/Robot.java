@@ -47,6 +47,8 @@ public class Robot extends TimedRobot
     RobotContainer.io_LimelightPort.setIMUMode(1);
     RobotContainer.io_LimelightStbd.setIMUMode(1);
     SD.IO_LL_EXPOSURE.init();
+    SD.IO_LL_EXPOSURE_UP.init();
+    SD.IO_LL_EXPOSURE_DOWN.init();
     SD.CALIBRATE_BOT_ROTATION.init();
   }
 
