@@ -26,6 +26,7 @@ import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
+import frc.robot.util.FieldUtils.GeoFencing;
 import frc.robot.util.leds.LightLayer;
 import frc.robot.util.leds.LightLayer.*;
 import frc.robot.util.libraries.Telemetry;
@@ -127,13 +128,23 @@ public class RobotContainer
   (
     () -> 
     {
+      boolean northHalf = swerveState.Pose.getTranslation().getX() >= FieldUtils.fieldWidth / 2;
+      GeoFenceObject nearestCoralStation =
+      FieldUtils.isRedAlliance() ?
+      northHalf ? GeoFencing.cornerNRed : GeoFencing.cornerSRed
+      :
+      northHalf ? GeoFencing.cornerNBlue : GeoFencing.cornerSBlue;
+
       return 
       (driver.rightBumper().getAsBoolean() && algae)
       ||
-      (copilotLeftRumbleTrigger.getAsBoolean() && true);
+      (copilotLeftRumbleTrigger.getAsBoolean() && nearestCoralStation.getDistance(swerveState.Pose.getTranslation()) < Constants.Control.atObjectTolerance);
     }
   );
-  private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Climber.isUnlocked() && s_Diffector.climbReady() );
+  private final Trigger copliotRightRumbleTrigger = new Trigger
+  (
+    () -> s_Climber.climbReady() && s_Diffector.climbReady() && true
+  );
 
   /* Control Modifiers */
   private static final BooleanSupplier algaeModifier = copilot.rightTrigger();
@@ -562,8 +573,8 @@ public class RobotContainer
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
-    driverLeftRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Ready to Score")));
-    driverRightRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Pickup Waiting")));
+    driverLeftRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Penalty Zone")));
+    driverRightRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Intaked Successfully")));
 
     /* Copilot rumble bindings */
     copilotLeftRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_LEFT, "Intake Full")));
