@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.util.Conversions;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.SD;
 
@@ -86,7 +87,19 @@ public class Limelight extends SubsystemBase
   }
 
   public int updateLimelightPipeline()
-    {return SD.IO_LL_EXPOSURE.get().intValue();}
+  {
+    if (SD.IO_LL_EXPOSURE_UP.get())
+    {
+      SD.IO_LL_EXPOSURE_UP.put(false);
+      SD.IO_LL_EXPOSURE.put(Conversions.clamp(SD.IO_LL_EXPOSURE.get().intValue() + 1, 0, 7));
+    }
+    if (SD.IO_LL_EXPOSURE_DOWN.get())
+    {
+      SD.IO_LL_EXPOSURE_DOWN.put(false);
+      SD.IO_LL_EXPOSURE.put(Conversions.clamp(SD.IO_LL_EXPOSURE.get().intValue() - 1, 0, 7));
+    }
+    return SD.IO_LL_EXPOSURE.get().intValue();
+  }
 
   @Override
   public void periodic() 

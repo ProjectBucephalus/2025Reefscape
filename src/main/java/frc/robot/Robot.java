@@ -65,6 +65,8 @@ public class Robot extends TimedRobot
 
     SmartDashboard.putData("Field", autoPosition);
     SD.IO_LL_EXPOSURE.init();
+    SD.IO_LL_EXPOSURE_UP.init();
+    SD.IO_LL_EXPOSURE_DOWN.init();
     SD.CALIBRATE_BOT_ROTATION.init();
   }
 

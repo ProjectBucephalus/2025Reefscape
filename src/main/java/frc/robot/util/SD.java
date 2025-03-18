@@ -14,6 +14,8 @@ import frc.robot.constants.Constants;
 public class SD 
 {
   public static final BooleanKey IO_LL = new BooleanKey("Use Limelight", true);
+  public static final BooleanKey IO_LL_EXPOSURE_UP = new BooleanKey("Increase Exposure", false);
+  public static final BooleanKey IO_LL_EXPOSURE_DOWN = new BooleanKey("Decrease Exposure", false);
   public static final DoubleKey  IO_LL_EXPOSURE = new DoubleKey("Exposure Setting", 0);
 
   public static final BooleanKey CALIBRATE_BOT_ROTATION = new BooleanKey("Rotation Known", false);
