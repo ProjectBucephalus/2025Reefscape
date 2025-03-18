@@ -55,7 +55,7 @@ public class AlgaeManipulator extends SubsystemBase
     {status = newStatus;}
 
   public Command setStatusCommand(Status status)
-    {return runOnce(() -> setStatus(status));}
+    {return runOnce(() -> setStatus(status)).withName("SetAlgaeStatus");}
 
   public Status getStatus()
     {return status;}

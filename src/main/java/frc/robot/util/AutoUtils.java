@@ -174,7 +174,9 @@ public class AutoUtils
         brakeSup
       ),
       atPathStart
-    ).until(RobotContainer.driver.povCenter());
+    )
+    .until(RobotContainer.driver.povCenter())
+    .withName("PathfindAndFollow");
   }
 
   public static Supplier<String> getBargePathName()

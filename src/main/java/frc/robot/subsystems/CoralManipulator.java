@@ -55,7 +55,7 @@ public class CoralManipulator extends SubsystemBase
     {status = newStatus;}
 
   public Command setStatusCommand(Status status)
-    {return runOnce(() -> setStatus(status));}
+    {return runOnce(() -> setStatus(status)).withName("SetCoralStatus");}
 
   public Command scoreCommand()
   {

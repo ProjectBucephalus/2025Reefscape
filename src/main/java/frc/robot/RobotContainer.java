@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.swerve.*;
 import frc.robot.constants.*;
 import frc.robot.constants.Constants.DiffectorConstants;
+import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
@@ -97,11 +99,40 @@ public class RobotContainer
       copilot.getRawAxis(manualDiffectorRotationAxis) > Constants.Control.manualDiffectorDeadband
     )
   );
-  private final Trigger driverLeftRumbleTrigger = new Trigger(() -> 
-  s_Coral.getStatus() == CoralManipulator.Status.INTAKE && (s_Diffector.getRelativeRotation() > 45 && s_Diffector.getRelativeRotation() < 315) ||
-  s_Algae.getStatus() == AlgaeManipulator.Status.HOLDING && (s_Diffector.getRelativeRotation() > 135 && s_Diffector.getRelativeRotation() < 225));
-  //private final Trigger copilotLeftRumbleTrigger   = new Trigger(() -> funnel);
-  private final Trigger driverRightRumbleTrigger = new Trigger(() -> s_Algae.getStatus() == AlgaeManipulator.Status.HOLDING);
+  private final Trigger driverLeftRumbleTrigger = new Trigger
+  (
+    () -> 
+    (
+      (FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.reefBlue : FieldUtils.GeoFencing.reefRed)
+      .getCentre()
+      .getDistance(swerveState.Pose.getTranslation())
+    ) 
+    < 
+    (FieldUtils.GeoFencing.circumscribedReefZoneDiameter / 2) + 1
+  );
+  private final Trigger copilotLeftRumbleTrigger = new Trigger
+  (
+    () -> 
+    {
+      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
+      var coralIntakePositions = List.of(Presets.coralIntakePortPosition, Presets.coralIntakeStbdPosition).stream();
+      var clawIntakePositions = List.of(Presets.coralClawPortPosition, Presets.coralClawStbdPosition).stream();
+      return 
+      (coralIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && coral) 
+      || 
+      (clawIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && algae);
+    }
+  );
+  private final Trigger driverRightRumbleTrigger = new Trigger
+  (
+    () -> 
+    {
+      return 
+      (driver.rightBumper().getAsBoolean() && algae)
+      ||
+      (copilotLeftRumbleTrigger.getAsBoolean() && true);
+    }
+  );
   private final Trigger copliotRightRumbleTrigger = new Trigger(() -> s_Climber.isUnlocked() && s_Diffector.climbReady() );
 
   /* Control Modifiers */
@@ -156,11 +187,12 @@ public class RobotContainer
             s_Swerve.resetPose(new Pose2d(swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(pigeon.getYaw().getValueAsDouble()))));
           }
         )
+        .withName("HeadingReset")
       );
       
     /* Outtake controls */
     driver.leftTrigger()
-      .onTrue
+      .whileTrue
       (
         Commands.either
         (
@@ -172,6 +204,7 @@ public class RobotContainer
             return target.equals(Constants.DiffectorConstants.Presets.coral1PortPosition) || target.equals(Constants.DiffectorConstants.Presets.coral1StbdPosition);
           }
         )
+        .withName("EjectCoral")
       );
     driver.leftBumper()
       .onTrue(s_Algae.setStatusCommand(AlgaeManipulator.Status.EJECT)).onFalse(s_Algae.setStatusCommand(AlgaeManipulator.Status.EMPTY));
@@ -191,6 +224,7 @@ public class RobotContainer
               {s_Diffector.setTargetPosition(DiffectorConstants.Presets.algaeStowPosition);}
           }
         )
+        .withName("SmartIntake")
       );
 
     driver.back()
@@ -219,6 +253,7 @@ public class RobotContainer
           ),
           Set.of(s_Diffector, s_Algae, s_Coral)
         )
+        .withName("AutoScore")
       );
   }
 
@@ -284,6 +319,7 @@ public class RobotContainer
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
+        .withName("CageLock")
       );
 
     stationDriveTrigger.and(driver.povCenter())
@@ -298,6 +334,7 @@ public class RobotContainer
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
+        .withName("StationLock")
       );
   
     processorDriveTrigger.and(driver.povCenter())
@@ -313,6 +350,7 @@ public class RobotContainer
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
+        .withName("ProcessorLock")
       );
 
     processorDriveTrigger
@@ -329,6 +367,7 @@ public class RobotContainer
           }, 
           () -> Pathfinding.setDynamicObstacles(new ArrayList<Pair<Translation2d, Translation2d>>(), swerveState.Pose.getTranslation())
         )
+        .withName("BargeObstacle")
       );
 
     scoreDriveTrigger.and(driver.povCenter())
@@ -343,6 +382,7 @@ public class RobotContainer
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
+        .withName("ScoreLock")
       );
   }
 
@@ -357,6 +397,7 @@ public class RobotContainer
           s_Diffector.moveAndWaitCommand(DiffectorConstants.Presets.climbPosition),
           s_Climber.setStatusCommand(Climber.Status.CLIMB)
         )
+        .withName("Climb")
       );  
     copilot.back()
       .onTrue
@@ -366,6 +407,7 @@ public class RobotContainer
           s_Diffector.moveAndWaitCommand(DiffectorConstants.Presets.climbSafePosition),
           s_Climber.setStatusCommand(Climber.Status.ACTIVE)
         )
+        .withName("ActivateClimb")
       );  
 
     /* Game piece scoring and intake positions */
@@ -378,6 +420,7 @@ public class RobotContainer
           s_Diffector.coralScorePosCommand(4), 
           algaeModifier
         )
+        .withName("Level4")
       );
 
     copilot.x()
@@ -389,6 +432,7 @@ public class RobotContainer
           s_Diffector.coralScorePosCommand(3), 
           algaeModifier
         )
+        .withName("Level3")
       );
 
     copilot.b()
@@ -400,6 +444,7 @@ public class RobotContainer
           s_Diffector.coralScorePosCommand(2),
           algaeModifier
         )
+        .withName("Level2")
       );
 
     copilot.a()
@@ -416,6 +461,7 @@ public class RobotContainer
           s_Diffector.coralScorePosCommand(1), 
           algaeModifier
         )
+        .withName("Level1")
       );
 
     /* Stow pos*/
@@ -428,6 +474,7 @@ public class RobotContainer
           s_Diffector.moveToCommand(DiffectorConstants.Presets.coralStowPosition), // Coral stow pos
           algaeModifier
         )
+        .withName("StowPos")
       );
 
     /* Transfer pos */
@@ -449,6 +496,7 @@ public class RobotContainer
           s_Diffector.coralScorePosCommand(0), // Coral score level 1 with coral manipulator
           algaeModifier
         )
+        .withName("Level1Alt/AlgaeGround")
       );
 
     /* Game piece intake position controls */
@@ -461,6 +509,7 @@ public class RobotContainer
           s_Diffector.moveToCommand(DiffectorConstants.Presets.coralIntakePortPosition), // Coral intake pos (clearance for station)
           algaeModifier
         )
+        .withName("CoralStation")
       );
   }
 
@@ -517,7 +566,7 @@ public class RobotContainer
     driverRightRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Pickup Waiting")));
 
     /* Copilot rumble bindings */
-    //copilotLeftRumbleTrigger.onTrue(rumbler.runOnce(() -> rumbler.addRequest(Sides.COPILOT_LEFT, "Intake Full")));
+    copilotLeftRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_LEFT, "Intake Full")));
     copliotRightRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_RIGHT, "Climb Ready")));
   }
 

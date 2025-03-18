@@ -6,7 +6,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants.ClimberConstants;
@@ -69,7 +68,7 @@ public class Climber extends SubsystemBase
 
   public Command setStatusCommand(Status status)
   {
-    return Commands.runOnce(() -> this.setStatus(status), this);
+    return runOnce(() -> setStatus(status)).withName("SetClimberStatus");
   }
 
   public boolean isUnlocked()
