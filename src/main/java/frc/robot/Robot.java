@@ -11,8 +11,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Limelight;
@@ -33,8 +31,6 @@ public class Robot extends TimedRobot
 
   private RobotContainer robotContainer;
 
-  private Field2d autoPosition = new Field2d();
-
   private Pose2d robotPose;
 
   private Command warmupCommand;
@@ -50,8 +46,6 @@ public class Robot extends TimedRobot
 
     RobotContainer.limelightPort.setIMUMode(1);
     RobotContainer.limelightStbd.setIMUMode(1);
-
-    SmartDashboard.putData("Field", autoPosition);
     SD.IO_LL_EXPOSURE.init();
     SD.CALIBRATE_BOT_ROTATION.init();
   }

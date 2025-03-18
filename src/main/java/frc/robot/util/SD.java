@@ -29,13 +29,7 @@ public class SD
   public static final DoubleKey IO_RUMBLE_C = new DoubleKey("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
 
   public static final BooleanKey STATE_PP_WARMUP = new BooleanKey("Warmup Finished", false);
-  public static final BooleanKey STATE_RED = new BooleanKey("redAlliance", false);
-  public static final StringKey STATE_DRIVE = new StringKey("Drive State", "Disabled");
-  public static final BooleanKey STATE_HEADING_SNAP = new BooleanKey("Heading Snap Updating", true);
 
-  public static final DoubleKey BOT_SPEED = new DoubleKey("Robot Speed", 0);
-
-  public static final BooleanKey SENSOR_ALGAE = new BooleanKey("A Beam", false);
   public static final BooleanKey SENSOR_CORAL1 = new BooleanKey("C Beam 1", false);
   public static final BooleanKey SENSOR_CORAL2 = new BooleanKey("C Beam 2", false);
   public static final DoubleKey SENSOR_GYRO = new DoubleKey("Gyro yaw", 0);
