@@ -27,9 +27,9 @@ public class ManualDrive extends SwerveCommandBase
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
   /** Creates a new ManualDrive. */
-  public ManualDrive(CommandSwerveDrivetrain s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  public ManualDrive(CommandSwerveDrivetrain swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
-    super(s_Swerve, translationSup, strafeSup, brakeSup, fencedSup);
+    super(swerve, translationSup, strafeSup, brakeSup, fencedSup);
     this.rotationSup = rotationSup;
   }
 
@@ -43,7 +43,7 @@ public class ManualDrive extends SwerveCommandBase
     if (Math.abs(rotationVal) <= deadband) {rotationVal = 0;}
     rotationVal *= MathUtil.interpolate(Control.maxRotThrottle, Control.minRotThrottle, brakeVal);
 
-    s_Swerve.setControl
+    swerve.setControl
     (
       driveRequest
       .withVelocityX(motionXY.getX() * Swerve.maxSpeed)

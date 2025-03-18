@@ -12,7 +12,7 @@ public class TargetStationDrive extends HeadingLockedDrive
   /** Creates a new TargetStationDrive. */
   public TargetStationDrive
   (
-    CommandSwerveDrivetrain s_Swerve, 
+    CommandSwerveDrivetrain swerve, 
     DoubleSupplier translationSup, 
     DoubleSupplier strafeSup, 
     Rotation2d rotationOffset, 
@@ -20,7 +20,7 @@ public class TargetStationDrive extends HeadingLockedDrive
     BooleanSupplier fencedSup
   ) 
   {
-    super(s_Swerve, translationSup, strafeSup, Rotation2d.kZero, rotationOffset, brakeSup, fencedSup);
+    super(swerve, translationSup, strafeSup, Rotation2d.kZero, rotationOffset, brakeSup, fencedSup);
   }
 
   @Override

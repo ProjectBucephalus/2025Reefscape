@@ -4,28 +4,29 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.constants.CTREConfigs;
 import frc.robot.constants.Constants.ClimberConstants;
+import frc.robot.constants.Constants.Control;
 import frc.robot.constants.IDConstants;
-import frc.robot.util.Conversions;
+import frc.robot.constants.MechanismConstants.ClimberConfigs;
 import frc.robot.util.SD;
 
 public class Climber extends SubsystemBase
 {
   /* Declarations of the motor controller */
-  private TalonFX m_ClimberWinch;
-  private ClimberStatus status;
+  private TalonFX m_Climber;
+  private Status status;
 
   /* Declarations of all the motion magic variables */
   private final MotionMagicVoltage motionMagic;
   private double speed;
-  private TalonFXConfiguration config = CTREConfigs.climberWinchFXConfig;
+  private TalonFXConfiguration motorConfig = ClimberConfigs.climberMotorConfig;
 
-  public enum ClimberStatus 
+  public enum Status 
   {
     ACTIVE,
     STOW,
@@ -35,73 +36,73 @@ public class Climber extends SubsystemBase
 
   public Climber() 
   { 
-    m_ClimberWinch = new TalonFX(IDConstants.climberWinchMotorID);
-    m_ClimberWinch.getConfigurator().apply(config);
-    m_ClimberWinch.setPosition(ClimberConstants.stowWinchPos);
+    m_Climber = new TalonFX(IDConstants.climberWinchMotorID);
+    m_Climber.getConfigurator().apply(motorConfig);
+    m_Climber.setPosition(ClimberConstants.stowWinchPos);
     
     motionMagic = new MotionMagicVoltage(0);
 
-    setStatus(ClimberStatus.STOW);
+    setStatus(Status.STOW);
   }
   
-  private void setStatus(ClimberStatus newStatus)
+  private void setStatus(Status newStatus)
   {
     
-    if (newStatus == ClimberStatus.CLIMB)
+    if (newStatus == Status.CLIMB)
     {
-      if (status == ClimberStatus.STOW)
+      if (status == Status.STOW)
       { // Active state has required protections for leaving Stow position
-        status = ClimberStatus.ACTIVE;
+        status = Status.ACTIVE;
       }
       else
       {
-        m_ClimberWinch.getConfigurator().apply(config.MotionMagic.withMotionMagicCruiseVelocity(ClimberConstants.winchClimbCruise));
+        m_Climber.getConfigurator().apply(motorConfig.MotionMagic.withMotionMagicCruiseVelocity(ClimberConfigs.winchClimbCruise));
         status = newStatus;
       }
     }
     else
     {
-      m_ClimberWinch.getConfigurator().apply(config.MotionMagic.withMotionMagicCruiseVelocity(ClimberConstants.winchDefaultCruise));
+      m_Climber.getConfigurator().apply(motorConfig.MotionMagic.withMotionMagicCruiseVelocity(ClimberConfigs.winchDefaultCruise));
       status = newStatus;
     }
   }
 
-  public Command setStatusCommand(ClimberStatus status)
+  public Command setStatusCommand(Status status)
   {
     return Commands.runOnce(() -> this.setStatus(status), this);
   }
 
   public boolean isUnlocked()
-    {return status != ClimberStatus.STOW;}
+    {return status != Status.STOW;}
 
   public boolean manualOveride(double motorSpeed)
   {
     speed = motorSpeed;
-    setStatus(ClimberStatus.MANUAL);
+    setStatus(Status.MANUAL);
     return true;
   }
 
   @Override
   public void periodic()
   {
-    SD.CLIMBER_POS.put(m_ClimberWinch.getPosition().getValueAsDouble());
+    SD.CLIMBER_POS.put(m_Climber.getPosition().getValueAsDouble());
 
     switch (status)
     {
       case STOW:
-        m_ClimberWinch.setControl(motionMagic.withPosition(ClimberConstants.stowWinchPos));
+        m_Climber.setControl(motionMagic.withPosition(ClimberConstants.stowWinchPos));
         SD.CLIMBER_TARGET.put(ClimberConstants.stowWinchPos);
         break;
 
       case ACTIVE:
         if (RobotContainer.s_Diffector.climbSafe())
         {
-          m_ClimberWinch.setControl(motionMagic.withPosition(ClimberConstants.activeWinchPos));
+          m_Climber.setControl(motionMagic.withPosition(ClimberConstants.activeWinchPos));
           SD.CLIMBER_TARGET.put(ClimberConstants.activeWinchPos);
         }
         else
         {
-          m_ClimberWinch.setControl(motionMagic.withPosition(m_ClimberWinch.getPosition().getValueAsDouble()));
+          m_Climber.setControl(motionMagic.withPosition(m_Climber.getPosition().getValueAsDouble()));
         }
         break;
 
@@ -112,25 +113,25 @@ public class Climber extends SubsystemBase
           
           if (SD.OVERRIDE.get()) 
           {
-            adjustedClimberPos += RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() * ClimberConstants.winchBalanceScalar;
-            adjustedClimberPos = Conversions.clamp(adjustedClimberPos, ClimberConstants.climbActiveInnerLimit, ClimberConstants.climbActiveOuterLimit);
+            adjustedClimberPos += RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() * ClimberConfigs.winchBalanceScalar;
+            adjustedClimberPos = MathUtil.clamp(adjustedClimberPos, ClimberConstants.climbActiveInnerLimit, ClimberConstants.climbActiveOuterLimit);
           }
 
-          m_ClimberWinch.setControl(motionMagic.withPosition(adjustedClimberPos));
+          m_Climber.setControl(motionMagic.withPosition(adjustedClimberPos));
           SD.CLIMBER_TARGET.put(adjustedClimberPos);
         }
         else
         {
-          m_ClimberWinch.setControl(motionMagic.withPosition(m_ClimberWinch.getPosition().getValueAsDouble()));
+          m_Climber.setControl(motionMagic.withPosition(m_Climber.getPosition().getValueAsDouble()));
         }
       
         break;
 
       case MANUAL:
         if (speed != 0)
-          {m_ClimberWinch.set(speed * ClimberConstants.manualScale);}
+          {m_Climber.set(speed * Control.manualClimberScale);}
         else
-          {m_ClimberWinch.setControl(motionMagic.withPosition(m_ClimberWinch.getPosition().getValueAsDouble()));}
+          {m_Climber.setControl(motionMagic.withPosition(m_Climber.getPosition().getValueAsDouble()));}
         break;
     }
   }

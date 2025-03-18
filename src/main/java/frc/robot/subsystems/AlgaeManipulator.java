@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.DiffectorGeometry;
 import frc.robot.constants.IDConstants;
 import frc.robot.util.SD;
 
@@ -23,10 +24,10 @@ public class AlgaeManipulator extends SubsystemBase
 {
 
   /* Declaration of the motor controllers */
-  private TalonFX algaeMotor;
+  private TalonFX m_Algae;
 
   /* Declaration of the enum variable */
-  private AlgaeStatus algaeStatus;
+  private Status status;
 
   /**
    * Enum representing the status this manipulator is in
@@ -34,7 +35,7 @@ public class AlgaeManipulator extends SubsystemBase
    * Spins outwards at full speed to shoot at the net, spins outwards to shoot in the processor,
    * And does nothing while empty)
    */
-  public enum AlgaeStatus
+  public enum Status
   {
     MANUAL_INTAKE,
     INTAKE,
@@ -45,63 +46,63 @@ public class AlgaeManipulator extends SubsystemBase
 
   public AlgaeManipulator() 
   {
-    algaeStatus = AlgaeStatus.EMPTY;
-    algaeMotor = new TalonFX(IDConstants.algaeManipulatorID);
+    status = Status.EMPTY;
+    m_Algae = new TalonFX(IDConstants.algaeMotorID);
     SD.IO_ALGAE_HOLD.init();
   }
 
-  public void setStatus(AlgaeStatus status)
-    {algaeStatus = status;}
+  public void setStatus(Status newStatus)
+    {status = newStatus;}
 
-  public Command setStatusCommand(AlgaeStatus status)
+  public Command setStatusCommand(Status status)
     {return runOnce(() -> setStatus(status));}
 
-  public AlgaeStatus getStatus()
-    {return algaeStatus;}
+  public Status getStatus()
+    {return status;}
 
   @Override
   public void periodic() 
   {
     RobotContainer.algae = 
-      Math.abs(algaeMotor.getStatorCurrent().getValueAsDouble()) >= Constants.GamePiecesManipulator.algaeHeldCurrent ||
+      Math.abs(m_Algae.getStatorCurrent().getValueAsDouble()) >= Constants.Manipulators.algaeHeldCurrent ||
       (RobotContainer.algae); // && Math.abs(algaeMotor.getStatorCurrent().getValueAsDouble()) >= Constants.GamePiecesManipulator.algaeReleaseCurrent);
     SD.SENSOR_ALGAE.put(RobotContainer.algae);
-    SD.STATE_ALGAE.put(algaeStatus.name());
-    SD.SENSOR_ALGAE_CURRENT.put(Math.abs(algaeMotor.getStatorCurrent().getValueAsDouble()));
+    SD.STATE_ALGAE.put(status.name());
+    SD.SENSOR_ALGAE_CURRENT.put(Math.abs(m_Algae.getStatorCurrent().getValueAsDouble()));
     double algaeHoldingSpeed = SD.IO_ALGAE_HOLD.get();
 
-    switch(algaeStatus)
+    switch(status)
     {
       case MANUAL_INTAKE:
-        algaeMotor.set(Constants.GamePiecesManipulator.algaeIntakeSpeed);
+        m_Algae.set(Constants.Manipulators.algaeIntakeSpeed);
         break;
 
       case INTAKE:
-        algaeMotor.set(Constants.GamePiecesManipulator.algaeIntakeSpeed);
+        m_Algae.set(Constants.Manipulators.algaeIntakeSpeed);
 
         if (RobotContainer.algae) 
-          {algaeStatus = AlgaeStatus.HOLDING;}
+          {status = Status.HOLDING;}
         break;
 
       case HOLDING:
         if (RobotContainer.algae) 
-          {algaeMotor.set(algaeHoldingSpeed);}
+          {m_Algae.set(algaeHoldingSpeed);}
 
         else
-          {algaeStatus = AlgaeStatus.EMPTY;}
+          {status = Status.EMPTY;}
         break;
 
       case EJECT:
         double armPos = RobotContainer.s_Diffector.getRelativeRotation();
 
-        if (armPos > 90 + Constants.DiffectorConstants.algaeEjectSpeedAngleThreshold && armPos <= 270 - Constants.DiffectorConstants.algaeEjectSpeedAngleThreshold)
-          {algaeMotor.set(Constants.GamePiecesManipulator.algaeNetSpeed);}
+        if (armPos > 90 + DiffectorGeometry.algaeEjectSpeedAngleThreshold && armPos <= 270 - DiffectorGeometry.algaeEjectSpeedAngleThreshold)
+          {m_Algae.set(Constants.Manipulators.algaeNetSpeed);}
         else
-          {algaeMotor.set(Constants.GamePiecesManipulator.algaeProcessorSpeed);}
+          {m_Algae.set(Constants.Manipulators.algaeProcessorSpeed);}
         break;
 
       case EMPTY:
-        algaeMotor.set(0);
+        m_Algae.set(0);
         RobotContainer.algae = false;
         break;
     }

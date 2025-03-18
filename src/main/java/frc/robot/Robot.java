@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
-
 import com.pathplanner.lib.commands.PathfindingCommand;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,13 +11,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.constants.CTREConfigs;
-import frc.robot.subsystems.AlgaeManipulator.AlgaeStatus;
-import frc.robot.subsystems.CoralManipulator.CoralStatus;
+import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.AlgaeManipulator;
+import frc.robot.subsystems.CoralManipulator;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.SD;
 
@@ -31,39 +27,25 @@ import frc.robot.util.SD;
  */
 public class Robot extends TimedRobot 
 {
-  public static final CTREConfigs ctreConfigs = new CTREConfigs();
-
   private Command autonomousCommand;
 
   private RobotContainer robotContainer;
 
-  private Field2d autoPosition = new Field2d();
-
   private Pose2d robotPose;
 
-  private Command c_WarmupCommand;
+  private Command warmupCommand;
 
   private boolean allianceKnown = false;
-  private boolean rotationKnown = false;
-  private ArrayList<Double> portRotationData = new ArrayList<Double>();
-  private ArrayList<Double> stbdRotationData = new ArrayList<Double>();
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
-  @Override
-  public void robotInit() 
+  public Robot()
   {
     robotContainer = new RobotContainer();
-    c_WarmupCommand = PathfindingCommand.warmupCommand();
+    warmupCommand = PathfindingCommand.warmupCommand();
 
-    c_WarmupCommand.schedule();
+    warmupCommand.schedule();
 
-    RobotContainer.s_LimelightPort.setIMUMode(1);
-    RobotContainer.s_LimelightStbd.setIMUMode(1);
-
-    SmartDashboard.putData("Field", autoPosition);
+    RobotContainer.io_LimelightPort.setIMUMode(1);
+    RobotContainer.io_LimelightStbd.setIMUMode(1);
     SD.IO_LL_EXPOSURE.init();
     SD.CALIBRATE_BOT_ROTATION.init();
   }
@@ -90,76 +72,10 @@ public class Robot extends TimedRobot
 
     RobotContainer.swerveState = RobotContainer.s_Swerve.getState();
 
-    rotationKnown = SD.CALIBRATE_BOT_ROTATION.get();
-
-    if (!rotationKnown)
-    {
-      if (!RobotContainer.s_LimelightPort.getLimelightRotation().equals(Rotation2d.kZero))
-      {
-        portRotationData.add(0, RobotContainer.s_LimelightPort.getLimelightRotation().getDegrees());
-
-        if (portRotationData.size() > 5)
-          {portRotationData.remove(5);}
-
-        if (portRotationData.size() == 5)
-        {
-          double lowest = portRotationData.get(0).doubleValue();
-          double highest = portRotationData.get(0).doubleValue();
-          
-          for(int i = 1; i < 5; i++)
-          {
-            lowest = Math.min(lowest, portRotationData.get(i).doubleValue());
-            highest = Math.max(highest, portRotationData.get(i).doubleValue());
-          }
-          
-          if (highest - lowest < 1)
-          {
-            RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
-            SD.CALIBRATE_BOT_ROTATION.put(true);
-            portRotationData.clear();
-            stbdRotationData.clear();
-            RobotContainer.s_LimelightPort.setThrottle(150);
-            RobotContainer.s_LimelightStbd.setThrottle(150);
-          }
-
-        }
-      }
-
-      if (!RobotContainer.s_LimelightStbd.getLimelightRotation().equals(Rotation2d.kZero))
-      {
-        stbdRotationData.add(0, RobotContainer.s_LimelightStbd.getLimelightRotation().getDegrees());
-
-        if (stbdRotationData.size() > 5)
-          {stbdRotationData.remove(5);}
-
-        else if (stbdRotationData.size() == 5)
-        {
-          double lowest = stbdRotationData.get(0).doubleValue();
-          double highest = stbdRotationData.get(0).doubleValue();
-          
-          for(int i = 1; i < 5; i++)
-          {
-            lowest = Math.min(lowest, stbdRotationData.get(i).doubleValue());
-            highest = Math.max(highest, stbdRotationData.get(i).doubleValue());
-          }
-
-          if (highest - lowest < 1)
-          {
-            RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
-            SD.CALIBRATE_BOT_ROTATION.put(true);
-            portRotationData.clear();
-            stbdRotationData.clear();
-            RobotContainer.s_LimelightPort.setThrottle(150);
-            RobotContainer.s_LimelightStbd.setThrottle(150);
-          }
-        }
-      }
-    }
-
     RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
-
+    
     CommandScheduler.getInstance().run();
-
+    
     SD.STATE_HEADING.put(RobotContainer.headingState.toString());
   }
 
@@ -167,23 +83,23 @@ public class Robot extends TimedRobot
   @Override
   public void disabledInit() 
   {
-    RobotContainer.s_LimelightPort.setIMUMode(1);
-    RobotContainer.s_LimelightStbd.setIMUMode(1);
-    if (rotationKnown)
+    RobotContainer.io_LimelightPort.setIMUMode(1);
+    RobotContainer.io_LimelightStbd.setIMUMode(1);
+    if (Limelight.rotationKnown)
     {
-      RobotContainer.s_LimelightPort.setThrottle(150);
-      RobotContainer.s_LimelightStbd.setThrottle(150);
+      RobotContainer.io_LimelightPort.setThrottle(150);
+      RobotContainer.io_LimelightStbd.setThrottle(150);
     }
     SD.OVERRIDE.init();
     SD.IO_PROCESS_AUTO.init();
     SD.CALIBRATE_BOT_ROTATION.init();
-    rotationKnown = false;
+    Limelight.rotationKnown = false;
   }
 
   @Override
   public void disabledPeriodic()
   {
-    SD.STATE_PP_WARMUP.put(!c_WarmupCommand.isScheduled());
+    SD.STATE_PP_WARMUP.put(!warmupCommand.isScheduled());
 
     if (SD.IO_PROCESS_AUTO.get())
     {
@@ -196,7 +112,7 @@ public class Robot extends TimedRobot
       if (DriverStation.getAlliance().isPresent()) 
       {
         allianceKnown = true;
-        if (DriverStation.getAlliance().get() == Alliance.Blue && !rotationKnown) 
+        if (DriverStation.getAlliance().get() == Alliance.Blue && !Limelight.rotationKnown) 
           {RobotContainer.s_Swerve.getPigeon2().setYaw(180);}
       }  
     }
@@ -205,10 +121,10 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit() 
   {  
-    RobotContainer.s_LimelightPort.setIMUMode(2);
-    RobotContainer.s_LimelightStbd.setIMUMode(2);    
-    RobotContainer.s_LimelightPort.setThrottle(0);
-    RobotContainer.s_LimelightStbd.setThrottle(0);
+    RobotContainer.io_LimelightPort.setIMUMode(2);
+    RobotContainer.io_LimelightStbd.setIMUMode(2);    
+    RobotContainer.io_LimelightPort.setThrottle(0);
+    RobotContainer.io_LimelightStbd.setThrottle(0);
     
     if (autonomousCommand == null) 
       {autonomousCommand = robotContainer.getAutoCommand();}
@@ -223,16 +139,16 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit() 
   {
-    RobotContainer.s_LimelightPort.setIMUMode(2);
-    RobotContainer.s_LimelightStbd.setIMUMode(2);    
-    RobotContainer.s_LimelightPort.setThrottle(0);
-    RobotContainer.s_LimelightStbd.setThrottle(0);
+    RobotContainer.io_LimelightPort.setIMUMode(2);
+    RobotContainer.io_LimelightStbd.setIMUMode(2);    
+    RobotContainer.io_LimelightPort.setThrottle(0);
+    RobotContainer.io_LimelightStbd.setThrottle(0);
 
     if (autonomousCommand != null) 
       {autonomousCommand.cancel();}
 
-    RobotContainer.s_Coral.setStatus(CoralStatus.DEFAULT);
-    RobotContainer.s_Algae.setStatus(AlgaeStatus.EMPTY);
+    RobotContainer.s_Coral.setStatus(CoralManipulator.Status.DEFAULT);
+    RobotContainer.s_Algae.setStatus(AlgaeManipulator.Status.EMPTY);
   }
 
   @Override
@@ -243,8 +159,8 @@ public class Robot extends TimedRobot
   {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    RobotContainer.s_LimelightPort.setThrottle(0);
-    RobotContainer.s_LimelightStbd.setThrottle(0);
+    RobotContainer.io_LimelightPort.setThrottle(0);
+    RobotContainer.io_LimelightStbd.setThrottle(0);
   }
 
   /** This function is called periodically during test mode. */

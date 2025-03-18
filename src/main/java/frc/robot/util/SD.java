@@ -7,8 +7,12 @@ package frc.robot.util;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 /** Simplified interface for most SmartDashboard interactions */
 public class SD 
@@ -22,7 +26,7 @@ public class SD
 
   public static final StringKey  STATE_HEADING = new StringKey("Heading State", "");
 
-  public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Speed", Constants.GamePiecesManipulator.algaeHoldingSpeed);
+  public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Speed", Constants.Manipulators.algaeHoldingSpeed);
   public static final BooleanKey IO_PROCESS_AUTO = new BooleanKey("Process Auto", false);
   public static final BooleanKey IO_GEOFENCE = new BooleanKey("IgnoreFence", false);
   public static final StringKey  IO_AUTO = new StringKey("Auto Input", Constants.Auto.defaultAuto);
@@ -30,12 +34,9 @@ public class SD
   public static final DoubleKey  IO_RUMBLE_C = new DoubleKey("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
 
   public static final BooleanKey STATE_PP_WARMUP = new BooleanKey("Warmup Finished", false);
-  public static final BooleanKey STATE_RED = new BooleanKey("redAlliance", false);
   public static final StringKey  STATE_ALGAE = new StringKey("Algae Manipulator State", "Empty");
   public static final StringKey  STATE_DRIVE = new StringKey("Drive State", "Disabled");
   public static final BooleanKey STATE_HEADING_SNAP = new BooleanKey("Heading Snap Updating", true);
-
-  public static final DoubleKey BOT_SPEED = new DoubleKey("Robot Speed", 0);
 
   public static final DoubleKey SENSOR_ALGAE_CURRENT = new DoubleKey("Algae Current", 0);
   public static final BooleanKey SENSOR_ALGAE = new BooleanKey("A Beam", false);
@@ -65,6 +66,36 @@ public class SD
 
   public static final BooleanKey DIFF_ESTOP = new BooleanKey("Diffector E-Stop", false);
   public static final BooleanKey OVERRIDE = new BooleanKey("OVERIDE MODE", false);
+
+  public static void initSwerveDisplay(CommandSwerveDrivetrain s_Swerve)
+  {
+    SmartDashboard.putData
+    (
+      "Swerve Drive", 
+      new Sendable() 
+      {
+        @Override
+        public void initSendable(SendableBuilder builder) 
+        {
+          builder.setSmartDashboardType("SwerveDrive");
+
+          builder.addDoubleProperty("Front Left Angle", () -> s_Swerve.getModule(0).getCurrentState().angle.getRadians(), null);
+          builder.addDoubleProperty("Front Left Velocity", () -> s_Swerve.getModule(0).getCurrentState().speedMetersPerSecond, null);
+
+          builder.addDoubleProperty("Front Right Angle", () -> s_Swerve.getModule(1).getCurrentState().angle.getRadians(), null);
+          builder.addDoubleProperty("Front Right Velocity", () -> s_Swerve.getModule(1).getCurrentState().speedMetersPerSecond, null);
+
+          builder.addDoubleProperty("Back Left Angle", () -> s_Swerve.getModule(2).getCurrentState().angle.getRadians(), null);
+          builder.addDoubleProperty("Back Left Velocity", () -> s_Swerve.getModule(2).getCurrentState().speedMetersPerSecond, null);
+
+          builder.addDoubleProperty("Back Right Angle", () -> s_Swerve.getModule(3).getCurrentState().angle.getRadians(), null);
+          builder.addDoubleProperty("Back Right Velocity", () -> s_Swerve.getModule(3).getCurrentState().speedMetersPerSecond, null);
+
+          builder.addDoubleProperty("Robot Angle", () -> RobotContainer.swerveState.Pose.getRotation().getRadians(), null);
+        }
+      }
+    );
+  }
 
   public record BooleanKey (String label, boolean defaultValue) implements Runnable, Supplier<Boolean>, Consumer<Boolean>
   {

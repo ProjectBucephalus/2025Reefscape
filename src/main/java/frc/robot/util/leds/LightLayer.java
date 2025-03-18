@@ -1,4 +1,4 @@
-package frc.robot.util;
+package frc.robot.util.leds;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,9 +7,11 @@ import java.util.Map;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
+import frc.robot.util.FieldUtils;
 import frc.robot.util.FieldUtils.DriverFieldRefs;
 import frc.robot.constants.Constants.LEDStrip;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.util.Color;
 /**
@@ -25,7 +27,7 @@ public class LightLayer
   final LEDPattern patternBlack = LEDPattern.solid(Color.kBlack);  //black pattern constant useful for wiping buffers
   Color colorOn = LEDStrip.defaultFrontColor; // front or 'on' color for the layer
   Color colorOff = LEDStrip.defaultBackColor; // back or 'off' color for the layer
-  private CommandSwerveDrivetrain s_Swerve; // need a refernece to the drivetrain object to retrieve/calculate robot angles
+  private CommandSwerveDrivetrain swerve; // need a refernece to the drivetrain object to retrieve/calculate robot angles
   private int startLED;  // used to calculate the starting LED when rendering
   private int startSegment; // starting position within defined segment for the layer.
   private LEDPattern display; // LEDPatternobject used to generate certain display modes
@@ -51,12 +53,12 @@ public class LightLayer
   
   int i = 0; // Loop counter and temporary index values
   
-  public LightLayer(CommandSwerveDrivetrain s_Swerve,String nameReq)
+  public LightLayer(CommandSwerveDrivetrain swerve,String nameReq)
   {
     /**
      * default constructor, takes drivetrain refernce object and 'name' string and sets defaults for other values
      */
-    this.s_Swerve = s_Swerve;
+    this.swerve = swerve;
     name = nameReq;
     lightBuff = new AddressableLEDBuffer(LEDStrip.lightsLen);
     shortBuff = new AddressableLEDBuffer(width);
@@ -431,7 +433,7 @@ public class LightLayer
     {
 
       // check progress variable is not out of bounds.
-      progress = Conversions.clamp(progress,0.01, 1.0);
+      progress = MathUtil.clamp(progress,0.01, 1.0);
 
       // use the LEDPattern object to build a display that is progress% the front/on color.
       display = LEDPattern.steps(Map.of(0,colorOn,progress,colorOff));
@@ -556,8 +558,8 @@ public class LightLayer
     if ((displayMode != Mode.WHOLESTRIP) && (displayMode != Mode.STATICSEGMENT))
     {
       // if we are in a displayMode / displayType combination where it is relevant, calculate the robot and target angles
-      robotAngle = s_Swerve.getState().Pose.getRotation().getDegrees();
-      targetAngle = target.minus(s_Swerve.getState().Pose.getTranslation()).getAngle().getDegrees();
+      robotAngle = swerve.getState().Pose.getRotation().getDegrees();
+      targetAngle = target.minus(swerve.getState().Pose.getTranslation()).getAngle().getDegrees();
     }
 
     // startLED calculations for various modes.

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.constants.Constants;
+import frc.robot.constants.DiffectorGeometry;
 import frc.robot.util.GeoFenceObject.ObjectTypes;
 
 public class FieldUtils 
@@ -65,7 +67,7 @@ public class FieldUtils
 
     nearestReefFace = localList.indexOf(robotPos.nearest(localList)); 
 
-    nearestReefFace = Conversions.wrap(nearestReefFace, 1, 6);
+    nearestReefFace = (int)MathUtil.inputModulus(nearestReefFace, 1, 6);
     
     return nearestReefFace;
   }
@@ -199,7 +201,7 @@ public class FieldUtils
     public static final Pair<Translation2d, Translation2d> redAllianceBargeDynamic = new Pair<Translation2d,Translation2d>(new Translation2d(8.19, 4.331), new Translation2d(9.358, fieldWidth));
 
     /* Barge Exclusion Zone -> Keep the arm pivot far enough away from the net to prevent touching it */
-    public static final double bargeSafetyWidth = Constants.DiffectorConstants.IKGeometry.bargeSafetyWidth - robotRadiusInscribed;
+    public static final double bargeSafetyWidth = DiffectorGeometry.bargeSafetyWidth - robotRadiusInscribed;
     public static final GeoFenceObject netProtectionZone = new GeoFenceObject((fieldLength/2), fieldSouth, (fieldLength/2), fieldNorth, 0.25, bargeSafetyWidth, ObjectTypes.line);
   }
 
@@ -211,6 +213,5 @@ public class FieldUtils
     public static final Translation2d driverRed1 = new Translation2d(fieldLength,2.278);
     public static final Translation2d driverRed2 = new Translation2d(fieldLength,4.026);
     public static final Translation2d driverRed3 = new Translation2d(fieldLength,5.278);
-
   }
 }

@@ -23,9 +23,9 @@ public class HeadingLockedDrive extends SwerveCommandBase
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
   /** Creates a new ManualDrive. */
-  public HeadingLockedDrive(CommandSwerveDrivetrain s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, Rotation2d targetHeading, Rotation2d rotationOffset, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  public HeadingLockedDrive(CommandSwerveDrivetrain swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, Rotation2d targetHeading, Rotation2d rotationOffset, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
-    super(s_Swerve, translationSup, strafeSup, brakeSup, fencedSup);
+    super(swerve, translationSup, strafeSup, brakeSup, fencedSup);
 
     driveRequest.HeadingController.setPID(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
 
@@ -40,7 +40,7 @@ public class HeadingLockedDrive extends SwerveCommandBase
 
     updateTargetHeading();
 
-    s_Swerve.setControl
+    swerve.setControl
     (
       driveRequest
       .withVelocityX(motionXY.getX() * Swerve.maxSpeed)
