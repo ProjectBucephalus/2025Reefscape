@@ -26,21 +26,8 @@ public class TargetStationDrive extends HeadingLockedDrive
   @Override
   protected void updateTargetHeading()
   {
-    if (redAlliance) 
-    {
-      if (robotXY.getY() >= 4.026) 
-        {targetHeading = new Rotation2d(Units.degreesToRadians(-126));} 
-
-      else 
-        {targetHeading = new Rotation2d(Units.degreesToRadians(126));}
-    }
-    else
-    {
-      if (robotXY.getY() >= 4.026) 
-        {targetHeading = new Rotation2d(Units.degreesToRadians(126));} 
-        
-      else 
-        {targetHeading = new Rotation2d(Units.degreesToRadians(-126));}
-    }
+    targetHeading = redAlliance ^ (robotXY.getY() >= 4.026) ? 
+      new Rotation2d(Units.degreesToRadians(-144)) : // Left side if blue, right side if red
+      new Rotation2d(Units.degreesToRadians(144)); // Right side if blue, left side if red
   }
 }
