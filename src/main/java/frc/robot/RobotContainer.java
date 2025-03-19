@@ -138,12 +138,22 @@ public class RobotContainer
       return 
       (driver.rightBumper().getAsBoolean() && algae)
       ||
-      (copilotLeftRumbleTrigger.getAsBoolean() && nearestCoralStation.getDistance(swerveState.Pose.getTranslation()) < Constants.Control.atObjectTolerance);
+      (copilotLeftRumbleTrigger.getAsBoolean() && nearestCoralStation.getDistance(swerveState.Pose.getTranslation()) < FieldConstants.coralStationRange);
     }
   );
   private final Trigger copliotRightRumbleTrigger = new Trigger
   (
-    () -> s_Climber.climbReady() && s_Diffector.climbReady() && true
+    () -> 
+    {
+      Translation2d robotPos = swerveState.Pose.getTranslation();
+      Translation2d nearestClimbLineup = 
+      FieldUtils.isRedAlliance() ? 
+      robotPos.nearest(FieldConstants.redClimbLineups)
+      :
+      robotPos.nearest(FieldConstants.blueClimbLineups);
+
+      return s_Climber.climbReady() && s_Diffector.climbReady() && swerveState.Pose.getTranslation().getDistance(nearestClimbLineup) < Constants.Auto.atPosTolerance;
+    }
   );
 
   /* Control Modifiers */

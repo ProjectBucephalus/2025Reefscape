@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 
 import com.pathplanner.lib.path.PathConstraints;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
@@ -19,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotContainer;
 import frc.robot.util.AutoUtils;
-import frc.robot.util.FieldUtils;
 
 public final class Constants 
 {
@@ -50,7 +48,6 @@ public final class Constants
     /** Scalar for braking effect of diffector arm being higher than 1m */
     public static final double armBrakeRate = 1.5;
     public static final double manualClimberScale    = 0.5;
-    public static final double atObjectTolerance = 0.6;
   }
 
   public static final class Vision
@@ -188,27 +185,10 @@ public final class Constants
       put("e"  , new AutoMapping(null, () -> Commands.defer(() -> AutoUtils.ejectAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, () -> RobotContainer.swerveState.Pose.getTranslation()), new HashSet<Subsystem>(){{add(RobotContainer.s_Algae); add(RobotContainer.s_Diffector);}})));
     }};
 
-    public static final ArrayList<Translation2d> reefBlueMidPoints = FieldUtils.GeoFencing.reefBlue.getMidPoints();
-    public static final ArrayList<Translation2d> reefRedMidPoints = FieldUtils.GeoFencing.reefRed.getMidPoints();
 
-    public static final ArrayList<Translation2d> blueBargePoints = new ArrayList<Translation2d>()
-    {{
-      add(new Translation2d(FieldUtils.fieldLength / 2, 7.261));
-      add(new Translation2d(FieldUtils.fieldLength / 2, 6.615));
-      add(new Translation2d(FieldUtils.fieldLength / 2, 6.169));
-      add(new Translation2d(FieldUtils.fieldLength / 2, 5.6245));
-      add(new Translation2d(FieldUtils.fieldLength / 2, 5.08));
-    }};
-
-    public static final ArrayList<Translation2d> redBargePoints = new ArrayList<Translation2d>(blueBargePoints)
-    {
-      {
-        forEach(point -> point.rotateAround(new Translation2d(FieldUtils.fieldLength / 2, FieldUtils.fieldWidth / 2), Rotation2d.k180deg));
-      }
-    };
 
     /** How close we have to be to the path start point to just follow the path without using pathfinding */
-    public static final double pathFollowTolerance = 0.04;
+    public static final double atPosTolerance = 0.04;
 
     public static final String defaultAuto = "rc4,cr1,rb4,cl1,ra4,cl1,rl4";
   }
