@@ -18,7 +18,7 @@ public class LEDRenderer extends SubsystemBase
  * to be rendered to the LED strip 
  */
 
-  AddressableLED lights;
+  AddressableLED lightStrip;
   AddressableLEDBuffer lightBuffer;
   final LEDPattern patternBlack = LEDPattern.solid(Color.kBlack); //Useful to wipe the buffer before each render pass
 //    private CommandSwerveDrivetrain swerve;
@@ -34,10 +34,10 @@ public class LEDRenderer extends SubsystemBase
      * and the length of the strip, and start the LED driver. 
      */
 
-  lights = new AddressableLED(LEDStrip.LEDPWMPort);
+  lightStrip = new AddressableLED(LEDStrip.LEDPWMPort);
   lightBuffer = new AddressableLEDBuffer(LEDStrip.lightsLen);
-  lights.setLength(LEDStrip.lightsLen);
-  lights.start();
+  lightStrip.setLength(LEDStrip.lightsLen);
+  lightStrip.start();
   }
 
   public void addLayer (LightLayer newLayer) 
@@ -123,6 +123,6 @@ public class LEDRenderer extends SubsystemBase
     }
 
     // transfer the layered buffer to the LED Driver
-    lights.setData(lightBuffer);
+    lightStrip.setData(lightBuffer);
   }
 }
