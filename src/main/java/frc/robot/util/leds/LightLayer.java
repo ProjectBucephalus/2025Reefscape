@@ -27,7 +27,7 @@ public class LightLayer
   final LEDPattern patternBlack = LEDPattern.solid(Color.kBlack);  //black pattern constant useful for wiping buffers
   Color colorOn = LEDStrip.defaultFrontColor; // front or 'on' color for the layer
   Color colorOff = LEDStrip.defaultBackColor; // back or 'off' color for the layer
-  private CommandSwerveDrivetrain swerve; // need a refernece to the drivetrain object to retrieve/calculate robot angles
+  private CommandSwerveDrivetrain s_Swerve; // need a refernece to the drivetrain object to retrieve/calculate robot angles
   private int startLED;  // used to calculate the starting LED when rendering
   private int startSegment; // starting position within defined segment for the layer.
   private LEDPattern display; // LEDPatternobject used to generate certain display modes
@@ -53,12 +53,12 @@ public class LightLayer
   
   int i = 0; // Loop counter and temporary index values
   
-  public LightLayer(CommandSwerveDrivetrain swerve,String nameReq)
+  public LightLayer(CommandSwerveDrivetrain s_Swerve,String nameReq)
   {
     /**
      * default constructor, takes drivetrain refernce object and 'name' string and sets defaults for other values
      */
-    this.swerve = swerve;
+    this.s_Swerve = s_Swerve;
     name = nameReq;
     lightBuff = new AddressableLEDBuffer(LEDStrip.lightsLen);
     shortBuff = new AddressableLEDBuffer(width);
@@ -558,8 +558,8 @@ public class LightLayer
     if ((displayMode != Mode.WHOLESTRIP) && (displayMode != Mode.STATICSEGMENT))
     {
       // if we are in a displayMode / displayType combination where it is relevant, calculate the robot and target angles
-      robotAngle = swerve.getState().Pose.getRotation().getDegrees();
-      targetAngle = target.minus(swerve.getState().Pose.getTranslation()).getAngle().getDegrees();
+      robotAngle = s_Swerve.getState().Pose.getRotation().getDegrees();
+      targetAngle = target.minus(s_Swerve.getState().Pose.getTranslation()).getAngle().getDegrees();
     }
 
     // startLED calculations for various modes.

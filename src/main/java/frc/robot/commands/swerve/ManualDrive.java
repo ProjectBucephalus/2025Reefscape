@@ -7,7 +7,7 @@ package frc.robot.commands.swerve;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix6.swerve.SwerveModule.SteerRequestType;
+import com.ctre.phoenix6.swerve.SwerveModule.*;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.MathUtil;
@@ -23,13 +23,13 @@ public class ManualDrive extends SwerveCommandBase
 
   protected final SwerveRequest.FieldCentric driveRequest = new SwerveRequest
     .FieldCentric() 
-    .withDriveRequestType(com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType.OpenLoopVoltage)
+    .withDriveRequestType(DriveRequestType.OpenLoopVoltage)
     .withSteerRequestType(SteerRequestType.MotionMagicExpo);
 
   /** Creates a new ManualDrive. */
-  public ManualDrive(CommandSwerveDrivetrain swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
+  public ManualDrive(CommandSwerveDrivetrain s_Swerve, DoubleSupplier translationSup, DoubleSupplier strafeSup, DoubleSupplier rotationSup, DoubleSupplier brakeSup, BooleanSupplier fencedSup) 
   {
-    super(swerve, translationSup, strafeSup, brakeSup, fencedSup);
+    super(s_Swerve, translationSup, strafeSup, brakeSup, fencedSup);
     this.rotationSup = rotationSup;
   }
 
@@ -43,7 +43,7 @@ public class ManualDrive extends SwerveCommandBase
     if (Math.abs(rotationVal) <= deadband) {rotationVal = 0;}
     rotationVal *= MathUtil.interpolate(Control.maxRotThrottle, Control.minRotThrottle, brakeVal);
 
-    swerve.setControl
+    s_Swerve.setControl
     (
       driveRequest
       .withVelocityX(motionXY.getX() * Swerve.maxSpeed)
