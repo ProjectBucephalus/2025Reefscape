@@ -23,10 +23,8 @@ public class LEDRenderer extends SubsystemBase
   final LEDPattern patternBlack = LEDPattern.solid(Color.kBlack); //Useful to wipe the buffer before each render pass
 //    private CommandSwerveDrivetrain swerve;
   ArrayList<LightLayer> renderQueue = new ArrayList<LightLayer>(); //List of layers to be rendered
-  LightLayer layer; //temporary layer object
   
-  int i = 0; // Loop counter and temporary index values
-  
+
   public LEDRenderer()
   {
     /**
@@ -52,29 +50,25 @@ public class LEDRenderer extends SubsystemBase
      *  retrieve a layer object by index into the queue, returns null if index out of bounds
      */
     if (index < renderQueue.size())
-    {
-      return renderQueue.get(index);
-    }
+      {return renderQueue.get(index);}
     else
-    {
-      return null;
-    }
+      {return null;}
   }
+
 
   public LightLayer getLayer (String name)
   {
     /**
      * retrieve a layer object in the queue by name, returns null if not found
      */ 
-    for (LightLayer layer : renderQueue)
+    for (LightLayer lightLayer : renderQueue)
     {
-      if (layer.getName() == name)
-      {
-        return layer;
-      }
+      if (lightLayer.getName() == name)
+        {return lightLayer;}
     }
     return null;
   }
+
 
   public void removeLayer (String nameToGo)
   /**
@@ -82,28 +76,28 @@ public class LEDRenderer extends SubsystemBase
    */ 
     {renderQueue.removeIf(a -> a.getName() == nameToGo);}
 
+
   public void removeLayer (int index)
   /**
    * remove layer from the queue by index
    */ 
   {
     if (index < renderQueue.size())
-    {
-      renderQueue.remove(index);
-    }
+      {renderQueue.remove(index);}
   }
+
 
   public String[] listLayers()
   {
     /**
      * returns string array with the names of layers currently in the queue
      */ 
-    String[] names = new String[renderQueue.size()];
-    for (i=0; i < renderQueue.size(); i++)
-    {
-      names[i] = renderQueue.get(i).getName();
-    }
-    return names;
+    String[] renderNames = new String[renderQueue.size()];
+
+    for (int i = 0; i < renderQueue.size(); i++)
+      {renderNames[i] = renderQueue.get(i).getName();}
+
+    return renderNames;
   }
 
   @Override
@@ -117,10 +111,8 @@ public class LEDRenderer extends SubsystemBase
     SmartDashboard.putStringArray("Render Queue", listLayers());
 
     // call each layers render() method to draw to the buffer
-    for (LightLayer layer : renderQueue) 
-    {
-      layer.render(lightBuffer);
-    }
+    for (LightLayer lightLayer : renderQueue) 
+     {lightLayer.render(lightBuffer);}
 
     // transfer the layered buffer to the LED Driver
     lightStrip.setData(lightBuffer);
