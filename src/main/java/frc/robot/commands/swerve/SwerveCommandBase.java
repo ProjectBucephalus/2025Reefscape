@@ -2,18 +2,18 @@ package frc.robot.commands.swerve;
 
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.DiffectorGeometry;
 import frc.robot.constants.Constants.Control;
-import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
+import frc.robot.util.SD;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import edu.wpi.first.math.MathUtil;
@@ -102,15 +102,13 @@ public abstract class SwerveCommandBase extends Command
     if (redAlliance)
       {motionXY = motionXY.unaryMinus();}
 
-    if (RobotContainer.s_Diffector.getElevation() > IKGeometry.bargeSafetyHeight && !SmartDashboard.getBoolean("OVERIDE MODE", false))
+    if (RobotContainer.s_Diffector.getElevation() > DiffectorGeometry.bargeSafetyHeight && !SD.OVERRIDE.get())
     {
       motionXY = FieldUtils.GeoFencing.netProtectionZone.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
     }
     
-    if (fencedSup.getAsBoolean() && !SmartDashboard.getBoolean("IgnoreFence", false))
-    {
-      SmartDashboard.putString("Drive State", "Fenced");
-      
+    if (fencedSup.getAsBoolean() && !SD.IO_GEOFENCE.get())
+    {   
       // Read down the list of geofence objects
       // Outer wall is index 0, so has highest authority by being processed last
       for (int i = fieldGeoFence.length - 1; i >= 0; i--)
@@ -119,8 +117,6 @@ public abstract class SwerveCommandBase extends Command
         motionXY = inputDamping;
       }
     } 
-    else 
-    {SmartDashboard.putString("Drive State", "Non-Fenced");}
     
     // Uninvert processing output when on red alliance
     if (redAlliance)

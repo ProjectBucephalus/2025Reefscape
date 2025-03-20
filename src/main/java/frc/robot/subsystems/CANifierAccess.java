@@ -11,19 +11,19 @@ import com.ctre.phoenix.CANifier;
 
 public class CANifierAccess
 {
-  CANifier io_CANifier = new CANifier(IDConstants.canifierID);
+  CANifier canifierIO = new CANifier(IDConstants.canifierID);
 
   public CANifierAccess() {}
 
-  public boolean coralManiStbdSensor()
+  public boolean coralStbdSensor()
   {
-    SD.SENSOR_CORAL1.put(io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOStbd));
-    return io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOStbd);
+    SD.SENSOR_CORAL1.put(canifierIO.getGeneralInput(IDConstants.coralSensorDIOStbd));
+    return canifierIO.getGeneralInput(IDConstants.coralSensorDIOStbd);
   }
 
-  public boolean coralManiPortSensor()
+  public boolean coralPortSensor()
   {
-    SD.SENSOR_CORAL2.put(io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOPort));
-    return io_CANifier.getGeneralInput(IDConstants.coralManipulatorDIOPort);
+    SD.SENSOR_CORAL2.put(canifierIO.getGeneralInput(IDConstants.coralSensorDIOPort));
+    return canifierIO.getGeneralInput(IDConstants.coralSensorDIOPort);
   }
 }

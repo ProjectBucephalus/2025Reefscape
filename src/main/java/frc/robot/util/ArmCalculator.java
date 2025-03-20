@@ -13,8 +13,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.RobotContainer;
-import frc.robot.constants.Constants.DiffectorConstants;
-import frc.robot.constants.Constants.DiffectorConstants.IKGeometry;
+import frc.robot.constants.DiffectorGeometry;
+import frc.robot.constants.Constants.DiffectorConstants.Presets;
 
 /** Add your docs here. */
 public class ArmCalculator 
@@ -43,23 +43,23 @@ public class ArmCalculator
   
   public ArmCalculator()
   {
-    maxElevation  = DiffectorConstants.maxZ;
-    minElevation  = DiffectorConstants.minZ;
-    safeElevation = DiffectorConstants.safeElevation;
-    coralClawElevation = DiffectorConstants.coralFunnelElevation;
-    algaeClawElevation = DiffectorConstants.algaeClawElevation;
-    uprightTolerance = DiffectorConstants.uprightTolerance;
-    downsideTolerance = DiffectorConstants.downsideTolerance;
-    projectionAngle = IKGeometry.projectionAngle;
-    projectionElevation = IKGeometry.projectionElevation;
+    maxElevation  = DiffectorGeometry.maxZ;
+    minElevation  = DiffectorGeometry.minZ;
+    safeElevation = DiffectorGeometry.safeElevation;
+    coralClawElevation = DiffectorGeometry.coralFunnelElevation;
+    algaeClawElevation = DiffectorGeometry.algaeClawElevation;
+    uprightTolerance = DiffectorGeometry.uprightTolerance;
+    downsideTolerance = DiffectorGeometry.downsideTolerance;
+    projectionAngle = DiffectorGeometry.projectionAngle;
+    projectionElevation = DiffectorGeometry.projectionElevation;
 
-    maxAbsPos = DiffectorConstants.maxAbsAngle;
-    turnBackThreshold = DiffectorConstants.turnBackThreshold;
+    maxAbsPos = DiffectorGeometry.maxAbsAngle;
+    turnBackThreshold = DiffectorGeometry.turnBackThreshold;
     
-    deckHeight    = IKGeometry.deckHeight;
+    deckHeight    = DiffectorGeometry.deckHeight;
 
-    armGeometry = IKGeometry.armGeometry;
-    armGeometryAlgae = IKGeometry.armGeometryAlgae;
+    armGeometry = DiffectorGeometry.armGeometry;
+    armGeometryAlgae = DiffectorGeometry.armGeometryAlgae;
   }
 
   /**
@@ -79,14 +79,14 @@ public class ArmCalculator
     GeoFenceObject allianceReef = FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.reefRed : FieldUtils.GeoFencing.reefBlue;
 
     if (RobotContainer.algae)
-      {safeElevation = DiffectorConstants.algaeSafeElevation;}
-    else if (robotPos.getDistance(allianceReef.getCentre()) <= DiffectorConstants.IKGeometry.reefSafetyRadius) 
-      {safeElevation = DiffectorConstants.reefSafeElevation;}
+      {safeElevation = DiffectorGeometry.algaeSafeElevation;}
+    else if (robotPos.getDistance(allianceReef.getCentre()) <= DiffectorGeometry.reefSafetyRadius) 
+      {safeElevation = DiffectorGeometry.reefSafeElevation;}
     else
-      {safeElevation = DiffectorConstants.safeElevation;}
+      {safeElevation = DiffectorGeometry.safeElevation;}
 
     // Certain positions put the arm lower than it would otherwise be allowed to go
-    if (DiffectorConstants.Presets.lowDiffectorPositions.stream().anyMatch(position -> relativeTarget.equals(position)))
+    if (Presets.lowDiffectorPositions.stream().anyMatch(position -> relativeTarget.equals(position)))
     { // Forced safe path for unsafe targets
       pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), startPosition.getY()));
       pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), targetPosition.getY()));
@@ -123,7 +123,7 @@ public class ArmCalculator
     double angleRelative = Conversions.mod(startPosition.getY(), 360);
 
     // Elevation change only
-    if (Math.abs(angleChange) <= DiffectorConstants.angleTolerance)
+    if (Math.abs(angleChange) <= DiffectorGeometry.angleTolerance)
     {
       pathOutput.add(targetPosition);
       return pathOutput;
@@ -210,7 +210,7 @@ public class ArmCalculator
    * @return maximum of the intended elevation and the safe elevation for the given angle
    */
   public double checkPosition(Translation2d position)
-    {return Conversions.clamp(position.getX(), checkAngle(position.getY()), maxElevation);}
+    {return MathUtil.clamp(position.getX(), checkAngle(position.getY()), maxElevation);}
 
   /**
    * Returns the minimum safe arm height for a given angle

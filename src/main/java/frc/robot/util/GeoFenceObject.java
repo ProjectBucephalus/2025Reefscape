@@ -3,6 +3,7 @@ package frc.robot.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
@@ -139,7 +140,7 @@ public class GeoFenceObject
     buffer = Math.max(buffer, 0.1);
     radius = Math.abs(radius);
     objectType = ObjectTypes.polygon;
-    sides = Conversions.clamp(sides,3,12);
+    sides = MathUtil.clamp(sides, 3, 12);
     
     // Array of all points to construct the polygon lines and references
     // The start of the first line and end of the last line are separate enteries to simplify construction
@@ -235,7 +236,7 @@ public class GeoFenceObject
     // Sets maximum input towards the object as:
     //      (position within the buffer normalised to [0..1])   *   (angle normalisation factor [1..sqrt(2)])
     //         (dNormal - object radii)[0..buffer] / buffer     *      (mNormal / max(|X|,|Y|))
-    motionN = Math.min(motionN, motionN * Conversions.clamp(distanceN-(robotR + radius), 0, buffer)
+    motionN = Math.min(motionN, motionN * MathUtil.clamp(distanceN-(robotR + radius), 0, buffer)
                                     / (Math.max(Math.abs(distanceX),Math.abs(distanceY)) * buffer));
     
     // Converts clamped motion from normal back to X and Y
@@ -262,6 +263,64 @@ public class GeoFenceObject
   public Translation2d getCentre()
   {
     return centre;
+  }
+
+  public double getDistance(Translation2d robotXY)
+  {
+    double distanceToEdgeX;
+    double distanceToEdgeY;
+
+    switch (objectType) 
+    {
+      case line:
+        distanceToEdgeX = robotXY.getX() - Xa;
+        distanceToEdgeY = robotXY.getY() - Ya;
+        double dot = ((distanceToEdgeX * dXab) + (distanceToEdgeY * dYab)) / dot2ab; // Normalised dot product of the two lines
+        return robotXY.getDistance(new Translation2d(MathUtil.clamp(Xa + dXab * dot, Xa, Xb), MathUtil.clamp(Ya + dYab * dot, Ya, Yb)));
+    
+      case point:
+        return robotXY.getDistance(centre);
+
+      case walls:
+        distanceToEdgeX = Math.min(robotXY.getX() - (Xa + radius), (Xb - radius) - robotXY.getX());
+        distanceToEdgeY = Math.min((Yb - radius) - robotXY.getY(), robotXY.getY() - (Ya + radius));
+        return Math.min(distanceToEdgeX, distanceToEdgeY);
+
+      case polygon:
+        return edgeLines.get(edgeReference.indexOf(robotXY.nearest(edgeReference))).getDistance(robotXY);
+      
+      case box:
+        if (robotXY.getX() < Xa)
+        {
+          if (robotXY.getY() < Ya) // SW Corner
+            {return robotXY.getDistance(new Translation2d(Xa, Ya));}
+          else if (robotXY.getY() > Yb) // NW Corner
+            {return robotXY.getDistance(new Translation2d(Xa, Yb));}
+          else // W Cardinal
+            {return (Xa - radius) - robotXY.getX();}
+        }
+        else if (robotXY.getX() > Xb)
+        {
+          if (robotXY.getY() < Ya) // SE Corner
+            {return robotXY.getDistance(new Translation2d(Xb, Ya));}
+          else if (robotXY.getY() > Yb) // NE Corner
+            {return robotXY.getDistance(new Translation2d(Xb, Yb));}
+          else // E Cardinal
+            {return robotXY.getX() - (Xb + radius);}
+        }
+        else 
+        {
+          if (robotXY.getY() < Ya) // S Cardinal
+            {return (Ya - radius) - robotXY.getY();} 
+          else if (robotXY.getY() > Yb) // N Cardinal
+            {return robotXY.getY() - (Yb + radius);}
+          else // Center (you've met a terrible fate *insert kazoo music here*)
+            {return 0;}
+        }
+
+      default:
+        return 0;
+    }
   }
 
   /**
@@ -300,7 +359,7 @@ public class GeoFenceObject
         distanceToEdgeX = robotXY.getX() - Xa;
         distanceToEdgeY = robotXY.getY() - Ya;
         double dot = ((distanceToEdgeX * dXab) + (distanceToEdgeY * dYab)) / dot2ab; // Normalised dot product of the two lines
-        return pointDamping(Conversions.clamp(Xa + dXab * dot, Xa, Xb), Conversions.clamp(Ya + dYab * dot, Ya, Yb), motionXY, robotR, robotXY);
+        return pointDamping(MathUtil.clamp(Xa + dXab * dot, Xa, Xb), MathUtil.clamp(Ya + dYab * dot, Ya, Yb), motionXY, robotR, robotXY);
 
       case box:
         if (robotXY.getX() < Xa)
@@ -312,7 +371,7 @@ public class GeoFenceObject
           else // W Cardinal
           {
             distanceToEdgeX = (Xa - radius) - (robotXY.getX() + robotR);
-            motionX = Math.min(motionX, (Conversions.clamp(distanceToEdgeX, 0, buffer)) / buffer);
+            motionX = Math.min(motionX, (MathUtil.clamp(distanceToEdgeX, 0, buffer)) / buffer);
           }
         }
         else if (robotXY.getX() > Xb)
@@ -324,7 +383,7 @@ public class GeoFenceObject
           else // E Cardinal
           {
             distanceToEdgeX = (robotXY.getX() - robotR) - (Xb + radius);
-            motionX = Math.max(motionX, (-Conversions.clamp(distanceToEdgeX, 0, buffer)) / buffer);
+            motionX = Math.max(motionX, (-MathUtil.clamp(distanceToEdgeX, 0, buffer)) / buffer);
           }
         }
         else 
@@ -332,12 +391,12 @@ public class GeoFenceObject
           if (robotXY.getY() < Ya) // S Cardinal
           {
             distanceToEdgeY = (Ya - radius) - (robotXY.getY() + robotR);
-            motionY = Math.min(motionY, (Conversions.clamp(distanceToEdgeY, 0, buffer)) / buffer);
+            motionY = Math.min(motionY, (MathUtil.clamp(distanceToEdgeY, 0, buffer)) / buffer);
           } 
           else if (robotXY.getY() > Yb) // N Cardinal
           {
             distanceToEdgeY = (robotXY.getY() - robotR) - (Yb + radius);
-            motionY = Math.max(motionY, (-Conversions.clamp(distanceToEdgeY, 0, buffer)) / buffer);
+            motionY = Math.max(motionY, (-MathUtil.clamp(distanceToEdgeY, 0, buffer)) / buffer);
           }
           else // Center (you've met a terrible fate *insert kazoo music here*)
             {return pointDamping(centre, motionXY, robotR, robotXY);}
@@ -354,23 +413,23 @@ public class GeoFenceObject
         if (motionX > 0)
         {   
           distanceToEdgeX = (Xb - radius) - (robotXY.getX() + robotR); 
-          motionX = Math.min(motionX, (Conversions.clamp(distanceToEdgeX, 0, buffer)) / buffer);
+          motionX = Math.min(motionX, (MathUtil.clamp(distanceToEdgeX, 0, buffer)) / buffer);
         }
         else if (motionX < 0)
         {   
           distanceToEdgeX = (robotXY.getX() - robotR) - (Xa + radius);
-          motionX = Math.max(motionX, (-Conversions.clamp(distanceToEdgeX, 0, buffer)) / buffer);
+          motionX = Math.max(motionX, (-MathUtil.clamp(distanceToEdgeX, 0, buffer)) / buffer);
         }
 
         if (motionY > 0)
         {   
           distanceToEdgeY = (Yb - radius) - (robotXY.getY() + robotR);
-          motionY = Math.min(motionY, (Conversions.clamp(distanceToEdgeY, 0, buffer)) / buffer);
+          motionY = Math.min(motionY, (MathUtil.clamp(distanceToEdgeY, 0, buffer)) / buffer);
         }
         else if (motionY < 0)
         {   
           distanceToEdgeY = (robotXY.getY() - robotR) - (Ya + radius);
-          motionY = Math.max(motionY, (-Conversions.clamp(distanceToEdgeY, 0, buffer)) / buffer);
+          motionY = Math.max(motionY, (-MathUtil.clamp(distanceToEdgeY, 0, buffer)) / buffer);
         }
         return new Translation2d(motionX, motionY);
     

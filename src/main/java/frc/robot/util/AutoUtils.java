@@ -15,20 +15,18 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.DpadOptions;
 import frc.robot.constants.Constants;
+import frc.robot.constants.FieldConstants;
 import frc.robot.constants.Constants.Auto.AutoMapping;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.AlgaeManipulator;
-import frc.robot.subsystems.AlgaeManipulator.AlgaeStatus;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
-import frc.robot.subsystems.CoralManipulator.CoralStatus;
 
 public class AutoUtils 
 {
@@ -82,20 +80,20 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.coralScorePosCommand(prevEndPoint, Integer.parseInt(splitCommand.substring(2)))
+              s_Diffector.coralScorePosCommandUndeferred(() -> prevEndPoint, Integer.parseInt(splitCommand.substring(2)))
             )
           );
 
-          commandList.add(s_Coral.setStatusCommand(CoralStatus.DELIVERY_SMART));
+          commandList.add(s_Coral.setStatusCommand(CoralManipulator.Status.DELIVERY_SMART));
           
           if (splitCommand.charAt(2) == '4') 
           {
             commandList.add(Commands.waitSeconds(0.1));
-            commandList.add(s_Diffector.defer(() -> s_Diffector.coralScorePosInstantCommand(prevEndPoint, 3)));
+            commandList.add(s_Diffector.coralScorePosInstantCommand(() -> prevEndPoint, 3));
           }
           
           commandList.add(Commands.waitUntil(() -> !RobotContainer.coral));
-          commandList.add(s_Coral.setStatusCommand(CoralStatus.DEFAULT));
+          commandList.add(s_Coral.setStatusCommand(CoralManipulator.Status.DEFAULT));
           break;
 
         case 'c':
@@ -164,7 +162,7 @@ public class AutoUtils
   public static Command pathfindAndFollowCommand(Supplier<String> pathNameSup, BooleanSupplier brakeSup)
   {
     PathPlannerPath path = FieldUtils.loadPath(pathNameSup.get());
-    BooleanSupplier atPathStart = () -> RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.pathFollowTolerance;
+    BooleanSupplier atPathStart = () -> RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.atPosTolerance;
     
     return 
     Commands.either
@@ -177,7 +175,9 @@ public class AutoUtils
         brakeSup
       ),
       atPathStart
-    ).until(RobotContainer.driver.povCenter());
+    )
+    .until(RobotContainer.driver.povCenter())
+    .withName("PathfindAndFollow");
   }
 
   public static Supplier<String> getBargePathName()
@@ -187,7 +187,7 @@ public class AutoUtils
     {
       Translation2d nearestBargePoint = FieldUtils.getNearestBargePoint(RobotContainer.swerveState.Pose.getTranslation());
 
-      ArrayList<Translation2d> localList = FieldUtils.isRedAlliance() ? Constants.Auto.redBargePoints : Constants.Auto.blueBargePoints;
+      ArrayList<Translation2d> localList = FieldUtils.isRedAlliance() ? FieldConstants.redBargePoints : FieldConstants.blueBargePoints;
   
       int nearestBargePointNumber = localList.indexOf(nearestBargePoint) + 1;
   
@@ -220,8 +220,6 @@ public class AutoUtils
             yield "r" + (char)((nearestReefFace * 2) + unicodeValueOffset);
           }
       };
-
-      SmartDashboard.putString("pathName", pathName);
       return pathName.toLowerCase();
     };
   }
@@ -273,7 +271,7 @@ public class AutoUtils
       AutoBuilder.followPath(algaePath),
       s_Diffector.coralScorePosCommand(coralLevel),
       pathfindAndFollowCommand(getReefPathName(dpadValue), brakeSup),
-      s_Coral.setStatusCommand(CoralStatus.DELIVERY_SMART)
+      s_Coral.setStatusCommand(CoralManipulator.Status.DELIVERY_SMART)
     )
     .until(cancelTrigger);
   }
@@ -284,7 +282,7 @@ public class AutoUtils
     Commands.sequence
     (
       s_Diffector.algaeIntakePosCommand(nearestReefFace),
-      s_Algae.setStatusCommand(AlgaeStatus.INTAKE)
+      s_Algae.setStatusCommand(AlgaeManipulator.Status.INTAKE)
     );
   }
 
@@ -293,8 +291,8 @@ public class AutoUtils
     return
     Commands.sequence
     (
-      s_Diffector.moveAndWaitCommand(net ? Presets.netPosition : Presets.processorPosition), 
-      s_Algae.setStatusCommand(AlgaeStatus.EJECT)
+      s_Diffector.moveAndWaitCommand(net ? Presets.netPosition : Presets.processorPositionPort), 
+      s_Algae.setStatusCommand(AlgaeManipulator.Status.EJECT)
     );
   }
 
@@ -314,7 +312,7 @@ public class AutoUtils
     Commands.sequence
     (
       s_Diffector.moveAndWaitCommand(target), 
-      s_Algae.setStatusCommand(AlgaeStatus.EJECT)
+      s_Algae.setStatusCommand(AlgaeManipulator.Status.EJECT)
     );
   }
 }

@@ -33,7 +33,7 @@ public class TargetScoreDrive extends HeadingLockedDrive
   @Override
   protected void updateTargetHeading()
   {  
-    if (MathUtil.isNear(robotXY.getX(), (FieldUtils.fieldLength / 2), Constants.GamePiecesManipulator.algaeRange)) 
+    if (MathUtil.isNear(robotXY.getX(), (FieldUtils.fieldLength / 2), Constants.Manipulators.algaeRange)) 
     {
       targetHeading = Rotation2d.kZero;
       super.rotationOffset = this.rotationOffsetBase.unaryMinus();

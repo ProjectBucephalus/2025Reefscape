@@ -4,7 +4,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.FieldUtils;
 
@@ -28,19 +27,6 @@ public class TargetProcessorDrive extends HeadingLockedDrive
   @Override
   protected void updateTargetHeading()
   {
-    if (FieldUtils.isRedAlliance()) 
-    {
-      if (robotXY.getX() >= 8.774) 
-        {targetHeading = new Rotation2d(Units.degreesToRadians(-90));} 
-      else 
-        {targetHeading = new Rotation2d(Units.degreesToRadians(90));}
-    }
-    else
-    {
-      if (robotXY.getX() >= 8.774) 
-        {targetHeading = new Rotation2d(Units.degreesToRadians(90));} 
-      else 
-        {targetHeading = new Rotation2d(Units.degreesToRadians(-90));}
-    }
+    targetHeading = FieldUtils.isRedAlliance() ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
   }
 }

@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Supplier;
+
 import com.pathplanner.lib.path.PathConstraints;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotContainer;
 import frc.robot.util.AutoUtils;
-import frc.robot.util.FieldUtils;
 
 public final class Constants 
 {
@@ -34,7 +33,7 @@ public final class Constants
     public static final double manualDiffectorDeadband = 0.25;
     public static final double stickDeadband = 0.15;
     /** Normal maximum robot speed, relative to maximum uncapped speed */
-    public static final double maxThrottle = 0.4;
+    public static final double maxThrottle = 0.7;
     /** Minimum robot speed when braking, relative to maximum uncapped speed */
     public static final double minThrottle = 0.1;
     /** Normal maximum rotational robot speed, relative to maximum uncapped rotational speed */
@@ -49,6 +48,7 @@ public final class Constants
     public static final double manualDiffectorRotationScalar = 2;
     /** Scalar for braking effect of diffector arm being higher than 1m */
     public static final double armBrakeRate = 1.5;
+    public static final double manualClimberScale    = 0.5;
   }
 
   public static final class Vision
@@ -186,134 +186,22 @@ public final class Constants
       put("e"  , new AutoMapping(null, () -> Commands.defer(() -> AutoUtils.ejectAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, () -> RobotContainer.swerveState.Pose.getTranslation()), new HashSet<Subsystem>(){{add(RobotContainer.s_Algae); add(RobotContainer.s_Diffector);}})));
     }};
 
-    public static final ArrayList<Translation2d> reefBlueMidPoints = FieldUtils.GeoFencing.reefBlue.getMidPoints();
-    public static final ArrayList<Translation2d> reefRedMidPoints = FieldUtils.GeoFencing.reefRed.getMidPoints();
 
-    public static final ArrayList<Translation2d> blueBargePoints = new ArrayList<Translation2d>()
-    {{
-      add(new Translation2d(FieldUtils.fieldLength / 2, 7.261));
-      add(new Translation2d(FieldUtils.fieldLength / 2, 6.615));
-      add(new Translation2d(FieldUtils.fieldLength / 2, 6.169));
-      add(new Translation2d(FieldUtils.fieldLength / 2, 5.6245));
-      add(new Translation2d(FieldUtils.fieldLength / 2, 5.08));
-    }};
-
-    public static final ArrayList<Translation2d> redBargePoints = new ArrayList<Translation2d>(blueBargePoints)
-    {
-      {
-        forEach(point -> point.rotateAround(new Translation2d(FieldUtils.fieldLength / 2, FieldUtils.fieldWidth / 2), Rotation2d.k180deg));
-      }
-    };
 
     /** How close we have to be to the path start point to just follow the path without using pathfinding */
-    public static final double pathFollowTolerance = 0.04;
+    public static final double atPosTolerance = 0.04;
 
     public static final String defaultAuto = "rc4,cr1,rb4,cl1,ra4,cl1,rl4";
   }
 
   public static final class DiffectorConstants
   {
-    public static final double motorStallCurrent = 100; // TODO: Tune this to the point that it will reliably prevent stalls
-
-    public static final double diffectorMotorKG = 0.225;
-    public static final double diffectorMotorKS = 0.05;
-    public static final double diffectorMotorKV = 0.58;
-    public static final double diffectorMotorKP = 100;
-    public static final double diffectorMotorKI = 0;
-    public static final double diffectorMotorKD = 0;
-
-    public static final double diffectorMotorKGSpring = 0;
-    public static final double diffectorMotorKSSpring = 0;
-    public static final double diffectorMotorKVSpring = 0;
-    public static final double diffectorMotorKPSpring = 3;
-    public static final double diffectorMotorKISpring = 0;
-    public static final double diffectorMotorKDSpring = 0;
-
-    
-    private static final double diffectorGearTeethIn = 8;
-    private static final double diffectorGearTeethOut = 60;
-    private static final double diffectorSprocketTeethIn  = 18;
-    private static final double diffectorSprocketTeethOut = 72;
-    /** Output sprocket degrees per motor rotation */
-    public static final double gearboxRatio = (diffectorGearTeethOut / diffectorGearTeethIn);
-    /** Ratio of output sprocket to arm sprocket (output sprocket teeth/arm sprocket teeth) */
-    public static final double sprocketRatio = (diffectorSprocketTeethIn / diffectorSprocketTeethOut);
-    /** Pitch Diameter of the sprocket, in m */
-    public static final double sprocketPitchDiameter = 0.036576;
-    
-    /** 
-     * Metres of chain moved per sprocket degree.
-     */
-    public static final double travelRatio = (sprocketPitchDiameter * Math.PI) / 360;
-    /** 
-     * Number of arm degrees moved for one motor degree of a single motor 
-     * Output sprocket rotations per motor rotation * output sprocket to arm sprocket ratio,
-     * divided by 2 to give the contribution of a single motor
-     */
-    public static final double rotationRatio = (sprocketRatio);
-    
-    /** Desired cruise speed of Motor, RPS */
-    public static final double diffectorCruiseMotor = 90;
-    /** Desired cruise speed of Mechanism, RPS */
-    public static final double diffectorCruise = diffectorCruiseMotor / gearboxRatio;
-    /** Desired cruise speed of Motor when holding Algae, RPS */
-    public static final double diffectorAlgaeCruiseMotor = 75;
-    /** Desired cruise speed of Mechanism when holding Algae, RPS */
-    public static final double diffectorAlgaeCruise = diffectorAlgaeCruiseMotor / gearboxRatio;
-    /** Desired acceleration of Motor for Elevation, RPS^2 */
-    public static final double diffectorElevationAccelerationMotor = 120;
-    /** Desired acceleration of Mechanism for Elevation, RPS^2 */
-    public static final double diffectorElevationAcceleration = diffectorElevationAccelerationMotor / gearboxRatio;
-    /** Desired acceleration of Motor for Rotation, RPS^2 */
-    public static final double diffectorRotationAccelerationMotor = 70;
-    /** Desired acceleration of Mechanism for Rotation, RPS^2 */
-    public static final double diffectorRotationAcceleration = diffectorRotationAccelerationMotor / gearboxRatio;
-    /** Desired acceleration of Motor for Rotation when holding Algae, RPS^2 */
-    public static final double diffectorAlgaeRotationAccelerationMotor = 35;
-    /** Desired acceleration of Mechanism for Rotation when holding Algae, RPS^2 */
-    public static final double diffectorAlgaeRotationAcceleration = diffectorAlgaeRotationAccelerationMotor / gearboxRatio;
-
-    /** Linear acceleration of the elevator, MPS^2 */
-    public static final double diffectorElevationAccelerationLinear = diffectorElevationAcceleration * (sprocketPitchDiameter * Math.PI);
-    /** Linear max speed of the elevator, MPS */
-    public static final double diffectorCruiseLinear = diffectorCruise * (sprocketPitchDiameter * Math.PI);
-    
     public static final boolean startingCoralState = true;
     public static final boolean startingAlgaeState = false;
-    
-    public static final double maxRotation = 5;
-    /** Maximum total angle the arm is allowed to rotate away from centre */
-    public static final double maxAbsAngle = maxRotation * 360;
-    /** Above this angle, the arm can turn towards centre even if it's a longer path */
-    public static final double turnBackThreshold = 135;
-    
-    /** Physical upper limit of the elevator, metres above the ground */
-    public static final double maxZ = 1.725;
-    /** Physical lower limit of the elevator when horizontal, metres above the ground */
-    public static final double minZ = 0.36;
-    /** Elevation at which all rotations are safe */
-    public static final double safeElevation = 0.9;
-    public static final double coralFunnelElevation = 0.9;
-    public static final double algaeClawElevation = 0.75;
-    public static final double reefSafeElevation = 1; // TODO
-    public static final double algaeSafeElevation = 1.3;
-    public static final double climberClearanceThreshold = 0.8; // TODO
-    
-    /** Arm rotation check tollerance, degrees */
-    public static final double angleTolerance = 2;
-    /** Angle either side of 0 to consider "vertical" */
-    public static final double uprightTolerance = 15;
-    /** Angle either side of 180 to consider "vertical" */
-    public static final double downsideTolerance = 45;
-    
-    /** Elevation height check tolerance, m */
-    public static final double elevationTolerance = 0.01;
 
     /** Number of clock cycles delay before arm is calibrated after reaching a target */
     public static final int calibrationDelay = 30;
 
-    public static final int algaeEjectSpeedAngleThreshold = 30;
-    
     /** 
      * Preset arm positions:
      * height of centre of rotation above the ground, metres
@@ -325,12 +213,13 @@ public final class Constants
       public static final Translation2d climbSafePosition       = new Translation2d(0.70,  90);
       public static final Translation2d climbPosition           = new Translation2d(0.425, 270);
  
-      public static final Translation2d netPosition             = new Translation2d(  maxZ, 160);
+      public static final Translation2d netPosition             = new Translation2d(DiffectorGeometry.maxZ, 160);
       public static final Translation2d algae3PortPosition      = new Translation2d(1.08, 113);
       public static final Translation2d algae3StbdPosition      = new Translation2d(1.08, 247);
       public static final Translation2d algae2PortPosition      = new Translation2d(0.65, 113);
       public static final Translation2d algae2StbdPosition      = new Translation2d(0.65, 247);
-      public static final Translation2d processorPosition       = new Translation2d(0.43,  90);
+      public static final Translation2d processorPositionPort   = new Translation2d(0.43,  90);
+      public static final Translation2d processorPositionStbd   = new Translation2d(0.43,  270);
  
       public static final Translation2d coral4PortPosition      = new Translation2d(1.62, 340);
       public static final Translation2d coral4StbdPosition      = new Translation2d(1.62,  20);
@@ -338,10 +227,10 @@ public final class Constants
       public static final Translation2d coral3StbdPosition      = new Translation2d(0.98,  20);
       public static final Translation2d coral2PortPosition      = new Translation2d(0.70, 325);
       public static final Translation2d coral2StbdPosition      = new Translation2d(0.70,  35);
-      public static final Translation2d coral1ClawPortPosition  = new Translation2d(algaeClawElevation,  76);
-      public static final Translation2d coral1ClawStbdPosition  = new Translation2d(algaeClawElevation, 284);
-      public static final Translation2d coral1PortPosition      = new Translation2d(coralFunnelElevation, 210);
-      public static final Translation2d coral1StbdPosition      = new Translation2d(coralFunnelElevation, 150);
+      public static final Translation2d coral1ClawPortPosition  = new Translation2d(DiffectorGeometry.algaeClawElevation,  76);
+      public static final Translation2d coral1ClawStbdPosition  = new Translation2d(DiffectorGeometry.algaeClawElevation, 284);
+      public static final Translation2d coral1PortPosition      = new Translation2d(DiffectorGeometry.coralFunnelElevation, 210);
+      public static final Translation2d coral1StbdPosition      = new Translation2d(DiffectorGeometry.coralFunnelElevation, 150);
  
       public static final Translation2d coralIntakePortPosition = new Translation2d(1.12, 215); // TODO
       public static final Translation2d coralIntakeStbdPosition = new Translation2d(1.12, 145); // TODO
@@ -363,59 +252,6 @@ public final class Constants
         //add(processorPosition);
       }};
     }
-        
-    public static final class IKGeometry
-    {
-      /** Manipulator arm point-cloud */
-      public static final Translation2d[] armGeometry = new Translation2d[]
-      {
-        new Translation2d(0.275, 0.295),
-        new Translation2d(0.275, 0.445),
-        new Translation2d(0.000, 0.490),
-        new Translation2d(-0.275, 0.445),
-        new Translation2d(-0.275, 0.295),
-        new Translation2d(-0.110, -0.545),
-        new Translation2d(0.000, -0.555),
-        new Translation2d(0.110, -0.545)
-      };
-      /** Manipulator arm point-cloud when holding Algae */
-      public static final Translation2d[] armGeometryAlgae = new Translation2d[]
-      {
-        new Translation2d(0.275, 0.295),
-        new Translation2d(0.275, 0.445),
-        new Translation2d(0.000, 0.490),
-        new Translation2d(-0.275, 0.445),
-        new Translation2d(-0.275, 0.295),
-        new Translation2d(0.216, -0.646),
-        new Translation2d(0.187, -0.753),
-        new Translation2d(0.108, -0.833),
-        new Translation2d(0.000, -0.861),
-        new Translation2d(-0.108, -0.833),
-        new Translation2d(-0.187, -0.753),
-        new Translation2d(-0.216, -0.646)
-      };
-
-      /* Deck obstruction geometry */
-      public static final double deckHeight  = 0.16;
-      public static final double railHeight  = 0.2;
-      public static final double railLateral = 0.45;
-      public static final double railMedial  = 0.37;
-
-      /** For IK, angle the arm is projected to test for immediate collisions, degrees */
-      public static final double projectionAngle = 5;
-      /** For IK, distance the arm is projected down to test for immediate collisions, m */
-      public static final double projectionElevation = 0.05;
-
-      /** For pathfollowing, elevation/rotation "distance" to set the dynamic target position at */
-      public static final Translation2d unitTravel = new Translation2d(projectionElevation, projectionAngle);
-
-      public static final double reefSafetyRadius = 1.7;
-
-      /** Distance from centre of barge where arm height needs to be checked, metres */
-      public static final double bargeSafetyWidth = 0.85;
-      /** Minimum height over ground where arm height needs to be checked, metres */
-      public static final double bargeSafetyHeight = 1;
-    }
 
     /** Raw value when fully released, indicating string has snapped or the sensor is unavailable */
     public static final double potErrValue = 0.06;
@@ -423,44 +259,21 @@ public final class Constants
     public static final double potMin = 0.0;
     /** Elevator height when potentiometer reads 1, metres over ground */
     public static final double potMax = 2.0;
-
-    public static final InterpolatingDoubleTreeMap potInterpolation = new InterpolatingDoubleTreeMap()
-    {
-      {
-        put(0.09, 0.36);
-        put(0.15, 0.47);
-        put(0.25, 0.61);
-        put(0.30, 0.70);
-        put(0.43, 0.90);
-        put(0.52, 1.02);
-        put(0.57, 1.10);
-        put(0.64, 1.20);
-        put(0.71, 1.31);
-        put(0.72, 1.33);
-        put(0.86, 1.54);
-        put(0.91, 1.61);
-        put(0.94, 1.66);
-        put(0.96, 1.69);
-        put(0.98, 1.72);
-        put(0.99, 1.74);
-        put(1.00, 1.76);
-      }
-    };
   }
 
-  public static final class GamePiecesManipulator 
+  public static final class Manipulators 
   {
     /* Coral manipulator speeds */
     public static final double coralDeliverySpeed = -0.7;
     public static final double coralHoldingSpeed  = -0.15;
-    public static final double coralHoldingkG     = 0;//-0.035;
+    public static final double coralHoldingG      = 0;//-0.035;
 
     /* Algae manipulator speeds */
     public static final double algaeIntakeSpeed    = -1;
-    public static final double algaeHoldingSpeed   = -0.3;
+    public static final double algaeHoldingVoltage = -0.9;
     public static final double algaeNetSpeed       =  1;
     public static final double algaeProcessorSpeed = 0.23;
-    public static final double algaeHeldCurrent    = 50;
+    public static final double algaeHeldCurrent    = 55;
     public static final double algaeReleaseCurrent =  4;
 
     /** Algae net shooting range for rotation snapping, m */
@@ -481,22 +294,6 @@ public final class Constants
     public static final double climbActiveInnerLimit = Units.degreesToRotations(-100); // TODO
     /** The furthest out of the robot the climber can attempt to go whilst balancing */
     public static final double climbActiveOuterLimit = Units.degreesToRotations(-70); // TODO
-    public static final double manualScale    = 0.5;
-
-    public static final double winchKP = 150;
-    public static final double winchKI = 0;
-    public static final double winchKD = 0;
-    public static final double winchBalanceScalar = 0.05;
-
-    public static final double winchPlanetaryRatio = 75;
-    public static final double winchGearIn   = 20;
-    public static final double winchGearOut  = 60;
-    public static final double winchChainIn  = 12;
-    public static final double winchChainOut = 24;
-    public static final double winchGearRatio = ((winchGearOut / winchGearIn) * (winchChainOut / winchChainIn) * winchPlanetaryRatio);
-    public static final double winchDefaultCruise = 1;
-    public static final double winchClimbCruise = 0.5;
-    public static final double winchMotionMagicAccel  = 1;
   }
 
   public static final class LEDStrip
