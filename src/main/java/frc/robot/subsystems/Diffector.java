@@ -348,6 +348,7 @@ public class Diffector extends SubsystemBase
   {
     manualControl = false;
     targetAngle = Presets.startPosition.getY();
+    targetElevation = DiffectorGeometry.safeElevation;
     return Math.abs(angle) < stowThreshold;
   }
 
