@@ -10,7 +10,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.*;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -73,15 +73,15 @@ public class RobotContainer
   private LightLayer allLEDsLayer                      = new LightLayer(s_Swerve, "AllLEDs");
 
   /* Driver Control Axis */
-  public static final int translationAxis = XboxController.Axis.kLeftY.value;
-  public static final int strafeAxis      = XboxController.Axis.kLeftX.value;
-  public static final int rotationAxis    = XboxController.Axis.kRightX.value;
-  public static final int brakeAxis       = XboxController.Axis.kRightTrigger.value;
+  public static final int translationAxis = Axis.kLeftY.value;
+  public static final int strafeAxis      = Axis.kLeftX.value;
+  public static final int rotationAxis    = Axis.kRightX.value;
+  public static final int brakeAxis       = Axis.kRightTrigger.value;
 
   /* Codriver Control Axis */
-  public static final int manualClimberAxis            = XboxController.Axis.kLeftY.value;
-  public static final int manualDiffectorElevationAxis = XboxController.Axis.kRightY.value;
-  public static final int manualDiffectorRotationAxis  = XboxController.Axis.kRightX.value;
+  public static final int manualClimberAxis            = Axis.kLeftY.value;
+  public static final int manualDiffectorElevationAxis = Axis.kRightY.value;
+  public static final int manualDiffectorRotationAxis  = Axis.kRightX.value;
 
   /* Control Modifiers */
   private static final BooleanSupplier algaeModifier = copilot.rightTrigger();
