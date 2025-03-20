@@ -440,9 +440,11 @@ public class RobotContainer
         Commands.sequence
         (
           s_Diffector.moveAndWaitCommand(DiffectorConstants.Presets.climbSafePosition),
-          s_Climber.setStatusCommand(Climber.Status.ACTIVE)
+          s_Climber.setStatusCommand(Climber.Status.ACTIVE),
+          Commands.waitUntil(() -> s_Climber.armSafe()),
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.climbPosition)
         )
-        .withName("ActivateClimb")
+        .withName("PrepareClimb")
       );  
 
     /* Game piece scoring and intake positions */
