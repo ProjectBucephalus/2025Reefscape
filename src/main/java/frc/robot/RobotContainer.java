@@ -595,14 +595,14 @@ public class RobotContainer
   {
     progressLayer.setBorder(true);
     progressLayer.setMode(Mode.DRIVERFACE);
-    progressLayer.setType(LEDType.PROGRESS);
+    progressLayer.setType(LayerType.PROGRESS);
     progressLayer.setPriority(9);
     progressLayer.setBorderColor(Color.kBlueViolet);
     progressLayer.setProgress(0.5);
     progressLayer.setWidth(30);
 
     statusLayer.setMode(Mode.TARGETFACE);
-    statusLayer.setType(LEDType.STATUS);
+    statusLayer.setType(LayerType.STATUS);
     statusLayer.setPriority(8);
     statusLayer.setStatus(0, true);
     statusLayer.setStatus(2, true);
@@ -610,7 +610,7 @@ public class RobotContainer
     statusLayer.setTarget(new Translation2d(1.0,FieldUtils.fieldWidth));
 
     reefPointerLayer.setMode(Mode.TARGETFACE);
-    reefPointerLayer.setType(LEDType.POINTER);
+    reefPointerLayer.setType(LayerType.POINTER);
     reefPointerLayer.setWidth(3);
     reefPointerLayer.setBorder(false);
     reefPointerLayer.setColor(Color.kPurple, Color.kBlack);
@@ -618,7 +618,7 @@ public class RobotContainer
     reefPointerLayer.setTarget(new Translation2d(4.5,4));
 
     processorPointerLayer.setMode(Mode.TARGETFACE);
-    processorPointerLayer.setType(LEDType.POINTER);
+    processorPointerLayer.setType(LayerType.POINTER);
     processorPointerLayer.setColor(Color.kCoral, Color.kBlack);
     processorPointerLayer.setWidth(7);
     processorPointerLayer.setBorder(false);

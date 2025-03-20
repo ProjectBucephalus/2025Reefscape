@@ -7,6 +7,7 @@ import java.util.Map;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
+import edu.wpi.first.wpilibj.Timer;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.FieldUtils.DriverFieldRefs;
 import frc.robot.constants.Constants.LEDStrip;
@@ -22,8 +23,7 @@ import edu.wpi.first.wpilibj.util.Color;
 public class LightLayer
 {
 
-  AddressableLEDBuffer lightBuff;  // internal LED buffers for operations and/or state memory (individual mode)
-  AddressableLEDBuffer shortBuff;
+  AddressableLEDBuffer tempBuff; // internal LED buffers for operations and/or state memory (individual mode)
   final LEDPattern patternBlack = LEDPattern.solid(Color.kBlack);  //black pattern constant useful for wiping buffers
   Color colorOn = LEDStrip.defaultFrontColor; // front or 'on' color for the layer
   Color colorOff = LEDStrip.defaultBackColor; // back or 'off' color for the layer
@@ -35,12 +35,12 @@ public class LightLayer
   private boolean reversed; // if true, the layer will be drawn reversed (useful for vertical displays, where the strip runs up and down an object)
   public enum Mode {DRIVERFACE, WHOLESTRIP, TARGETFACE, STATICSEGMENT, NEARSEGMENT, FARSEGMENT}
   private Mode displayMode; // variable using the Mode enum to set how/where this layer will be displayed
-  public enum LEDType {INDIVIDUAL, PROGRESS, STATUS, POINTER, DISCO}
-  private LEDType displayType; // variable using the LEDType enum, to set which type of layer this is.
-  int statusSegments = LEDStrip.defaultStatusSegments; // numberof segments for the STATUS displayType.
-  Color[] statusOn = new Color[statusSegments];  // Arrays to store per segment on/off/current Colors for the STATUS displaytype.
-  Color[] statusOff = new Color[statusSegments];
-  Color[] statusCol = new Color[statusSegments];
+  public enum LayerType {INDIVIDUAL, PROGRESS, STATUS, POINTER, DISCO, SCROLLER, FLAME, SOLID, ALTERNATING}
+  private LayerType displayType; // variable using the LEDType enum, to set which type of layer this is.
+  int segments = LEDStrip.defaultStatusSegments; // numberof segments for the STATUS displayType.
+  Color[] statusOn = new Color[segments];  // Arrays to store per segment on/off/current Colors for the STATUS displaytype.
+  Color[] statusOff = new Color[segments];
+  Color[] statusCol = new Color[segments];
   Translation2d target; // the target location, as Traslation2d from field origin, that displays should be facing/ pointing towards.
   double robotAngle = 0; // used in the render method to calculate the robots current angle from x axis.
   double targetAngle = 0; // used in the render method to calculate the current angle to the x axis of the vector to the target from the robot.
@@ -50,6 +50,11 @@ public class LightLayer
   boolean drawBorder = true; // if true, will draw a single LED of borderColor each side of this layer
   Color borderColor = LEDStrip.displayBorderColor; // Color of the border dots.
   ArrayList<DiscoLayer> discoQueue = new ArrayList<DiscoLayer>(); // used to generate the display for the 'disco' displayType.
+  private double period; // number of seconds for animated effects to go through a cycle
+  ArrayList<Integer> ashLocations; //list of black spots for flame effect
+  private double lastTime;
+  private double currTime;
+  private int state;
   
   int i = 0; // Loop counter and temporary index values
   
@@ -60,13 +65,12 @@ public class LightLayer
      */
     this.s_Swerve = s_Swerve;
     name = nameReq;
-    lightBuff = new AddressableLEDBuffer(LEDStrip.lightsLen);
-    shortBuff = new AddressableLEDBuffer(width);
+    tempBuff = new AddressableLEDBuffer(width);
     progress=0.3;  
     displayMode = Mode.DRIVERFACE;
-    displayType = LEDType.PROGRESS;
+    displayType = LayerType.PROGRESS;
     //set default STATUS values
-    for (i=0; i<statusSegments; i++)
+    for (i=0; i<segments; i++)
     {
       statusOff[i] = colorOff;
       statusOn[i] = colorOn;
@@ -95,19 +99,20 @@ public class LightLayer
     }
   }
 
-  public void setStatusSegments(int newSegments)
+  public void setSegments(int newSegments)
   {
     /**
-     * sets the number of segments for the STATUS displayType.
+     * sets the number of segments for the STATUS and SCROLLER displayTypes.
      * 
      * <p> Note this operation is destructive of any currrent STATUS, all segments will be reset to 'off'
      */
     // redefine the arrays to new size
-    statusOn = new Color[newSegments];
-    statusOff = new Color[newSegments];
-    statusCol = new Color[newSegments];
+    segments = newSegments;
+    statusOn = new Color[segments];
+    statusOff = new Color[segments];
+    statusCol = new Color[segments];
     // set default values
-    for (i=0; i<statusSegments; i++)
+    for (i=0; i<segments; i++)
     {
       statusOff[i] = colorOff;
       statusOn[i] = colorOn;
@@ -127,27 +132,15 @@ public class LightLayer
     /**
      * Set whether the display for this layer should be reversed
      */
-    if ((reversed != reverse) && (displayType == LEDType.INDIVIDUAL))
+    if ((reversed != reverse) && (displayType == LayerType.INDIVIDUAL))
     {
       // if the value is different, and the displayType is INDIVIDUAL, flip the current buffer.
       Color tempColor;
-      if (displayMode == Mode.WHOLESTRIP)
+      for (i = 0; i < (width / 2); i++)
       {
-        for (i = 0; i < (width / 2); i++)
-        {
-          tempColor = lightBuff.getLED(i);
-          lightBuff.setLED(i, lightBuff.getLED((width - 1) - i));
-          lightBuff.setLED((width - 1) - i, tempColor);
-        }
-      }
-      else
-      {
-        for (i = 0; i < (width / 2); i++)
-        {
-          tempColor = shortBuff.getLED(i);
-          shortBuff.setLED(i, shortBuff.getLED((width - 1) - i));
-          shortBuff.setLED((width - 1) - i, tempColor);
-        }
+        tempColor = tempBuff.getLED(i);
+        tempBuff.setLED(i, tempBuff.getLED((width - 1) - i));
+        tempBuff.setLED((width - 1) - i, tempColor);
       }
     }  
     reversed = reverse;
@@ -178,11 +171,11 @@ public class LightLayer
     {
       // check if new width would overrun the display area.
       int end = startSegment + newWidth;
-      if (end >= LEDStrip.lightsLen) { end -= LEDStrip.lightsLen; }
+      //if (end >= LEDStrip.lightsLen) { end -= LEDStrip.lightsLen; }
       if (end < (Math.max((LEDStrip.stbdLEDsEnd - LEDStrip.stbdLEDsStart),(LEDStrip.portLEDsEnd-LEDStrip.portLEDsStart))))
       {
         width = newWidth;
-        shortBuff = new AddressableLEDBuffer(width);
+        tempBuff = new AddressableLEDBuffer(width);
         return true;
       }
       else
@@ -195,10 +188,10 @@ public class LightLayer
       // in all other modes width can go over the end of the strip with no problems,
       //just must be less than the length of the strip(s)
 
-      if (width < LEDStrip.lightsLen)
+      if (newWidth < LEDStrip.lightsLen)
       {
         width = newWidth;
-        shortBuff = new AddressableLEDBuffer(width);
+        tempBuff = new AddressableLEDBuffer(width);
         return true;
       }
       else
@@ -219,6 +212,7 @@ public class LightLayer
     /**
      * set new value for the layer priority.
      * <p> Higher priority layers will be drawn on top of others.
+     * <p> A layer with negative priority will not be drawn.
      */
 
     {priority = newPriority;}
@@ -272,11 +266,18 @@ public class LightLayer
     }
     else if (newMode == Mode.WHOLESTRIP)
     {
+      startLED = 1;
       width = LEDStrip.lightsLen;
     }
   }
 
-  public void setType (LEDType newType)
+  public void setPeriod (double newPeriod)
+  /**
+   * Sets the period of effects in seconds (time to repeat the pattern, or scroll the width of the segment)
+   */
+  {period = newPeriod;}
+
+  public void setType (LayerType newType)
     /**
      * Sets the displayType for the layer.
      */
@@ -314,7 +315,7 @@ public class LightLayer
      */
 
     // temporarily store whether the indicator is currently off or on.
-    boolean current = (statusCol[index] == statusOn[index]);
+    boolean current = (statusCol[index].equals(statusOn[index]));
 
     // store new colors
     statusOn[index] = on;
@@ -354,30 +355,15 @@ public class LightLayer
      * <p> Will return false if displayType is not INDIVIDUAL, or if index is greater than width-1.
      */
 
-    if (displayType != LEDType.INDIVIDUAL) {return false;}
-    if (displayMode != Mode.WHOLESTRIP)
+    if (displayType != LayerType.INDIVIDUAL) {return false;}
+    if (tempBuff.getLength()<num) {return false;}
+    if (reversed)
     {
-      if (shortBuff.getLength()<num) {return false;}
-      if (reversed)
-      {
-        shortBuff.setRGB((width - 1) - num, red, green, blue);
-      }
-      else
-      {
-        shortBuff.setRGB(num, red, green, blue);
-      }
+      tempBuff.setRGB((width - 1) - num, red, green, blue);
     }
     else
     {
-      if (lightBuff.getLength()<num) {return false;}
-      if (reversed)
-      {
-        lightBuff.setRGB((width - 1) - num, red, green, blue);
-      }
-      else
-      {
-        lightBuff.setRGB(num, red, green, blue);
-      }
+      tempBuff.setRGB(num, red, green, blue);
     }
     return true;
   }
@@ -389,30 +375,15 @@ public class LightLayer
      * <p> Will return false if displayType is not INDIVIDUAL, or if index is greater than width-1.
      */
 
-    if (displayType != LEDType.INDIVIDUAL) {return false;}
-    if (displayMode != Mode.WHOLESTRIP)
+    if (displayType != LayerType.INDIVIDUAL) {return false;}
+    if (tempBuff.getLength()<num) {return false;}
+    if (reversed)
     {
-      if (shortBuff.getLength()<num) {return false;}
-      if (reversed)
-      {
-        shortBuff.setLED((width - 1) - num, shade);
-      }
-      else
-      {
-        shortBuff.setLED(num, shade);
-      }
+      tempBuff.setLED((width - 1) - num, shade);
     }
     else
     {
-      if (lightBuff.getLength()<num) {return false;}
-      if (reversed)
-      {
-        lightBuff.setLED((width - 1) - num, shade);
-      }
-      else
-      {
-        lightBuff.setLED(num, shade);
-      }
+      tempBuff.setLED(num, shade);
     }
     return true;
   }
@@ -429,7 +400,7 @@ public class LightLayer
      * a buffer size smaller than Constants.LEDStrip.lightsLen will result in an array index out of bounds error.
      */
 
-     if (displayType == LEDType.PROGRESS)
+     if (displayType == LayerType.PROGRESS)
     {
 
       // check progress variable is not out of bounds.
@@ -438,41 +409,117 @@ public class LightLayer
       // use the LEDPattern object to build a display that is progress% the front/on color.
       display = LEDPattern.steps(Map.of(0,colorOn,progress,colorOff));
       if (reversed) {display = display.reversed();}
-      if (displayMode == Mode.WHOLESTRIP)
+      display.applyTo(tempBuff);
+    }
+    
+    if (displayType == LayerType.SCROLLER)
+    {
+
+      // build a map of starting position and colours for each element
+      Map<Double, Color> statDisPat = new HashMap<>();
+      for (i=0; i<segments*2; i+=2)
       {
-        display.applyTo(lightBuff);
+        statDisPat.put(((double) i) / (segments * 2), colorOn);
+        statDisPat.put(((double) i + 1) / (segments * 2), colorOff);
       }
-      else
+
+      // use the LEDPattern object again to apply the map to the buffer
+      display = LEDPattern.steps(statDisPat);
+      double timeFactor = Timer.getTimestamp()/period;
+      timeFactor = timeFactor - Math.floor(timeFactor);
+      display = display.offsetBy((int)(width * timeFactor));
+      if (reversed) {display = display.reversed();}
+      display.applyTo(tempBuff);
+    }
+
+    if (displayType == LayerType.FLAME)
+    {
+      display = LEDPattern.gradient(GradientType.kDiscontinuous, colorOn, colorOff);
+      display = display.mask(LEDPattern.progressMaskLayer(()-> Math.random()));
+      if (reversed) {display = display.reversed();}
+      display.applyTo(tempBuff);
+      currTime = Timer.getTimestamp();
+      if (currTime - lastTime > 0.1)
       {
-        display.applyTo(shortBuff);
+        if ((ashLocations.size() < 5) && (Math.random() > 0.8))
+          { ashLocations.add(0); }
+        if (ashLocations.size() > 0)
+        {
+          for (i = 0; i < ashLocations.size(); i++)
+          {
+            if (reversed)
+            {
+              tempBuff.setRGB(width - (i + 1), 1, 0, 0);
+            }
+            else
+            {
+              tempBuff.setRGB(i, 1, 0, 0);
+            }
+            ashLocations.set(i, ashLocations.get(i) + 1);
+            if (ashLocations.get(i) > width - 1)
+              { ashLocations.remove(i); }
+          }
+        }
+        lastTime = currTime;
       }
     }
 
-    if (displayType == LEDType.STATUS)
+    if (displayType == LayerType.SOLID)
+    {
+      display = LEDPattern.solid(colorOn);
+      display.applyTo(tempBuff);
+    }
+
+    if (displayType == LayerType.ALTERNATING)
+    {
+      patternBlack.applyTo(tempBuff);
+      if (currTime - lastTime > 0.25)
+      {
+        if (state != 0)
+        {
+          state = 0;
+        }
+        else
+        {
+          state = 1;
+        }
+        lastTime = currTime;
+      }
+      if (state == 0)
+      {
+        for (i = 0; i < width; i += 2)
+        {
+          tempBuff.setLED(i, colorOn);
+        }
+      }
+      else
+      {
+        for (i = 1; i < width; i += 2)
+        {
+          tempBuff.setLED(i, colorOn);
+        }
+      }
+    }
+
+
+    if (displayType == LayerType.STATUS)
     {
 
       // build a map of starting position (as %) and colours foreach STATUS element
       Map<Double, Color> statDisPat = new HashMap<>();
-      for (i=0; i<statusSegments; i++)
+      for (i=0; i<segments; i++)
       {
-        statDisPat.put(((double) i) / statusSegments, statusCol[i]);
+        statDisPat.put(((double) i) / segments, statusCol[i]);
         //SmartDashboard.putNumber(name + "Status " + i, ((double) i) / statusSegments);
       }
 
       // use the LEDPattern object again to applythe map to the appropriate buffer
       display = LEDPattern.steps(statDisPat);//Map.of(0,StatusCol[0],0.33,StatusCol[1],0.66,StatusCol[2]));
       if (reversed) {display = display.reversed();}
-      if (displayMode == Mode.WHOLESTRIP)
-      {
-        display.applyTo(lightBuff);
-      }
-      else
-      {
-        display.applyTo(shortBuff);
-      }
+      display.applyTo(tempBuff);
     }
 
-    if (displayType == LEDType.POINTER)
+    if (displayType == LayerType.POINTER)
     {
 
       // if the pointer is below a certain size there is no point getting fancy, theres not enough LED's to see it
@@ -488,17 +535,10 @@ public class LightLayer
 
       // reversing this pattern should do nothing, since it's symetrical, but this is here anyway for futureproofing.
       if (reversed) {display = display.reversed();}
-      if (displayMode == Mode.WHOLESTRIP)
-      {
-        display.applyTo(lightBuff);
-      }
-      else
-      {
-        display.applyTo(shortBuff);
-      }
+      display.applyTo(tempBuff);
     }
 
-    if (displayType == LEDType.DISCO)
+    if (displayType == LayerType.DISCO)
     {
       // the disco displaytype is a set of random blocks of moving colour, meant to be attention grabbing
       // it is implemented with a layer system similar to the main LEDRenderer, except they can self update
@@ -530,21 +570,7 @@ public class LightLayer
         {
           int j = disco.getStartLED() + i;
           if (j >= width) {j-=width;}
-          if (displayMode == Mode.WHOLESTRIP)
-          {
-            if (reversed)
-            {
-              lightBuff.setLED((width - 1) - j, disco.shade);
-            }
-            else
-            {
-              lightBuff.setLED(j, disco.shade);
-            }
-          }
-          else
-          {
-            shortBuff.setLED(j, disco.shade);
-          }
+          tempBuff.setLED(j, disco.shade);
         }
 
         // layers will die of old age randomly between AgeLimit and AgeLimit*2 seconds
@@ -587,49 +613,34 @@ public class LightLayer
         { startLED = LEDStrip.portLEDsStart + startSegment; }
     }
 
-    // Then, copy the appropriate internal/temporary buffer onto the output buffer
-    if (displayMode != Mode.WHOLESTRIP)
+    // Then, copy the internal/temporary buffer onto the output buffer
+    // First check startLED calculations haven't resulted in something out of bounds
+    while ((startLED >= LEDStrip.lightsLen)||(startLED < 0))
     {
-      // Check startLED calculations haven't resulted in something out of bounds
-      while ((startLED >= LEDStrip.lightsLen)||(startLED < 0))
-      {
-        if (startLED >= LEDStrip.lightsLen) {startLED -= LEDStrip.lightsLen;}
-        if (startLED < 0) {startLED += LEDStrip.lightsLen;}
-      }
+      if (startLED >= LEDStrip.lightsLen) {startLED -= LEDStrip.lightsLen;}
+      if (startLED < 0) {startLED += LEDStrip.lightsLen;}
+    }
 
-      // copy the buffer onto the output
-      for (i = 0; i < width; i++)
+    // copy the buffer onto the output
+    for (i = 0; i < width; i++)
+    {
+      int j = startLED + i;
+      if (j >= LEDStrip.lightsLen) {j -= LEDStrip.lightsLen;}
+      if (!(tempBuff.getLED(i).equals(Color.kBlack)))
       {
-        int j = startLED + i;
-        if (j >= LEDStrip.lightsLen) {j -= LEDStrip.lightsLen;}
-        if (!(shortBuff.getLED(i).equals(Color.kBlack)))
-        {
-          LEDBuffer.setLED(j, shortBuff.getLED(i));
-        }
-      }
-
-      //draw border if set
-      if (drawBorder)
-      {
-        i = startLED - 1;
-        if (i < 0) {i+=LEDStrip.lightsLen;}
-        LEDBuffer.setLED(i, borderColor);
-        i = startLED + width;
-        if (i >= LEDStrip.lightsLen) {i -= LEDStrip.lightsLen;}
-        LEDBuffer.setLED(i, borderColor);
+        LEDBuffer.setLED(j, tempBuff.getLED(i));
       }
     }
-    else
-    {
 
-      // if we are using the whole strip, copy that buffer on to the output
-      for (i=0; i<LEDBuffer.getLength(); i++)
-      {
-        if (!(lightBuff.getLED(i).equals(Color.kBlack)))
-        {
-          LEDBuffer.setLED(i, lightBuff.getLED(i));
-        }
-      }
+    //draw border if set
+    if (drawBorder)
+    {
+      i = startLED - 1;
+      if (i < 0) {i+=LEDStrip.lightsLen;}
+      LEDBuffer.setLED(i, borderColor);
+      i = startLED + width;
+      if (i >= LEDStrip.lightsLen) {i -= LEDStrip.lightsLen;}
+      LEDBuffer.setLED(i, borderColor);
     }
   }
 }
