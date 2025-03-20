@@ -1,5 +1,6 @@
 package frc.robot.util.leds;
 
+import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -288,10 +289,25 @@ public class LightLayer
   {
     /**
      * Set the front/on and back/off Colors for the layer.
+     * 
+     * <p> Note that if called while in STATUS display type will overwrite individual status colours.
      */
 
     colorOn = front;
     colorOff = back;
+    if (displayType == LayerType.STATUS)
+    {
+      for (i = 0; i < segments; i++)
+      {
+        boolean tempStatus = (statusCol[i].equals(statusOn[i]));
+        statusOn[i] = colorOn;
+        statusOff[i] = colorOff;
+        if (tempStatus)
+          {statusCol[i] = colorOn;}
+        else
+          {statusCol[i] = colorOff;}
+      }
+    }
   }
 
   public void setBorder (boolean borderState)
@@ -439,7 +455,7 @@ public class LightLayer
       if (reversed) {display = display.reversed();}
       display.applyTo(tempBuff);
       currTime = Timer.getTimestamp();
-      if (currTime - lastTime > 0.1)
+      if (currTime - lastTime > period)
       {
         if ((ashLocations.size() < 5) && (Math.random() > 0.8))
           { ashLocations.add(0); }
@@ -473,7 +489,7 @@ public class LightLayer
     if (displayType == LayerType.ALTERNATING)
     {
       patternBlack.applyTo(tempBuff);
-      if (currTime - lastTime > 0.25)
+      if (currTime - lastTime > period)
       {
         if (state != 0)
         {

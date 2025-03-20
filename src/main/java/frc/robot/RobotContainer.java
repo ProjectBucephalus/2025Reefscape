@@ -69,10 +69,11 @@ public class RobotContainer
   public static final CANifierAccess io_Canifier       = new CANifierAccess();
   public static final Rumbler io_Rumbler               = new Rumbler(driver, copilot);
   private final LEDRenderer io_Lights                  = new LEDRenderer();
-  private LightLayer progressLayer                     = new LightLayer(s_Swerve, "Progress");
-  private LightLayer statusLayer                       = new LightLayer(s_Swerve, "Status");
-  private LightLayer reefPointerLayer                  = new LightLayer(s_Swerve, "ReefPointer");
-  private LightLayer processorPointerLayer             = new LightLayer(s_Swerve, "ProcPointer");
+  private LightLayer portStatusLayer                   = new LightLayer(s_Swerve, "PortStatus");
+  private LightLayer stbdStatusLayer                   = new LightLayer(s_Swerve, "StbdStatus");
+  private LightLayer haloPortLayer                     = new LightLayer(s_Swerve, "HaloPort");
+  private LightLayer haloStbdLayer                     = new LightLayer(s_Swerve, "HaloStbd");
+  private LightLayer allLEDsLayer                      = new LightLayer(s_Swerve, "AllLEDs");
 
   /* Driver Control Axis */
   public static final int translationAxis = XboxController.Axis.kLeftY.value;
@@ -592,46 +593,158 @@ public class RobotContainer
   }
 
   private void initLED()
-  {
-    progressLayer.setBorder(true);
-    progressLayer.setMode(Mode.DRIVERFACE);
-    progressLayer.setType(LayerType.PROGRESS);
-    progressLayer.setPriority(9);
-    progressLayer.setBorderColor(Color.kBlueViolet);
-    progressLayer.setProgress(0.5);
-    progressLayer.setWidth(30);
+  { 
+    portStatusLayer.setSegments(6);
+    portStatusLayer.setMode(Mode.STATICSEGMENT);
+    portStatusLayer.setStart(0);
+    portStatusLayer.setWidth(30);
+    portStatusLayer.setType(LayerType.STATUS);
+    portStatusLayer.setPriority(1);
+    portStatusLayer.setColor(Color.kBlack, Color.kTeal);
+    portStatusLayer.setPeriod(0.2);
 
-    statusLayer.setMode(Mode.TARGETFACE);
-    statusLayer.setType(LayerType.STATUS);
-    statusLayer.setPriority(8);
-    statusLayer.setStatus(0, true);
-    statusLayer.setStatus(2, true);
-    statusLayer.setBorder(true);
-    statusLayer.setTarget(new Translation2d(1.0,FieldUtils.fieldWidth));
+    stbdStatusLayer.setSegments(6);
+    stbdStatusLayer.setMode(Mode.STATICSEGMENT);
+    stbdStatusLayer.setStart(90);
+    stbdStatusLayer.setWidth(30);
+    stbdStatusLayer.setType(LayerType.STATUS);
+    stbdStatusLayer.setPriority(1);
+    stbdStatusLayer.setColor(Color.kBlack, Color.kPurple);
+    stbdStatusLayer.setReversed(true);
+    stbdStatusLayer.setPeriod(0.2);
 
-    reefPointerLayer.setMode(Mode.TARGETFACE);
-    reefPointerLayer.setType(LayerType.POINTER);
-    reefPointerLayer.setWidth(3);
-    reefPointerLayer.setBorder(false);
-    reefPointerLayer.setColor(Color.kPurple, Color.kBlack);
-    reefPointerLayer.setPriority(4);
-    reefPointerLayer.setTarget(new Translation2d(4.5,4));
+    haloPortLayer.setStart(30);
+    haloPortLayer.setWidth(30);
+    haloPortLayer.setMode(Mode.STATICSEGMENT);
+    haloPortLayer.setType(LayerType.SOLID);
+    haloPortLayer.setPeriod(0.2);
+    haloPortLayer.setPriority(1);
+    haloPortLayer.setColor(Color.kOrange, Color.kBlack);
+    haloPortLayer.setSegments(10);
 
-    processorPointerLayer.setMode(Mode.TARGETFACE);
-    processorPointerLayer.setType(LayerType.POINTER);
-    processorPointerLayer.setColor(Color.kCoral, Color.kBlack);
-    processorPointerLayer.setWidth(7);
-    processorPointerLayer.setBorder(false);
-    processorPointerLayer.setPriority(3);
-    processorPointerLayer.setTarget(FieldUtils.DriverFieldRefs.driverRed1);
+    haloStbdLayer.setStart(60);
+    haloStbdLayer.setWidth(30);
+    haloStbdLayer.setMode(Mode.STATICSEGMENT);
+    haloStbdLayer.setType(LayerType.SOLID);
+    haloStbdLayer.setPeriod(0.2);
+    haloStbdLayer.setPriority(1);
+    haloStbdLayer.setColor(Color.kYellow, Color.kBlack);
+    haloStbdLayer.setSegments(10);
+    haloStbdLayer.setReversed(true);
 
-    io_Lights.addLayer(progressLayer);
-    io_Lights.addLayer(statusLayer);
-    io_Lights.addLayer(reefPointerLayer);
-    io_Lights.addLayer(processorPointerLayer);
+    allLEDsLayer.setMode(Mode.WHOLESTRIP);
+    allLEDsLayer.setType(LayerType.SOLID);
+    allLEDsLayer.setPriority(-9);
+    allLEDsLayer.setColor(new Color(1.0, 0.0, 0.0), Color.kBlack);
 
+
+    io_Lights.addLayer(portStatusLayer);
+    io_Lights.addLayer(stbdStatusLayer);
+    io_Lights.addLayer(haloPortLayer);
+    io_Lights.addLayer(haloStbdLayer);
+    io_Lights.addLayer(allLEDsLayer);
+stbdStatusLayer.setStatus(6, true);
+/*
+    LEDs:
+6 Segments of 5 LEDS on each side of the elevator.
+Target segment turns off:
+	6: Barge/Lvl 4
+    Change to True (CT):  portStatusLayer.setStatus(5,true);
+                          stbdStatusLayer.setStatus(5, true);
+    Change to False (CF): portStatusLayer.setStatus(5, false);
+                          stbdStatusLayer.setStatus(5, false); 
+	5: Lvl 3
+    CT: portStatusLayer.setStatus(4, true);
+        stbdStatusLayer.setStatus(4, true);
+    CF: portStatusLayer.setStatus(4, false);
+        stbdStatusLayer.setStatus(4, false);
+	4: Coral Station
+    CT: portStatusLayer.setStatus(3, true);
+        stbdStatusLayer.setStatus(3, true);
+    CF: portStatusLayer.setStatus(3, false);
+        stbdStatusLayer.setStatus(3, false);
+	3: Level 2
+    CT: portStatusLayer.setStatus(2, true);
+        stbdStatusLayer.setStatus(2, true);
+    CF: portStatusLayer.setStatus(2, false);
+        stbdStatusLayer.setStatus(2, false);
+	2: Level 1
+    CT: portStatusLayer.setStatus(1, true);
+        stbdStatusLayer.setStatus(1, true);
+    CF: portStatusLayer.setStatus(1, false);
+        stbdStatusLayer.setStatus(1, false);
+	1: Ground Intake/Processor/Climb
+    CT: portStatusLayer.setStatus(0, true);
+        stbdStatusLayer.setStatus(0, true);
+    CF: portStatusLayer.setStatus(0, false);
+        stbdStatusLayer.setStatus(0, false);
+All other segments light up in these colours:
+	Algae: Teal
+    CT: portStatusLayer.setColor(Color.kBlack,Color.kTeal);
+        stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
+	Coral: White
+    CT: portStatusLayer.setColor(Color.kBlack,Color.kWhite);
+        stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
+	Manual: Purple
+    CT: portStatusLayer.setColor(Color.kBlack,Color.kPurple);
+        stbdStatusLayer.setColor(Color.kBlack,Color.kPurple);
+When arm is in a stow position: LEDs 1-6, 13-18, and 25-30 on each side are lit.
+    CT: portStatusLayer.setStatus(1, true);
+        stbdStatusLayer.setStatus(1, true);
+        portStatusLayer.setStatus(3, true);
+        stbdStatusLayer.setStatus(3, true);
+    CF: portStatusLayer.setStatus(1, false);
+        stbdStatusLayer.setStatus(1, false);
+        portStatusLayer.setStatus(3, false);
+        stbdStatusLayer.setStatus(3, false); 
+If arm is e-stopped: All LEDS run alternating pattern in relevant colour
+    CT: portStatusLayer.setType(LayerType.ALTERNATING);
+        stbdStatusLayer.setTYPR(LayerType.ALTERNATING);
+    CF: portStatusLayer.setType(LayerType.STATUS);
+        stbdStatusLayer.setTYPR(LayerType.STATUS);
+
+A full string of 60 LEDS runs around the top of the elevator frame.
+They change colour and flash pattern based on drivebase status:
+	Manual drive: Solid Red
+    CT: haloPortLayer.setType(LayerType.SOLID);
+        haloPortLayer.setColor(Color.kRed,Color.kBlack);
+        haloStbdLayer.setType(LayerType.SOLID);
+        haloStbdLayer.setColor(Color.kRed,Color.kBlack);
+  Heading locked: Solid Orange
+    CT: haloPortLayer.setType(LayerType.SOLID);
+        haloPortLayer.setColor(Color.kOrange,Color.kBlack);
+        haloStbdLayer.setType(LayerType.SOLID);
+        haloStbdLayer.setColor(Color.kOrange,Color.kBlack);
+	Pathfinding: Chasing Yellow
+    CT: haloPortLayer.setType(LayerType.SCROLLER);
+        haloPortLayer.setColor(Color.kYellow,Color.kBlack);
+        haloStbdLayer.setType(LayerType.SCROLLER);
+        haloStbdLayer.setColor(Color.kYellow,Color.kBlack);
+	Follow Path: Alternating Yellow
+    CT: haloPortLayer.setType(LayerType.ALTERNATING);
+        haloPortLayer.setColor(Color.kYellow,Color.kBlack);
+        haloStbdLayer.setType(LayerType.ALTERNATING);
+        haloStbdLayer.setColor(Color.kYellow,Color.kBlack);
+	Robot at target: Solid Yellow
+    CT: haloPortLayer.setType(LayerType.SOLID);
+        haloPortLayer.setColor(Color.kYellow,Color.kBlack);
+        haloStbdLayer.setType(LayerType.SOLID);
+        haloStbdLayer.setColor(Color.kYellow,Color.kBlack);
+	Robot + Arm + Climber at target: Solid Green
+    CT: haloPortLayer.setType(LayerType.SOLID);
+        haloPortLayer.setColor(Color.kGreen,Color.kBlack);
+        haloStbdLayer.setType(LayerType.SOLID);
+        haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
+	At Coral station + relevant end effector full: Alternating Green
+      CT: haloPortLayer.setType(LayerType.ALTERNATING);
+        haloPortLayer.setColor(Color.kGreen,Color.kBlack);
+        haloStbdLayer.setType(LayerType.ALTERNATING);
+        haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
+  When the timer reaches a specific value (set through elastic), all LEDs on the robot alternate red for 1 seconds.
+    Run every 0.1 sec for 1 sec:
+        allLEDsLayer.setPriority(-(allLEDsLayer.getPriority()));
+*/
   }
-
   public Command getAutoCommand()
   {
     // Gets the input string of command phrases, processes into a list of commands, and puts them into a sequential command group
