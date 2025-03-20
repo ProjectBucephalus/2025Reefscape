@@ -1,7 +1,6 @@
 package frc.robot;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 
@@ -18,18 +17,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.swerve.*;
 import frc.robot.constants.*;
 import frc.robot.constants.Constants.DiffectorConstants;
-import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
-import frc.robot.util.FieldUtils.GeoFencing;
 import frc.robot.util.leds.LightLayer;
 import frc.robot.util.leds.LightLayer.*;
 import frc.robot.util.libraries.Telemetry;
+import frc.robot.util.Triggers;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -85,235 +82,6 @@ public class RobotContainer
   public static final int manualClimberAxis            = XboxController.Axis.kLeftY.value;
   public static final int manualDiffectorElevationAxis = XboxController.Axis.kRightY.value;
   public static final int manualDiffectorRotationAxis  = XboxController.Axis.kRightX.value;
-
-  /* Triggers */
-  private final Trigger unlockHeadingTrigger   = new Trigger(() -> Math.abs(driver.getRawAxis(rotationAxis)) > Constants.Control.stickDeadband);
-  private final Trigger cageDriveTrigger       = new Trigger(() -> headingState == HeadingStates.CAGE_LOCK);
-  private final Trigger scoreDriveTrigger      = new Trigger(() -> headingState == HeadingStates.REEF_LOCK);
-  private final Trigger stationDriveTrigger    = new Trigger(() -> headingState == HeadingStates.STATION_LOCK);
-  private final Trigger processorDriveTrigger  = new Trigger(() -> headingState == HeadingStates.PROCESSOR_LOCK);
-  private final Trigger autoScoreCancelTrigger = new Trigger
-  (
-    unlockHeadingTrigger.or
-    (() -> 
-      driver.getRawAxis(translationAxis) > Constants.Control.stickDeadband ||
-      copilot.getRawAxis(manualDiffectorElevationAxis) > Constants.Control.manualDiffectorDeadband ||
-      copilot.getRawAxis(manualDiffectorRotationAxis) > Constants.Control.manualDiffectorDeadband
-    )
-  );
-  private final Trigger driverLeftRumbleTrigger = new Trigger
-  (
-    () -> 
-    (
-      (FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.reefBlue : FieldUtils.GeoFencing.reefRed)
-      .getCentre()
-      .getDistance(swerveState.Pose.getTranslation())
-    ) 
-    < 
-    (FieldUtils.GeoFencing.circumscribedReefZoneDiameter / 2) + 1
-  );
-  private final Trigger copilotLeftRumbleTrigger = new Trigger
-  (
-    () -> 
-    {
-      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
-      var coralIntakePositions = List.of(Presets.coralIntakePortPosition, Presets.coralIntakeStbdPosition).stream();
-      var clawIntakePositions = List.of(Presets.coralClawPortPosition, Presets.coralClawStbdPosition).stream();
-      var reefIntakePositions = List.of(Presets.algae2PortPosition, Presets.algae2StbdPosition, 
-                                        Presets.algae3PortPosition, Presets.algae3StbdPosition).stream();
-      return 
-      (coralIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && coral) 
-      || 
-      (clawIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && algae)
-      ||
-      (reefIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && algae);
-    }
-  );
-  private final Trigger driverRightRumbleTrigger = new Trigger
-  (
-    () -> 
-    {
-      boolean northHalf = swerveState.Pose.getTranslation().getX() >= FieldUtils.fieldWidth / 2;
-      GeoFenceObject nearestCoralStation =
-      FieldUtils.isRedAlliance() ?
-      northHalf ? GeoFencing.cornerNRed : GeoFencing.cornerSRed
-      :
-      northHalf ? GeoFencing.cornerNBlue : GeoFencing.cornerSBlue;
-
-      return 
-      (driver.rightBumper().getAsBoolean() && algae)
-      ||
-      (copilotLeftRumbleTrigger.getAsBoolean() && nearestCoralStation.getDistance(swerveState.Pose.getTranslation()) < FieldConstants.coralStationRange);
-    }
-  );
-  private final Trigger copliotRightRumbleTrigger = new Trigger
-  (
-    () -> 
-    {
-      Translation2d robotPos = swerveState.Pose.getTranslation();
-      Translation2d nearestClimbLineup = 
-      FieldUtils.isRedAlliance() ? 
-      robotPos.nearest(FieldConstants.redClimbLineups)
-      :
-      robotPos.nearest(FieldConstants.blueClimbLineups);
-
-      return s_Climber.climbReady() && s_Diffector.climbReady() && swerveState.Pose.getTranslation().getDistance(nearestClimbLineup) < Constants.Auto.atPosTolerance;
-    }
-  );
-  private final Trigger groundIntakeProcessorOrClimbLEDs = new Trigger
-  (
-    () ->
-    {
-      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
-      var algaeIntakePositions = List.of(Presets.algaeIntakePortPosition, Presets.algaeIntakeStbdPosition).stream();
-      var processorPositions = List.of(Presets.processorPositionPort, Presets.processorPositionStbd).stream();
-      var climbPosition = List.of(Presets.climbPosition).stream();
-      return
-      algaeIntakePositions.anyMatch(position -> relativeTarget.equals(position))
-      ||
-      processorPositions.anyMatch(position -> relativeTarget.equals(position))
-      ||
-      climbPosition.anyMatch(position -> relativeTarget.equals(position));
-    }
-  );
-  private final Trigger lvl1LEDs = new Trigger
-  (
-    () ->
-    {
-      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
-      var coral1Positions = List.of(Presets.coral1PortPosition, Presets.coral1StbdPosition).stream();
-      var claw1Positions = List.of(Presets.coral1ClawPortPosition, Presets.coral1ClawStbdPosition).stream();
-      return
-      (coral1Positions.anyMatch(position -> relativeTarget.equals(position)))
-      ||
-      (claw1Positions.anyMatch(position -> relativeTarget.equals(position)));
-    }
-  );
-  private final Trigger lvl2LEDs = new Trigger
-  (
-    () ->
-    {
-      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
-      var coral2Positions = List.of(Presets.coral2PortPosition, Presets.coral2StbdPosition).stream();
-      var algae2Positions = List.of(Presets.algae2PortPosition, Presets.algae2StbdPosition).stream();
-      return
-      (coral2Positions.anyMatch(position -> relativeTarget.equals(position)))
-      ||
-      (algae2Positions.anyMatch(position -> relativeTarget.equals(position)));
-    }
-  );
-  private final Trigger coralStationLEDs = new Trigger
-  (
-    () ->
-    {
-      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
-      var coralIntakePositions = List.of(Presets.coralIntakePortPosition, Presets.coralIntakeStbdPosition).stream();
-      var clawIntakePositions = List.of(Presets.coralClawPortPosition, Presets.coralClawStbdPosition).stream();
-
-      return
-      (coralIntakePositions.anyMatch(position -> relativeTarget.equals(position)))
-      ||
-      (clawIntakePositions.anyMatch(position -> relativeTarget.equals(position)));
-    }
-  );
-  private final Trigger lvl3LEDs = new Trigger
-  (
-    () ->
-    {
-      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
-      var coral3Positions = List.of(Presets.coral3PortPosition, Presets.coral3StbdPosition).stream();
-      var algae3Positions = List.of(Presets.algae3PortPosition, Presets.algae3StbdPosition).stream();
-      return
-      (coral3Positions.anyMatch(position -> relativeTarget.equals(position)))
-      ||
-      (algae3Positions.anyMatch(position -> relativeTarget.equals(position)));
-    }
-  );
-  private final Trigger bargeOrLvl4LEDs = new Trigger
-  (
-    () ->
-    {
-      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
-      var coral4Positions = List.of(Presets.coral4PortPosition, Presets.coral4StbdPosition).stream();
-      var algaeBargePosition = List.of(Presets.netPosition).stream();
-      return
-      (coral4Positions.anyMatch(position -> relativeTarget.equals(position)))
-      ||
-      (algaeBargePosition.anyMatch(position -> relativeTarget.equals(position)));
-    }
-  );
-
-  private final Trigger stowedLEDs = new Trigger
-  (
-    () ->
-    {
-      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
-      var coralStowPosition = List.of(Presets.coralStowPosition).stream();
-      var algaeStowPosition = List.of(Presets.algaeStowPosition).stream();
-      return
-      (coralStowPosition.anyMatch(position -> relativeTarget.equals(position)))
-      ||
-      (algaeStowPosition.anyMatch(position -> relativeTarget.equals(position)));
-    }
-  );
-
-
-  private final Trigger manualDriveLEDs = new Trigger
-  (
-    () ->
-    {
-      return
-    }
-  );
-  private final Trigger headingLockLEDs = new Trigger
-  (
-    () ->
-    {
-      return
-      cageDriveTrigger.getAsBoolean()
-      ||
-      scoreDriveTrigger.getAsBoolean()
-      ||
-      stationDriveTrigger.getAsBoolean()
-      ||
-      processorDriveTrigger.getAsBoolean();
-    }
-  );
-  private final Trigger pathfindingLEDs = new Trigger
-  (
-    () ->
-    {
-      return
-    }
-  );
-  private final Trigger followPathLEDs = new Trigger
-  (
-    () ->
-    {
-      return
-    }
-  );
-  private final Trigger robotAtTargetLEDs = new Trigger
-  (
-    () ->
-    {
-      return
-    }
-  );
-  private final Trigger robotArmAndClimberAtTargetLEDs = new Trigger
-  (
-    () ->
-    {
-      return
-    }
-  );
-  private final Trigger atCoralStationLEDs = new Trigger
-  (
-    () ->
-    {
-      return
-    }
-  );
 
   /* Control Modifiers */
   private static final BooleanSupplier algaeModifier = copilot.rightTrigger();
@@ -438,7 +206,7 @@ public class RobotContainer
             }, 
             driver.rightTrigger(), 
             () -> driver.getHID().getPOV(), 
-            autoScoreCancelTrigger
+            Triggers.autoScoreCancelTrigger
           ),
           Set.of(s_Diffector, s_Algae, s_Coral)
         )
@@ -449,7 +217,7 @@ public class RobotContainer
   private void configureAutoDriveBindings()
   {
     /* Heading lock state management */
-    unlockHeadingTrigger.onTrue(Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED));
+    Triggers.unlockHeadingTrigger.onTrue(Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED));
     driver.y().onTrue(Commands.runOnce(() -> headingState = HeadingStates.CAGE_LOCK));
     driver.x().onTrue(Commands.runOnce(() -> headingState = HeadingStates.REEF_LOCK));
     driver.b().onTrue(Commands.runOnce(() -> headingState = HeadingStates.PROCESSOR_LOCK));
@@ -459,34 +227,34 @@ public class RobotContainer
       * Cage pathfinding controls 
       * Drives to the nearest reef face when the cage heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    cageDriveTrigger.and(driver.povUp())   .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage2", driver.rightTrigger())));
-    cageDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage3", driver.rightTrigger())));
-    cageDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage1", driver.rightTrigger())));
+    Triggers.cageDriveTrigger.and(driver.povUp())   .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage2", driver.rightTrigger())));
+    Triggers.cageDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage3", driver.rightTrigger())));
+    Triggers.cageDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage1", driver.rightTrigger())));
 
     /* 
       * Station pathfinding controls 
       * Drives to the nearest coral station when the station heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    stationDriveTrigger.and(driver.povUp())   .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(2), driver.rightTrigger())));
-    stationDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(1), driver.rightTrigger())));
-    stationDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(3), driver.rightTrigger())));
+    Triggers.stationDriveTrigger.and(driver.povUp())   .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(2), driver.rightTrigger())));
+    Triggers.stationDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(1), driver.rightTrigger())));
+    Triggers.stationDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(3), driver.rightTrigger())));
 
     /* 
       * Processor pathfinding control 
       * Runs when the processor heading lock is active and right is pressed on the dpad 
       */ 
-    processorDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "p", driver.rightTrigger())));
-    processorDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "pOpp", driver.rightTrigger())));
+    Triggers.processorDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "p", driver.rightTrigger())));
+    Triggers.processorDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "pOpp", driver.rightTrigger())));
 
     /* 
       * Reef and Net pathfinding controls 
       * Drives to the nearest reef face when the reef heading lock is active and a corresponding dpad direction is pressed 
       * Drives to the nearest net position when the scoring heading lock is active and down is pressed on the dpad
       */ 
-    scoreDriveTrigger.and(driver.povUp())   .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.CENTRE), driver.rightTrigger())));
-    scoreDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.LEFT), driver.rightTrigger())));
-    scoreDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.RIGHT), driver.rightTrigger())));
-    scoreDriveTrigger.and(driver.povDown()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getBargePathName(), driver.rightTrigger())));
+    Triggers.scoreDriveTrigger.and(driver.povUp())   .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.CENTRE), driver.rightTrigger())));
+    Triggers.scoreDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.LEFT), driver.rightTrigger())));
+    Triggers.scoreDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.RIGHT), driver.rightTrigger())));
+    Triggers.scoreDriveTrigger.and(driver.povDown()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getBargePathName(), driver.rightTrigger())));
 
     /* 
       * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed
@@ -495,7 +263,7 @@ public class RobotContainer
       * Does not need to check the rotation stick, as soon as the rotation stick is moved all heading lock triggers become false 
       * (see start of this function)
       */
-    cageDriveTrigger.and(driver.povCenter())
+    Triggers.cageDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
         new HeadingLockedDrive
@@ -511,7 +279,7 @@ public class RobotContainer
         .withName("CageLock")
       );
 
-    stationDriveTrigger.and(driver.povCenter())
+    Triggers.stationDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
         new TargetStationDrive
@@ -526,7 +294,7 @@ public class RobotContainer
         .withName("StationLock")
       );
   
-    processorDriveTrigger.and(driver.povCenter())
+    Triggers.processorDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
         new TargetProcessorDrive
@@ -542,7 +310,7 @@ public class RobotContainer
         .withName("ProcessorLock")
       );
 
-    processorDriveTrigger
+    Triggers.processorDriveTrigger
       .whileTrue
       (
         Commands.startEnd
@@ -559,7 +327,7 @@ public class RobotContainer
         .withName("BargeObstacle")
       );
 
-    scoreDriveTrigger.and(driver.povCenter())
+    Triggers.scoreDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
         new TargetScoreDrive
@@ -746,12 +514,12 @@ public class RobotContainer
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
-    driverLeftRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Penalty Zone")));
-    driverRightRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Intaked Successfully")));
+    Triggers.driverLeftRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Penalty Zone")));
+    Triggers.driverRightRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Intaked Successfully")));
 
     /* Copilot rumble bindings */
-    copilotLeftRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_LEFT, "Intake Full")));
-    copliotRightRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_RIGHT, "Climb Ready")));
+    Triggers.copilotLeftRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_LEFT, "Intake Full")));
+    Triggers.copliotRightRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_RIGHT, "Climb Ready")));
   }
 
   private void initLED()
