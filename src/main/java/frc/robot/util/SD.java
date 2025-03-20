@@ -4,9 +4,6 @@
 
 package frc.robot.util;
 
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -100,51 +97,30 @@ public class SD
     );
   }
 
-  public record BooleanKey (String label, boolean defaultValue) implements Runnable, Supplier<Boolean>, Consumer<Boolean>
+  public record BooleanKey (String label, boolean defaultValue)
   {
-    @Override
     public Boolean get() {return SmartDashboard.getBoolean(label, defaultValue);}
 
-    @Override
-    public void run() {SmartDashboard.putBoolean(label, defaultValue);}
+    public void init() {SmartDashboard.putBoolean(label, defaultValue);}
 
-    @Override
-    public void accept(Boolean value) {SmartDashboard.putBoolean(label, value);}
-
-    public void init() {run();}
-
-    public void put(boolean value) {accept(value);}
+    public void put(boolean value) {SmartDashboard.putBoolean(label, value);}
   }
 
-  public record DoubleKey (String label, double defaultValue) implements Runnable, Supplier<Double>, Consumer<Double>
+  public record DoubleKey (String label, double defaultValue)
   {
-    @Override
     public Double get() {return SmartDashboard.getNumber(label, defaultValue);}
 
-    @Override
-    public void run() {SmartDashboard.putNumber(label, defaultValue);}
+    public void init() {SmartDashboard.putNumber(label, defaultValue);}
 
-    @Override
-    public void accept(Double value) {SmartDashboard.putNumber(label, value);}
-
-    public void init() {run();}
-
-    public void put(double value) {accept(value);}
+    public void put(double value) {SmartDashboard.putNumber(label, value);}
   }
 
-  public record StringKey (String label, String defaultValue) implements Runnable, Supplier<String>, Consumer<String>
+  public record StringKey (String label, String defaultValue)
   {
-    @Override
     public String get() {return SmartDashboard.getString(label, defaultValue);}
 
-    @Override
-    public void run() {SmartDashboard.putString(label, defaultValue);}
+    public void init() {SmartDashboard.putString(label, defaultValue);}
 
-    @Override
-    public void accept(String value) {SmartDashboard.putString(label, value);}
-
-    public void init() {run();}
-
-    public void put(String value) {accept(value);}
+    public void put(String value) {SmartDashboard.putString(label, value);}
   }
 }

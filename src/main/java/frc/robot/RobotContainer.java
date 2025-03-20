@@ -119,10 +119,14 @@ public class RobotContainer
       Translation2d relativeTarget = s_Diffector.getRelativeTarget();
       var coralIntakePositions = List.of(Presets.coralIntakePortPosition, Presets.coralIntakeStbdPosition).stream();
       var clawIntakePositions = List.of(Presets.coralClawPortPosition, Presets.coralClawStbdPosition).stream();
+      var reefIntakePositions = List.of(Presets.algae2PortPosition, Presets.algae2StbdPosition, 
+                                        Presets.algae3PortPosition, Presets.algae3StbdPosition).stream();
       return 
       (coralIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && coral) 
       || 
-      (clawIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && algae);
+      (clawIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && algae)
+      ||
+      (reefIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && algae);
     }
   );
   private final Trigger driverRightRumbleTrigger = new Trigger
@@ -361,7 +365,7 @@ public class RobotContainer
           s_Swerve, 
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
-          Rotation2d.kZero, // TODO: Need to have bot facing drivers, and invert arm positions accordingly
+          Rotation2d.kZero,
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
