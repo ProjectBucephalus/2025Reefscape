@@ -1,6 +1,5 @@
 package frc.robot.util.leds;
 
-import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
