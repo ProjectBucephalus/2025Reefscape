@@ -14,13 +14,10 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.RobotState;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,8 +36,6 @@ import frc.robot.util.SD;
 public class Diffector extends SubsystemBase 
 {
   private boolean eStop;
-  
-  private boolean springState = false;
   
   private boolean manualControl;
   private double  manualElevation;
@@ -104,9 +99,6 @@ public class Diffector extends SubsystemBase
     m_UA.getConfigurator().apply(motorConfigUA);
     m_DA.getConfigurator().apply(motorConfigDA);
     
-    if (Conversions.mod(getMeasuredAngle(), 360) > DiffectorGeometry.angleTolerance && Conversions.mod(getMeasuredAngle(), 360) < 360 - DiffectorGeometry.angleTolerance) 
-      {eStop = true;}
-    
     elevation = Presets.startPosition.getX();
 
     positionOveride(getMeasuredElevation(), getMeasuredAngle());
@@ -120,8 +112,6 @@ public class Diffector extends SubsystemBase
     relativeTarget  = targetPosition;
     
     motorTargets = calculateMotorTargets(targetPosition);
-    
-    updateSpringState();
 
     motionMagicRequester = new MotionMagicVoltage(0);
 
@@ -360,15 +350,6 @@ public class Diffector extends SubsystemBase
     targetElevation = MathUtil.clamp(newTarget, DiffectorGeometry.minZ, DiffectorGeometry.maxZ);
   }
 
-  /** Returns the ID of the motor control slot to use */
-  private int getSlot()
-  {
-    return springState ? 1 : 0;
-  }
-
-  private boolean updateSpringState()
-   {return springState = false;}
-
   public void setManualDiffectorValues(double newManualElevation, double newManualRotation)
   {
     if (newManualElevation != 0 || newManualRotation != 0) 
@@ -534,7 +515,6 @@ public class Diffector extends SubsystemBase
     }
 
     calculatePosition();
-    updateSpringState();
     
     if 
     (

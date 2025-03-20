@@ -6,15 +6,12 @@ package frc.robot.util;
 
 import java.util.ArrayList;
 
-import com.ctre.phoenix6.signals.DiffPIDOutput_PIDOutputModeValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.RobotContainer;
 import frc.robot.constants.DiffectorGeometry;
-import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
 
 /** Add your docs here. */
