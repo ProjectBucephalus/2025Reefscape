@@ -105,15 +105,17 @@ public class CoralManipulator extends SubsystemBase
         armPos = RobotContainer.s_Diffector.getRelativeRotation();
         double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
 
-        if (status == Status.DELIVERY_RIGHT) 
+        if 
+        (
+          status == Status.DELIVERY_RIGHT ^
+          (armPos > 90 && armPos <= 270) ^
+          (
+            robotRotation > 90 - Constants.Control.driverVisionTolerance && 
+            robotRotation <= 270 + Constants.Control.driverVisionTolerance
+          )
+        ) 
           {speed = -speed;}
-
-        if (armPos > 90 && armPos <= 270)
-          {speed = -speed;}
-
-        if (robotRotation > 90 - Constants.Control.driverVisionTolerance && robotRotation <= 270 + Constants.Control.driverVisionTolerance) 
-          {speed = -speed;}
-
+          
         m_Coral.set(speed);
         break;
 
