@@ -130,17 +130,15 @@ public class ArmCalculator
     // Any rotation taking the arm past vertical:
     if
     ( // If goes past both uprights
-      // Over a full rotation
-      angleChange >= 360 ||
-      //((angleRelative < 0 + uprightTolerance || angleRelative < 360 + uprightTolerance) && angleRelative + angleChange >= 180 - downsideTolerance) || // TODO
-      //((angleRelative > 0 - uprightTolerance || angleRelative > 360 - uprightTolerance) && angleRelative + angleChange >= 360 - downsideTolerance) ||
-      //((angleRelative < 0 + uprightTolerance || angleRelative < 360 + uprightTolerance) && angleRelative + angleChange >= 360 - downsideTolerance) ||
-      //((angleRelative < 0 + uprightTolerance || angleRelative < 360 + uprightTolerance) && angleRelative + angleChange >= 360 - downsideTolerance) ||
-
-      (angleRelative < 180 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) ||
-      (angleRelative > 180 - downsideTolerance && angleRelative + angleChange >= 540 - uprightTolerance) ||
-      (angleRelative > 180 - downsideTolerance && angleRelative + angleChange <=   0 + uprightTolerance) ||
-      (angleRelative < 180 + downsideTolerance && angleRelative + angleChange <=-180 + uprightTolerance)
+      Math.abs(angleChange) >= 360 ||
+      (angleRelative < 180 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance ) ||
+      (angleRelative > 180 - downsideTolerance && angleRelative + angleChange <=   0 + uprightTolerance ) ||
+      (angleRelative <   0 + uprightTolerance  && angleRelative + angleChange >= 180 - downsideTolerance) ||
+      (angleRelative > 180 + downsideTolerance && angleRelative + angleChange >= 540 - downsideTolerance) ||
+      (angleRelative > 360 - uprightTolerance  && angleRelative + angleChange <= 180 + downsideTolerance) ||
+      (angleRelative < 180 - downsideTolerance && angleRelative + angleChange <=-180 + downsideTolerance) ||
+      (angleRelative < 180 - downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance ) ||
+      (angleRelative > 180 + downsideTolerance && angleRelative + angleChange <=   0 + uprightTolerance )
     )
     {
       // Intermediate waypoint: Safe elevation at initial rotation
