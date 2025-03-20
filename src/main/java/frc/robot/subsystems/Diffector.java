@@ -153,7 +153,7 @@ public class Diffector extends SubsystemBase
     (
       (
         elevation < arm.checkPosition(armPosition) - DiffectorGeometry.elevationTolerance || 
-        elevation > DiffectorGeometry.maxZ + projectionElevation
+        elevation > DiffectorGeometry.maxZ + (projectionElevation / 2)
       ) 
       && !manualControl
     )
