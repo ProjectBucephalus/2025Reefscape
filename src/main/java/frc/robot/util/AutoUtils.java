@@ -27,6 +27,7 @@ import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
+import frc.robot.subsystems.CoralManipulator.Status;
 
 public class AutoUtils 
 {
@@ -112,6 +113,7 @@ public class AutoUtils
 
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
 
+          commandList.add(s_Coral.setStatusCommand(Status.INTAKE));
           commandList.add(Commands.waitUntil(() -> RobotContainer.coral));
           commandList.add(s_Diffector.moveToCommand(Presets.coralStowPosition));
           break;
