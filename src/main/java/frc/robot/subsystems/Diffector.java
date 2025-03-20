@@ -16,6 +16,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,7 +48,7 @@ public class Diffector extends SubsystemBase
   private final double travelRatio;
   private final TalonFXConfiguration motorConfigUA;
   private final TalonFXConfiguration motorConfigDA;
-  private final double stowThreshold = Constants.DiffectorConstants.angleTolerance;
+  private final double stowThreshold = DiffectorConstants.angleTolerance;
   
   /* Name is effect of motor when running anticlockwise/positive (e.g. elevator Up, arm Anticlockwise) */
   /** starboard-side motor(?), forward direction drives carriage up and anticlockwise */
@@ -98,10 +100,12 @@ public class Diffector extends SubsystemBase
     encoder = new CANcoder(IDConstants.armCANcoderID);
     potentiometer = new AnalogPotentiometer(IDConstants.armPotID);
 
-    targetPosition  = Presets.startPosition;
-
-    targetElevation = targetPosition.getX();
-    targetAngle     = targetPosition.getY();
+    elevation = Presets.startPosition.getX();
+    positionOveride(getMeasuredElevation(), getMeasuredAngle());
+    
+    targetElevation = elevation;
+    targetAngle     = angle;
+    targetPosition  = new Translation2d(targetElevation, targetAngle);
     oldTarget       = targetPosition;
     relativeTarget  = targetPosition;
 
@@ -115,8 +119,6 @@ public class Diffector extends SubsystemBase
       eStop = true;
     }
 
-    elevation = targetElevation;
-    positionOveride(getMeasuredElevation(), getMeasuredAngle());
 
     calculatePosition();
 
@@ -202,7 +204,7 @@ public class Diffector extends SubsystemBase
   {
     if (potentiometer.get() < DiffectorConstants.potErrValue)
       {return elevation;}
-    return MathUtil.interpolate(DiffectorConstants.potMin, DiffectorConstants.potMax, potentiometer.get());
+    return DiffectorConstants.potInterpolation.get(potentiometer.get());
   }
 
   /**
@@ -403,7 +405,6 @@ public class Diffector extends SubsystemBase
    */
   public boolean positionOveride(double setElevation, double setAngle)
   {
-    setElevation = Conversions.clamp(setElevation, DiffectorConstants.minZ, DiffectorConstants.maxZ);
     m_diffectorUA.setPosition(Units.degreesToRotations((setAngle / rotationRatio) + (setElevation / travelRatio)));
     m_diffectorDA.setPosition(Units.degreesToRotations((setAngle / rotationRatio) - (setElevation / travelRatio)));
 

@@ -11,6 +11,7 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -212,7 +213,7 @@ public final class Constants
 
   public static final class DiffectorConstants
   {
-    public static final double motorStallCurrent = 80; // TODO: Tune this to the point that it will reliably prevent stalls
+    public static final double motorStallCurrent = 100; // TODO: Tune this to the point that it will reliably prevent stalls
 
     public static final double diffectorMotorKG = 0.225;
     public static final double diffectorMotorKS = 0.05;
@@ -322,7 +323,7 @@ public final class Constants
     {
       public static final Translation2d startPosition           = new Translation2d(0.616,  0);
       public static final Translation2d climbSafePosition       = new Translation2d(0.70,  90);
-      public static final Translation2d climbPosition           = new Translation2d(0.425, 90);
+      public static final Translation2d climbPosition           = new Translation2d(0.425, 270);
  
       public static final Translation2d netPosition             = new Translation2d(  maxZ, 160);
       public static final Translation2d algae3PortPosition      = new Translation2d(1.08, 113);
@@ -417,11 +418,34 @@ public final class Constants
     }
 
     /** Raw value when fully released, indicating string has snapped or the sensor is unavailable */
-    public static final double potErrValue = 1;
+    public static final double potErrValue = 0.06;
     /** Elevator height when potentiometer reads 0, metres over ground */
     public static final double potMin = 0.0;
     /** Elevator height when potentiometer reads 1, metres over ground */
     public static final double potMax = 2.0;
+
+    public static final InterpolatingDoubleTreeMap potInterpolation = new InterpolatingDoubleTreeMap()
+    {
+      {
+        put(0.09, 0.36);
+        put(0.15, 0.47);
+        put(0.25, 0.61);
+        put(0.30, 0.70);
+        put(0.43, 0.90);
+        put(0.52, 1.02);
+        put(0.57, 1.10);
+        put(0.64, 1.20);
+        put(0.71, 1.31);
+        put(0.72, 1.33);
+        put(0.86, 1.54);
+        put(0.91, 1.61);
+        put(0.94, 1.66);
+        put(0.96, 1.69);
+        put(0.98, 1.72);
+        put(0.99, 1.74);
+        put(1.00, 1.76);
+      }
+    };
   }
 
   public static final class GamePiecesManipulator 
@@ -436,7 +460,7 @@ public final class Constants
     public static final double algaeHoldingSpeed   = -0.3;
     public static final double algaeNetSpeed       =  1;
     public static final double algaeProcessorSpeed = 0.23;
-    public static final double algaeHeldCurrent    = 60;
+    public static final double algaeHeldCurrent    = 50;
     public static final double algaeReleaseCurrent =  4;
 
     /** Algae net shooting range for rotation snapping, m */
