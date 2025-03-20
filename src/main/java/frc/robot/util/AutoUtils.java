@@ -21,17 +21,19 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.DpadOptions;
 import frc.robot.constants.Constants;
+import frc.robot.constants.FieldConstants;
 import frc.robot.constants.Constants.Auto.AutoMapping;
+import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.AlgaeManipulator;
-import frc.robot.subsystems.AlgaeManipulator.AlgaeManipulatorStatus;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
-import frc.robot.subsystems.CoralManipulator.CoralManipulatorStatus;
 
 public class AutoUtils 
 {
   private static final PathConstraints defaultConstraints = Constants.Auto.defaultConstraints;
   private static final PathConstraints slowedConstraints = Constants.Auto.slowedConstraints;
+
+  private static Translation2d prevEndPoint;
 
   /**
    * Splits a string of auto command phrases and gets the path command and robot command associated with each command phrase
@@ -50,7 +52,7 @@ public class AutoUtils
     PathPlannerPath nextPath;
 
     // Tracks the end point of the previous path, used so each path properly pathfinds from the end point of the previous one
-    Translation2d prevEndPoint = RobotContainer.swerveState.Pose.getTranslation();
+    prevEndPoint = RobotContainer.swerveState.Pose.getTranslation();
 
     // For each command phrase, adds the associated path and then the associated command to the command list
     for (String splitCommand : splitCommands) 
@@ -64,14 +66,7 @@ public class AutoUtils
         case 't':
           double targetMatchTimeElapsed = Double.parseDouble(splitCommand.substring(1));
 
-          commandList.add
-          (
-            Commands.idle()
-            .until
-            (
-              () -> Timer.getMatchTime() < (15 - targetMatchTimeElapsed)
-            )
-          );
+          commandList.add(Commands.waitUntil(() -> Timer.getMatchTime() < (15 - targetMatchTimeElapsed)));
           break;
 
         case 'r':
@@ -85,21 +80,20 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.coralScorePosCommand(prevEndPoint, Integer.parseInt(splitCommand.substring(2)))
+              s_Diffector.coralScorePosCommandUndeferred(() -> prevEndPoint, Integer.parseInt(splitCommand.substring(2)))
             )
           );
 
-          commandList.add(s_Coral.setStatusCommand(CoralManipulatorStatus.DELIVERY_SMART));
+          commandList.add(s_Coral.setStatusCommand(CoralManipulator.Status.DELIVERY_SMART));
           
           if (splitCommand.charAt(2) == '4') 
           {
             commandList.add(Commands.waitSeconds(0.1));
-            commandList.add(s_Diffector.coralScorePosCommand(prevEndPoint, 3).withTimeout(0.05));
+            commandList.add(s_Diffector.coralScorePosInstantCommand(() -> prevEndPoint, 3));
           }
           
           commandList.add(Commands.waitUntil(() -> !RobotContainer.coral));
-          commandList.add(Commands.waitSeconds(0.1));
-          commandList.add(s_Coral.setStatusCommand(CoralManipulatorStatus.DEFAULT));
+          commandList.add(s_Coral.setStatusCommand(CoralManipulator.Status.DEFAULT));
           break;
 
         case 'c':
@@ -112,17 +106,14 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.moveToCommand(Constants.DiffectorConstants.coralIntakePosition)
+              s_Diffector.moveAndWaitCommand(Presets.coralIntakePortPosition)
             )
           );
 
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
 
-          commandList.add(Commands.waitSeconds(0.1));
-
-          commandList.add(s_Diffector.moveToCommand(Constants.DiffectorConstants.coralTransferPosition));
-          commandList.add(Commands.waitUntil(() -> s_Diffector.atPosition()));
-          commandList.add(s_Diffector.moveToCommand(Constants.DiffectorConstants.coralStowPosition));
+          commandList.add(Commands.waitUntil(() -> RobotContainer.coral));
+          commandList.add(s_Diffector.moveToCommand(Presets.coralStowPosition));
           break;
 
         case 'a':
@@ -168,77 +159,87 @@ public class AutoUtils
     return new SequentialCommandGroup(commandList.toArray(Command[]::new));
   }
 
-  public static Command pathfindAndFollowCommand(String pathName, BooleanSupplier brakeSup)
+  public static Command pathfindAndFollowCommand(Supplier<String> pathNameSup, BooleanSupplier brakeSup)
   {
-    PathPlannerPath path = FieldUtils.loadPath(pathName);
-    boolean atPathStart = RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.pathFollowTolerance;
+    PathPlannerPath path = FieldUtils.loadPath(pathNameSup.get());
+    BooleanSupplier atPathStart = () -> RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.atPosTolerance;
     
-    Command c_PathfindingCommand = 
-    atPathStart 
-    ? 
-    AutoBuilder.followPath(path) 
-    : 
-    AutoBuilder.pathfindThenFollowPath(path, brakeSup.getAsBoolean() ? slowedConstraints : defaultConstraints);
-    
-    return c_PathfindingCommand.until(RobotContainer.driver.povCenter());
+    return 
+    Commands.either
+    (
+      AutoBuilder.followPath(path), 
+      Commands.either
+      (
+        AutoBuilder.pathfindThenFollowPath(path, slowedConstraints), 
+        AutoBuilder.pathfindThenFollowPath(path, defaultConstraints), 
+        brakeSup
+      ),
+      atPathStart
+    )
+    .until(RobotContainer.driver.povCenter())
+    .withName("PathfindAndFollow");
   }
 
-  public static Command pathfindToBargeCommand(BooleanSupplier brakeSup)
+  public static Supplier<String> getBargePathName()
   {
-    Translation2d nearestBargePoint = FieldUtils.getNearestBargePoint(RobotContainer.swerveState.Pose.getTranslation());
-
-    ArrayList<Translation2d> localList = FieldUtils.isRedAlliance() ? Constants.Auto.redBargePoints : Constants.Auto.blueBargePoints;
-
-    int nearestBargePointNumber = localList.indexOf(nearestBargePoint) + 1;
-
-    String pathName = ("b" + nearestBargePointNumber).toLowerCase();
-
-    return pathfindAndFollowCommand(pathName, brakeSup);
-  }
-
-  public static Command pathfindToReefCommand(DpadOptions dpadValue, BooleanSupplier brakeSup)
-  {
-    int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
-
-    String pathName =
-    switch (dpadValue) 
+    return 
+    () ->
     {
-      case CENTRE -> "a" + nearestReefFace;
-    
-      case LEFT, RIGHT -> 
-        {
-          boolean flippedFace = (nearestReefFace == 3 || nearestReefFace == 4 || nearestReefFace == 5);
-          int unicodeValueOffset = 
-          dpadValue == DpadOptions.RIGHT 
-          ? 
-          flippedFace ? 63 : 64
-          : 
-          flippedFace ? 64 : 63;
-          
-          yield "r" + (char)((nearestReefFace * 2) + unicodeValueOffset);
-        }
+      Translation2d nearestBargePoint = FieldUtils.getNearestBargePoint(RobotContainer.swerveState.Pose.getTranslation());
+
+      ArrayList<Translation2d> localList = FieldUtils.isRedAlliance() ? FieldConstants.redBargePoints : FieldConstants.blueBargePoints;
+  
+      int nearestBargePointNumber = localList.indexOf(nearestBargePoint) + 1;
+  
+      return ("b" + nearestBargePointNumber).toLowerCase();
     };
-
-    pathName = pathName.toLowerCase();
-
-    return pathfindAndFollowCommand(pathName, brakeSup);
   }
 
-  public static Command pathfindToStationCommand(int stationPosition, BooleanSupplier brakeSup)
+  public static Supplier<String> getReefPathName(DpadOptions dpadValue)
   {
-    double robotY = RobotContainer.swerveState.Pose.getY();
+    return 
+    () ->
+    {
+      int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
 
-    char stationSide = 
-    FieldUtils.isRedAlliance() 
-    ? 
-    robotY >= 4.026 ? 'r' : 'l'
-    : 
-    robotY >= 4.026 ? 'l' : 'r';
+      String pathName =
+      switch (dpadValue) 
+      {
+        case CENTRE -> "a" + nearestReefFace;
+      
+        case LEFT, RIGHT -> 
+          {
+            boolean flippedFace = (nearestReefFace == 3 || nearestReefFace == 4 || nearestReefFace == 5);
+            int unicodeValueOffset = 
+            dpadValue == DpadOptions.RIGHT 
+            ? 
+            flippedFace ? 63 : 64
+            : 
+            flippedFace ? 64 : 63;
+            
+            yield "r" + (char)((nearestReefFace * 2) + unicodeValueOffset);
+          }
+      };
+      return pathName.toLowerCase();
+    };
+  }
 
-    String pathName = "c" + stationSide + stationPosition;
-    pathName = pathName.toLowerCase();
+  public static Supplier<String> getStationPathName(int stationPosition)
+  {
+    return 
+    () ->
+    {
+      double robotY = RobotContainer.swerveState.Pose.getY();
 
-    return pathfindAndFollowCommand(pathName, brakeSup);
+      char stationSide = 
+      FieldUtils.isRedAlliance() 
+      ? 
+      robotY >= 4.026 ? 'r' : 'l'
+      : 
+      robotY >= 4.026 ? 'l' : 'r';
+
+      return ("c" + stationSide + stationPosition).toLowerCase();
+    };
   }
 
   public static Command autoScoreSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, CoralManipulator s_Coral, IntSupplier reefLevel, BooleanSupplier brakeSup, IntSupplier povAngle, BooleanSupplier cancelTrigger)
@@ -265,23 +266,23 @@ public class AutoUtils
       Commands.parallel
       (
         AutoBuilder.pathfindToPose(algaePath.getStartingHolonomicPose().get(), brakeSup.getAsBoolean() ? slowedConstraints : defaultConstraints),
-        intakeAlgaeSequenceCommand(s_Diffector, s_Algae)
+        intakeAlgaeSequenceCommand(s_Diffector, s_Algae, nearestReefFace)
       ),
       AutoBuilder.followPath(algaePath),
       s_Diffector.coralScorePosCommand(coralLevel),
-      pathfindToReefCommand(dpadValue, brakeSup),
-      s_Coral.setStatusCommand(CoralManipulatorStatus.DELIVERY_SMART)
+      pathfindAndFollowCommand(getReefPathName(dpadValue), brakeSup),
+      s_Coral.setStatusCommand(CoralManipulator.Status.DELIVERY_SMART)
     )
     .until(cancelTrigger);
   }
   
-  public static Command intakeAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae)
+  public static Command intakeAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, int nearestReefFace)
   {
     return 
     Commands.sequence
     (
-      s_Diffector.algaeIntakePosCommand(),
-      s_Algae.setStatusCommand(AlgaeManipulatorStatus.INTAKE)
+      s_Diffector.algaeIntakePosCommand(nearestReefFace),
+      s_Algae.setStatusCommand(AlgaeManipulator.Status.INTAKE)
     );
   }
 
@@ -290,9 +291,8 @@ public class AutoUtils
     return
     Commands.sequence
     (
-      s_Diffector.moveToCommand(net ? Constants.DiffectorConstants.netPosition : Constants.DiffectorConstants.processorPosition), 
-      Commands.waitUntil(() -> s_Diffector.atPosition()), 
-      s_Algae.setStatusCommand(AlgaeManipulatorStatus.EJECT)
+      s_Diffector.moveAndWaitCommand(net ? Presets.netPosition : Presets.processorPositionPort), 
+      s_Algae.setStatusCommand(AlgaeManipulator.Status.EJECT)
     );
   }
 
@@ -304,16 +304,15 @@ public class AutoUtils
     Translation2d target = 
     nearestReefFace % 2 == 0 
     ?
-    portReefFace ? Constants.DiffectorConstants.algae2StbdPosition : Constants.DiffectorConstants.algae2PortPosition
+    portReefFace ? Presets.algae2StbdPosition : Presets.algae2PortPosition
     :
-    portReefFace ? Constants.DiffectorConstants.algae3StbdPosition : Constants.DiffectorConstants.algae3PortPosition;
+    portReefFace ? Presets.algae3StbdPosition : Presets.algae3PortPosition;
 
     return
     Commands.sequence
     (
-      s_Diffector.moveToCommand(target), 
-      Commands.waitUntil(() -> s_Diffector.atPosition()), 
-      s_Algae.setStatusCommand(AlgaeManipulatorStatus.EJECT)
+      s_Diffector.moveAndWaitCommand(target), 
+      s_Algae.setStatusCommand(AlgaeManipulator.Status.EJECT)
     );
   }
 }

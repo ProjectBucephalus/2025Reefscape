@@ -4,8 +4,11 @@
 
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+
 import com.ctre.phoenix6.Utils;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -14,7 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
-import frc.robot.util.LimelightHelpers;
+import frc.robot.util.SD;
+import frc.robot.util.libraries.LimelightHelpers;
 
 public class Limelight extends SubsystemBase 
 {  
@@ -22,7 +26,6 @@ public class Limelight extends SubsystemBase
   private LimelightHelpers.PoseEstimate mt2;
   private static int[] validIDs = Constants.Vision.reefIDs;
   private LimelightHelpers.PoseEstimate mt1;
-
   
   private double headingDeg;
   private double omegaRps;
@@ -33,6 +36,9 @@ public class Limelight extends SubsystemBase
   private final String limelightName;
 
   private int pipelineIndex = 0;
+  public static boolean rotationKnown = false;
+  private ArrayList<Double> rotationData = new ArrayList<Double>();
+  private boolean lastCycleRotationKnown = false;
 
   public enum TagPOI 
   {
@@ -47,7 +53,7 @@ public class Limelight extends SubsystemBase
   {
     limelightName = name;
 
-    SmartDashboard.putBoolean("Use Limelight", true);
+    SD.IO_LL.init();
   }
 
   public void setIMUMode(int mode)
@@ -86,16 +92,73 @@ public class Limelight extends SubsystemBase
   }
 
   public int updateLimelightPipeline()
-    {return (int) SmartDashboard.getNumber("Exposure Setting", 0);}
+  {
+    if (SD.IO_LL_EXPOSURE_UP.get())
+    {
+      SD.IO_LL_EXPOSURE.put(MathUtil.clamp(SD.IO_LL_EXPOSURE.get().intValue() + 1, 0, 7));
+      SD.IO_LL_EXPOSURE_UP.put(false);
+    }
+    if (SD.IO_LL_EXPOSURE_DOWN.get())
+    {
+      SD.IO_LL_EXPOSURE.put(MathUtil.clamp(SD.IO_LL_EXPOSURE.get().intValue() - 1, 0, 7));
+      SD.IO_LL_EXPOSURE_DOWN.put(false);
+    }
+    
+    return SD.IO_LL_EXPOSURE.get().intValue();
+  }
 
   @Override
   public void periodic() 
   { 
+    rotationKnown = SD.CALIBRATE_BOT_ROTATION.get();
+
+    if (!rotationKnown) 
+    {
+      lastCycleRotationKnown = false;
+      if (!getLimelightRotation().equals(Rotation2d.kZero))
+      {
+        rotationData.add(0, getLimelightRotation().getDegrees());
+  
+        if (rotationData.size() > 5)
+          {rotationData.remove(5);}
+  
+        if (rotationData.size() == 5)
+        {
+          double lowest = rotationData.get(0).doubleValue();
+          double highest = rotationData.get(0).doubleValue();
+          
+          for(int i = 1; i < 5; i++)
+          {
+            lowest = Math.min(lowest, rotationData.get(i).doubleValue());
+            highest = Math.max(highest, rotationData.get(i).doubleValue());
+          }
+          
+          if (highest - lowest < 1)
+          {
+            rotationKnown = true;
+            SD.CALIBRATE_BOT_ROTATION.put(true);
+            SmartDashboard.putNumber("limelight " + limelightName + " average rotation reading", (highest + lowest) / 2);
+            RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
+          }
+        }
+      }
+    }
+
+    if (!lastCycleRotationKnown) 
+    {
+      if (rotationKnown) 
+      {
+        rotationData.clear();
+        setThrottle(150);
+        lastCycleRotationKnown = true;
+      }
+    }
+
     if (updateLimelightPipeline() != pipelineIndex)
     {
       pipelineIndex = updateLimelightPipeline();
       LimelightHelpers.setPipelineIndex(limelightName, pipelineIndex);
-    } // TODO: Set up multiple pipelines, the same except for exposure [150..600]
+    }
 
     headingDeg = RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble();
     omegaRps = Units.radiansToRotations(RobotContainer.swerveState.Speeds.omegaRadiansPerSecond);
@@ -104,12 +167,11 @@ public class Limelight extends SubsystemBase
     
     LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, validIDs);
     
-    if (SmartDashboard.getBoolean("Use Limelight", true))
+    if (SD.IO_LL.get())
     {
       mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
       
       useUpdate = !(mt2 == null || mt2.tagCount == 0 || omegaRps > 2.0);
-      SmartDashboard.putBoolean("Use " + limelightName + " update", useUpdate);
       
       if (useUpdate) 
       {
@@ -123,11 +185,6 @@ public class Limelight extends SubsystemBase
       }
     }
 
-    SmartDashboard.putNumber("Gyro yaw", headingDeg);
-    if (!getLimelightRotation().equals(Rotation2d.kZero))
-    SmartDashboard.putNumber("Pose " + limelightName + " Estimate", getLimelightRotation().getDegrees());
-    else SmartDashboard.putNumber("Pose " + limelightName + " Estimate", 0);
-
-    SmartDashboard.putNumber(limelightName + " HW Metrics", NetworkTableInstance.getDefault().getTable(limelightName).getEntry("hw").getDouble(0));
+    SD.SENSOR_GYRO.put(headingDeg);
   }
 }

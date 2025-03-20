@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.1830536869268817,
-        "y": 1.1077457514062632
+        "x": 1.1821192164461278,
+        "y": 1.1064595631313392
       },
       "isLocked": false,
       "linkedName": null
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -126.0
+    "rotation": 144.0
   },
   "reversed": false,
   "folder": "Right Station Paths",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -126.0
+    "rotation": 144.0
   },
   "useDefaultConstraints": true
 }
