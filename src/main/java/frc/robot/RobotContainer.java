@@ -235,7 +235,16 @@ public class RobotContainer
     driver.rightBumper()
       .whileTrue
       (
-        s_Diffector.runOnce(() -> s_Diffector.setTargetPosition(DiffectorConstants.Presets.algaeIntakePortPosition))
+        Commands.either // Algae intake pos
+        (
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePortPosition), 
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakeStbdPosition), 
+          () ->
+          {
+            double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
+            return robotRotation < 180; // > 90 - Constants.Control.driverVisionTolerance && robotRotation <= 270 + Constants.Control.driverVisionTolerance;
+          }
+        )
         .andThen(s_Algae.run(() -> {if (s_Diffector.atPosition()) s_Algae.setStatus(AlgaeManipulator.Status.INTAKE);}))
         .finallyDo
         (
@@ -352,7 +361,7 @@ public class RobotContainer
           s_Swerve, 
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
-          Rotation2d.kCW_90deg, // TODO: Need to have bot facing drivers, and invert arm positions accordingly
+          Rotation2d.kZero, // TODO: Need to have bot facing drivers, and invert arm positions accordingly
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
@@ -512,7 +521,7 @@ public class RobotContainer
             () ->
             {
               double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
-              return robotRotation > 90 - Constants.Control.driverVisionTolerance && robotRotation <= 270 + Constants.Control.driverVisionTolerance;
+              return robotRotation < 180; // > 90 - Constants.Control.driverVisionTolerance && robotRotation <= 270 + Constants.Control.driverVisionTolerance;
             }
           ),
           s_Diffector.coralScorePosCommand(0), // Coral score level 1 with coral manipulator
@@ -525,13 +534,8 @@ public class RobotContainer
     copilot.rightBumper()
       .onTrue
       (
-        Commands.either
-        (
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralClawPortPosition), // Algae intake pos (ground)
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralIntakePortPosition), // Coral intake pos (clearance for station)
-          algaeModifier
-        )
-        .withName("CoralStation")
+        s_Diffector.defer(() -> s_Diffector.stationIntakePosCommand(() -> swerveState.Pose.getTranslation(), algaeModifier)
+        .withName("CoralStation"))
       );
   }
 
