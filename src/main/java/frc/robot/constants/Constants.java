@@ -24,8 +24,8 @@ public final class Constants
 {
   public static final class RumblerConstants 
   {
-    public static final double driverDefault = 0;
-    public static final double copilotDefault = 0;
+    public static final double driverDefault = 0.7;
+    public static final double copilotDefault = 0.7;
   }
 
   public static final class Control
