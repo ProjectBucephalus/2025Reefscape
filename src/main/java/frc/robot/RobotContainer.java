@@ -191,6 +191,7 @@ public class RobotContainer
     configureCopilotBindings();
     configureRumbleBindings();
     configureManualBindings();
+    configureTestBindings();
 
     s_Swerve.registerTelemetry(logger::telemeterize);
     initLED();
@@ -605,6 +606,16 @@ public class RobotContainer
     copliotRightRumbleTrigger
       .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_RIGHT, "Climb Ready")))
       .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.COPILOT_RIGHT, "Climb Ready")));
+  }
+
+  private void configureTestBindings()
+  {
+    testing.y().onTrue(s_Diffector.moveToCommand(new Translation2d(1.5, 90)));
+    testing.a().onTrue(s_Diffector.moveToCommand(new Translation2d(0.5, 90)));
+    testing.povUp().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 0)));
+    testing.povRight().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 90)));
+    testing.povDown().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 180)));
+    testing.povLeft().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 270)));
   }
 
   private void initLED()
