@@ -97,7 +97,7 @@ public class ArmCalculator
       return pathOutput;
     }
 
-    if (relativeTarget.equals(DiffectorConstants.Presets.netPosition))
+    if (Presets.highDiffectorPositions.stream().anyMatch(position -> relativeTarget.equals(position)))
     { // Forced safe path for barge
       pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), startPosition.getY()));
       pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), goShortest(180, targetPosition.getY())));
