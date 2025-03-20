@@ -364,7 +364,7 @@ public class RobotContainer
           s_Swerve, 
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
-          Rotation2d.kZero, // TODO: Need to have bot facing drivers, and invert arm positions accordingly
+          Rotation2d.kZero,
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
