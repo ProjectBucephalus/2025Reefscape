@@ -27,6 +27,6 @@ public class TargetProcessorDrive extends HeadingLockedDrive
   @Override
   protected void updateTargetHeading()
   {
-    targetHeading = FieldUtils.isRedAlliance() ? Rotation2d.kCW_90deg : Rotation2d.kCCW_90deg;
+    targetHeading = FieldUtils.isRedAlliance() ? Rotation2d.kCCW_90deg : Rotation2d.kCW_90deg;
   }
 }
