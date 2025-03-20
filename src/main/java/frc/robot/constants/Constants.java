@@ -210,7 +210,7 @@ public final class Constants
     public static class Presets
     {
       public static final Translation2d startPosition           = new Translation2d(0.616,  0);
-      public static final Translation2d climbSafePosition       = new Translation2d(0.70,  90);
+      public static final Translation2d climbSafePosition       = new Translation2d(0.70,  270); // TODO
       public static final Translation2d climbPosition           = new Translation2d(0.425, 270);
  
       public static final Translation2d netPosition             = new Translation2d(DiffectorGeometry.maxZ, 160);
