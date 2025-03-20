@@ -591,12 +591,20 @@ public class RobotContainer
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
-    driverLeftRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Penalty Zone")));
-    driverRightRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Intaked Successfully")));
+    driverLeftRumbleTrigger
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Penalty Zone")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_RIGHT, "Penalty Zone")));
+    driverRightRumbleTrigger
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Intaked Successfully")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_LEFT, "Intaked Successfully")));
 
     /* Copilot rumble bindings */
-    copilotLeftRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_LEFT, "Intake Full")));
-    copliotRightRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_RIGHT, "Climb Ready")));
+    copilotLeftRumbleTrigger
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_LEFT, "Intake Full")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.COPILOT_LEFT, "Intake Full")));
+    copliotRightRumbleTrigger
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_RIGHT, "Climb Ready")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.COPILOT_RIGHT, "Climb Ready")));
   }
 
   private void initLED()
