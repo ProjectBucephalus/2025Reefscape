@@ -99,7 +99,7 @@ public final class Constants
     public static final double driveKD = 0.0;
 
     /* Rotation Control PID Values */
-    public static final double rotationKP = 5; //TODO: Tune to robot
+    public static final double rotationKP = 6; //TODO: Tune to robot
     public static final double rotationKI = 0;
     public static final double rotationKD = 0;
 
