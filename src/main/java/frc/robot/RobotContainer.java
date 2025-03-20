@@ -156,6 +156,160 @@ public class RobotContainer
       return s_Climber.climbReady() && s_Diffector.climbReady() && swerveState.Pose.getTranslation().getDistance(nearestClimbLineup) < Constants.Auto.atPosTolerance;
     }
   );
+  private final Trigger groundIntakeProcessorOrClimbLEDs = new Trigger
+  (
+    () ->
+    {
+      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
+      var algaeIntakePositions = List.of(Presets.algaeIntakePortPosition, Presets.algaeIntakeStbdPosition).stream();
+      var processorPositions = List.of(Presets.processorPositionPort, Presets.processorPositionStbd).stream();
+      var climbPosition = List.of(Presets.climbPosition).stream();
+      return
+      algaeIntakePositions.anyMatch(position -> relativeTarget.equals(position))
+      ||
+      processorPositions.anyMatch(position -> relativeTarget.equals(position))
+      ||
+      climbPosition.anyMatch(position -> relativeTarget.equals(position));
+    }
+  );
+  private final Trigger lvl1LEDs = new Trigger
+  (
+    () ->
+    {
+      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
+      var coral1Positions = List.of(Presets.coral1PortPosition, Presets.coral1StbdPosition).stream();
+      var claw1Positions = List.of(Presets.coral1ClawPortPosition, Presets.coral1ClawStbdPosition).stream();
+      return
+      (coral1Positions.anyMatch(position -> relativeTarget.equals(position)))
+      ||
+      (claw1Positions.anyMatch(position -> relativeTarget.equals(position)));
+    }
+  );
+  private final Trigger lvl2LEDs = new Trigger
+  (
+    () ->
+    {
+      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
+      var coral2Positions = List.of(Presets.coral2PortPosition, Presets.coral2StbdPosition).stream();
+      var algae2Positions = List.of(Presets.algae2PortPosition, Presets.algae2StbdPosition).stream();
+      return
+      (coral2Positions.anyMatch(position -> relativeTarget.equals(position)))
+      ||
+      (algae2Positions.anyMatch(position -> relativeTarget.equals(position)));
+    }
+  );
+  private final Trigger coralStationLEDs = new Trigger
+  (
+    () ->
+    {
+      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
+      var coralIntakePositions = List.of(Presets.coralIntakePortPosition, Presets.coralIntakeStbdPosition).stream();
+      var clawIntakePositions = List.of(Presets.coralClawPortPosition, Presets.coralClawStbdPosition).stream();
+
+      return
+      (coralIntakePositions.anyMatch(position -> relativeTarget.equals(position)))
+      ||
+      (clawIntakePositions.anyMatch(position -> relativeTarget.equals(position)));
+    }
+  );
+  private final Trigger lvl3LEDs = new Trigger
+  (
+    () ->
+    {
+      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
+      var coral3Positions = List.of(Presets.coral3PortPosition, Presets.coral3StbdPosition).stream();
+      var algae3Positions = List.of(Presets.algae3PortPosition, Presets.algae3StbdPosition).stream();
+      return
+      (coral3Positions.anyMatch(position -> relativeTarget.equals(position)))
+      ||
+      (algae3Positions.anyMatch(position -> relativeTarget.equals(position)));
+    }
+  );
+  private final Trigger bargeOrLvl4LEDs = new Trigger
+  (
+    () ->
+    {
+      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
+      var coral4Positions = List.of(Presets.coral4PortPosition, Presets.coral4StbdPosition).stream();
+      var algaeBargePosition = List.of(Presets.netPosition).stream();
+      return
+      (coral4Positions.anyMatch(position -> relativeTarget.equals(position)))
+      ||
+      (algaeBargePosition.anyMatch(position -> relativeTarget.equals(position)));
+    }
+  );
+
+  private final Trigger stowedLEDs = new Trigger
+  (
+    () ->
+    {
+      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
+      var coralStowPosition = List.of(Presets.coralStowPosition).stream();
+      var algaeStowPosition = List.of(Presets.algaeStowPosition).stream();
+      return
+      (coralStowPosition.anyMatch(position -> relativeTarget.equals(position)))
+      ||
+      (algaeStowPosition.anyMatch(position -> relativeTarget.equals(position)));
+    }
+  );
+
+
+  private final Trigger manualDriveLEDs = new Trigger
+  (
+    () ->
+    {
+      return
+    }
+  );
+  private final Trigger headingLockLEDs = new Trigger
+  (
+    () ->
+    {
+      return
+      cageDriveTrigger.getAsBoolean()
+      ||
+      scoreDriveTrigger.getAsBoolean()
+      ||
+      stationDriveTrigger.getAsBoolean()
+      ||
+      processorDriveTrigger.getAsBoolean();
+    }
+  );
+  private final Trigger pathfindingLEDs = new Trigger
+  (
+    () ->
+    {
+      return
+    }
+  );
+  private final Trigger followPathLEDs = new Trigger
+  (
+    () ->
+    {
+      return
+    }
+  );
+  private final Trigger robotAtTargetLEDs = new Trigger
+  (
+    () ->
+    {
+      return
+    }
+  );
+  private final Trigger robotArmAndClimberAtTargetLEDs = new Trigger
+  (
+    () ->
+    {
+      return
+    }
+  );
+  private final Trigger atCoralStationLEDs = new Trigger
+  (
+    () ->
+    {
+      return
+    }
+  );
 
   /* Control Modifiers */
   private static final BooleanSupplier algaeModifier = copilot.rightTrigger();
