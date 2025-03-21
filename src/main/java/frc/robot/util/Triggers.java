@@ -51,17 +51,18 @@ public class Triggers
       (clawIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && RobotContainer.algae);
     }
   );
+  public static final Trigger atCoralStationTrigger = new Trigger
+  (
+    () -> 
+    {
+      Translation2d robotPos = RobotContainer.swerveState.Pose.getTranslation();
+      return FieldUtils.getNearestCoralStation(robotPos).getDistance(robotPos) < FieldConstants.coralStationRange;
+    }
+  );
   public static final Trigger copilotLeftRumbleTrigger = coralIntakeTrigger.or(() -> RobotContainer.copilot.leftTrigger().getAsBoolean() && RobotContainer.algae);
   public static final Trigger driverRightRumbleTrigger = 
     coralIntakeTrigger
-    .and
-    (
-      () -> 
-      {
-        Translation2d robotPos = RobotContainer.swerveState.Pose.getTranslation();
-        return FieldUtils.getNearestCoralStation(robotPos).getDistance(robotPos) < FieldConstants.coralStationRange;
-      }
-    )
+    .and(atCoralStationTrigger)
     .or
     (
       () ->
