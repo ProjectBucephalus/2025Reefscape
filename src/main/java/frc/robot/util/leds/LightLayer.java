@@ -56,8 +56,6 @@ public class LightLayer
   private double currTime;
   private int state;
   
-  int i = 0; // Loop counter and temporary index values
-  
   public LightLayer(CommandSwerveDrivetrain s_Swerve,String nameReq)
   {
     /**
@@ -70,7 +68,7 @@ public class LightLayer
     displayMode = Mode.DRIVERFACE;
     displayType = LayerType.PROGRESS;
     //set default STATUS values
-    for (i=0; i<segments; i++)
+    for(int i=0; i<segments; i++)
     {
       statusOff[i] = colorOff;
       statusOn[i] = colorOn;
@@ -112,7 +110,7 @@ public class LightLayer
     statusOff = new Color[segments];
     statusCol = new Color[segments];
     // set default values
-    for (i=0; i<segments; i++)
+    for(int i=0; i<segments; i++)
     {
       statusOff[i] = colorOff;
       statusOn[i] = colorOn;
@@ -136,7 +134,7 @@ public class LightLayer
     {
       // if the value is different, and the displayType is INDIVIDUAL, flip the current buffer.
       Color tempColor;
-      for (i = 0; i < (width / 2); i++)
+      for(int i = 0; i < (width / 2); i++)
       {
         tempColor = tempBuff.getLED(i);
         tempBuff.setLED(i, tempBuff.getLED((width - 1) - i));
@@ -296,7 +294,7 @@ public class LightLayer
     colorOff = back;
     if (displayType == LayerType.STATUS)
     {
-      for (i = 0; i < segments; i++)
+      for(int i = 0; i < segments; i++)
       {
         boolean tempStatus = (statusCol[i].equals(statusOn[i]));
         statusOn[i] = colorOn;
@@ -432,7 +430,7 @@ public class LightLayer
 
       // build a map of starting position and colours for each element
       Map<Double, Color> statDisPat = new HashMap<>();
-      for (i=0; i<segments*2; i+=2)
+      for(int i=0; i<segments*2; i+=2)
       {
         statDisPat.put(((double) i) / (segments * 2), colorOn);
         statDisPat.put(((double) i + 1) / (segments * 2), colorOff);
@@ -460,7 +458,7 @@ public class LightLayer
           { ashLocations.add(0); }
         if (ashLocations.size() > 0)
         {
-          for (i = 0; i < ashLocations.size(); i++)
+          for(int i = 0; i < ashLocations.size(); i++)
           {
             if (reversed)
             {
@@ -502,14 +500,14 @@ public class LightLayer
       }
       if (state == 0)
       {
-        for (i = 0; i < width; i += 2)
+        for(int i = 0; i < width; i += 2)
         {
           tempBuff.setLED(i, colorOn);
         }
       }
       else
       {
-        for (i = 1; i < width; i += 2)
+        for(int i = 1; i < width; i += 2)
         {
           tempBuff.setLED(i, colorOn);
         }
@@ -522,7 +520,7 @@ public class LightLayer
 
       // build a map of starting position (as %) and colours foreach STATUS element
       Map<Double, Color> statDisPat = new HashMap<>();
-      for (i=0; i<segments; i++)
+      for(int i=0; i<segments; i++)
       {
         statDisPat.put(((double) i) / segments, statusCol[i]);
         //SmartDashboard.putNumber(name + "Status " + i, ((double) i) / statusSegments);
@@ -581,7 +579,7 @@ public class LightLayer
         disco.update();
 
         // then copy the layer colour to the appropriate area of the appropriate buffer
-        for (i=0; i < disco.getLength(); i++)
+        for(int i=0; i < disco.getLength(); i++)
         {
           int j = disco.getStartLED() + i;
           if (j >= width) {j-=width;}
@@ -637,7 +635,7 @@ public class LightLayer
     }
 
     // copy the buffer onto the output
-    for (i = 0; i < width; i++)
+    for(int i = 0; i < width; i++)
     {
       int j = startLED + i;
       if (j >= LEDStrip.lightsLen) {j -= LEDStrip.lightsLen;}
@@ -650,8 +648,8 @@ public class LightLayer
     //draw border if set
     if (drawBorder)
     {
-      i = startLED - 1;
-      if (i < 0) {i+=LEDStrip.lightsLen;}
+      int i = startLED - 1;
+      if (i < 0) {i += LEDStrip.lightsLen;}
       LEDBuffer.setLED(i, borderColor);
       i = startLED + width;
       if (i >= LEDStrip.lightsLen) {i -= LEDStrip.lightsLen;}

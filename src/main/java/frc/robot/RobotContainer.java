@@ -65,12 +65,12 @@ public class RobotContainer
   public static final Limelight io_LimelightStbd       = new Limelight(IDConstants.llStbdName);
   public static final CANifierAccess io_Canifier       = new CANifierAccess();
   public static final Rumbler io_Rumbler               = new Rumbler(driver, copilot);
-  private final LEDRenderer io_Lights                  = new LEDRenderer();
-  private LightLayer portStatusLayer                   = new LightLayer(s_Swerve, "PortStatus");
-  private LightLayer stbdStatusLayer                   = new LightLayer(s_Swerve, "StbdStatus");
-  private LightLayer haloPortLayer                     = new LightLayer(s_Swerve, "HaloPort");
-  private LightLayer haloStbdLayer                     = new LightLayer(s_Swerve, "HaloStbd");
-  private LightLayer allLEDsLayer                      = new LightLayer(s_Swerve, "AllLEDs");
+  //private final LEDRenderer io_Lights                  = new LEDRenderer();
+  //private LightLayer portStatusLayer                   = new LightLayer(s_Swerve, "PortStatus");
+  //private LightLayer stbdStatusLayer                   = new LightLayer(s_Swerve, "StbdStatus");
+  //private LightLayer haloPortLayer                     = new LightLayer(s_Swerve, "HaloPort");
+  //private LightLayer haloStbdLayer                     = new LightLayer(s_Swerve, "HaloStbd");
+  //private LightLayer allLEDsLayer                      = new LightLayer(s_Swerve, "AllLEDs");
 
   /* Driver Control Axis */
   public static final int translationAxis = Axis.kLeftY.value;
@@ -117,7 +117,7 @@ public class RobotContainer
     configureTestBindings();
 
     s_Swerve.registerTelemetry(logger::telemeterize);
-    initLED();
+    //initLED();
   }
 
   private void configureDriverBindings()
@@ -547,7 +547,7 @@ public class RobotContainer
     testing.povLeft().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 270)));
   }
 
-  private void initLED()
+  /* private void initLED()
   { 
     portStatusLayer.setSegments(6);
     portStatusLayer.setMode(Mode.STATICSEGMENT);
@@ -835,10 +835,10 @@ public class RobotContainer
     }));
 
     allLEDsLayer.setPriority(-(allLEDsLayer.getPriority()));
-  }
+  } */
   public Command getAutoCommand()
   {
     // Gets the input string of command phrases, processes into a list of commands, and puts them into a sequential command group
     return AutoUtils.getCommandList(SD.IO_AUTO.get(), s_Diffector, s_Coral, s_Algae);
-  }
+  } 
 }
