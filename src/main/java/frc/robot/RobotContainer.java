@@ -21,7 +21,6 @@ import frc.robot.commands.swerve.*;
 import frc.robot.constants.*;
 import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.CoralManipulator.Status;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
 import frc.robot.util.leds.LightLayer;
@@ -469,8 +468,8 @@ public class RobotContainer
       );
 
     Triggers.driverRightRumbleTrigger.and(() -> !coral)
-      .onTrue(s_Coral.setStatusCommand(Status.INTAKE))
-      .onFalse(s_Coral.setStatusCommand(Status.DEFAULT));
+      .onTrue(s_Coral.setStatusCommand(CoralManipulator.Status.INTAKE))
+      .onFalse(s_Coral.setStatusCommand(CoralManipulator.Status.DEFAULT));
   }
 
   private void configureManualBindings()
