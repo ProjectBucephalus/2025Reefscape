@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -47,9 +46,6 @@ public class CoralManipulator extends SubsystemBase
 
   public Status getStatus()
     {return status;}
-
-  private void setSpeedFeedforward(double speed)
-    {m_Coral.set(speed + Math.sin(Units.degreesToRadians(RobotContainer.s_Diffector.getAngle())) * Constants.Manipulators.coralHoldingG);}
 
   public void setStatus(Status newStatus)
     {status = newStatus;}
@@ -130,13 +126,13 @@ public class CoralManipulator extends SubsystemBase
           {m_Coral.set(0);}
 
         else if (RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor())
-          {setSpeedFeedforward(Constants.Manipulators.coralHoldingSpeed);}
+          {m_Coral.set(Constants.Manipulators.coralHoldingSpeed);}
 
         else if (!RobotContainer.io_Canifier.coralPortSensor() && RobotContainer.io_Canifier.coralStbdSensor()) 
-          {setSpeedFeedforward(-Constants.Manipulators.coralHoldingSpeed);} 
+          {m_Coral.set(-Constants.Manipulators.coralHoldingSpeed);} 
           
         else if (!RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor()) 
-          {setSpeedFeedforward(0);}
+          {m_Coral.set(0);}
         break;
     }
   }
