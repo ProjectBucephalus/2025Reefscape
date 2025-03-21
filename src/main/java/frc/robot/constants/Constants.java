@@ -293,7 +293,6 @@ public final class Constants
     /* Coral manipulator speeds */
     public static final double coralDeliverySpeed = -0.7;
     public static final double coralHoldingSpeed  = -0.15;
-    public static final double coralHoldingG      = 0;
 
     /* Algae manipulator speeds */
     public static final double algaeIntakeSpeed    = -1;

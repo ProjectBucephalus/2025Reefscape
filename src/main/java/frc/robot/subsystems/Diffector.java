@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -558,6 +559,10 @@ public class Diffector extends SubsystemBase
         m_DA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])));//.withSlot(getSlot()));
       }
     }
+    SmartDashboard.putNumber("ua current", Math.abs(m_UA.getTorqueCurrent().getValueAsDouble()));
+    SmartDashboard.putNumber("ua current", Math.abs(m_DA.getTorqueCurrent().getValueAsDouble()));
+    SmartDashboard.putNumber("ua Speed", Math.abs(m_UA.getRotorVelocity().getValueAsDouble()));
+    SmartDashboard.putNumber("da Speed", Math.abs(m_DA.getRotorVelocity().getValueAsDouble()));
     SD.DIFF_ELEVATION_TARGET.put(targetElevation);
     SD.DIFF_ANGLE_TARGET.put(targetAngle);
     SD.DIFF_ELEVATION.put(elevation);
