@@ -445,7 +445,7 @@ public class RobotContainer
           s_Diffector.moveToCommand(DiffectorConstants.Presets.climbPosition)
         )
         .withName("PrepareClimb")
-      );  
+      );
 
     /* Game piece scoring and intake positions */
     copilot.y()

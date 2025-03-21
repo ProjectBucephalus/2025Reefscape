@@ -20,7 +20,7 @@ public class DiffectorGeometry
   public static final double algaeClawElevation = 0.75;
   public static final double reefSafeElevation = 1; // TODO
   public static final double algaeSafeElevation = 1.3;
-  public static final double climberClearanceThreshold = 0.8; // TODO
+  public static final double climberClearanceThreshold = 0.7; // TODO
   
   /** Arm rotation check tollerance, degrees */
   public static final double angleTolerance = 2;

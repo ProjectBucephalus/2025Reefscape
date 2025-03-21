@@ -5,6 +5,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -30,7 +31,8 @@ public class Climber extends SubsystemBase
     ACTIVE,
     STOW,
     MANUAL,
-    CLIMB
+    CLIMB,
+    HOLD
   };
 
   public Climber() 
@@ -106,10 +108,6 @@ public class Climber extends SubsystemBase
           m_Climber.setControl(motionMagic.withPosition(ClimberConstants.prepareWinchPos));
           SD.CLIMBER_TARGET.put(ClimberConstants.prepareWinchPos);
         }
-        else
-        {
-          m_Climber.setControl(motionMagic.withPosition(m_Climber.getPosition().getValueAsDouble()));
-        }
         break;
 
       case CLIMB:
@@ -126,19 +124,21 @@ public class Climber extends SubsystemBase
           m_Climber.setControl(motionMagic.withPosition(adjustedClimberPos));
           SD.CLIMBER_TARGET.put(adjustedClimberPos);
         }
-        else
-        {
-          m_Climber.setControl(motionMagic.withPosition(m_Climber.getPosition().getValueAsDouble()));
-        }
-      
         break;
 
       case MANUAL:
         if (speed != 0)
           {m_Climber.set(speed * Control.manualClimberScale);}
         else
-          {m_Climber.setControl(motionMagic.withPosition(m_Climber.getPosition().getValueAsDouble()));}
+        {
+          m_Climber.setControl(motionMagic.withPosition(m_Climber.getPosition().getValueAsDouble()));
+          status = Status.HOLD;
+        }
+        break;
+      
+      case HOLD:
         break;
     }
+    SmartDashboard.putString("Climber State", status.name());
   }
 }

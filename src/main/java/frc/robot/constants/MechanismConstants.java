@@ -13,12 +13,10 @@ public class MechanismConstants
     public static final double winchPlanetaryRatio = 75;
     public static final double winchGearIn   = 20;
     public static final double winchGearOut  = 60;
-    public static final double winchChainIn  = 12;
-    public static final double winchChainOut = 24;
-    public static final double winchGearRatio = ((winchGearOut / winchGearIn) * (winchChainOut / winchChainIn) * winchPlanetaryRatio);
-    public static final double winchDefaultCruise = 1;
-    public static final double winchClimbCruise = 0.5;
-    public static final double winchMotionMagicAccel  = 1;
+    public static final double winchGearRatio = ((winchGearOut / winchGearIn) * winchPlanetaryRatio);
+    public static final double winchDefaultCruise = 100;
+    public static final double winchClimbCruise = 10;
+    public static final double winchMotionMagicAccel  = 10;
 
     public static final TalonFXConfiguration climberMotorConfig = new TalonFXConfiguration();
     static
@@ -26,11 +24,11 @@ public class MechanismConstants
       climberMotorConfig.Feedback.SensorToMechanismRatio = winchGearRatio;
       climberMotorConfig.MotionMagic.MotionMagicCruiseVelocity = winchDefaultCruise;
       climberMotorConfig.MotionMagic.MotionMagicAcceleration = winchMotionMagicAccel;
-      climberMotorConfig.Slot0.kP = 150;
+      climberMotorConfig.Slot0.kP = 100;
       climberMotorConfig.Slot0.kI = 0;
       climberMotorConfig.Slot0.kD = 0;
       climberMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-      climberMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+      climberMotorConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     };
   }
   
@@ -38,7 +36,7 @@ public class MechanismConstants
   {    
     public static final double motorStallCurrent = 100; // TODO: Tune this to the point that it will reliably prevent stalls
 
-    private static final double diffectorGearTeethIn = 8;
+    private static final double diffectorGearTeethIn  = 8;
     private static final double diffectorGearTeethOut = 60;
     private static final double diffectorSprocketTeethIn  = 18;
     private static final double diffectorSprocketTeethOut = 72;

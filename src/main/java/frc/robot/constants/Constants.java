@@ -24,8 +24,8 @@ public final class Constants
 {
   public static final class RumblerConstants 
   {
-    public static final double driverDefault = 0.7;
-    public static final double copilotDefault = 0.7;
+    public static final double driverDefault = 0.1;
+    public static final double copilotDefault = 0.1;
   }
 
   public static final class Control
@@ -48,7 +48,7 @@ public final class Constants
     public static final double manualDiffectorRotationScalar = 2;
     /** Scalar for braking effect of diffector arm being higher than 1m */
     public static final double armBrakeRate = 1.5;
-    public static final double manualClimberScale    = 0.5;
+    public static final double manualClimberScale = -1;
   }
 
   public static final class Vision
@@ -210,8 +210,8 @@ public final class Constants
     public static class Presets
     {
       public static final Translation2d startPosition           = new Translation2d(0.616,  0);
-      public static final Translation2d climbSafePosition       = new Translation2d(0.70,  270); // TODO
-      public static final Translation2d climbPosition           = new Translation2d(0.425, 270);
+      public static final Translation2d climbSafePosition       = new Translation2d(0.80,  90); // TODO
+      public static final Translation2d climbPosition           = new Translation2d(0.425, 90);
  
       public static final Translation2d netPosition             = new Translation2d(DiffectorGeometry.maxZ, 160);
       public static final Translation2d algae3PortPosition      = new Translation2d(1.08, 113);
@@ -313,14 +313,14 @@ public final class Constants
 
   public static final class ClimberConstants
   {
-    public static final double stowWinchPos    = Units.degreesToRotations(-150); // TODO
-    public static final double safeWinchPos    = Units.degreesToRotations(0);
-    public static final double prepareWinchPos = Units.degreesToRotations(90);
-    public static final double climbWinchPos   = Units.degreesToRotations(-90);
+    public static final double stowWinchPos    = 0.0;
+    public static final double safeWinchPos    = 4.5;
+    public static final double prepareWinchPos = 6.2; // TODO
+    public static final double climbWinchPos   = 2.5; // TODO
     /** The furthest into the robot the climber can attempt to go whilst balancing */
-    public static final double climbActiveInnerLimit = Units.degreesToRotations(-100); // TODO
+    public static final double climbActiveInnerLimit = 1.75; // TODO
     /** The furthest out of the robot the climber can attempt to go whilst balancing */
-    public static final double climbActiveOuterLimit = Units.degreesToRotations(-70); // TODO
+    public static final double climbActiveOuterLimit = 3.0; // TODO
   }
 
   public static final class LEDStrip
