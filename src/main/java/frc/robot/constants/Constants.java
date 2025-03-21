@@ -101,7 +101,7 @@ public final class Constants
     /* Rotation Control PID Values */
     public static final double rotationKP = 6;
     public static final double rotationKI = 0;
-    public static final double rotationKD = 0.1;
+    public static final double rotationKD = 0.15;
 
     /* Swerve Limit Values */
     /** Meters per Second */
