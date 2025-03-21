@@ -182,7 +182,7 @@ public class Diffector extends SubsystemBase
    */
   public double getMeasuredAngle()
   { // Encoder outputs is geared 1:1 to the arm
-    return Units.rotationsToDegrees(io_Rotation.getPosition().getValueAsDouble());
+    return Units.rotationsToDegrees(-io_Rotation.getPosition().getValueAsDouble());
   }
 
   /**
