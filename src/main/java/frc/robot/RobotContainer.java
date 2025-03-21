@@ -598,7 +598,6 @@ public class RobotContainer
     io_Lights.addLayer(haloPortLayer);
     io_Lights.addLayer(haloStbdLayer);
     io_Lights.addLayer(allLEDsLayer);
-stbdStatusLayer.setStatus(6, true);
 
     Triggers.bargeLEDs.onTrue(Commands.runOnce(
     () -> {
