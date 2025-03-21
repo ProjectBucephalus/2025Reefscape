@@ -36,7 +36,7 @@ public class MechanismConstants
   
   public static class DiffectorConfigs
   {    
-    public static final double motorStallCurrent = 100; // TODO: Tune this to the point that it will reliably prevent stalls
+    public static final double motorStallCurrent = 160; // TODO: Tune this to the point that it will reliably prevent stalls
 
     private static final double diffectorGearTeethIn = 8;
     private static final double diffectorGearTeethOut = 60;
@@ -62,11 +62,11 @@ public class MechanismConstants
     /** Desired cruise speed of Motor when holding Algae, RPS */
     public static final double diffectorAlgaeCruiseMotor = 75;
     /** Desired acceleration of Motor for Elevation, RPS^2 */
-    public static final double diffectorElevationAccelerationMotor = 90;
+    public static final double diffectorElevationAccelerationMotor = 250;
     /** Desired acceleration of Motor for Rotation, RPS^2 */
-    public static final double diffectorRotationAccelerationMotor = 70;
+    public static final double diffectorRotationAccelerationMotor = 90;
     /** Desired acceleration of Motor for Rotation when holding Algae, RPS^2 */
-    public static final double diffectorAlgaeRotationAccelerationMotor = 35;
+    public static final double diffectorAlgaeRotationAccelerationMotor = 45;
     
     /** Desired cruise speed of Mechanism, RPS */
     public static final double diffectorCruise = diffectorCruiseMotor / gearboxRatio;
@@ -90,7 +90,7 @@ public class MechanismConstants
       /* Diffector Motor Config (Default) */
       motorConfig.Slot0.kG = 0.1755;
       motorConfig.Slot0.kS = 0.1755;
-      motorConfig.Slot0.kV = 0.875;
+      motorConfig.Slot0.kV = 0.865;
       motorConfig.Slot0.kP = 390;
       motorConfig.Slot0.kI = 0.0;
       motorConfig.Slot0.kD = 0.225;
