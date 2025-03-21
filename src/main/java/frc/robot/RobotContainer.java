@@ -468,7 +468,7 @@ public class RobotContainer
         .withName("CoralStation"))
       );
 
-    driverRightRumbleTrigger.and(() -> !coral)
+    Triggers.driverRightRumbleTrigger.and(() -> !coral)
       .onTrue(s_Coral.setStatusCommand(Status.INTAKE))
       .onFalse(s_Coral.setStatusCommand(Status.DEFAULT));
   }
