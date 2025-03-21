@@ -44,8 +44,8 @@ public class Diffector extends SubsystemBase
   private final MotionMagicVoltage motionMagicRequester;
   private final double rotationRatio;
   private final double travelRatio;
-  private final TalonFXConfiguration motorConfigUA = DiffectorConfigs.diffectorMotorConfig;
-  private final TalonFXConfiguration motorConfigDA = motorConfigUA;
+  private final TalonFXConfiguration motorConfigUA = DiffectorConfigs.getMotorConfigs();
+  private final TalonFXConfiguration motorConfigDA = DiffectorConfigs.getMotorConfigs();
   private final double stowThreshold = DiffectorGeometry.angleTolerance;
   
   /* Name is effect of motor when running anticlockwise/positive (e.g. elevator Up, arm Anticlockwise) */
@@ -84,9 +84,9 @@ public class Diffector extends SubsystemBase
     manualControl = false;
     arm = new ArmCalculator();
     
-    motorConfigDA.Slot0.kG = -motorConfigUA.Slot0.kG;
-    motorConfigDA.Slot1.kG = -motorConfigUA.Slot1.kG;
-    motorConfigDA.Slot2.kG = -motorConfigUA.Slot2.kG;
+    motorConfigDA.Slot0.kG *= -1;
+    motorConfigDA.Slot1.kG *= -1;
+    motorConfigDA.Slot2.kG *= -1;
 
     rotationRatio = DiffectorConfigs.rotationRatio;
     travelRatio = DiffectorConfigs.travelRatio;
@@ -153,7 +153,7 @@ public class Diffector extends SubsystemBase
     (
       (
         elevation < arm.checkPosition(armPosition) - DiffectorGeometry.elevationTolerance || 
-        elevation > DiffectorGeometry.maxZ + projectionElevation
+        elevation > DiffectorGeometry.maxZ + (projectionElevation / 2)
       ) 
       && !manualControl
     )

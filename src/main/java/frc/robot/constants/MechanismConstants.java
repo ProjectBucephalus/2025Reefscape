@@ -36,7 +36,7 @@ public class MechanismConstants
   
   public static class DiffectorConfigs
   {    
-    public static final double motorStallCurrent = 80; // TODO: Tune this to the point that it will reliably prevent stalls
+    public static final double motorStallCurrent = 100; // TODO: Tune this to the point that it will reliably prevent stalls
 
     private static final double diffectorGearTeethIn = 8;
     private static final double diffectorGearTeethOut = 60;
@@ -62,7 +62,7 @@ public class MechanismConstants
     /** Desired cruise speed of Motor when holding Algae, RPS */
     public static final double diffectorAlgaeCruiseMotor = 75;
     /** Desired acceleration of Motor for Elevation, RPS^2 */
-    public static final double diffectorElevationAccelerationMotor = 70;
+    public static final double diffectorElevationAccelerationMotor = 90;
     /** Desired acceleration of Motor for Rotation, RPS^2 */
     public static final double diffectorRotationAccelerationMotor = 70;
     /** Desired acceleration of Motor for Rotation when holding Algae, RPS^2 */
@@ -79,32 +79,27 @@ public class MechanismConstants
     /** Desired acceleration of Mechanism for Rotation when holding Algae, RPS^2 */
     public static final double diffectorAlgaeRotationAcceleration = diffectorAlgaeRotationAccelerationMotor / gearboxRatio;
     
-    public static final TalonFXConfiguration diffectorMotorConfig = new TalonFXConfiguration();
-    static
+    public static final TalonFXConfiguration getMotorConfigs()
     {
+      TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+
       /* Diffector Motor Gneral Config */
-      diffectorMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-      diffectorMotorConfig.Feedback.SensorToMechanismRatio = gearboxRatio;
+      motorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+      motorConfig.Feedback.SensorToMechanismRatio = gearboxRatio;
 
       /* Diffector Motor Config (Default) */
-      diffectorMotorConfig.Slot0.kG = 0.225;
-      diffectorMotorConfig.Slot0.kS = 0.05;
-      diffectorMotorConfig.Slot0.kV = 0.58;
-      diffectorMotorConfig.Slot0.kP = 100.0;
-      diffectorMotorConfig.Slot0.kI = 0.0;
-      diffectorMotorConfig.Slot0.kD = 0.0;
-      
-      /* Diffector Motor Config (Virtual Spring) */
-      diffectorMotorConfig.Slot1.kG = 0.0;
-      diffectorMotorConfig.Slot1.kS = 0.0;
-      diffectorMotorConfig.Slot1.kV = 0.0;
-      diffectorMotorConfig.Slot1.kP = 3.0;
-      diffectorMotorConfig.Slot1.kI = 0.0;
-      diffectorMotorConfig.Slot1.kD = 0.0;
+      motorConfig.Slot0.kG = 0.1755;
+      motorConfig.Slot0.kS = 0.1755;
+      motorConfig.Slot0.kV = 0.875;
+      motorConfig.Slot0.kP = 390;
+      motorConfig.Slot0.kI = 0.0;
+      motorConfig.Slot0.kD = 0.225;
 
       /* Diffector MotionMagic Default Config */
-      diffectorMotorConfig.MotionMagic.MotionMagicCruiseVelocity = diffectorCruise;
-      diffectorMotorConfig.MotionMagic.MotionMagicAcceleration = diffectorRotationAcceleration;
-    };
+      motorConfig.MotionMagic.MotionMagicCruiseVelocity = diffectorCruise;
+      motorConfig.MotionMagic.MotionMagicAcceleration = diffectorRotationAcceleration;
+
+      return motorConfig;
+    }
   }
 }

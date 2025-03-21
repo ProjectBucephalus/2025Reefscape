@@ -24,8 +24,8 @@ public final class Constants
 {
   public static final class RumblerConstants 
   {
-    public static final double driverDefault = 0;
-    public static final double copilotDefault = 0;
+    public static final double driverDefault = 0.7;
+    public static final double copilotDefault = 0.7;
   }
 
   public static final class Control
@@ -210,7 +210,7 @@ public final class Constants
     public static class Presets
     {
       public static final Translation2d startPosition           = new Translation2d(0.616,  0);
-      public static final Translation2d climbSafePosition       = new Translation2d(0.70,  90);
+      public static final Translation2d climbSafePosition       = new Translation2d(0.70,  270); // TODO
       public static final Translation2d climbPosition           = new Translation2d(0.425, 270);
  
       public static final Translation2d netPosition             = new Translation2d(DiffectorGeometry.maxZ, 160);
@@ -313,10 +313,10 @@ public final class Constants
 
   public static final class ClimberConstants
   {
-    public static final double stowWinchPos   = Units.degreesToRotations(-150); // TODO
-    public static final double safeWinchPos   = Units.degreesToRotations(0);
-    public static final double activeWinchPos = Units.degreesToRotations(90);
-    public static final double climbWinchPos  = Units.degreesToRotations(-90);
+    public static final double stowWinchPos    = Units.degreesToRotations(-150); // TODO
+    public static final double safeWinchPos    = Units.degreesToRotations(0);
+    public static final double prepareWinchPos = Units.degreesToRotations(90);
+    public static final double climbWinchPos   = Units.degreesToRotations(-90);
     /** The furthest into the robot the climber can attempt to go whilst balancing */
     public static final double climbActiveInnerLimit = Units.degreesToRotations(-100); // TODO
     /** The furthest out of the robot the climber can attempt to go whilst balancing */

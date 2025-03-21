@@ -72,7 +72,14 @@ public class Climber extends SubsystemBase
   }
 
   public boolean climbReady()
-    {return status == Status.ACTIVE;}
+  {
+    return 
+      status == Status.ACTIVE &&
+      m_Climber.getPosition().getValueAsDouble() >= ClimberConstants.prepareWinchPos;
+  }
+
+  public boolean armSafe()
+    {return m_Climber.getPosition().getValueAsDouble() >= ClimberConstants.safeWinchPos;}  
 
   public boolean manualOveride(double motorSpeed)
   {
@@ -96,8 +103,8 @@ public class Climber extends SubsystemBase
       case ACTIVE:
         if (RobotContainer.s_Diffector.climbSafe())
         {
-          m_Climber.setControl(motionMagic.withPosition(ClimberConstants.activeWinchPos));
-          SD.CLIMBER_TARGET.put(ClimberConstants.activeWinchPos);
+          m_Climber.setControl(motionMagic.withPosition(ClimberConstants.prepareWinchPos));
+          SD.CLIMBER_TARGET.put(ClimberConstants.prepareWinchPos);
         }
         else
         {

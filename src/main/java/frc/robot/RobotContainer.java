@@ -346,6 +346,7 @@ public class RobotContainer
     configureCopilotBindings();
     configureRumbleBindings();
     configureManualBindings();
+    configureTestBindings();
 
     s_Swerve.registerTelemetry(logger::telemeterize);
     initLED();
@@ -594,9 +595,11 @@ public class RobotContainer
         Commands.sequence
         (
           s_Diffector.moveAndWaitCommand(DiffectorConstants.Presets.climbSafePosition),
-          s_Climber.setStatusCommand(Climber.Status.ACTIVE)
+          s_Climber.setStatusCommand(Climber.Status.ACTIVE),
+          Commands.waitUntil(() -> s_Climber.armSafe()),
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.climbPosition)
         )
-        .withName("ActivateClimb")
+        .withName("PrepareClimb")
       );  
 
     /* Game piece scoring and intake positions */
@@ -746,12 +749,30 @@ public class RobotContainer
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
-    driverLeftRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Penalty Zone")));
-    driverRightRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Intaked Successfully")));
+    driverLeftRumbleTrigger
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Penalty Zone")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_RIGHT, "Penalty Zone")));
+    driverRightRumbleTrigger
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Intaked Successfully")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_LEFT, "Intaked Successfully")));
 
     /* Copilot rumble bindings */
-    copilotLeftRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_LEFT, "Intake Full")));
-    copliotRightRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_RIGHT, "Climb Ready")));
+    copilotLeftRumbleTrigger
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_LEFT, "Intake Full")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.COPILOT_LEFT, "Intake Full")));
+    copliotRightRumbleTrigger
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_RIGHT, "Climb Ready")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.COPILOT_RIGHT, "Climb Ready")));
+  }
+
+  private void configureTestBindings()
+  {
+    testing.y().onTrue(s_Diffector.moveToCommand(new Translation2d(1.5, 90)));
+    testing.a().onTrue(s_Diffector.moveToCommand(new Translation2d(0.5, 90)));
+    testing.povUp().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 0)));
+    testing.povRight().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 90)));
+    testing.povDown().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 180)));
+    testing.povLeft().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 270)));
   }
 
   private void initLED()
