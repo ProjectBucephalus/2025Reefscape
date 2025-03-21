@@ -195,12 +195,9 @@ public class Triggers
     () ->
     {
       Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var algaeIntakePositions = List.of(Presets.algaeIntakePortPosition, Presets.algaeIntakeStbdPosition).stream();
-      var processorPositions = List.of(Presets.processorPositionPort, Presets.processorPositionStbd).stream();
+      var algaeLowPositions = List.of(Presets.algaeIntakePortPosition, Presets.algaeIntakeStbdPosition, Presets.processorPositionPort, Presets.processorPositionStbd).stream();
       return
-      algaeIntakePositions.anyMatch(position -> relativeTarget.equals(position))
-      ||
-      processorPositions.anyMatch(position -> relativeTarget.equals(position));
+      algaeLowPositions.anyMatch(position -> relativeTarget.equals(position));
     }
   );
   public static final Trigger ClimbLEDs = new Trigger
@@ -218,24 +215,18 @@ public class Triggers
     () ->
     {
       Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coralStowPosition = List.of(Presets.coralStowPosition).stream();
-      var algaeStowPosition = List.of(Presets.algaeStowPosition).stream();
+      var stowPositions = List.of(Presets.coralStowPosition, Presets.algaeStowPosition).stream();
       return
-      coralStowPosition.anyMatch(position -> relativeTarget.equals(position))
-      ||
-      algaeStowPosition.anyMatch(position -> relativeTarget.equals(position));
+      stowPositions.anyMatch(position -> relativeTarget.equals(position));
     }
   );
   public static final Trigger manualControlLEDs = new Trigger(
     () ->
     {
       return
-      RobotContainer.copilot.axisGreaterThan(5,0.8).getAsBoolean()
-      ||
-      RobotContainer.copilot.axisGreaterThan(5,-0.8).getAsBoolean()
-      ||
-      RobotContainer.copilot.axisGreaterThan(6,-0.8).getAsBoolean()
-      ||
+      RobotContainer.copilot.axisGreaterThan(5,0.8).getAsBoolean() ||
+      RobotContainer.copilot.axisGreaterThan(5,-0.8).getAsBoolean() ||
+      RobotContainer.copilot.axisGreaterThan(6,-0.8).getAsBoolean() ||
       RobotContainer.copilot.axisGreaterThan(6,0.8).getAsBoolean();
     }
   );
@@ -245,7 +236,7 @@ public class Triggers
     () ->
     {
       return
-      SD.DIFF_ESTOP.get() == true;
+      SD.DIFF_ESTOP.get();
     }
   );
   public static final Trigger manualDriveLEDs = new Trigger
@@ -260,12 +251,9 @@ public class Triggers
     () ->
     {
       return
-      cageDriveTrigger.getAsBoolean()
-      ||
-      scoreDriveTrigger.getAsBoolean()
-      ||
-      stationDriveTrigger.getAsBoolean()
-      ||
+      cageDriveTrigger.getAsBoolean() ||
+      scoreDriveTrigger.getAsBoolean() ||
+      stationDriveTrigger.getAsBoolean() ||
       processorDriveTrigger.getAsBoolean();
     }
   );

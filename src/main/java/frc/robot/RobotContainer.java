@@ -597,234 +597,234 @@ public class RobotContainer
     io_Lights.addLayer(allLEDsLayer);
 stbdStatusLayer.setStatus(6, true);
 
-    Triggers.bargeLEDs.onTrue(new InstantCommand(
+    Triggers.bargeLEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(5, true);
     portStatusLayer.setColor(Color.kBlack,Color.kTeal);
     stbdStatusLayer.setStatus(5, true);
     stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    })).onFalse(new InstantCommand(
+    })).onFalse(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(5, false);
     portStatusLayer.setColor(Color.kBlack,Color.kTeal);
     stbdStatusLayer.setStatus(5, false);
     stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
     }));
-    Triggers.Lvl4LEDs.onTrue(new InstantCommand(
+    Triggers.Lvl4LEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(5, true);
     portStatusLayer.setColor(Color.kBlack,Color.kWhite);
     stbdStatusLayer.setStatus(5, true);
     stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    })).onFalse(new InstantCommand(
+    })).onFalse(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(5, false);
     portStatusLayer.setColor(Color.kBlack,Color.kWhite);
     stbdStatusLayer.setStatus(5, false);
     stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
     }));
-    Triggers.lvl3AlgaeLEDs.onTrue(new InstantCommand(
+    Triggers.lvl3AlgaeLEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(4, true);
     portStatusLayer.setColor(Color.kBlack,Color.kTeal);
     stbdStatusLayer.setStatus(4, true);
     stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    })).onFalse(new InstantCommand(
+    })).onFalse(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(4, false);
     portStatusLayer.setColor(Color.kBlack,Color.kTeal);
     stbdStatusLayer.setStatus(4, false);
     stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
     }));
-    Triggers.lvl3CoralLEDs.onTrue(new InstantCommand(
+    Triggers.lvl3CoralLEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(4, true);
     portStatusLayer.setColor(Color.kBlack,Color.kWhite);
     stbdStatusLayer.setStatus(4, true);
     stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    })).onFalse(new InstantCommand(
+    })).onFalse(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(4, false);
     portStatusLayer.setColor(Color.kBlack,Color.kWhite);
     stbdStatusLayer.setStatus(4, false);
     stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
     }));
-    Triggers.coralStationClawLEDs.onTrue(new InstantCommand(
+    Triggers.coralStationClawLEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(3, true);
     portStatusLayer.setColor(Color.kBlack,Color.kTeal);
     stbdStatusLayer.setStatus(3, true);
     stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    })).onFalse(new InstantCommand(
+    })).onFalse(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(3, false);
     portStatusLayer.setColor(Color.kBlack,Color.kTeal);
     stbdStatusLayer.setStatus(3, false);
     stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
     }));
-    Triggers.coralStationIntakeLEDs.onTrue(new InstantCommand(
+    Triggers.coralStationIntakeLEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(3, true);
     portStatusLayer.setColor(Color.kBlack,Color.kWhite);
     stbdStatusLayer.setStatus(3, true);
     stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    })).onFalse(new InstantCommand(
+    })).onFalse(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(3, false);
     portStatusLayer.setColor(Color.kBlack,Color.kWhite);
     stbdStatusLayer.setStatus(3, false);
     stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
     }));
-    Triggers.lvl2AlgaeLEDs.onTrue(new InstantCommand(
+    Triggers.lvl2AlgaeLEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(2, true);
     portStatusLayer.setColor(Color.kBlack,Color.kTeal);
     stbdStatusLayer.setStatus(2, true);
     stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    })).onFalse(new InstantCommand(
+    })).onFalse(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(2, false);
     portStatusLayer.setColor(Color.kBlack,Color.kTeal);
     stbdStatusLayer.setStatus(2, false);
     stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
     }));
-    Triggers.lvl2CoralLEDs.onTrue(new InstantCommand(
+    Triggers.lvl2CoralLEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(2, true);
     portStatusLayer.setColor(Color.kBlack,Color.kWhite);
     stbdStatusLayer.setStatus(2, true);
     stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    })).onFalse(new InstantCommand(
+    })).onFalse(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(2, false);
     portStatusLayer.setColor(Color.kBlack,Color.kWhite);
     stbdStatusLayer.setStatus(2, false);
     stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
     }));
-    Triggers.lvl1ClawLEDs.onTrue(new InstantCommand(
+    Triggers.lvl1ClawLEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(1, true);
     portStatusLayer.setColor(Color.kBlack,Color.kTeal);
     stbdStatusLayer.setStatus(1, true);
     stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    })).onFalse(new InstantCommand(
+    })).onFalse(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(1, false);
     portStatusLayer.setColor(Color.kBlack,Color.kTeal);
     stbdStatusLayer.setStatus(1, false);
     stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
     }));
-    Triggers.lvl1CoralLEDs.onTrue(new InstantCommand(
+    Triggers.lvl1CoralLEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(1, true);
     portStatusLayer.setColor(Color.kBlack,Color.kWhite);
     stbdStatusLayer.setStatus(1, true);
     stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    })).onFalse(new InstantCommand(
+    })).onFalse(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(1, false);
     portStatusLayer.setColor(Color.kBlack,Color.kWhite);
     stbdStatusLayer.setStatus(1, false);
     stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
     }));
-    Triggers.groundIntakeOrProcessorLEDs.onTrue(new InstantCommand(
+    Triggers.groundIntakeOrProcessorLEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(0, true);
     portStatusLayer.setColor(Color.kBlack,Color.kTeal);
     stbdStatusLayer.setStatus(0, true);
     stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    })).onFalse(new InstantCommand(
+    })).onFalse(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(0, false);
     portStatusLayer.setColor(Color.kBlack,Color.kTeal);
     stbdStatusLayer.setStatus(0, false);
     stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
     }));
-    Triggers.ClimbLEDs.onTrue(new InstantCommand(
+    Triggers.ClimbLEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(0, true);
     portStatusLayer.setColor(Color.kBlack,Color.kTeal);
     stbdStatusLayer.setStatus(0, true);
     stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    })).onFalse(new InstantCommand(
+    })).onFalse(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(0, false);
     portStatusLayer.setColor(Color.kBlack,Color.kTeal);
     stbdStatusLayer.setStatus(0, false);
     stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
     }));
-    Triggers.stowedLEDs.onTrue(new InstantCommand(
+    Triggers.stowedLEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(1, true);
     stbdStatusLayer.setStatus(1, true);
     portStatusLayer.setStatus(3, true);
     stbdStatusLayer.setStatus(3, true);
-    })).onFalse(new InstantCommand(
+    })).onFalse(Commands.runOnce(
     () -> {
     portStatusLayer.setStatus(1, false);
     stbdStatusLayer.setStatus(1, false);
     portStatusLayer.setStatus(3, false);
     stbdStatusLayer.setStatus(3, false);
     }));
-    Triggers.manualControlLEDs.onTrue(new InstantCommand(
+    Triggers.manualControlLEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setColor(Color.kBlack,Color.kPurple);
     stbdStatusLayer.setColor(Color.kBlack,Color.kPurple);
     }));
 
 
-    Triggers.eStopLEDs.onTrue(new InstantCommand(
+    Triggers.eStopLEDs.onTrue(Commands.runOnce(
     () -> {
     portStatusLayer.setType(LayerType.ALTERNATING);
     stbdStatusLayer.setType(LayerType.ALTERNATING);
-    })).onFalse(new InstantCommand(
+    })).onFalse(Commands.runOnce(
     () -> {
     portStatusLayer.setType(LayerType.STATUS);
     stbdStatusLayer.setType(LayerType.STATUS);
     }));
-    Triggers.manualDriveLEDs.onTrue(new InstantCommand(
+    Triggers.manualDriveLEDs.onTrue(Commands.runOnce(
     () -> {
     haloPortLayer.setType(LayerType.SOLID);
     haloPortLayer.setColor(Color.kRed,Color.kBlack);
     haloStbdLayer.setType(LayerType.SOLID);
     haloStbdLayer.setColor(Color.kRed,Color.kBlack);
     }));
-    Triggers.headingLockLEDs.onTrue(new InstantCommand(
+    Triggers.headingLockLEDs.onTrue(Commands.runOnce(
     () -> {
     haloPortLayer.setType(LayerType.SOLID);
     haloPortLayer.setColor(Color.kOrange,Color.kBlack);
     haloStbdLayer.setType(LayerType.SOLID);
     haloStbdLayer.setColor(Color.kOrange,Color.kBlack);
     }));
-    // Triggers.pathfindingLEDs.onTrue(new InstantCommand(
+    // Triggers.pathfindingLEDs.onTrue(Commands.runOnce(
     // () -> {
     // haloPortLayer.setType(LayerType.SCROLLER);
     // haloPortLayer.setColor(Color.kYellow,Color.kBlack);
     // haloStbdLayer.setType(LayerType.SCROLLER);
     // haloStbdLayer.setColor(Color.kYellow,Color.kBlack);
     // }));
-    // Triggers.followPathLEDs.onTrue(new InstantCommand(
+    // Triggers.followPathLEDs.onTrue(Commands.runOnce(
     // () -> {
     // haloPortLayer.setType(LayerType.ALTERNATING);
     // haloPortLayer.setColor(Color.kYellow,Color.kBlack);
     // haloStbdLayer.setType(LayerType.ALTERNATING);
     // haloStbdLayer.setColor(Color.kYellow,Color.kBlack);
     // }));
-    // Triggers.robotAtTargetLEDs.onTrue(new InstantCommand(
+    // Triggers.robotAtTargetLEDs.onTrue(Commands.runOnce(
     // () -> {
     // haloPortLayer.setType(LayerType.SOLID);
     // haloPortLayer.setColor(Color.kYellow,Color.kBlack);
     // haloStbdLayer.setType(LayerType.SOLID);
     // haloStbdLayer.setColor(Color.kYellow,Color.kBlack);
     // }));
-    Triggers.robotArmAndClimberAtTargetLEDs.onTrue(new InstantCommand(
+    Triggers.robotArmAndClimberAtTargetLEDs.onTrue(Commands.runOnce(
     () -> {
     haloPortLayer.setType(LayerType.SOLID);
     haloPortLayer.setColor(Color.kGreen,Color.kBlack);
     haloStbdLayer.setType(LayerType.SOLID);
     haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
     }));
-    Triggers.atCoralStationLEDs.onTrue(new InstantCommand(
+    Triggers.atCoralStationLEDs.onTrue(Commands.runOnce(
     () -> {
     haloPortLayer.setType(LayerType.ALTERNATING);
     haloPortLayer.setColor(Color.kGreen,Color.kBlack);
