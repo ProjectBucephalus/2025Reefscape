@@ -78,6 +78,17 @@ public class FieldUtils
     return nearestBargePoint;
   }
 
+  public static GeoFenceObject getNearestCoralStation(Translation2d robotPos)
+  {
+    boolean northHalf = robotPos.getX() >= FieldUtils.fieldWidth / 2;
+
+    return
+    isRedAlliance() ?
+    northHalf ? GeoFencing.cornerNRed : GeoFencing.cornerSRed
+    :
+    northHalf ? GeoFencing.cornerNBlue : GeoFencing.cornerSBlue;
+  }
+
   public static PathPlannerPath loadPath(String pathName) 
   {
     try {
