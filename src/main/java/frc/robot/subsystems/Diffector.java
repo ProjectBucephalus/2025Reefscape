@@ -9,9 +9,11 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.DifferentialMotionMagicVoltage;
+import com.ctre.phoenix6.controls.DifferentialVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.mechanisms.SimpleDifferentialMechanism;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -42,7 +44,9 @@ public class Diffector extends SubsystemBase
   private double  manualElevation;
   private double  manualRotation;
   
-  private final MotionMagicVoltage motionMagicRequester;
+  private final SimpleDifferentialMechanism diffMechanism;
+  private final DifferentialMotionMagicVoltage motionMagicRequester;
+  private final DifferentialVoltage manualRequester;
   private final double rotationRatio;
   private final double travelRatio;
   private final TalonFXConfiguration motorConfigUA = DiffectorConfigs.getMotorConfigs();
@@ -92,13 +96,21 @@ public class Diffector extends SubsystemBase
     rotationRatio = DiffectorConfigs.rotationRatio;
     travelRatio = DiffectorConfigs.travelRatio;
 
+    motionMagicRequester = new DifferentialMotionMagicVoltage(0, 0);
+    manualRequester = new DifferentialVoltage(0, 0);
+
     m_UA = new TalonFX(IDConstants.uaMotorID);
     m_DA = new TalonFX(IDConstants.daMotorID);
     io_Rotation = new CANcoder(IDConstants.armCANcoderID);
     io_Elevation = new AnalogPotentiometer(IDConstants.armPotID);
     
+    diffMechanism = new SimpleDifferentialMechanism(m_UA, m_DA, true);
     m_UA.getConfigurator().apply(motorConfigUA);
     m_DA.getConfigurator().apply(motorConfigDA);
+    motionMagicRequester.TargetSlot = 0;
+    motionMagicRequester.DifferentialSlot = 1;
+    manualRequester.DifferentialSlot = 1;
+    diffMechanism.applyConfigs();
     
     elevation = Presets.startPosition.getX();
 
@@ -113,8 +125,6 @@ public class Diffector extends SubsystemBase
     relativeTarget  = targetPosition;
     
     motorTargets = calculateMotorTargets(targetPosition);
-
-    motionMagicRequester = new MotionMagicVoltage(0);
 
     plannedPathPoints.clear();
     plannedPathPoints.add(targetPosition);
@@ -531,8 +541,8 @@ public class Diffector extends SubsystemBase
     
     if (eStop)
     {
-      m_UA.set(0);
-      m_DA.set(0);
+      m_UA.stopMotor();
+      m_DA.stopMotor();
       eStop = SD.DIFF_ESTOP.get();
     }
     else
@@ -555,8 +565,12 @@ public class Diffector extends SubsystemBase
       {
         calculatePath();
 
-        m_UA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[0])));//.withSlot(getSlot()));
-        m_DA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])));//.withSlot(getSlot()));
+        diffMechanism.setControl
+        (
+          motionMagicRequester
+            .withTargetPosition(Units.degreesToRotations((motorTargets[0] + motorTargets[1]) / 2))
+            .withDifferentialPosition(Units.degreesToRotations(motorTargets[0] - motorTargets[1]))
+        );
       }
     }
     SmartDashboard.putNumber("ua current", Math.abs(m_UA.getTorqueCurrent().getValueAsDouble()));

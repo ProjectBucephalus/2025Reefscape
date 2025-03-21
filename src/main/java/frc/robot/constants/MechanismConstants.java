@@ -58,15 +58,15 @@ public class MechanismConstants
     public static final double rotationRatio = (sprocketRatio);
 
     /** Desired cruise speed of Motor, RPS */
-    public static final double diffectorCruiseMotor = 90;
+    public static final double diffectorCruiseMotor = 30;
     /** Desired cruise speed of Motor when holding Algae, RPS */
-    public static final double diffectorAlgaeCruiseMotor = 75;
+    public static final double diffectorAlgaeCruiseMotor = 10;
     /** Desired acceleration of Motor for Elevation, RPS^2 */
-    public static final double diffectorElevationAccelerationMotor = 250;
+    public static final double diffectorElevationAccelerationMotor = 10;
     /** Desired acceleration of Motor for Rotation, RPS^2 */
-    public static final double diffectorRotationAccelerationMotor = 90;
+    public static final double diffectorRotationAccelerationMotor = 10;
     /** Desired acceleration of Motor for Rotation when holding Algae, RPS^2 */
-    public static final double diffectorAlgaeRotationAccelerationMotor = 45;
+    public static final double diffectorAlgaeRotationAccelerationMotor = 10;
     
     /** Desired cruise speed of Mechanism, RPS */
     public static final double diffectorCruise = diffectorCruiseMotor / gearboxRatio;
@@ -91,9 +91,17 @@ public class MechanismConstants
       motorConfig.Slot0.kG = 0.1755;
       motorConfig.Slot0.kS = 0.1755;
       motorConfig.Slot0.kV = 0.865;
-      motorConfig.Slot0.kP = 390;
+      motorConfig.Slot0.kP = 30; //390
       motorConfig.Slot0.kI = 0.0;
-      motorConfig.Slot0.kD = 0.225;
+      motorConfig.Slot0.kD = 0.225; //0.225
+
+      /* Diffector Motor Config (Differential) */
+      motorConfig.Slot1.kG = 0.1755;
+      motorConfig.Slot1.kS = 0.1755;
+      motorConfig.Slot1.kV = 0.865;
+      motorConfig.Slot1.kP = 10;
+      motorConfig.Slot1.kI = 0.0;
+      motorConfig.Slot1.kD = 0.05;
 
       /* Diffector MotionMagic Default Config */
       motorConfig.MotionMagic.MotionMagicCruiseVelocity = diffectorCruise;
