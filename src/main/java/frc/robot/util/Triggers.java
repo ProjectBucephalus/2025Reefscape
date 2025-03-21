@@ -2,18 +2,14 @@ package frc.robot.util;
 
 import java.util.List;
 
-import javax.print.attribute.standard.RequestingUserName;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.HeadingStates;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.constants.FieldConstants;
 import frc.robot.util.FieldUtils.GeoFencing;
-import frc.robot.util.SD.BooleanKey;
 
 public class Triggers 
 {
@@ -42,40 +38,38 @@ public class Triggers
     < 
     (FieldUtils.GeoFencing.circumscribedReefZoneDiameter / 2) + 1
   );
-  public static final Trigger copilotLeftRumbleTrigger = new Trigger
+  public static final Trigger coralIntakeTrigger = new Trigger
   (
-    () -> 
+    () ->
     {
       Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
       var coralIntakePositions = List.of(Presets.coralIntakePortPosition, Presets.coralIntakeStbdPosition).stream();
       var clawIntakePositions = List.of(Presets.coralClawPortPosition, Presets.coralClawStbdPosition).stream();
-      var reefIntakePositions = List.of(Presets.algae2PortPosition, Presets.algae2StbdPosition, 
-                                        Presets.algae3PortPosition, Presets.algae3StbdPosition).stream();
       return 
       (coralIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && RobotContainer.coral) 
       || 
-      (clawIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && RobotContainer.algae)
-      ||
-      (reefIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && RobotContainer.algae);
+      (clawIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && RobotContainer.algae);
     }
   );
-  public static final Trigger driverRightRumbleTrigger = new Trigger
-  (
-    () -> 
-    {
-      boolean northHalf = RobotContainer.swerveState.Pose.getTranslation().getX() >= FieldUtils.fieldWidth / 2;
-      GeoFenceObject nearestCoralStation =
-      FieldUtils.isRedAlliance() ?
-      northHalf ? GeoFencing.cornerNRed : GeoFencing.cornerSRed
-      :
-      northHalf ? GeoFencing.cornerNBlue : GeoFencing.cornerSBlue;
-
-      return 
-      (RobotContainer.driver.rightBumper().getAsBoolean() && RobotContainer.algae)
-      ||
-      (copilotLeftRumbleTrigger.getAsBoolean() && nearestCoralStation.getDistance(RobotContainer.swerveState.Pose.getTranslation()) < FieldConstants.coralStationRange);
-    }
-  );
+  public static final Trigger copilotLeftRumbleTrigger = coralIntakeTrigger.or(() -> RobotContainer.copilot.leftTrigger().getAsBoolean() && RobotContainer.algae);
+  public static final Trigger driverRightRumbleTrigger = 
+    coralIntakeTrigger
+    .and
+    (
+      () -> 
+      {
+        Translation2d robotPos = RobotContainer.swerveState.Pose.getTranslation();
+        return FieldUtils.getNearestCoralStation(robotPos).getDistance(robotPos) < FieldConstants.coralStationRange;
+      }
+    )
+    .or
+    (
+      () ->
+      {
+        var groundIntakePositions = List.of(Presets.algaeIntakePortPosition, Presets.algaeIntakeStbdPosition).stream();
+        return groundIntakePositions.anyMatch(position -> RobotContainer.s_Diffector.getRelativeTarget().equals(position)) && RobotContainer.algae;
+      }
+    );
   public static final Trigger copliotRightRumbleTrigger = new Trigger
   (
     () -> 
