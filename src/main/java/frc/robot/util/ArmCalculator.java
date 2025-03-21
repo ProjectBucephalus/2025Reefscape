@@ -84,7 +84,7 @@ public class ArmCalculator
       {safeElevation = DiffectorGeometry.safeElevation;}
 
     // Certain positions put the arm lower than it would otherwise be allowed to go
-    if (Presets.lowDiffectorPositions.stream().anyMatch(position -> relativeTarget.equals(position)))
+    if (Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::equals))
     { // Forced safe path for unsafe targets
       pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), startPosition.getY()));
       pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), targetPosition.getY()));
@@ -94,7 +94,7 @@ public class ArmCalculator
       return pathOutput;
     }
 
-    if (Presets.highDiffectorPositions.stream().anyMatch(position -> relativeTarget.equals(position)))
+    if (Presets.highDiffectorPositions.stream().anyMatch(relativeTarget::equals))
     { // Forced safe path for barge
       pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), startPosition.getY()));
       pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), goShortest(180, targetPosition.getY())));

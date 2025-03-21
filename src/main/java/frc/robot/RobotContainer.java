@@ -364,7 +364,7 @@ public class RobotContainer
         (
           s_Diffector.moveAndWaitCommand(DiffectorConstants.Presets.climbSafePosition),
           s_Climber.setStatusCommand(Climber.Status.ACTIVE),
-          Commands.waitUntil(() -> s_Climber.armSafe()),
+          Commands.waitUntil(s_Climber::armSafe),
           s_Diffector.moveToCommand(DiffectorConstants.Presets.climbPosition)
         )
         .withName("PrepareClimb")
@@ -499,7 +499,7 @@ public class RobotContainer
           () -> s_Diffector.setManualDiffectorValues(0, 0)
         )
       );
-    copilot.rightStick().whileTrue(s_Diffector.run(() -> s_Diffector.unwind()));
+    copilot.rightStick().whileTrue(s_Diffector.run(s_Diffector::unwind));
 
     /* Coral outtake controls */
     copilot.povLeft()

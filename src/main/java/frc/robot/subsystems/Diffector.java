@@ -145,7 +145,7 @@ public class Diffector extends SubsystemBase
     angle = ((Units.rotationsToDegrees(m_UA.getPosition().getValueAsDouble()) + Units.rotationsToDegrees(m_DA.getPosition().getValueAsDouble())) * rotationRatio) / 2;
     armPosition = new Translation2d(elevation, angle);
     
-    if (Presets.lowDiffectorPositions.stream().anyMatch(position -> relativeTarget.equals(position)))
+    if (Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::equals))
     {
       if (elevation < targetElevation - DiffectorGeometry.elevationTolerance)
         {eStop = true;}
@@ -160,7 +160,7 @@ public class Diffector extends SubsystemBase
     )
     {eStop = true;}
 
-    if (atPosition() && Presets.lowDiffectorPositions.stream().anyMatch(position -> relativeTarget.equals(position)))
+    if (atPosition() && Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::equals))
     {
       calibrationCounter++;
       if (calibrationCounter == DiffectorConstants.calibrationDelay) 
@@ -414,7 +414,7 @@ public class Diffector extends SubsystemBase
 
   public Command moveAndWaitCommand(Translation2d targetPosition)
   {
-    return moveToCommand(targetPosition).andThen(Commands.waitUntil(() -> atPosition()));
+    return moveToCommand(targetPosition).andThen(Commands.waitUntil(this::atPosition));
   }
 
   public Command stationIntakePosCommand(Supplier<Translation2d> robotPos, BooleanSupplier algae)
@@ -488,7 +488,7 @@ public class Diffector extends SubsystemBase
 
   public Command coralScorePosCommandUndeferred(Supplier<Translation2d> robotPos, int level)
   {
-    return coralScorePosInstantCommand(robotPos, level).andThen(Commands.waitUntil(() -> atPosition()));
+    return coralScorePosInstantCommand(robotPos, level).andThen(Commands.waitUntil(this::atPosition));
   }
 
   public Command coralScorePosCommand(int level)

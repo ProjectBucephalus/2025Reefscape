@@ -450,7 +450,7 @@ public class LightLayer
     if (displayType == LayerType.FLAME)
     {
       display = LEDPattern.gradient(GradientType.kDiscontinuous, colorOn, colorOff);
-      display = display.mask(LEDPattern.progressMaskLayer(()-> Math.random()));
+      display = display.mask(LEDPattern.progressMaskLayer(Math::random));
       if (reversed) {display = display.reversed();}
       display.applyTo(tempBuff);
       currTime = Timer.getTimestamp();
