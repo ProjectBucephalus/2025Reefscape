@@ -112,7 +112,10 @@ public class LEDRenderer extends SubsystemBase
 
     // call each layers render() method to draw to the buffer
     for (LightLayer lightLayer : renderQueue) 
-     {lightLayer.render(lightBuffer);}
+    {
+      if (lightLayer.getPriority() >= 0)
+        {lightLayer.render(lightBuffer);}
+    }
 
     // transfer the layered buffer to the LED Driver
     lightStrip.setData(lightBuffer);
