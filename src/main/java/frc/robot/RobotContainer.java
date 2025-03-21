@@ -118,31 +118,34 @@ public class RobotContainer
       Translation2d relativeTarget = s_Diffector.getRelativeTarget();
       var coralIntakePositions = List.of(Presets.coralIntakePortPosition, Presets.coralIntakeStbdPosition).stream();
       var clawIntakePositions = List.of(Presets.coralClawPortPosition, Presets.coralClawStbdPosition).stream();
-      var reefIntakePositions = List.of(Presets.algae2PortPosition, Presets.algae2StbdPosition, 
-                                        Presets.algae3PortPosition, Presets.algae3StbdPosition).stream();
       return 
       (coralIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && coral) 
       || 
       (clawIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && algae)
       ||
-      (reefIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && algae);
+      (copilot.leftTrigger().getAsBoolean() && algae);
     }
   );
   private final Trigger driverRightRumbleTrigger = new Trigger
   (
     () -> 
     {
+      Translation2d relativeTarget = s_Diffector.getRelativeTarget();
       boolean northHalf = swerveState.Pose.getTranslation().getX() >= FieldUtils.fieldWidth / 2;
       GeoFenceObject nearestCoralStation =
       FieldUtils.isRedAlliance() ?
       northHalf ? GeoFencing.cornerNRed : GeoFencing.cornerSRed
       :
       northHalf ? GeoFencing.cornerNBlue : GeoFencing.cornerSBlue;
-
+      var coralIntakePositions = List.of(Presets.coralIntakePortPosition, Presets.coralIntakeStbdPosition).stream();
+      var clawIntakePositions = List.of(Presets.coralClawPortPosition, Presets.coralClawStbdPosition).stream();
+      var groundIntakePositions = List.of(Presets.algaeIntakePortPosition, Presets.algaeIntakeStbdPosition).stream();
       return 
-      (driver.rightBumper().getAsBoolean() && algae)
+      (nearestCoralStation.getDistance(swerveState.Pose.getTranslation()) < FieldConstants.coralStationRange && coralIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && coral)
       ||
-      (copilotLeftRumbleTrigger.getAsBoolean() && nearestCoralStation.getDistance(swerveState.Pose.getTranslation()) < FieldConstants.coralStationRange);
+      (nearestCoralStation.getDistance(swerveState.Pose.getTranslation()) < FieldConstants.coralStationRange && clawIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && algae)
+      ||
+      (nearestCoralStation.getDistance(swerveState.Pose.getTranslation()) < FieldConstants.coralStationRange && groundIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && algae);
     }
   );
   private final Trigger copliotRightRumbleTrigger = new Trigger
