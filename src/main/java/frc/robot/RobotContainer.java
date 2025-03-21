@@ -466,6 +466,10 @@ public class RobotContainer
         s_Diffector.defer(() -> s_Diffector.stationIntakePosCommand(() -> swerveState.Pose.getTranslation(), algaeModifier)
         .withName("CoralStation"))
       );
+
+    Triggers.atCoralStationTrigger.and(() -> !coral)
+      .onTrue(s_Coral.setStatusCommand(CoralManipulator.Status.INTAKE))
+      .onFalse(s_Coral.setStatusCommand(CoralManipulator.Status.DEFAULT));
   }
 
   private void configureManualBindings()
