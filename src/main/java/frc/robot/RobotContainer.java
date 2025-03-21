@@ -24,6 +24,7 @@ import frc.robot.constants.*;
 import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.CoralManipulator.Status;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
 import frc.robot.util.FieldUtils.GeoFencing;
@@ -543,6 +544,10 @@ public class RobotContainer
         s_Diffector.defer(() -> s_Diffector.stationIntakePosCommand(() -> swerveState.Pose.getTranslation(), algaeModifier)
         .withName("CoralStation"))
       );
+
+    driverRightRumbleTrigger.and(() -> !coral)
+      .onTrue(s_Coral.setStatusCommand(Status.INTAKE))
+      .onFalse(s_Coral.setStatusCommand(Status.DEFAULT));
   }
 
   private void configureManualBindings()

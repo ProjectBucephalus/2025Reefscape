@@ -76,10 +76,16 @@ public class CoralManipulator extends SubsystemBase
     switch(status)
     {
       case INTAKE:
-        m_Coral.set(Constants.Manipulators.coralHoldingSpeed);
-        
+      
         if (RobotContainer.coral) 
-          {status = Status.DEFAULT;}
+        {status = Status.DEFAULT;}
+        else
+        {
+          speed = Constants.Manipulators.coralHoldingSpeed;
+          if (armPos > 90 && armPos <= 270)
+            {speed = -speed;}
+          m_Coral.set(speed);
+        }
         break;
 
       case DELIVERY_SMART:
