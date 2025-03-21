@@ -81,21 +81,28 @@ public class DiscoLayer
     
     // do limit checks
     
-    if (start > maxPos) {start -= (maxPos + 1);}
-    if (start < 0) {start += maxPos + 1;}
+    if (start > maxPos) 
+      {start -= (maxPos + 1);}
+
+    if (start < 0) 
+      {start += maxPos + 1;}
+
     velocity = MathUtil.clamp(velocity, -maxVel, maxVel);
     
     //if we are at max velocity, flip the acceleration so it starts changing
-    if (((velocity == -maxVel) && (accel < 0)) || ((velocity == maxVel) && (accel > 0))) {accel = -accel;}
+    if (((velocity == -maxVel) && (accel < 0)) || ((velocity == maxVel) && (accel > 0))) 
+      {accel = -accel;}
     
     length = MathUtil.clamp(length, 1, maxLen);
     growth = MathUtil.clamp(growth, -maxGrow, maxGrow);
     
     // if at max or min size, flip growth so it will start changing 
-    if (((length == 1) && (growth < 0)) || ((length == maxLen) && (growth > 0))) {growth = -growth;}
+    if (((length == 1) && (growth < 0)) || ((length == maxLen) && (growth > 0))) 
+      {growth = -growth;}
     
     // also if growth is at max or min, flip growth rate change
-    else if (((growth == -maxGrow) && (growthRate < 0)) || ((growth == maxGrow) &&(growthRate < 0)) ) {growthRate = -growthRate;}
+    else if (((growth == -maxGrow) && (growthRate < 0)) || ((growth == maxGrow) &&(growthRate < 0)) ) 
+      {growthRate = -growthRate;}
     
     // also throw in a random change to accel and growth rate every now and then
     if (Math.random() > LEDStrip.discoChangeChance)
@@ -123,26 +130,6 @@ public class DiscoLayer
     
     // we like nice bright Colors :)
     shade = new Color(Math.random(), Math.random(), Math.random());
-    
-    // if all colour values are below the threshold, the colour is too dark, randomly set one of them to 1.
-    if ((shade.blue < LEDStrip.discoColorThreshold) && 
-        (shade.green < LEDStrip.discoColorThreshold) && 
-        (shade.red < LEDStrip.discoColorThreshold))
-    {
-      double chance = Math.random();
-      if (chance < 0.3)
-      {
-        shade = new Color(1.0,shade.green,shade.blue); 
-      }
-      else if (chance > 0.7)
-      {
-        shade = new Color(shade.red,shade.green,1.0);
-      }
-      else
-      {
-        shade = new Color(shade.red,1.0,shade.blue);
-      }
-    }
 
     // calculate max values based on viewWidth
     
@@ -161,6 +148,26 @@ public class DiscoLayer
     growthRate = ((Math.random() - 0.5) * 2) * maxGrowRate;
     startTime = Timer.getTimestamp();
     lastTime = startTime;
+    
+    // if all colour values are below the threshold, the colour is too dark, randomly set one of them to 1.
+    if 
+      ((shade.blue < LEDStrip.discoColorThreshold) && 
+        (shade.green < LEDStrip.discoColorThreshold) && 
+        (shade.red < LEDStrip.discoColorThreshold)
+      )
+    {
+      double chance = Math.random();
+
+      if (chance < 0.3)
+        {shade = new Color(1.0,shade.green,shade.blue);}
+
+      else if (chance > 0.7)
+        {shade = new Color(shade.red,shade.green,1.0);}
+
+      else
+        {shade = new Color(shade.red,1.0,shade.blue);}
+
+    }
   }
 
 }
