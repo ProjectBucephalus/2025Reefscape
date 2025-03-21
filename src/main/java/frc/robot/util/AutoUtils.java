@@ -21,11 +21,13 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.DpadOptions;
 import frc.robot.constants.Constants;
+import frc.robot.constants.FieldConstants;
 import frc.robot.constants.Constants.Auto.AutoMapping;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
+import frc.robot.subsystems.CoralManipulator.Status;
 
 public class AutoUtils 
 {
@@ -111,6 +113,7 @@ public class AutoUtils
 
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
 
+          commandList.add(s_Coral.setStatusCommand(Status.INTAKE));
           commandList.add(Commands.waitUntil(() -> RobotContainer.coral));
           commandList.add(s_Diffector.moveToCommand(Presets.coralStowPosition));
           break;
@@ -161,7 +164,7 @@ public class AutoUtils
   public static Command pathfindAndFollowCommand(Supplier<String> pathNameSup, BooleanSupplier brakeSup)
   {
     PathPlannerPath path = FieldUtils.loadPath(pathNameSup.get());
-    BooleanSupplier atPathStart = () -> RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.pathFollowTolerance;
+    BooleanSupplier atPathStart = () -> RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.atPosTolerance;
     
     return 
     Commands.either
@@ -186,7 +189,7 @@ public class AutoUtils
     {
       Translation2d nearestBargePoint = FieldUtils.getNearestBargePoint(RobotContainer.swerveState.Pose.getTranslation());
 
-      ArrayList<Translation2d> localList = FieldUtils.isRedAlliance() ? Constants.Auto.redBargePoints : Constants.Auto.blueBargePoints;
+      ArrayList<Translation2d> localList = FieldUtils.isRedAlliance() ? FieldConstants.redBargePoints : FieldConstants.blueBargePoints;
   
       int nearestBargePointNumber = localList.indexOf(nearestBargePoint) + 1;
   

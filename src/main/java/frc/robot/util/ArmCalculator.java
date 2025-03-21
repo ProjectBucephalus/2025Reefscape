@@ -5,6 +5,7 @@
 package frc.robot.util;
 
 import java.util.ArrayList;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -92,6 +93,16 @@ public class ArmCalculator
 
       return pathOutput;
     }
+
+    if (Presets.highDiffectorPositions.stream().anyMatch(position -> relativeTarget.equals(position)))
+    { // Forced safe path for barge
+      pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), startPosition.getY()));
+      pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), goShortest(180, targetPosition.getY())));
+      pathOutput.add(new Translation2d(targetPosition.getX(), goShortest(180, targetPosition.getY())));
+      pathOutput.add(targetPosition);
+
+      return pathOutput;
+    }
     
     
     // Any other position should be made safe
@@ -119,16 +130,15 @@ public class ArmCalculator
     // Any rotation taking the arm past vertical:
     if
     ( // If goes past both uprights
-      // Over a full rotation
-      angleChange >= 360 ||
-      //(angleRelative < 0 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) || // TODO
-      //(angleRelative < 0 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) ||
-      //(angleRelative < 0 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) ||
-      //(angleRelative < 0 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) ||
-      (angleRelative < 180 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance) ||
-      (angleRelative > 180 - downsideTolerance && angleRelative + angleChange >= 540 - uprightTolerance) ||
-      (angleRelative > 180 - downsideTolerance && angleRelative + angleChange <=   0 + uprightTolerance) ||
-      (angleRelative < 180 + downsideTolerance && angleRelative + angleChange <=-180 + uprightTolerance)
+      Math.abs(angleChange) >= 360 ||
+      (angleRelative < 180 + downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance ) ||
+      (angleRelative > 180 - downsideTolerance && angleRelative + angleChange <=   0 + uprightTolerance ) ||
+      (angleRelative <   0 + uprightTolerance  && angleRelative + angleChange >= 180 - downsideTolerance) ||
+      (angleRelative > 180 + downsideTolerance && angleRelative + angleChange >= 540 - downsideTolerance) ||
+      (angleRelative > 360 - uprightTolerance  && angleRelative + angleChange <= 180 + downsideTolerance) ||
+      (angleRelative < 180 - downsideTolerance && angleRelative + angleChange <=-180 + downsideTolerance) ||
+      (angleRelative < 180 - downsideTolerance && angleRelative + angleChange >= 360 - uprightTolerance ) ||
+      (angleRelative > 180 + downsideTolerance && angleRelative + angleChange <=   0 + uprightTolerance )
     )
     {
       // Intermediate waypoint: Safe elevation at initial rotation

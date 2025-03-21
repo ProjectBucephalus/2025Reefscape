@@ -26,7 +26,6 @@ import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
-import frc.robot.util.FieldUtils.GeoFencing;
 import frc.robot.util.leds.LightLayer;
 import frc.robot.util.leds.LightLayer.*;
 import frc.robot.util.libraries.Telemetry;
@@ -111,9 +110,9 @@ public class RobotContainer
     < 
     (FieldUtils.GeoFencing.circumscribedReefZoneDiameter / 2) + 1
   );
-  private final Trigger copilotLeftRumbleTrigger = new Trigger
+  private final Trigger coralIntakeTrigger = new Trigger
   (
-    () -> 
+    () ->
     {
       Translation2d relativeTarget = s_Diffector.getRelativeTarget();
       var coralIntakePositions = List.of(Presets.coralIntakePortPosition, Presets.coralIntakeStbdPosition).stream();
@@ -124,26 +123,38 @@ public class RobotContainer
       (clawIntakePositions.anyMatch(position -> relativeTarget.equals(position)) && algae);
     }
   );
-  private final Trigger driverRightRumbleTrigger = new Trigger
+  private final Trigger copilotLeftRumbleTrigger = coralIntakeTrigger.or(() -> copilot.leftTrigger().getAsBoolean() && algae);
+  private final Trigger driverRightRumbleTrigger = 
+    coralIntakeTrigger
+    .and
+    (
+      () -> 
+      {
+        Translation2d robotPos = swerveState.Pose.getTranslation();
+        return FieldUtils.getNearestCoralStation(robotPos).getDistance(robotPos) < FieldConstants.coralStationRange;
+      }
+    )
+    .or
+    (
+      () ->
+      {
+        var groundIntakePositions = List.of(Presets.algaeIntakePortPosition, Presets.algaeIntakeStbdPosition).stream();
+        return groundIntakePositions.anyMatch(position -> s_Diffector.getRelativeTarget().equals(position)) && algae;
+      }
+    );
+  private final Trigger copliotRightRumbleTrigger = new Trigger
   (
     () -> 
     {
-      boolean northHalf = swerveState.Pose.getTranslation().getX() >= FieldUtils.fieldWidth / 2;
-      GeoFenceObject nearestCoralStation =
-      FieldUtils.isRedAlliance() ?
-      northHalf ? GeoFencing.cornerNRed : GeoFencing.cornerSRed
+      Translation2d robotPos = swerveState.Pose.getTranslation();
+      Translation2d nearestClimbLineup = 
+      FieldUtils.isRedAlliance() ? 
+      robotPos.nearest(FieldConstants.redClimbLineups)
       :
-      northHalf ? GeoFencing.cornerNBlue : GeoFencing.cornerSBlue;
+      robotPos.nearest(FieldConstants.blueClimbLineups);
 
-      return 
-      (driver.rightBumper().getAsBoolean() && algae)
-      ||
-      (copilotLeftRumbleTrigger.getAsBoolean() && nearestCoralStation.getDistance(swerveState.Pose.getTranslation()) < Constants.Control.atObjectTolerance);
+      return s_Climber.climbReady() && s_Diffector.climbReady() && swerveState.Pose.getTranslation().getDistance(nearestClimbLineup) < Constants.Auto.atPosTolerance;
     }
-  );
-  private final Trigger copliotRightRumbleTrigger = new Trigger
-  (
-    () -> s_Climber.climbReady() && s_Diffector.climbReady() && true
   );
 
   /* Control Modifiers */
@@ -177,6 +188,7 @@ public class RobotContainer
     configureCopilotBindings();
     configureRumbleBindings();
     configureManualBindings();
+    configureTestBindings();
 
     s_Swerve.registerTelemetry(logger::telemeterize);
     initLED();
@@ -224,7 +236,16 @@ public class RobotContainer
     driver.rightBumper()
       .whileTrue
       (
-        s_Diffector.runOnce(() -> s_Diffector.setTargetPosition(DiffectorConstants.Presets.algaeIntakePortPosition))
+        Commands.either // Algae intake pos
+        (
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePortPosition), 
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakeStbdPosition), 
+          () ->
+          {
+            double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
+            return robotRotation < 180; // > 90 - Constants.Control.driverVisionTolerance && robotRotation <= 270 + Constants.Control.driverVisionTolerance;
+          }
+        )
         .andThen(s_Algae.run(() -> {if (s_Diffector.atPosition()) s_Algae.setStatus(AlgaeManipulator.Status.INTAKE);}))
         .finallyDo
         (
@@ -341,7 +362,7 @@ public class RobotContainer
           s_Swerve, 
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
-          Rotation2d.kCW_90deg, // TODO: Need to have bot facing drivers, and invert arm positions accordingly
+          Rotation2d.kZero,
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
@@ -416,9 +437,11 @@ public class RobotContainer
         Commands.sequence
         (
           s_Diffector.moveAndWaitCommand(DiffectorConstants.Presets.climbSafePosition),
-          s_Climber.setStatusCommand(Climber.Status.ACTIVE)
+          s_Climber.setStatusCommand(Climber.Status.ACTIVE),
+          Commands.waitUntil(() -> s_Climber.armSafe()),
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.climbPosition)
         )
-        .withName("ActivateClimb")
+        .withName("PrepareClimb")
       );  
 
     /* Game piece scoring and intake positions */
@@ -501,7 +524,7 @@ public class RobotContainer
             () ->
             {
               double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
-              return robotRotation > 90 - Constants.Control.driverVisionTolerance && robotRotation <= 270 + Constants.Control.driverVisionTolerance;
+              return robotRotation < 180; // > 90 - Constants.Control.driverVisionTolerance && robotRotation <= 270 + Constants.Control.driverVisionTolerance;
             }
           ),
           s_Diffector.coralScorePosCommand(0), // Coral score level 1 with coral manipulator
@@ -514,13 +537,8 @@ public class RobotContainer
     copilot.rightBumper()
       .onTrue
       (
-        Commands.either
-        (
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralClawPortPosition), // Algae intake pos (ground)
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralIntakePortPosition), // Coral intake pos (clearance for station)
-          algaeModifier
-        )
-        .withName("CoralStation")
+        s_Diffector.defer(() -> s_Diffector.stationIntakePosCommand(() -> swerveState.Pose.getTranslation(), algaeModifier)
+        .withName("CoralStation"))
       );
   }
 
@@ -573,12 +591,30 @@ public class RobotContainer
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
-    driverLeftRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Penalty Zone")));
-    driverRightRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Intaked Successfully")));
+    driverLeftRumbleTrigger
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Penalty Zone")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_RIGHT, "Penalty Zone")));
+    driverRightRumbleTrigger
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Intaked Successfully")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_LEFT, "Intaked Successfully")));
 
     /* Copilot rumble bindings */
-    copilotLeftRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_LEFT, "Intake Full")));
-    copliotRightRumbleTrigger.onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_RIGHT, "Climb Ready")));
+    copilotLeftRumbleTrigger
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_LEFT, "Intake Full")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.COPILOT_LEFT, "Intake Full")));
+    copliotRightRumbleTrigger
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_RIGHT, "Climb Ready")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.COPILOT_RIGHT, "Climb Ready")));
+  }
+
+  private void configureTestBindings()
+  {
+    testing.y().onTrue(s_Diffector.moveToCommand(new Translation2d(1.5, 90)));
+    testing.a().onTrue(s_Diffector.moveToCommand(new Translation2d(0.5, 90)));
+    testing.povUp().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 0)));
+    testing.povRight().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 90)));
+    testing.povDown().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 180)));
+    testing.povLeft().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 270)));
   }
 
   private void initLED()

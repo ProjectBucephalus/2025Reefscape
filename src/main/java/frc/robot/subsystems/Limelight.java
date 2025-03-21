@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 import com.ctre.phoenix6.Utils;
 
@@ -116,9 +115,9 @@ public class Limelight extends SubsystemBase
     if (!rotationKnown) 
     {
       lastCycleRotationKnown = false;
-      if (!MathUtil.isNear(0, getLimelightRotation().getDegrees(), 0.1))
+      if (!getLimelightRotation().equals(Rotation2d.kZero))
       {
-        rotationData.add(0, RobotContainer.io_LimelightPort.getLimelightRotation().getDegrees());
+        rotationData.add(0, getLimelightRotation().getDegrees());
   
         if (rotationData.size() > 5)
           {rotationData.remove(5);}

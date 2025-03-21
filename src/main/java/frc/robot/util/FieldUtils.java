@@ -10,8 +10,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.constants.Constants;
 import frc.robot.constants.DiffectorGeometry;
+import frc.robot.constants.FieldConstants;
 import frc.robot.util.GeoFenceObject.ObjectTypes;
 
 public class FieldUtils 
@@ -53,16 +53,10 @@ public class FieldUtils
   public static int getNearestReefFace(Translation2d robotPos)
   {
     int nearestReefFace;
-    ArrayList<Translation2d> localList;
-
-    if (isRedAlliance()) 
-    {   
-      localList = Constants.Auto.reefRedMidPoints;
-    }
-    else
-    {
-      localList = Constants.Auto.reefBlueMidPoints;
-    }
+    ArrayList<Translation2d> localList =
+    isRedAlliance() ? 
+    FieldConstants.redReefMidpoints :
+    FieldConstants.blueReefMidpoints;
 
     nearestReefFace = localList.indexOf(robotPos.nearest(localList)); 
 
@@ -74,20 +68,25 @@ public class FieldUtils
   public static Translation2d getNearestBargePoint(Translation2d robotPos)
   {
     Translation2d nearestBargePoint;
-    ArrayList<Translation2d> localList;
-
-    if (isRedAlliance()) 
-    {   
-      localList = Constants.Auto.redBargePoints;
-    }
-    else
-    {
-      localList = Constants.Auto.blueBargePoints;
-    }
+    ArrayList<Translation2d> localList =
+    isRedAlliance() ? 
+    FieldConstants.redBargePoints :
+    FieldConstants.blueBargePoints;
 
     nearestBargePoint = robotPos.nearest(localList); 
     
     return nearestBargePoint;
+  }
+
+  public static GeoFenceObject getNearestCoralStation(Translation2d robotPos)
+  {
+    boolean northHalf = robotPos.getX() >= FieldUtils.fieldWidth / 2;
+
+    return
+    isRedAlliance() ?
+    northHalf ? GeoFencing.cornerNRed : GeoFencing.cornerSRed
+    :
+    northHalf ? GeoFencing.cornerNBlue : GeoFencing.cornerSBlue;
   }
 
   public static PathPlannerPath loadPath(String pathName) 

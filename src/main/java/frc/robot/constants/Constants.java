@@ -10,8 +10,8 @@ import java.util.function.Supplier;
 
 import com.pathplanner.lib.path.PathConstraints;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,14 +19,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotContainer;
 import frc.robot.util.AutoUtils;
-import frc.robot.util.FieldUtils;
 
 public final class Constants 
 {
   public static final class RumblerConstants 
   {
-    public static final double driverDefault = 0;
-    public static final double copilotDefault = 0;
+    public static final double driverDefault = 0.7;
+    public static final double copilotDefault = 0.7;
   }
 
   public static final class Control
@@ -50,7 +49,6 @@ public final class Constants
     /** Scalar for braking effect of diffector arm being higher than 1m */
     public static final double armBrakeRate = 1.5;
     public static final double manualClimberScale    = 0.5;
-    public static final double atObjectTolerance = 0.6;
   }
 
   public static final class Vision
@@ -101,9 +99,9 @@ public final class Constants
     public static final double driveKD = 0.0;
 
     /* Rotation Control PID Values */
-    public static final double rotationKP = 5; //TODO: Tune to robot
+    public static final double rotationKP = 6;
     public static final double rotationKI = 0;
-    public static final double rotationKD = 0;
+    public static final double rotationKD = 0.1;
 
     /* Swerve Limit Values */
     /** Meters per Second */
@@ -188,27 +186,10 @@ public final class Constants
       put("e"  , new AutoMapping(null, () -> Commands.defer(() -> AutoUtils.ejectAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, () -> RobotContainer.swerveState.Pose.getTranslation()), new HashSet<Subsystem>(){{add(RobotContainer.s_Algae); add(RobotContainer.s_Diffector);}})));
     }};
 
-    public static final ArrayList<Translation2d> reefBlueMidPoints = FieldUtils.GeoFencing.reefBlue.getMidPoints();
-    public static final ArrayList<Translation2d> reefRedMidPoints = FieldUtils.GeoFencing.reefRed.getMidPoints();
 
-    public static final ArrayList<Translation2d> blueBargePoints = new ArrayList<Translation2d>()
-    {{
-      add(new Translation2d(FieldUtils.fieldLength / 2, 7.261));
-      add(new Translation2d(FieldUtils.fieldLength / 2, 6.615));
-      add(new Translation2d(FieldUtils.fieldLength / 2, 6.169));
-      add(new Translation2d(FieldUtils.fieldLength / 2, 5.6245));
-      add(new Translation2d(FieldUtils.fieldLength / 2, 5.08));
-    }};
-
-    public static final ArrayList<Translation2d> redBargePoints = new ArrayList<Translation2d>(blueBargePoints)
-    {
-      {
-        forEach(point -> point.rotateAround(new Translation2d(FieldUtils.fieldLength / 2, FieldUtils.fieldWidth / 2), Rotation2d.k180deg));
-      }
-    };
 
     /** How close we have to be to the path start point to just follow the path without using pathfinding */
-    public static final double pathFollowTolerance = 0.04;
+    public static final double atPosTolerance = 0.04;
 
     public static final String defaultAuto = "rc4,cr1,rb4,cl1,ra4,cl1,rl4";
   }
@@ -229,8 +210,8 @@ public final class Constants
     public static class Presets
     {
       public static final Translation2d startPosition           = new Translation2d(0.616,  0);
-      public static final Translation2d climbSafePosition       = new Translation2d(0.70,  90);
-      public static final Translation2d climbPosition           = new Translation2d(0.425, 90);
+      public static final Translation2d climbSafePosition       = new Translation2d(0.70,  270); // TODO
+      public static final Translation2d climbPosition           = new Translation2d(0.425, 270);
  
       public static final Translation2d netPosition             = new Translation2d(DiffectorGeometry.maxZ, 160);
       public static final Translation2d algae3PortPosition      = new Translation2d(1.08, 113);
@@ -242,8 +223,8 @@ public final class Constants
  
       public static final Translation2d coral4PortPosition      = new Translation2d(1.62, 340);
       public static final Translation2d coral4StbdPosition      = new Translation2d(1.62,  20);
-      public static final Translation2d coral3PortPosition      = new Translation2d(0.98, 340);
-      public static final Translation2d coral3StbdPosition      = new Translation2d(0.98,  20);
+      public static final Translation2d coral3PortPosition      = new Translation2d(1.00, 337);
+      public static final Translation2d coral3StbdPosition      = new Translation2d(1.00,  23);
       public static final Translation2d coral2PortPosition      = new Translation2d(0.70, 325);
       public static final Translation2d coral2StbdPosition      = new Translation2d(0.70,  35);
       public static final Translation2d coral1ClawPortPosition  = new Translation2d(DiffectorGeometry.algaeClawElevation,  76);
@@ -257,8 +238,8 @@ public final class Constants
       public static final Translation2d coralClawStbdPosition   = new Translation2d(0.66, 230); // TODO
       public static final Translation2d coralStowPosition       = new Translation2d(0.72,   0);
  
-      public static final Translation2d algaeIntakePortPosition = new Translation2d(0.45,  70);
-      public static final Translation2d algaeIntakeStbdPosition = new Translation2d(0.45, 290);
+      public static final Translation2d algaeIntakePortPosition = new Translation2d(0.67,  70); // +20cm for testing
+      public static final Translation2d algaeIntakeStbdPosition = new Translation2d(0.67, 290); // +20cm for testing
       public static final Translation2d algaeStowPosition       = new Translation2d(0.72, 180);
 
       public static final ArrayList<Translation2d> lowDiffectorPositions = new ArrayList<Translation2d>()
@@ -268,16 +249,43 @@ public final class Constants
         add(algaeIntakeStbdPosition);
         add(climbPosition);
         add(algaeStowPosition);
-        //add(processorPosition);
+      }};
+
+      public static final ArrayList<Translation2d> highDiffectorPositions = new ArrayList<Translation2d>()
+      {{
+        add(netPosition);
+        add(coral4PortPosition);
+        add(coral4StbdPosition);
+        add(coral3PortPosition);
+        add(coral3StbdPosition);
       }};
     }
 
     /** Raw value when fully released, indicating string has snapped or the sensor is unavailable */
-    public static final double potErrValue = 1;
-    /** Elevator height when potentiometer reads 0, metres over ground */
-    public static final double potMin = 0.0;
-    /** Elevator height when potentiometer reads 1, metres over ground */
-    public static final double potMax = 2.0;
+    public static final double potErrValue = 0.06;
+
+    public static final InterpolatingDoubleTreeMap potInterpolation = new InterpolatingDoubleTreeMap()
+    {
+      {
+        put(0.09, 0.36);
+        put(0.15, 0.47);
+        put(0.25, 0.61);
+        put(0.30, 0.70);
+        put(0.43, 0.90);
+        put(0.52, 1.02);
+        put(0.57, 1.10);
+        put(0.64, 1.20);
+        put(0.71, 1.31);
+        put(0.72, 1.33);
+        put(0.86, 1.54);
+        put(0.91, 1.61);
+        put(0.94, 1.66);
+        put(0.96, 1.69);
+        put(0.98, 1.72);
+        put(0.99, 1.74);
+        put(1.00, 1.76);
+      }
+    };
   }
 
   public static final class Manipulators 
@@ -285,11 +293,11 @@ public final class Constants
     /* Coral manipulator speeds */
     public static final double coralDeliverySpeed = -0.7;
     public static final double coralHoldingSpeed  = -0.15;
-    public static final double coralHoldingG      = 0;//-0.035;
+    public static final double coralHoldingG      = 0;
 
     /* Algae manipulator speeds */
     public static final double algaeIntakeSpeed    = -1;
-    public static final double algaeHoldingVoltage = -0.9;
+    public static final double algaeHoldingVoltage = -1.7;
     public static final double algaeNetSpeed       =  1;
     public static final double algaeProcessorSpeed = 0.23;
     public static final double algaeHeldCurrent    = 55;
@@ -305,10 +313,10 @@ public final class Constants
 
   public static final class ClimberConstants
   {
-    public static final double stowWinchPos   = Units.degreesToRotations(-150); // TODO
-    public static final double safeWinchPos   = Units.degreesToRotations(0);
-    public static final double activeWinchPos = Units.degreesToRotations(90);
-    public static final double climbWinchPos  = Units.degreesToRotations(-90);
+    public static final double stowWinchPos    = Units.degreesToRotations(-150); // TODO
+    public static final double safeWinchPos    = Units.degreesToRotations(0);
+    public static final double prepareWinchPos = Units.degreesToRotations(90);
+    public static final double climbWinchPos   = Units.degreesToRotations(-90);
     /** The furthest into the robot the climber can attempt to go whilst balancing */
     public static final double climbActiveInnerLimit = Units.degreesToRotations(-100); // TODO
     /** The furthest out of the robot the climber can attempt to go whilst balancing */
