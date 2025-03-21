@@ -16,7 +16,7 @@ public class DiffectorGeometry
   public static final double minZ = 0.36;
   /** Elevation at which all rotations are safe */
   public static final double safeElevation = 0.9;
-  public static final double coralFunnelElevation = 0.9;
+  public static final double coralFunnelElevation = 1.0;
   public static final double algaeClawElevation = 0.75;
   public static final double reefSafeElevation = 1; // TODO
   public static final double algaeSafeElevation = 1.3;
