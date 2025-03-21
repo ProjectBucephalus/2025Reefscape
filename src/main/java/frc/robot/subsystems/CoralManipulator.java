@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
@@ -52,17 +51,6 @@ public class CoralManipulator extends SubsystemBase
 
   public Command setStatusCommand(Status status)
     {return runOnce(() -> setStatus(status)).withName("SetCoralStatus");}
-
-  public Command scoreCommand()
-  {
-    return 
-    Commands.either
-    (
-      startEnd(null, null), 
-      startEnd(() -> setStatus(Status.DELIVERY_SMART), () -> setStatus(Status.DEFAULT)), 
-      null
-    );
-  }
 
   @Override
   public void periodic() 
