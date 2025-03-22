@@ -12,7 +12,6 @@ import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -211,7 +210,7 @@ public final class Constants
       public static final Translation2d climbSafePosition       = new Translation2d(0.80,  90); // TODO
       public static final Translation2d climbPosition           = new Translation2d(0.425, 90);
  
-      public static final Translation2d netPosition             = new Translation2d(DiffectorGeometry.maxZ, 160);
+      public static final Translation2d netPosition             = new Translation2d(DiffectorGeometry.maxZ, 152);
       public static final Translation2d algae3PortPosition      = new Translation2d(1.08, 113);
       public static final Translation2d algae3StbdPosition      = new Translation2d(1.08, 247);
       public static final Translation2d algae2PortPosition      = new Translation2d(0.65, 113);
@@ -302,10 +301,6 @@ public final class Constants
 
     /** Algae net shooting range for rotation snapping, m */
     public static final double algaeRange = 2.5;
-    /** How far towards the barge we have to be from field center to be able to score in the net (Y axis) */
-    public static final double netScoringCenterDistance = 0.5;
-    /** Target X distance from barge targetting points for scoring */
-    public static final double netScoringOffset = 1.5;
   }
 
   public static final class ClimberConstants
