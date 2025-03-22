@@ -210,7 +210,7 @@ public final class Constants
       public static final Translation2d climbSafePosition       = new Translation2d(0.80,  90); // TODO
       public static final Translation2d climbPosition           = new Translation2d(0.425, 90);
  
-      public static final Translation2d netPosition             = new Translation2d(DiffectorGeometry.maxZ, 152);
+      public static final Translation2d netPosition             = new Translation2d(DiffectorGeometry.maxZ, 150);
       public static final Translation2d algae3PortPosition      = new Translation2d(1.08, 113);
       public static final Translation2d algae3StbdPosition      = new Translation2d(1.08, 247);
       public static final Translation2d algae2PortPosition      = new Translation2d(0.65, 113);
