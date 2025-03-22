@@ -81,7 +81,7 @@ public final class Constants
     };
 
     /** Baseline 1 meter, 1 tag stddev for x and y, in meters */
-    public static final double linearStdDevBaseline = 0.06;
+    public static final double linearStdDevBaseline = 0.08;
     /** Baseline 1 meter, 1 tag stddev rotation, in radians */
     public static final double rotStdDevBaseline = 0.012;
   }
