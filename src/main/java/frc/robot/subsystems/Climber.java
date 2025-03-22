@@ -82,6 +82,9 @@ public class Climber extends SubsystemBase
   public boolean armSafe()
     {return m_Climber.getPosition().getValueAsDouble() >= ClimberConstants.safeWinchPos;}  
 
+  public boolean offGround()
+    {return m_Climber.getPosition().getValueAsDouble() >= ClimberConstants.safeWinchPos;}  
+
   public boolean manualOveride(double motorSpeed)
   {
     speed = motorSpeed;

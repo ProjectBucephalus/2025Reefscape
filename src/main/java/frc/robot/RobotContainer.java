@@ -380,15 +380,29 @@ public class RobotContainer
         Commands.sequence
         (
           s_Diffector.moveAndWaitCommand(Presets.climbPosition),
-          s_Climber.setStatusCommand(Climber.Status.CLIMB)
+          s_Climber.setStatusCommand(Climber.Status.CLIMB),
+          Commands.waitUntil(() -> !s_Climber.armSafe()),
+          s_Swerve.defer
+          (
+            () -> 
+            AutoBuilder.pathfindToPose
+            (
+              new Pose2d
+              (
+                swerveState.Pose.getTranslation().nearest
+                (
+                  FieldUtils.isRedAlliance() ? 
+                  FieldConstants.redClimbLineups : 
+                  FieldConstants.blueClimbLineups
+                ), 
+                Rotation2d.kZero
+              ), 
+              Constants.Auto.slowedConstraints
+            )
+          )
+          .until(s_Climber::offGround)
         )
         .withName("Climb")
-      );
-    copilot.start()
-      .and(s_Climber::armSafe)
-      .onTrue
-      (
-        AutoBuilder.pathfindToPose(new Pose2d(0, 0, Rotation2d.kZero), Constants.Auto.slowedConstraints)
       );
       
     copilot.back()
