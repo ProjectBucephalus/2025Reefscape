@@ -76,9 +76,7 @@ public class Climber extends SubsystemBase
 
   public boolean climbReady()
   {
-    return 
-      status == Status.ACTIVE &&
-      m_Climber.getPosition().getValueAsDouble() >= ClimberConstants.prepareWinchPos;
+    return m_Climber.getPosition().getValueAsDouble() >= ClimberConstants.prepareWinchPos;
   }
 
   public boolean armSafe()
