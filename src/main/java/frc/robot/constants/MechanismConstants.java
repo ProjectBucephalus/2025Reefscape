@@ -22,7 +22,7 @@ public class MechanismConstants
   {
     public static final double winchBalanceScalar = 0.05;
 
-    public static final double winchPlanetaryRatio = 75;
+    public static final double winchPlanetaryRatio = 45;
     public static final double winchGearIn   = 20;
     public static final double winchGearOut  = 60;
     public static final double winchGearRatio = ((winchGearOut / winchGearIn) * winchPlanetaryRatio);
