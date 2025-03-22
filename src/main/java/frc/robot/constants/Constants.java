@@ -301,7 +301,7 @@ public final class Constants
     public static final double algaeIntakeSpeed    = -1;
     public static final double algaeHoldingVoltage = -1.35;
     public static final double algaeNetSpeed       =  1;
-    public static final double algaeProcessorSpeed = 0.23;
+    public static final double algaeProcessorSpeed =  0.9;
     public static final double algaeHeldCurrent    = 55;
     public static final double algaeReleaseCurrent =  4;
 
