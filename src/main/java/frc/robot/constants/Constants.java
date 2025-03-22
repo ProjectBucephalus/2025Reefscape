@@ -231,8 +231,8 @@ public final class Constants
  
       public static final Translation2d coralIntakePortPosition = new Translation2d(1.14, 215); // TODO
       public static final Translation2d coralIntakeStbdPosition = new Translation2d(1.14, 145); // TODO
-      public static final Translation2d coralClawPortPosition   = new Translation2d(0.71, 130); // TODO
-      public static final Translation2d coralClawStbdPosition   = new Translation2d(0.71, 230); // TODO
+      public static final Translation2d coralClawPortPosition   = new Translation2d(0.73, 129); // TODO
+      public static final Translation2d coralClawStbdPosition   = new Translation2d(0.73, 229); // TODO
       public static final Translation2d coralStowPosition       = new Translation2d(0.72,   0);
  
       public static final Translation2d algaeIntakePortPosition = new Translation2d(0.67,  70); // +20cm for testing
