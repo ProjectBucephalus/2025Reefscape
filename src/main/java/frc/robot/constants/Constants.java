@@ -65,7 +65,7 @@ public final class Constants
 
     public static final int[] reefIDs = 
     {
-      6, 7, 8, 9, 10, 11,    // Red Reef
+      //6, 7, 8, 9, 10, 11,    // Red Reef
       17, 18, 19, 20, 21, 22 // Blue Reef
     };
 
@@ -101,7 +101,7 @@ public final class Constants
     /* Rotation Control PID Values */
     public static final double rotationKP = 6;
     public static final double rotationKI = 0;
-    public static final double rotationKD = 0.15;
+    public static final double rotationKD = 0.05;
 
     /* Swerve Limit Values */
     /** Meters per Second */
@@ -186,10 +186,8 @@ public final class Constants
       put("e"  , new AutoMapping(null, () -> Commands.defer(() -> AutoUtils.ejectAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, () -> RobotContainer.swerveState.Pose.getTranslation()), new HashSet<Subsystem>(){{add(RobotContainer.s_Algae); add(RobotContainer.s_Diffector);}})));
     }};
 
-
-
     /** How close we have to be to the path start point to just follow the path without using pathfinding */
-    public static final double atPosTolerance = 0.04;
+    public static final double atPosTolerance = 0.07;
 
     public static final String defaultAuto = "rc4,cr1,rb4,cl1,ra4,cl1,rl4";
   }
