@@ -74,9 +74,9 @@ public class MechanismConstants
     /** Desired acceleration of Motor for Elevation, RPS^2 */
     public static final double diffectorElevationAccelerationMotor = 150;
     /** Desired acceleration of Motor for Rotation, RPS^2 */
-    public static final double diffectorRotationAccelerationMotor = 85;
+    public static final double diffectorRotationAccelerationMotor = 80;
     /** Desired acceleration of Motor for Rotation when holding Algae, RPS^2 */
-    public static final double diffectorAlgaeRotationAccelerationMotor = 40;
+    public static final double diffectorAlgaeRotationAccelerationMotor = 35;
     
     /** Desired cruise speed of Mechanism, RPS */
     public static final double diffectorCruise = diffectorCruiseMotor / gearboxRatio;

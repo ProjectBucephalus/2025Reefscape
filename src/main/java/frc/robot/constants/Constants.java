@@ -225,8 +225,8 @@ public final class Constants
  
       public static final Translation2d coral4PortPosition      = new Translation2d(1.62, 340);
       public static final Translation2d coral4StbdPosition      = new Translation2d(1.62,  20);
-      public static final Translation2d coral3PortPosition      = new Translation2d(1.00, 337);
-      public static final Translation2d coral3StbdPosition      = new Translation2d(1.00,  23);
+      public static final Translation2d coral3PortPosition      = new Translation2d(1.05, 325);
+      public static final Translation2d coral3StbdPosition      = new Translation2d(1.05,  35);
       public static final Translation2d coral2PortPosition      = new Translation2d(0.70, 325);
       public static final Translation2d coral2StbdPosition      = new Translation2d(0.70,  35);
       public static final Translation2d coral1ClawPortPosition  = new Translation2d(DiffectorGeometry.algaeClawElevation,  76);
@@ -236,8 +236,8 @@ public final class Constants
  
       public static final Translation2d coralIntakePortPosition = new Translation2d(1.14, 215); // TODO
       public static final Translation2d coralIntakeStbdPosition = new Translation2d(1.14, 145); // TODO
-      public static final Translation2d coralClawPortPosition   = new Translation2d(0.71, 130); // TODO
-      public static final Translation2d coralClawStbdPosition   = new Translation2d(0.71, 230); // TODO
+      public static final Translation2d coralClawPortPosition   = new Translation2d(0.73, 129); // TODO
+      public static final Translation2d coralClawStbdPosition   = new Translation2d(0.73, 229); // TODO
       public static final Translation2d coralStowPosition       = new Translation2d(0.72,   0);
  
       public static final Translation2d algaeIntakePortPosition = new Translation2d(0.67,  70); // +20cm for testing
@@ -260,6 +260,8 @@ public final class Constants
         add(coral4StbdPosition);
         add(coral3PortPosition);
         add(coral3StbdPosition);
+        add(coral2PortPosition);
+        add(coral2StbdPosition);
       }};
     }
 
@@ -293,7 +295,7 @@ public final class Constants
   public static final class Manipulators 
   {
     /* Coral manipulator speeds */
-    public static final double coralDeliverySpeed = -0.7;
+    public static final double coralDeliverySpeed = -0.55;
     public static final double coralHoldingSpeed  = -0.15;
 
     /* Algae manipulator speeds */
