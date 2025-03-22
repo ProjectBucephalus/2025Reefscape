@@ -13,6 +13,7 @@ import frc.robot.constants.Constants.ClimberConstants;
 import frc.robot.constants.Constants.Control;
 import frc.robot.constants.IDConstants;
 import frc.robot.constants.MechanismConstants.ClimberConfigs;
+import frc.robot.util.Conversions;
 import frc.robot.util.SD;
 
 public class Climber extends SubsystemBase
@@ -118,7 +119,7 @@ public class Climber extends SubsystemBase
           if (SD.OVERRIDE.get()) 
           {
             adjustedClimberPos += RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() * ClimberConfigs.winchBalanceScalar;
-            adjustedClimberPos = MathUtil.clamp(adjustedClimberPos, ClimberConstants.climbActiveInnerLimit, ClimberConstants.climbActiveOuterLimit);
+            adjustedClimberPos = Conversions.clamp(adjustedClimberPos, ClimberConstants.climbActiveInnerLimit, ClimberConstants.climbActiveOuterLimit);
           }
 
           m_Climber.setControl(motionMagic.withPosition(adjustedClimberPos));
