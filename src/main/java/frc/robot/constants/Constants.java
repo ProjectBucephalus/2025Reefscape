@@ -81,7 +81,7 @@ public final class Constants
     };
 
     /** Baseline 1 meter, 1 tag stddev for x and y, in meters */
-    public static final double linearStdDevBaseline = 0.06;
+    public static final double linearStdDevBaseline = 0.08;
     /** Baseline 1 meter, 1 tag stddev rotation, in radians */
     public static final double rotStdDevBaseline = 0.012;
   }
@@ -215,7 +215,7 @@ public final class Constants
       public static final Translation2d climbSafePosition       = new Translation2d(0.80,  90); // TODO
       public static final Translation2d climbPosition           = new Translation2d(0.425, 90);
  
-      public static final Translation2d netPosition             = new Translation2d(DiffectorGeometry.maxZ, 152);
+      public static final Translation2d netPosition             = new Translation2d(DiffectorGeometry.maxZ, 150);
       public static final Translation2d algae3PortPosition      = new Translation2d(1.08, 113);
       public static final Translation2d algae3StbdPosition      = new Translation2d(1.08, 247);
       public static final Translation2d algae2PortPosition      = new Translation2d(0.65, 113);
@@ -234,10 +234,10 @@ public final class Constants
       public static final Translation2d coral1PortPosition      = new Translation2d(DiffectorGeometry.coralFunnelElevation, 210);
       public static final Translation2d coral1StbdPosition      = new Translation2d(DiffectorGeometry.coralFunnelElevation, 150);
  
-      public static final Translation2d coralIntakePortPosition = new Translation2d(1.12, 215); // TODO
-      public static final Translation2d coralIntakeStbdPosition = new Translation2d(1.12, 145); // TODO
-      public static final Translation2d coralClawPortPosition   = new Translation2d(0.66, 130); // TODO
-      public static final Translation2d coralClawStbdPosition   = new Translation2d(0.66, 230); // TODO
+      public static final Translation2d coralIntakePortPosition = new Translation2d(1.14, 215); // TODO
+      public static final Translation2d coralIntakeStbdPosition = new Translation2d(1.14, 145); // TODO
+      public static final Translation2d coralClawPortPosition   = new Translation2d(0.71, 130); // TODO
+      public static final Translation2d coralClawStbdPosition   = new Translation2d(0.71, 230); // TODO
       public static final Translation2d coralStowPosition       = new Translation2d(0.72,   0);
  
       public static final Translation2d algaeIntakePortPosition = new Translation2d(0.67,  70); // +20cm for testing
@@ -298,7 +298,7 @@ public final class Constants
 
     /* Algae manipulator speeds */
     public static final double algaeIntakeSpeed    = -1;
-    public static final double algaeHoldingVoltage = -2;
+    public static final double algaeHoldingVoltage = -1.35;
     public static final double algaeNetSpeed       =  1;
     public static final double algaeProcessorSpeed = 0.23;
     public static final double algaeHeldCurrent    = 55;
