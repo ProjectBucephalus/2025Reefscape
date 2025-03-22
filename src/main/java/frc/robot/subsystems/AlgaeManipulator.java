@@ -10,6 +10,7 @@ import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.DiffectorGeometry;
 import frc.robot.constants.IDConstants;
+import frc.robot.constants.MechanismConstants.AlgaeConfigs;
 import frc.robot.util.SD;
 
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -48,6 +49,7 @@ public class AlgaeManipulator extends SubsystemBase
   {
     status = Status.EMPTY;
     m_Algae = new TalonFX(IDConstants.algaeMotorID);
+    m_Algae.getConfigurator().apply(AlgaeConfigs.currentLimits);
     SD.IO_ALGAE_HOLD.init();
   }
 
@@ -70,7 +72,7 @@ public class AlgaeManipulator extends SubsystemBase
     SD.STATE_ALGAE.put(status.name());
     SD.SENSOR_ALGAE_CURRENT.put(Math.abs(m_Algae.getStatorCurrent().getValueAsDouble()));
     SD.SENSOR_ALGAE_TMEP.put(m_Algae.getDeviceTemp().getValueAsDouble());
-    double algaeHoldingSpeed = SD.IO_ALGAE_HOLD.get();
+    double algaeHoldingVoltage = SD.IO_ALGAE_HOLD.get();
 
     switch(status)
     {
@@ -87,7 +89,7 @@ public class AlgaeManipulator extends SubsystemBase
 
       case HOLDING:
         if (RobotContainer.algae) 
-          {m_Algae.setVoltage(algaeHoldingSpeed);}
+          {m_Algae.setVoltage(algaeHoldingVoltage);}
 
         else
           {status = Status.EMPTY;}

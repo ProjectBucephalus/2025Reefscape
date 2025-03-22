@@ -1,11 +1,22 @@
 package frc.robot.constants;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 public class MechanismConstants 
 {
+  public static class AlgaeConfigs
+  {
+    public static final CurrentLimitsConfigs currentLimits = 
+    new CurrentLimitsConfigs()
+      .withStatorCurrentLimitEnable(true)
+      .withSupplyCurrentLimit(60)
+      .withSupplyCurrentLowerLimit(15)
+      .withSupplyCurrentLowerTime(1);
+  }
+
   public static class ClimberConfigs
   {
     public static final double winchBalanceScalar = 0.05;
@@ -58,13 +69,13 @@ public class MechanismConstants
     /** Desired cruise speed of Motor, RPS */
     public static final double diffectorCruiseMotor = 90;
     /** Desired cruise speed of Motor when holding Algae, RPS */
-    public static final double diffectorAlgaeCruiseMotor = 75;
+    public static final double diffectorAlgaeCruiseMotor = 60;
     /** Desired acceleration of Motor for Elevation, RPS^2 */
     public static final double diffectorElevationAccelerationMotor = 150;
     /** Desired acceleration of Motor for Rotation, RPS^2 */
     public static final double diffectorRotationAccelerationMotor = 85;
     /** Desired acceleration of Motor for Rotation when holding Algae, RPS^2 */
-    public static final double diffectorAlgaeRotationAccelerationMotor = 45;
+    public static final double diffectorAlgaeRotationAccelerationMotor = 40;
     
     /** Desired cruise speed of Mechanism, RPS */
     public static final double diffectorCruise = diffectorCruiseMotor / gearboxRatio;
