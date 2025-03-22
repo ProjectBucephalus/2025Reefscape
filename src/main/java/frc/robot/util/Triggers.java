@@ -27,6 +27,15 @@ public class Triggers
       RobotContainer.copilot.getRawAxis(RobotContainer.manualDiffectorRotationAxis) > Constants.Control.manualDiffectorDeadband
     )
   );
+  public static final Trigger opposingBargeZoneTrigger = new Trigger
+  (
+    () -> 
+    (
+      (FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.bargeZoneBlue : FieldUtils.GeoFencing.bargeZoneRed)
+      .getDistance(RobotContainer.swerveState.Pose.getTranslation())
+    ) 
+    < FieldConstants.bargeWarningRange
+  );
   public static final Trigger opposingReefZoneTrigger = new Trigger
   (
     () -> 
