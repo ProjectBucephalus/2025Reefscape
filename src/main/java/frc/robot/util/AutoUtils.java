@@ -244,6 +244,24 @@ public class AutoUtils
     };
   }
 
+  public static Supplier<String> getClimbPathName()
+  {
+    return
+    () ->
+    {
+      double distanceFromFieldCenter = Math.abs(RobotContainer.swerveState.Pose.getY() - (FieldUtils.fieldWidth / 2));
+      int nearestCageNumber;
+      if (distanceFromFieldCenter > 6.85) 
+        {nearestCageNumber = 3;}
+      else if (distanceFromFieldCenter > 5.65)
+        {nearestCageNumber = 2;}
+      else 
+        {nearestCageNumber = 1;}
+
+      return ("cage" + nearestCageNumber + "climb").toLowerCase();
+    };
+  }
+
   public static Command autoScoreSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, CoralManipulator s_Coral, IntSupplier reefLevel, BooleanSupplier brakeSup, IntSupplier povAngle, BooleanSupplier cancelTrigger)
   {
     int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());

@@ -257,6 +257,7 @@ public class RobotContainer
     Triggers.cageDriveTrigger.and(driver.povUp())   .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage2", driver.rightTrigger())));
     Triggers.cageDriveTrigger.and(driver.povLeft()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage3", driver.rightTrigger())));
     Triggers.cageDriveTrigger.and(driver.povRight()).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage1", driver.rightTrigger())));
+    Triggers.cageDriveTrigger.and(driver.povDown()) .onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getClimbPathName(), driver.rightTrigger())));
 
     /* 
       * Station pathfinding controls 
@@ -379,16 +380,31 @@ public class RobotContainer
         Commands.sequence
         (
           s_Diffector.moveAndWaitCommand(Presets.climbPosition),
-          s_Climber.setStatusCommand(Climber.Status.CLIMB)
+          s_Climber.setStatusCommand(Climber.Status.CLIMB),
+          Commands.waitUntil(() -> !s_Climber.armSafe()),
+          s_Swerve.defer
+          (
+            () -> 
+            AutoBuilder.pathfindToPose
+            (
+              new Pose2d
+              (
+                swerveState.Pose.getTranslation().nearest
+                (
+                  FieldUtils.isRedAlliance() ? 
+                  FieldConstants.redClimbLineups : 
+                  FieldConstants.blueClimbLineups
+                ), 
+                Rotation2d.kZero
+              ), 
+              Constants.Auto.slowedConstraints
+            )
+          )
+          .until(s_Climber::offGround),
+          Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED)
         )
         .withName("Climb")
       );
-    copilot.start()
-      .and(s_Climber::armSafe)
-      .onTrue
-      (
-        AutoBuilder.pathfindToPose(null, Constants.Auto.slowedConstraints)
-      ); 
       
     copilot.back()
       .onTrue
