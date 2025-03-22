@@ -26,7 +26,7 @@ public class Triggers
       RobotContainer.copilot.getRawAxis(RobotContainer.manualDiffectorRotationAxis) > Constants.Control.manualDiffectorDeadband
     )
   );
-  public static final Trigger driverLeftRumbleTrigger = new Trigger
+  public static final Trigger opposingReefZoneTrigger = new Trigger
   (
     () -> 
     (
@@ -36,6 +36,28 @@ public class Triggers
     ) 
     < 
     (FieldUtils.GeoFencing.circumscribedReefZoneDiameter / 2) + 1
+  );
+  public static final Trigger homeReefZoneTrigger = new Trigger
+  (
+    () -> 
+    (
+      (FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.reefRed : FieldUtils.GeoFencing.reefBlue)
+      .getCentre()
+      .getDistance(RobotContainer.swerveState.Pose.getTranslation())
+    ) 
+    < 
+    (FieldUtils.GeoFencing.circumscribedReefZoneDiameter / 2) + 1
+  );
+  public static final Trigger algaeIntakeTrigger = new Trigger
+  (
+    homeReefZoneTrigger.and
+    (() ->
+      {
+        Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+        var reefIntakePositions = List.of(Presets.algae2PortPosition, Presets.algae2StbdPosition, Presets.algae3PortPosition, Presets.algae3StbdPosition).stream();
+        return (reefIntakePositions.anyMatch(relativeTarget::equals) && !RobotContainer.algae);
+      }
+    )
   );
   public static final Trigger coralIntakeTrigger = new Trigger
   (

@@ -22,6 +22,7 @@ import frc.robot.constants.*;
 import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.AlgaeManipulator.Status;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
 import frc.robot.util.libraries.Telemetry;
@@ -490,6 +491,10 @@ public class RobotContainer
       )
       .onTrue(s_Algae.setStatusCommand(AlgaeManipulator.Status.INTAKE))
       .onFalse(s_Algae.setStatusCommand(AlgaeManipulator.Status.HOLDING));
+
+    Triggers.algaeIntakeTrigger
+      .onTrue(s_Algae.setStatusCommand(Status.INTAKE))
+      .onFalse(Commands.either(s_Algae.setStatusCommand(Status.HOLDING), s_Algae.setStatusCommand(Status.EMPTY), () -> algae));
   }
 
   private void configureManualBindings()
@@ -541,7 +546,7 @@ public class RobotContainer
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
-    Triggers.driverLeftRumbleTrigger
+    Triggers.opposingReefZoneTrigger
       .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Penalty Zone")))
       .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_LEFT, "Penalty Zone")));
     Triggers.driverRightRumbleTrigger
