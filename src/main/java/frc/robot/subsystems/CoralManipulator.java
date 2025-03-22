@@ -66,7 +66,8 @@ public class CoralManipulator extends SubsystemBase
         else
         {
           speed = Constants.Manipulators.coralHoldingSpeed;
-          if (armPos > 90 && armPos <= 270)
+          armPos = RobotContainer.s_Diffector.getRelativeRotation();
+          if (armPos < 180)
             {speed = -speed;}
           m_Coral.set(speed);
         }

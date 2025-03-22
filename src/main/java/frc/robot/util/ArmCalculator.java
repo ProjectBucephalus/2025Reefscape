@@ -95,10 +95,18 @@ public class ArmCalculator
     }
 
     if (Presets.highDiffectorPositions.stream().anyMatch(relativeTarget::equals))
-    { // Forced safe path for barge
+    { // Forced safe path for high scoring positions
       pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), startPosition.getY()));
-      pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), goShortest(180, targetPosition.getY())));
-      pathOutput.add(new Translation2d(targetPosition.getX(), goShortest(180, targetPosition.getY())));
+      if (MathUtil.isNear(relativeTarget.getY(), 180, 90))
+      {
+        pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), goShortest(180, targetPosition.getY())));
+        pathOutput.add(new Translation2d(targetPosition.getX(), goShortest(180, targetPosition.getY())));
+      }
+      else
+      {
+        pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), goShortest(0, targetPosition.getY())));
+        pathOutput.add(new Translation2d(targetPosition.getX(), goShortest(0, targetPosition.getY())));
+      }
       pathOutput.add(targetPosition);
 
       return pathOutput;
