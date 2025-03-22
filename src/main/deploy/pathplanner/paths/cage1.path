@@ -47,7 +47,7 @@
   "reversed": false,
   "folder": "Cage Paths",
   "idealStartingState": {
-    "velocity": 2,
+    "velocity": 1,
     "rotation": 0.0
   },
   "useDefaultConstraints": true

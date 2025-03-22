@@ -47,7 +47,7 @@
   "reversed": false,
   "folder": "Processor Paths",
   "idealStartingState": {
-    "velocity": 2,
+    "velocity": 1,
     "rotation": 180.0
   },
   "useDefaultConstraints": true
