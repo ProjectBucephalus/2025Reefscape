@@ -83,7 +83,7 @@ public class Triggers
       return FieldUtils.getNearestCoralStation(robotPos).getDistance(robotPos) < FieldConstants.coralStationRange;
     }
   );
-  public static final Trigger copilotLeftRumbleTrigger = coralIntakeTrigger.or(algaeIntakePosTrigger.and(() -> RobotContainer.coral));
+  public static final Trigger copilotLeftRumbleTrigger = coralIntakeTrigger.or(algaeIntakePosTrigger.and(() -> RobotContainer.algae));
   public static final Trigger driverRightRumbleTrigger = 
     coralIntakeTrigger
     .and(atCoralStationTrigger)
