@@ -378,7 +378,7 @@ public class RobotContainer
       (
         Commands.sequence
         (
-          s_Diffector.moveAndWaitCommand(DiffectorConstants.Presets.climbPosition),
+          s_Diffector.moveAndWaitCommand(Presets.climbPosition),
           s_Climber.setStatusCommand(Climber.Status.CLIMB)
         )
         .withName("Climb")
@@ -395,10 +395,11 @@ public class RobotContainer
       (
         Commands.sequence
         (
-          s_Diffector.moveAndWaitCommand(DiffectorConstants.Presets.climbSafePosition),
+          s_Diffector.moveAndWaitCommand(Presets.climbSafePosition)
+            .onlyIf(() -> !s_Diffector.atRelativePosition(Presets.climbPosition)),
           s_Climber.setStatusCommand(Climber.Status.ACTIVE),
           Commands.waitUntil(s_Climber::armSafe),
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.climbPosition)
+          s_Diffector.moveToCommand(Presets.climbPosition)
         )
         .withName("PrepareClimb")
       );
