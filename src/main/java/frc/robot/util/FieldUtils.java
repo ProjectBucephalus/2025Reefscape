@@ -80,7 +80,7 @@ public class FieldUtils
 
   public static GeoFenceObject getNearestCoralStation(Translation2d robotPos)
   {
-    boolean northHalf = robotPos.getX() >= FieldUtils.fieldWidth / 2;
+    boolean northHalf = robotPos.getY() >= FieldUtils.fieldWidth / 2;
 
     return
     isRedAlliance() ?
