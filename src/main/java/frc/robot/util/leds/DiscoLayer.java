@@ -134,7 +134,7 @@ public class DiscoLayer
     // calculate max values based on viewWidth
     
     maxPos = viewWidth - 1;
-    maxLen = (int)Math.floor((double)viewWidth * 0.9);
+    maxLen = (int)Math.floor((double)viewWidth * LEDStrip.discoMaxLenMultiplier);
     maxVel = (double)viewWidth * LEDStrip.discoMaxVelMultiplier;
     maxAcc = maxVel * LEDStrip.discoMaxAccelMultiplier;
     maxGrow = (double)viewWidth * LEDStrip.discoMaxGrowMultiplier;

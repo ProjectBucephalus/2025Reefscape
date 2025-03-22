@@ -64,12 +64,12 @@ public class RobotContainer
   public static final Limelight io_LimelightStbd       = new Limelight(IDConstants.llStbdName);
   public static final CANifierAccess io_Canifier       = new CANifierAccess();
   public static final Rumbler io_Rumbler               = new Rumbler(driver, copilot);
-  //private final LEDRenderer io_Lights                  = new LEDRenderer();
-  //private LightLayer portStatusLayer                   = new LightLayer(s_Swerve, "PortStatus");
-  //private LightLayer stbdStatusLayer                   = new LightLayer(s_Swerve, "StbdStatus");
-  //private LightLayer haloPortLayer                     = new LightLayer(s_Swerve, "HaloPort");
-  //private LightLayer haloStbdLayer                     = new LightLayer(s_Swerve, "HaloStbd");
-  //private LightLayer allLEDsLayer                      = new LightLayer(s_Swerve, "AllLEDs");
+  private final LEDRenderer io_Lights                  = new LEDRenderer();
+  private LightLayer portStatusLayer                   = new LightLayer(s_Swerve, "PortStatus");
+  private LightLayer stbdStatusLayer                   = new LightLayer(s_Swerve, "StbdStatus");
+  private LightLayer haloPortLayer                     = new LightLayer(s_Swerve, "HaloPort");
+  private LightLayer haloStbdLayer                     = new LightLayer(s_Swerve, "HaloStbd");
+  private LightLayer allLEDsLayer                      = new LightLayer(s_Swerve, "AllLEDs");
 
   /* Driver Control Axis */
   public static final int translationAxis = Axis.kLeftY.value;
@@ -116,7 +116,7 @@ public class RobotContainer
     configureTestBindings();
 
     s_Swerve.registerTelemetry(logger::telemeterize);
-    //initLED();
+    initLED();
   }
 
   private void configureDriverBindings()
@@ -591,7 +591,7 @@ public class RobotContainer
     testing.povLeft().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 270)));
   }
 
-  /* private void initLED()
+  private void initLED()
   { 
     portStatusLayer.setSegments(6);
     portStatusLayer.setMode(Mode.STATICSEGMENT);
@@ -601,6 +601,7 @@ public class RobotContainer
     portStatusLayer.setPriority(1);
     portStatusLayer.setColor(Color.kBlack, Color.kTeal);
     portStatusLayer.setPeriod(0.2);
+    portStatusLayer.setBorder(false);
 
     stbdStatusLayer.setSegments(6);
     stbdStatusLayer.setMode(Mode.STATICSEGMENT);
@@ -611,6 +612,7 @@ public class RobotContainer
     stbdStatusLayer.setColor(Color.kBlack, Color.kPurple);
     stbdStatusLayer.setReversed(true);
     stbdStatusLayer.setPeriod(0.2);
+    stbdStatusLayer.setBorder(false);
 
     haloPortLayer.setStart(30);
     haloPortLayer.setWidth(30);
@@ -620,6 +622,7 @@ public class RobotContainer
     haloPortLayer.setPriority(1);
     haloPortLayer.setColor(Color.kOrange, Color.kBlack);
     haloPortLayer.setSegments(10);
+    haloPortLayer.setBorder(false);
 
     haloStbdLayer.setStart(60);
     haloStbdLayer.setWidth(30);
@@ -630,11 +633,13 @@ public class RobotContainer
     haloStbdLayer.setColor(Color.kYellow, Color.kBlack);
     haloStbdLayer.setSegments(10);
     haloStbdLayer.setReversed(true);
+    haloStbdLayer.setBorder(false);
 
     allLEDsLayer.setMode(Mode.WHOLESTRIP);
     allLEDsLayer.setType(LayerType.SOLID);
     allLEDsLayer.setPriority(-9);
-    allLEDsLayer.setColor(new Color(1.0, 0.0, 0.0), Color.kBlack);
+    allLEDsLayer.setColor(Color.kRed, Color.kBlack);
+    allLEDsLayer.setBorder(false);
 
 
     io_Lights.addLayer(portStatusLayer);
@@ -878,8 +883,8 @@ public class RobotContainer
     haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
     }));
 
-    allLEDsLayer.setPriority(-(allLEDsLayer.getPriority()));
-  } */
+//    allLEDsLayer.setPriority(-(allLEDsLayer.getPriority()));
+  } 
   public Command getAutoCommand()
   {
     // Gets the input string of command phrases, processes into a list of commands, and puts them into a sequential command group

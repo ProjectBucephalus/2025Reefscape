@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.LEDPattern.GradientType;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.util.Conversions;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.FieldUtils.DriverFieldRefs;
 import frc.robot.constants.Constants.LEDStrip;
@@ -186,7 +187,7 @@ public class LightLayer
       // in all other modes width can go over the end of the strip with no problems,
       //just must be less than the length of the strip(s)
 
-      if (newWidth < LEDStrip.lightsLen)
+      if (newWidth <= LEDStrip.lightsLen)
       {
         width = newWidth;
         tempBuff = new AddressableLEDBuffer(width);
@@ -264,8 +265,9 @@ public class LightLayer
     }
     else if (newMode == Mode.WHOLESTRIP)
     {
-      startLED = 1;
+      startLED = 0;
       width = LEDStrip.lightsLen;
+      tempBuff = new AddressableLEDBuffer(width);
     }
   }
 
@@ -578,12 +580,13 @@ public class LightLayer
         // call the update method to refresh layer attributes.
         disco.update();
 
-        // then copy the layer colour to the appropriate area of the appropriate buffer
+        // then copy the layer colour to the appropriate area of the buffer
         for(int i=0; i < disco.getLength(); i++)
         {
-          int j = disco.getStartLED() + i;
-          if (j >= width) {j-=width;}
-          tempBuff.setLED(j, disco.shade);
+          int bufferIndex = startLED + disco.getStartLED() + i;
+//          if (bufferIndex >= width) {bufferIndex-=width;}
+          bufferIndex = Conversions.wrap(bufferIndex, startLED, startLED + width - 1);
+          tempBuff.setLED(bufferIndex, disco.shade);
         }
 
         // layers will die of old age randomly between AgeLimit and AgeLimit*2 seconds
@@ -628,20 +631,22 @@ public class LightLayer
 
     // Then, copy the internal/temporary buffer onto the output buffer
     // First check startLED calculations haven't resulted in something out of bounds
-    while ((startLED >= LEDStrip.lightsLen)||(startLED < 0))
-    {
-      if (startLED >= LEDStrip.lightsLen) {startLED -= LEDStrip.lightsLen;}
-      if (startLED < 0) {startLED += LEDStrip.lightsLen;}
-    }
+    //while ((startLED >= LEDStrip.lightsLen)||(startLED < 0))
+    //{
+    //  if (startLED >= LEDStrip.lightsLen) {startLED -= LEDStrip.lightsLen;}
+    //  if (startLED < 0) {startLED += LEDStrip.lightsLen;}
+    //}
+    startLED = Conversions.wrap(startLED, 0, LEDStrip.lightsLen);
 
     // copy the buffer onto the output
-    for(int i = 0; i < width; i++)
+    for(int inputIndex = 0; inputIndex < width; inputIndex++)
     {
-      int j = startLED + i;
-      if (j >= LEDStrip.lightsLen) {j -= LEDStrip.lightsLen;}
-      if (!(tempBuff.getLED(i).equals(Color.kBlack)))
+      int outputIndex = startLED + inputIndex;
+      outputIndex = Conversions.wrap(outputIndex, 0, LEDStrip.lightsLen-1);
+//      if (j >= LEDStrip.lightsLen) {j -= LEDStrip.lightsLen;}
+      if (!(tempBuff.getLED(inputIndex).equals(Color.kBlack)))
       {
-        LEDBuffer.setLED(j, tempBuff.getLED(i));
+        LEDBuffer.setLED(outputIndex, tempBuff.getLED(inputIndex));
       }
     }
 
