@@ -229,10 +229,10 @@ public final class Constants
       public static final Translation2d coral1PortPosition      = new Translation2d(DiffectorGeometry.coralFunnelElevation, 210);
       public static final Translation2d coral1StbdPosition      = new Translation2d(DiffectorGeometry.coralFunnelElevation, 150);
  
-      public static final Translation2d coralIntakePortPosition = new Translation2d(1.12, 215); // TODO
-      public static final Translation2d coralIntakeStbdPosition = new Translation2d(1.12, 145); // TODO
-      public static final Translation2d coralClawPortPosition   = new Translation2d(0.66, 130); // TODO
-      public static final Translation2d coralClawStbdPosition   = new Translation2d(0.66, 230); // TODO
+      public static final Translation2d coralIntakePortPosition = new Translation2d(1.14, 215); // TODO
+      public static final Translation2d coralIntakeStbdPosition = new Translation2d(1.14, 145); // TODO
+      public static final Translation2d coralClawPortPosition   = new Translation2d(0.71, 130); // TODO
+      public static final Translation2d coralClawStbdPosition   = new Translation2d(0.71, 230); // TODO
       public static final Translation2d coralStowPosition       = new Translation2d(0.72,   0);
  
       public static final Translation2d algaeIntakePortPosition = new Translation2d(0.67,  70); // +20cm for testing
