@@ -400,7 +400,8 @@ public class RobotContainer
               Constants.Auto.slowedConstraints
             )
           )
-          .until(s_Climber::offGround)
+          .until(s_Climber::offGround),
+          Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED)
         )
         .withName("Climb")
       );
