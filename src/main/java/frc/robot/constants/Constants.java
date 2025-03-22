@@ -255,8 +255,6 @@ public final class Constants
         add(coral4StbdPosition);
         add(coral3PortPosition);
         add(coral3StbdPosition);
-        add(coral2PortPosition);
-        add(coral2StbdPosition);
       }};
     }
 
