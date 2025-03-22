@@ -268,6 +268,7 @@ public class GeoFenceObject
   {
     double distanceToEdgeX;
     double distanceToEdgeY;
+    double distance = 0;
 
     switch (objectType) 
     {
@@ -275,51 +276,55 @@ public class GeoFenceObject
         distanceToEdgeX = robotXY.getX() - Xa;
         distanceToEdgeY = robotXY.getY() - Ya;
         double dot = ((distanceToEdgeX * dXab) + (distanceToEdgeY * dYab)) / dot2ab; // Normalised dot product of the two lines
-        return robotXY.getDistance(new Translation2d(Conversions.clamp(Xa + dXab * dot, Xa, Xb), Conversions.clamp(Ya + dYab * dot, Ya, Yb)));
+        distance = robotXY.getDistance(new Translation2d(Conversions.clamp(Xa + dXab * dot, Xa, Xb), Conversions.clamp(Ya + dYab * dot, Ya, Yb)));
+        break;
     
       case point:
-        return robotXY.getDistance(centre);
+        distance = robotXY.getDistance(centre);
+        break;
 
       case walls:
         distanceToEdgeX = Math.min(robotXY.getX() - (Xa + radius), (Xb - radius) - robotXY.getX());
         distanceToEdgeY = Math.min((Yb - radius) - robotXY.getY(), robotXY.getY() - (Ya + radius));
-        return Math.min(distanceToEdgeX, distanceToEdgeY);
+        distance = Math.min(distanceToEdgeX, distanceToEdgeY);
+        break;
 
       case polygon:
-        return edgeLines.get(edgeReference.indexOf(robotXY.nearest(edgeReference))).getDistance(robotXY);
+        distance = edgeLines.get(edgeReference.indexOf(robotXY.nearest(edgeReference))).getDistance(robotXY);
+        break;
       
       case box:
         if (robotXY.getX() < Xa)
         {
           if (robotXY.getY() < Ya) // SW Corner
-            {return robotXY.getDistance(new Translation2d(Xa, Ya));}
+            {distance = robotXY.getDistance(new Translation2d(Xa, Ya));}
           else if (robotXY.getY() > Yb) // NW Corner
-            {return robotXY.getDistance(new Translation2d(Xa, Yb));}
+            {distance = robotXY.getDistance(new Translation2d(Xa, Yb));}
           else // W Cardinal
-            {return (Xa - radius) - robotXY.getX();}
+            {distance = (Xa - radius) - robotXY.getX();}
         }
         else if (robotXY.getX() > Xb)
         {
           if (robotXY.getY() < Ya) // SE Corner
-            {return robotXY.getDistance(new Translation2d(Xb, Ya));}
+            {distance = robotXY.getDistance(new Translation2d(Xb, Ya));}
           else if (robotXY.getY() > Yb) // NE Corner
-            {return robotXY.getDistance(new Translation2d(Xb, Yb));}
+            {distance = robotXY.getDistance(new Translation2d(Xb, Yb));}
           else // E Cardinal
-            {return robotXY.getX() - (Xb + radius);}
+            {distance = robotXY.getX() - (Xb + radius);}
         }
         else 
         {
           if (robotXY.getY() < Ya) // S Cardinal
-            {return (Ya - radius) - robotXY.getY();} 
+            {distance = (Ya - radius) - robotXY.getY();} 
           else if (robotXY.getY() > Yb) // N Cardinal
-            {return robotXY.getY() - (Yb + radius);}
+            {distance = robotXY.getY() - (Yb + radius);}
           else // Center (you've met a terrible fate *insert kazoo music here*)
-            {return 0;}
+            {distance = 0;}
         }
-
-      default:
-        return 0;
+        break;
     }
+
+    return Math.abs(distance);
   }
 
   /**

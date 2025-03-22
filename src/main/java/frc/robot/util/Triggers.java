@@ -9,7 +9,6 @@ import frc.robot.RobotContainer.HeadingStates;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.constants.FieldConstants;
-import frc.robot.util.FieldUtils.GeoFencing;
 
 public class Triggers 
 {
@@ -290,18 +289,5 @@ public class Triggers
       RobotContainer.s_Climber.climbReady() && RobotContainer.s_Diffector.climbReady() && RobotContainer.swerveState.Pose.getTranslation().getDistance(nearestClimbLineup) < Constants.Auto.atPosTolerance;
     }
   );
-  public static final Trigger atCoralStationLEDs = new Trigger
-  (
-    () ->
-    {
-      boolean northHalf = RobotContainer.swerveState.Pose.getTranslation().getX() >= FieldUtils.fieldWidth / 2;
-      GeoFenceObject nearestCoralStation =
-      FieldUtils.isRedAlliance() ?
-      northHalf ? GeoFencing.cornerNRed : GeoFencing.cornerSRed
-      :
-      northHalf ? GeoFencing.cornerNBlue : GeoFencing.cornerSBlue;
-      return
-      nearestCoralStation.getDistance(RobotContainer.swerveState.Pose.getTranslation()) < FieldConstants.coralStationRange;
-    }
-  );
+  public static final Trigger atCoralStationLEDs = atCoralStationTrigger;
 }

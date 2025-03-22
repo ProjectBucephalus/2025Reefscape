@@ -12,7 +12,6 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -23,8 +22,6 @@ import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
-import frc.robot.util.leds.LightLayer;
-import frc.robot.util.leds.LightLayer.*;
 import frc.robot.util.libraries.Telemetry;
 import frc.robot.util.Triggers;
 
@@ -522,11 +519,11 @@ public class RobotContainer
   {
     /* Driver rumble bindings */
     Triggers.driverLeftRumbleTrigger
-      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Penalty Zone")))
-      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_RIGHT, "Penalty Zone")));
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Penalty Zone")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_LEFT, "Penalty Zone")));
     Triggers.driverRightRumbleTrigger
-      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Intaked Successfully")))
-      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_LEFT, "Intaked Successfully")));
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Intaked Successfully")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_RIGHT, "Intaked Successfully")));
 
     /* Copilot rumble bindings */
     Triggers.copilotLeftRumbleTrigger
