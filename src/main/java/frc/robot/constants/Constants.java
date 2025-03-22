@@ -71,7 +71,7 @@ public final class Constants
 
     public static final int[] bargeIDs = 
     {
-      4, 5,  // Red Barge
+      //4, 5,  // Red Barge
       14, 15 // Blue Barge
     };
 
