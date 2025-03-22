@@ -240,8 +240,8 @@ public final class Constants
       public static final Translation2d coralClawStbdPosition   = new Translation2d(0.73, 229); // TODO
       public static final Translation2d coralStowPosition       = new Translation2d(0.72,   0);
  
-      public static final Translation2d algaeIntakePortPosition = new Translation2d(0.57,  70); // +20cm for testing
-      public static final Translation2d algaeIntakeStbdPosition = new Translation2d(0.57, 290); // +20cm for testing
+      public static final Translation2d algaeIntakePortPosition = new Translation2d(0.47,  70); // +20cm for testing
+      public static final Translation2d algaeIntakeStbdPosition = new Translation2d(0.47, 290); // +20cm for testing
       public static final Translation2d algaeStowPosition       = new Translation2d(0.80, 180);
 
       public static final ArrayList<Translation2d> lowDiffectorPositions = new ArrayList<Translation2d>()
@@ -293,8 +293,9 @@ public final class Constants
   public static final class Manipulators 
   {
     /* Coral manipulator speeds */
-    public static final double coralDeliverySpeed = -0.15;
-    public static final double coralHoldingSpeed  = -0.10;
+    public static final double coralLvl4DeliverySpeed = 0.15;
+    public static final double coralDeliverySpeed     = 0.30;
+    public static final double coralHoldingSpeed      = -0.10;
 
     /* Algae manipulator speeds */
     public static final double algaeIntakeSpeed    = -1;

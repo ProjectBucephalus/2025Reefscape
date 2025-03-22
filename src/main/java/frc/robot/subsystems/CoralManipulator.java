@@ -1,10 +1,14 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.IDConstants;
+import frc.robot.constants.Constants.DiffectorConstants.Presets;
+import frc.robot.constants.Constants.Manipulators;
+import frc.robot.constants.DiffectorGeometry;
 import frc.robot.util.Conversions;
 import frc.robot.util.FieldUtils;
 
@@ -35,7 +39,7 @@ public class CoralManipulator extends SubsystemBase
 
   /** For use in switch cases with smart directionality */
   private double speed;
-  private double armPos;
+  private double armAngle;
 
   public CoralManipulator() 
   {
@@ -65,9 +69,9 @@ public class CoralManipulator extends SubsystemBase
         {status = Status.DEFAULT;}
         else
         {
-          speed = Constants.Manipulators.coralHoldingSpeed;
-          armPos = RobotContainer.s_Diffector.getRelativeRotation();
-          if (armPos < 180)
+          speed = Manipulators.coralHoldingSpeed;
+          armAngle = RobotContainer.s_Diffector.getRelativeRotation();
+          if (armAngle < 180)
             {speed = -speed;}
           m_Coral.set(speed);
         }
@@ -75,15 +79,15 @@ public class CoralManipulator extends SubsystemBase
 
       case DELIVERY_SMART:
         int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
-        speed = -Constants.Manipulators.coralDeliverySpeed;
-        armPos = RobotContainer.s_Diffector.getRelativeRotation();
+        armAngle = RobotContainer.s_Diffector.getRelativeRotation();
+        double armHeight = RobotContainer.s_Diffector.getElevation();
+        speed = 
+        MathUtil.isNear(Presets.coral4PortPosition.getX(), armHeight, DiffectorGeometry.elevationTolerance) ?
+        Manipulators.coralLvl4DeliverySpeed
+        :
+        Manipulators.coralDeliverySpeed;
 
-        if (nearestReefFace == 5 || nearestReefFace == 6) 
-        {
-          speed = -speed;
-        }
-
-        if (armPos > 90 && armPos <= 270)
+        if ((nearestReefFace == 5 || nearestReefFace == 6) ^ (armAngle > 90 && armAngle <= 270)) 
           {speed = -speed;}
 
         m_Coral.set(speed);
@@ -91,15 +95,15 @@ public class CoralManipulator extends SubsystemBase
 
       case DELIVERY_LEFT:
       case DELIVERY_RIGHT:
-        speed = Constants.Manipulators.coralDeliverySpeed;
+        speed = -Manipulators.coralDeliverySpeed;
 
-        armPos = RobotContainer.s_Diffector.getRelativeRotation();
+        armAngle = RobotContainer.s_Diffector.getRelativeRotation();
         double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
 
         if 
         (
           status == Status.DELIVERY_RIGHT ^
-          (armPos > 90 && armPos <= 270) ^
+          (armAngle > 90 && armAngle <= 270) ^
           (
             robotRotation > 90 - Constants.Control.driverVisionTolerance && 
             robotRotation <= 270 + Constants.Control.driverVisionTolerance
@@ -115,10 +119,10 @@ public class CoralManipulator extends SubsystemBase
           {m_Coral.set(0);}
 
         else if (RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor())
-          {m_Coral.set(Constants.Manipulators.coralHoldingSpeed);}
+          {m_Coral.set(Manipulators.coralHoldingSpeed);}
 
         else if (!RobotContainer.io_Canifier.coralPortSensor() && RobotContainer.io_Canifier.coralStbdSensor()) 
-          {m_Coral.set(-Constants.Manipulators.coralHoldingSpeed);} 
+          {m_Coral.set(-Manipulators.coralHoldingSpeed);} 
           
         else if (!RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor()) 
           {m_Coral.set(0);}
