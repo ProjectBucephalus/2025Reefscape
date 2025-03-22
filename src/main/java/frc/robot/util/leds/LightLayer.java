@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.util.Conversions;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.FieldUtils.DriverFieldRefs;
+import frc.robot.util.SD;
 import frc.robot.constants.Constants.LEDStrip;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import edu.wpi.first.math.MathUtil;
@@ -57,11 +58,11 @@ public class LightLayer
   private double currTime;
   private int state;
   
+  /**
+   * default constructor, takes drivetrain refernce object and 'name' string and sets defaults for other values
+   */
   public LightLayer(CommandSwerveDrivetrain s_Swerve,String nameReq)
   {
-    /**
-     * default constructor, takes drivetrain refernce object and 'name' string and sets defaults for other values
-     */
     this.s_Swerve = s_Swerve;
     name = nameReq;
     tempBuff = new AddressableLEDBuffer(width);
@@ -96,6 +97,8 @@ public class LightLayer
         default:target = DriverFieldRefs.driverBlue1;
       }
     }
+
+    SD.IO_LED_BRIGHTNESS.init();
   }
 
   public void setSegments(int newSegments)
@@ -403,6 +406,17 @@ public class LightLayer
     return true;
   }
 
+  public Color adjustBrightness(Color inputColour)
+  {
+    double brightness = SD.IO_LED_BRIGHTNESS.get();
+    return new Color
+    (
+      inputColour.red   * brightness,
+      inputColour.green * brightness,
+      inputColour.blue  * brightness
+    );
+  }
+
   public void render(AddressableLEDBuffer LEDBuffer)
   {
     /**
@@ -646,7 +660,7 @@ public class LightLayer
 //      if (j >= LEDStrip.lightsLen) {j -= LEDStrip.lightsLen;}
       if (!(tempBuff.getLED(inputIndex).equals(Color.kBlack)))
       {
-        LEDBuffer.setLED(outputIndex, tempBuff.getLED(inputIndex));
+        LEDBuffer.setLED(outputIndex, adjustBrightness(tempBuff.getLED(inputIndex)));
       }
     }
 
@@ -655,10 +669,10 @@ public class LightLayer
     {
       int i = startLED - 1;
       if (i < 0) {i += LEDStrip.lightsLen;}
-      LEDBuffer.setLED(i, borderColor);
+      LEDBuffer.setLED(i, adjustBrightness(borderColor));
       i = startLED + width;
       if (i >= LEDStrip.lightsLen) {i -= LEDStrip.lightsLen;}
-      LEDBuffer.setLED(i, borderColor);
+      LEDBuffer.setLED(i, adjustBrightness(borderColor));
     }
   }
 }
