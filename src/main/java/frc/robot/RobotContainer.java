@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 
@@ -19,11 +20,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.swerve.*;
 import frc.robot.constants.*;
 import frc.robot.constants.Constants.DiffectorConstants;
+import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
 import frc.robot.util.libraries.Telemetry;
-import frc.robot.util.Triggers;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -465,8 +466,30 @@ public class RobotContainer
       );
 
     Triggers.atCoralStationTrigger.and(() -> !coral)
+      .and
+      (
+        () ->
+        {
+          var coralIntakePositions = List.of(Presets.coralIntakePortPosition, Presets.coralIntakeStbdPosition).stream();
+          return 
+          (coralIntakePositions.anyMatch(s_Diffector.getRelativeTarget()::equals));
+        }
+      )
       .onTrue(s_Coral.setStatusCommand(CoralManipulator.Status.INTAKE))
       .onFalse(s_Coral.setStatusCommand(CoralManipulator.Status.DEFAULT));
+
+    Triggers.atCoralStationTrigger.and(() -> !algae)
+      .and
+      (
+        () ->
+        {
+          var clawIntakePositions = List.of(Presets.coralClawPortPosition, Presets.coralClawStbdPosition).stream();
+          return 
+          (clawIntakePositions.anyMatch(s_Diffector.getRelativeTarget()::equals));
+        }
+      )
+      .onTrue(s_Algae.setStatusCommand(AlgaeManipulator.Status.INTAKE))
+      .onFalse(s_Algae.setStatusCommand(AlgaeManipulator.Status.HOLDING));
   }
 
   private void configureManualBindings()
