@@ -7,6 +7,7 @@ import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.Pair;
@@ -381,7 +382,14 @@ public class RobotContainer
           s_Climber.setStatusCommand(Climber.Status.CLIMB)
         )
         .withName("Climb")
-      );  
+      );
+    copilot.start()
+      .and(s_Climber::armSafe)
+      .onTrue
+      (
+        AutoBuilder.pathfindToPose(null, Constants.Auto.slowedConstraints)
+      ); 
+      
     copilot.back()
       .onTrue
       (
