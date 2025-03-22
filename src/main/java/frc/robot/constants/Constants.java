@@ -222,8 +222,8 @@ public final class Constants
       public static final Translation2d coral4StbdPosition      = new Translation2d(1.62,  20);
       public static final Translation2d coral3PortPosition      = new Translation2d(1.05, 325);
       public static final Translation2d coral3StbdPosition      = new Translation2d(1.05,  35);
-      public static final Translation2d coral2PortPosition      = new Translation2d(0.70, 325);
-      public static final Translation2d coral2StbdPosition      = new Translation2d(0.70,  35);
+      public static final Translation2d coral2PortPosition      = new Translation2d(0.68, 325);
+      public static final Translation2d coral2StbdPosition      = new Translation2d(0.68,  35);
       public static final Translation2d coral1ClawPortPosition  = new Translation2d(DiffectorGeometry.algaeClawElevation,  76);
       public static final Translation2d coral1ClawStbdPosition  = new Translation2d(DiffectorGeometry.algaeClawElevation, 284);
       public static final Translation2d coral1PortPosition      = new Translation2d(DiffectorGeometry.coralFunnelElevation, 210);
