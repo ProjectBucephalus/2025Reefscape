@@ -573,8 +573,11 @@ public class RobotContainer
   {
     /* Driver rumble bindings */
     Triggers.opposingReefZoneTrigger
-      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Penalty Zone")))
-      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_LEFT, "Penalty Zone")));
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Penalty Reef Zone")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_LEFT, "Penalty Reef Zone")));
+    Triggers.opposingBargeZoneTrigger
+      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Penalty Barge Zone")))
+      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_LEFT, "Penalty Barge Zone")));
     Triggers.driverRightRumbleTrigger
       .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Intaked Successfully")))
       .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_RIGHT, "Intaked Successfully")));

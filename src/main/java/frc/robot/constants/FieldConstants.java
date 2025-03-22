@@ -38,4 +38,6 @@ public class FieldConstants
   }};
 
   public static final double coralStationRange = 0.6;
+
+  public static final double bargeWarningRange = 0.6;
 }
