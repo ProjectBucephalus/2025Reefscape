@@ -34,7 +34,7 @@ public class MechanismConstants
     static
     {
       climberMotorConfig.Feedback.SensorToMechanismRatio = winchGearRatio;
-      climberMotorConfig.MotionMagic.MotionMagicCruiseVelocity = winchDefaultCruise;
+      climberMotorConfig.MotionMagic.MotionMagicCruiseVelocity = winchDefaultCruise * winchGearRatio;
       climberMotorConfig.MotionMagic.MotionMagicAcceleration = winchMotionMagicAccel;
       climberMotorConfig.Slot0.kP = 100;
       climberMotorConfig.Slot0.kI = 0;
