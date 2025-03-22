@@ -8,7 +8,6 @@ import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.HeadingStates;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
-import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.constants.FieldConstants;
 
 public class Triggers 
