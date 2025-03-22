@@ -154,6 +154,25 @@ public class RobotContainer
         )
         .withName("EjectCoral")
       );
+    driver.leftTrigger()
+      .and(() -> !coral)
+      .and
+      (
+        () ->
+        {
+          var highCoralPositions = 
+          List.of
+          (
+            Presets.coral4PortPosition, 
+            Presets.coral4StbdPosition, 
+            Presets.coral3PortPosition, 
+            Presets.coral3StbdPosition
+          ).stream();
+          return
+          (highCoralPositions.anyMatch(s_Diffector.getRelativeTarget()::equals));
+        }
+      )
+      .onTrue(s_Diffector.runOnce(() -> s_Diffector.goToAngle(0)));
     driver.leftBumper()
       .onTrue(s_Algae.setStatusCommand(AlgaeManipulator.Status.EJECT)).onFalse(s_Algae.setStatusCommand(AlgaeManipulator.Status.EMPTY));
 

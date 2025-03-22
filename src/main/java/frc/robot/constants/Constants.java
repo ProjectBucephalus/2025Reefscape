@@ -223,8 +223,8 @@ public final class Constants
       public static final Translation2d processorPositionPort   = new Translation2d(0.43,  90);
       public static final Translation2d processorPositionStbd   = new Translation2d(0.43,  270);
  
-      public static final Translation2d coral4PortPosition      = new Translation2d(1.62, 340);
-      public static final Translation2d coral4StbdPosition      = new Translation2d(1.62,  20);
+      public static final Translation2d coral4PortPosition      = new Translation2d(1.72, 325);
+      public static final Translation2d coral4StbdPosition      = new Translation2d(1.72,  35);
       public static final Translation2d coral3PortPosition      = new Translation2d(1.05, 325);
       public static final Translation2d coral3StbdPosition      = new Translation2d(1.05,  35);
       public static final Translation2d coral2PortPosition      = new Translation2d(0.675, 325);
@@ -293,8 +293,8 @@ public final class Constants
   public static final class Manipulators 
   {
     /* Coral manipulator speeds */
-    public static final double coralDeliverySpeed = -0.55;
-    public static final double coralHoldingSpeed  = -0.15;
+    public static final double coralDeliverySpeed = -0.15;
+    public static final double coralHoldingSpeed  = -0.10;
 
     /* Algae manipulator speeds */
     public static final double algaeIntakeSpeed    = -1;
