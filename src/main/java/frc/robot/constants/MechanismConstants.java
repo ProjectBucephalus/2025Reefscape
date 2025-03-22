@@ -12,9 +12,10 @@ public class MechanismConstants
     public static final CurrentLimitsConfigs currentLimits = 
     new CurrentLimitsConfigs()
       .withStatorCurrentLimitEnable(true)
-      .withSupplyCurrentLimit(60)
-      .withSupplyCurrentLowerLimit(15)
-      .withSupplyCurrentLowerTime(1);
+      .withSupplyCurrentLimit(40)
+      .withSupplyCurrentLowerLimit(5)
+      .withSupplyCurrentLowerTime(1)
+      .withStatorCurrentLimit(60);
   }
 
   public static class ClimberConfigs
