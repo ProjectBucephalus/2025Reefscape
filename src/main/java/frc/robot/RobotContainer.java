@@ -26,6 +26,10 @@ import frc.robot.subsystems.AlgaeManipulator.Status;
 import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.*;
 import frc.robot.util.libraries.Telemetry;
+import frc.robot.util.leds.*;
+import frc.robot.util.leds.LightLayer.Mode;
+import frc.robot.util.leds.LightLayer.LayerType;
+import edu.wpi.first.wpilibj.util.Color;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -590,7 +594,7 @@ public class RobotContainer
     stbdStatusLayer.setWidth(30);
     stbdStatusLayer.setType(LayerType.STATUS);
     stbdStatusLayer.setPriority(1);
-    stbdStatusLayer.setColor(Color.kBlack, Color.kPurple);
+    stbdStatusLayer.setColor(Color.kBlack, Color.kTeal);
     stbdStatusLayer.setReversed(true);
     stbdStatusLayer.setPeriod(0.2);
     stbdStatusLayer.setBorder(false);
@@ -601,7 +605,7 @@ public class RobotContainer
     haloPortLayer.setType(LayerType.SOLID);
     haloPortLayer.setPeriod(0.2);
     haloPortLayer.setPriority(1);
-    haloPortLayer.setColor(Color.kOrange, Color.kBlack);
+    haloPortLayer.setColor(Color.kYellow, Color.kBlack);
     haloPortLayer.setSegments(10);
     haloPortLayer.setBorder(false);
 

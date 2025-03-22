@@ -355,16 +355,16 @@ public final class Constants
     public static final int discoMax = 10;  
     /** minimum colour layers in disco mode */
     public static final int discoMin = 3;  
-    /**disco layers will randomly die of age between discoAgeLimit and 2x discoAgeLimit cycles */
+    /**disco layers will randomly die of age between discoAgeLimit and 2x discoAgeLimit seconds */
     public static final int discoAgeLimit = 10; 
     /** the probability of accel or growthrate changing in any update is 1 - this: (1 - 0.9 = 0.1 = 10% chance of change) */
     public static final double discoChangeChance = 0.9; 
     /** used to calculate maxLen based on viewWidth. */
-    public static final double discoMaxLenMultiplier = 0.6;
+    public static final double discoMaxLenMultiplier = 0.3;
     /** used to calculate maxVel based on viewWidth, at maximum velocity it will take 1/this seconds to traverse the strip. */
-    public static final double discoMaxVelMultiplier = 0.1; 
+    public static final double discoMaxVelMultiplier = 0.2; 
     /** used to calculate maxAccel, maxVel will be multiplied by this to get the value. */
-    public static final double discoMaxAccelMultiplier = 0.05; 
+    public static final double discoMaxAccelMultiplier = 0.02; 
     /** used to calculate maxGrow based on viewWidth. */
     public static final double discoMaxGrowMultiplier = 0.05; 
     /** multipied by maxGrow to get maxGrowRate */
