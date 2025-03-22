@@ -123,8 +123,8 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit() 
   {  
-    RobotContainer.io_LimelightPort.setIMUMode(2);
-    RobotContainer.io_LimelightStbd.setIMUMode(2);    
+    //RobotContainer.io_LimelightPort.setIMUMode(2);
+    //RobotContainer.io_LimelightStbd.setIMUMode(2);    
     RobotContainer.io_LimelightPort.setThrottle(0);
     RobotContainer.io_LimelightStbd.setThrottle(0);
     
@@ -141,8 +141,8 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit() 
   {
-    RobotContainer.io_LimelightPort.setIMUMode(2);
-    RobotContainer.io_LimelightStbd.setIMUMode(2);    
+    //RobotContainer.io_LimelightPort.setIMUMode(2);
+    //RobotContainer.io_LimelightStbd.setIMUMode(2);    
     RobotContainer.io_LimelightPort.setThrottle(0);
     RobotContainer.io_LimelightStbd.setThrottle(0);
 
