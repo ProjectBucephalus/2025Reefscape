@@ -101,6 +101,11 @@ public final class Constants
     public static final double rotationKP = 6;
     public static final double rotationKI = 0;
     public static final double rotationKD = 0;
+    
+    /* Rotation Control PID Values when holding Algae */
+    public static final double rotationKPAlgae = 5;
+    public static final double rotationKIAlgae = 0;
+    public static final double rotationKDAlgae = 1;
 
     /* Swerve Limit Values */
     /** Meters per Second */
@@ -194,7 +199,7 @@ public final class Constants
   public static final class DiffectorConstants
   {
     public static final boolean startingCoralState = true;
-    public static final boolean startingAlgaeState = false;
+    public static final boolean startingAlgaeState = true;
 
     /** Number of clock cycles delay before arm is calibrated after reaching a target */
     public static final int calibrationDelay = 30;
