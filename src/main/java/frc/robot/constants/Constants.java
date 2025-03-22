@@ -361,14 +361,16 @@ public final class Constants
     public static final int discoAgeLimit = 10; 
     /** the probability of accel or growthrate changing in any update is 1 - this: (1 - 0.9 = 0.1 = 10% chance of change) */
     public static final double discoChangeChance = 0.9; 
+    /** used to calculate maxLen based on viewWidth. */
+    public static final double discoMaxLenMultiplier = 0.6;
     /** used to calculate maxVel based on viewWidth, at maximum velocity it will take 1/this seconds to traverse the strip. */
-    public static final double discoMaxVelMultiplier = 0.3; 
+    public static final double discoMaxVelMultiplier = 0.1; 
     /** used to calculate maxAccel, maxVel will be multiplied by this to get the value. */
-    public static final double discoMaxAccelMultiplier = 0.1; 
+    public static final double discoMaxAccelMultiplier = 0.05; 
     /** used to calculate maxGrow based on viewWidth. */
-    public static final double discoMaxGrowMultiplier = 0.1; 
+    public static final double discoMaxGrowMultiplier = 0.05; 
     /** multipied by maxGrow to get maxGrowRate */
-    public static final double discoMaxGrowRateMultiplier = 0.1; 
+    public static final double discoMaxGrowRateMultiplier = 0.01; 
     /** at least one color value (r,g,b) must be above this for the colour to be valid */
     public static final double discoColorThreshold = 0.5; 
   }

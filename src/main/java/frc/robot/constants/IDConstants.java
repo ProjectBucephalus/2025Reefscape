@@ -59,6 +59,6 @@ public final class IDConstants
 
   /* LED Strip */
   /* _________ */
-  public static final int LEDPWM = 1;
+  public static final int LEDPWM = 6;
 
 }
