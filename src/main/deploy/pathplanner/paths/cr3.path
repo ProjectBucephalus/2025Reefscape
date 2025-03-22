@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 1.6130536869268817,
-        "y": 0.6677457514062631
+        "y": 0.6677457514062632
       },
       "isLocked": false,
       "linkedName": null
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
+    "maxVelocity": 3.0,
     "maxAcceleration": 5.0,
     "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 1050.0,
@@ -47,7 +47,7 @@
   "reversed": false,
   "folder": "Right Station Paths",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 1,
     "rotation": 144.0
   },
   "useDefaultConstraints": true
