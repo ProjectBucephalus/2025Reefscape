@@ -126,7 +126,11 @@ public class Climber extends SubsystemBase
         break;
 
       case MANUAL:
-        if (speed != 0)
+        if 
+        (
+          (speed > 0 && m_Climber.getPosition().getValueAsDouble() <= 1.05 * ClimberConstants.prepareWinchPos) || 
+          (speed < 0 && m_Climber.getPosition().getValueAsDouble() >= 0)
+        )
           {m_Climber.set(speed * Control.manualClimberScale);}
         else
         {
