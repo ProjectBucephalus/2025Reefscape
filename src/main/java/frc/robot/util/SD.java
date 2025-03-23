@@ -67,6 +67,7 @@ public class SD
 
   public static final BooleanKey DIFF_ESTOP = new BooleanKey("Diffector E-Stop", false);
   public static final BooleanKey OVERRIDE = new BooleanKey("OVERIDE MODE", false);
+  public static final BooleanKey CLIMB_OVERRIDE = new BooleanKey("Override Climber", false);
 
   public static void initSwerveDisplay(CommandSwerveDrivetrain s_Swerve)
   {
