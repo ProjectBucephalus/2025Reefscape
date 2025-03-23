@@ -104,20 +104,6 @@ public class Triggers
       }
     )
     .or(homeReefZoneTrigger.and(() -> RobotContainer.algae));
-  public static final Trigger copliotRightRumbleTrigger = new Trigger
-  (
-    () -> 
-    {
-      Translation2d robotPos = RobotContainer.swerveState.Pose.getTranslation();
-      Translation2d nearestClimbLineup = 
-      FieldUtils.isRedAlliance() ? 
-      robotPos.nearest(FieldConstants.redClimbLineups)
-      :
-      robotPos.nearest(FieldConstants.blueClimbLineups);
-
-      return RobotContainer.s_Climber.climbReady() && RobotContainer.s_Diffector.climbReady() && RobotContainer.swerveState.Pose.getTranslation().getDistance(nearestClimbLineup) < Constants.Auto.atPosTolerance;
-    }
-  );
   public static final Trigger bargeLEDs = new Trigger
   (
     () ->

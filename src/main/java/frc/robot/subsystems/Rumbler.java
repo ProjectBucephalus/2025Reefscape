@@ -100,6 +100,17 @@ public class Rumbler extends SubsystemBase
     }
   }
 
+  public Command timedRequestCommand(Sides queue, String requestID, double durationSeconds)
+  {
+    return 
+    Commands.sequence
+    (
+      requestCommand(true, queue, requestID),
+      Commands.waitSeconds(durationSeconds),
+      requestCommand(false, queue, requestID)
+    );
+  }
+
   @Override
   public void periodic()
   {

@@ -415,7 +415,8 @@ public class RobotContainer
             .onlyIf(() -> !s_Diffector.atRelativePosition(Presets.climbPosition)),
           s_Climber.setStatusCommand(Climber.Status.ACTIVE),
           Commands.waitUntil(s_Climber::armSafe),
-          s_Diffector.moveToCommand(Presets.climbPosition)
+          s_Diffector.moveToCommand(Presets.climbPosition),
+          io_Rumbler.timedRequestCommand(Sides.COPILOT_RIGHT, "Climb Ready", 1)
         )
         .withName("PrepareClimb")
       );
@@ -615,9 +616,6 @@ public class RobotContainer
     Triggers.copilotLeftRumbleTrigger
       .onTrue(io_Rumbler.requestCommand(true, Sides.COPILOT_LEFT, "Intake Full"))
       .onFalse(io_Rumbler.requestCommand(false, Sides.COPILOT_LEFT, "Intake Full"));
-    Triggers.copliotRightRumbleTrigger
-      .onTrue(io_Rumbler.requestCommand(true, Sides.COPILOT_RIGHT, "Climb Ready"))
-      .onFalse(io_Rumbler.requestCommand(false, Sides.COPILOT_RIGHT, "Climb Ready"));
   }
 
   private void configureTestBindings()
