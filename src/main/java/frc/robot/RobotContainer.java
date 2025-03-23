@@ -601,22 +601,22 @@ public class RobotContainer
   {
     /* Driver rumble bindings */
     Triggers.opposingReefZoneTrigger
-      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Penalty Reef Zone")))
-      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_LEFT, "Penalty Reef Zone")));
+      .onTrue(io_Rumbler.requestCommand(true, Sides.DRIVER_LEFT, "Penalty Reef Zone"))
+      .onFalse(io_Rumbler.requestCommand(false, Sides.DRIVER_LEFT, "Penalty Reef Zone"));
     Triggers.opposingBargeZoneTrigger
-      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_LEFT, "Penalty Barge Zone")))
-      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_LEFT, "Penalty Barge Zone")));
+      .onTrue(io_Rumbler.requestCommand(true, Sides.DRIVER_LEFT, "Penalty Barge Zone"))
+      .onFalse(io_Rumbler.requestCommand(false, Sides.DRIVER_LEFT, "Penalty Barge Zone"));
     Triggers.driverRightRumbleTrigger
-      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.DRIVER_RIGHT, "Intaked Successfully")))
-      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.DRIVER_RIGHT, "Intaked Successfully")));
+      .onTrue(io_Rumbler.requestCommand(true, Sides.DRIVER_RIGHT, "Intaked Successfully"))
+      .onFalse(io_Rumbler.requestCommand(false, Sides.DRIVER_RIGHT, "Intaked Successfully"));
 
     /* Copilot rumble bindings */
     Triggers.copilotLeftRumbleTrigger
-      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_LEFT, "Intake Full")))
-      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.COPILOT_LEFT, "Intake Full")));
+      .onTrue(io_Rumbler.requestCommand(true, Sides.COPILOT_LEFT, "Intake Full"))
+      .onFalse(io_Rumbler.requestCommand(false, Sides.COPILOT_LEFT, "Intake Full"));
     Triggers.copliotRightRumbleTrigger
-      .onTrue(io_Rumbler.runOnce(() -> io_Rumbler.addRequest(Sides.COPILOT_RIGHT, "Climb Ready")))
-      .onFalse(io_Rumbler.runOnce(() -> io_Rumbler.removeRequest(Sides.COPILOT_RIGHT, "Climb Ready")));
+      .onTrue(io_Rumbler.requestCommand(true, Sides.COPILOT_RIGHT, "Climb Ready"))
+      .onFalse(io_Rumbler.requestCommand(false, Sides.COPILOT_RIGHT, "Climb Ready"));
   }
 
   private void configureTestBindings()
