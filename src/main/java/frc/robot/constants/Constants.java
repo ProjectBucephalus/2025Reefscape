@@ -330,7 +330,7 @@ public final class Constants
     /** PWM port the strip is connected to. */
     public static final int LEDPWMPort = IDConstants.LEDPWM; 
     /** # of LED's in the strip, if more than one strip daisy-chained, total # of LED's */
-    public static final int lightsLen = 120; 
+    public static final int lightsLen = 118; 
     /** default width for a partial display layer. a good number is about 1/4 lightsLen */
     public static final int viewWidth = 30; 
     /** LED # at 0 degrees */
