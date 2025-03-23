@@ -645,7 +645,7 @@ public class RobotContainer
     stbdStatusLayer.setSegments(6);
     stbdStatusLayer.setMode(Mode.STATICSEGMENT);
     stbdStatusLayer.setStart(90);
-    stbdStatusLayer.setWidth(30);
+    stbdStatusLayer.setWidth(28);
     stbdStatusLayer.setType(LayerType.STATUS);
     stbdStatusLayer.setPriority(1);
     stbdStatusLayer.setColor(Color.kBlack, Color.kPurple);
