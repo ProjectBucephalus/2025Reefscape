@@ -381,7 +381,7 @@ public class RobotContainer
         (
           s_Diffector.moveAndWaitCommand(Presets.climbPosition),
           s_Climber.setStatusCommand(Climber.Status.CLIMB),
-          Commands.waitUntil(() -> !s_Climber.armSafe()),
+          Commands.waitUntil(s_Climber::autoDriveAngle),
           s_Swerve.defer
           (
             () -> 

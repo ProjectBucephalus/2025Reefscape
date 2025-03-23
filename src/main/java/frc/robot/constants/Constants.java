@@ -313,9 +313,10 @@ public final class Constants
   {
     public static final double stowWinchPos    = 0.0;
     public static final double safeWinchPos    = 4.5;
-    public static final double offGroundPos    = 3;
-    public static final double prepareWinchPos = 5.2; // TODO
-    public static final double climbWinchPos   = 1.7; // TODO
+    public static final double startDrivePos   = 4.7;
+    public static final double offGroundPos    = 2.5;
+    public static final double prepareWinchPos = 5.5; // TODO
+    public static final double climbWinchPos   = 2.0; // TODO
     /** The furthest into the robot the climber can attempt to go whilst balancing */
     public static final double climbActiveInnerLimit = 1.4; // TODO
     /** The furthest out of the robot the climber can attempt to go whilst balancing */
