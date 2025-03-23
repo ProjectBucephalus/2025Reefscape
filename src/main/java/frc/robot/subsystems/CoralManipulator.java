@@ -70,6 +70,8 @@ public class CoralManipulator extends SubsystemBase
           {m_Coral.set(-Manipulators.coralHoldingSpeed);} 
         else if (!RobotContainer.coral)
           {status = Status.DEFAULT;}
+        else
+          {m_Coral.set(Manipulators.coralHoldingSpeed);}
         break;
 
       case INTAKE:
