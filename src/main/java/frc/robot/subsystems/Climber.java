@@ -126,7 +126,7 @@ public class Climber extends SubsystemBase
           
           if (SD.OVERRIDE.get()) 
           {
-            adjustedClimberPos += RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() * ClimberConfigs.winchBalanceScalar;
+            adjustedClimberPos += (RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() - ClimberConstants.targetRobotClimbPitch) * ClimberConfigs.winchBalanceScalar;
             adjustedClimberPos = Conversions.clamp(adjustedClimberPos, ClimberConstants.climbActiveInnerLimit, ClimberConstants.climbActiveOuterLimit);
           }
 
