@@ -470,46 +470,47 @@ public class RobotContainer
             s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPositionStbd), 
             s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPositionPort), 
             () -> swerveState.Pose.getX() >= 8.774
-          ),
-          s_Diffector.coralScorePosCommand(1), 
+          )
+          .withName("Processor"),
+          s_Diffector.coralScorePosCommand(1).withName("Coral1"), 
           algaeModifier
         )
-        .withName("Level1")
       );
 
-    /* Stow pos*/
     copilot.povUp()
       .onTrue
       (
         Commands.either
         (
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeStowPosition), // Algae stow pos
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralStowPosition), // Coral stow pos
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeStowPosition),
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.coralStowPosition), 
           algaeModifier
         )
         .withName("StowPos")
       );
 
-    /* Transfer pos */
     copilot.povDown()
       .onTrue
       (
         Commands.either
         (
-          Commands.either // Algae intake pos
+          Commands.either
           (
             s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePortPosition), 
             s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakeStbdPosition), 
             () ->
             {
               double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
-              return robotRotation < 180; // > 90 - Constants.Control.driverVisionTolerance && robotRotation <= 270 + Constants.Control.driverVisionTolerance;
+              return robotRotation < 180;
             }
-          ),
-          s_Diffector.coralScorePosCommand(0), // Coral score level 1 with coral manipulator
+          )
+          .withName("AlgaeGroundIntake"),
+          s_Coral.setStatusCommand(CoralManipulator.Status.WIGGLE)
+            .until(copilot.povDown().negate())
+            .andThen(s_Coral.setStatusCommand(CoralManipulator.Status.DEFAULT))
+            .withName("CoralWiggle"),
           algaeModifier
         )
-        .withName("Level1Alt/AlgaeGround")
       );
 
     /* Game piece intake position controls */

@@ -32,7 +32,7 @@ public class CoralManipulator extends SubsystemBase
    * And if the arm position is more than 180 degrees, then the speed is set to negitive, 
    * And while holding, if one of the beam breaks don't see the coral, then coral moves to that beam break till they both see them)
    */
-  public enum Status {INTAKE, DELIVERY_LEFT, DELIVERY_RIGHT, DEFAULT, DELIVERY_SMART}
+  public enum Status {INTAKE, DELIVERY_LEFT, DELIVERY_RIGHT, DEFAULT, DELIVERY_SMART, WIGGLE}
 
   /* Declaration of the enum variable */
   private Status status;
@@ -63,10 +63,18 @@ public class CoralManipulator extends SubsystemBase
 
     switch(status)
     {
+      case WIGGLE:
+        if (RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor())
+          {m_Coral.set(Manipulators.coralHoldingSpeed);}
+        else if (!RobotContainer.io_Canifier.coralPortSensor() && RobotContainer.io_Canifier.coralStbdSensor()) 
+          {m_Coral.set(-Manipulators.coralHoldingSpeed);} 
+        else if (!RobotContainer.coral)
+          {status = Status.DEFAULT;}
+        break;
+
       case INTAKE:
-      
         if (RobotContainer.coral) 
-        {status = Status.DEFAULT;}
+          {status = Status.DEFAULT;}
         else
         {
           speed = Manipulators.coralHoldingSpeed;
