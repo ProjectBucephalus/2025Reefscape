@@ -64,12 +64,8 @@ public class CoralManipulator extends SubsystemBase
     switch(status)
     {
       case WIGGLE:
-        if (RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor())
-          {m_Coral.set(Manipulators.coralHoldingSpeed);}
-        else if (!RobotContainer.io_Canifier.coralPortSensor() && RobotContainer.io_Canifier.coralStbdSensor()) 
+        if (!RobotContainer.io_Canifier.coralPortSensor() && RobotContainer.io_Canifier.coralStbdSensor()) 
           {m_Coral.set(-Manipulators.coralHoldingSpeed);} 
-        else if (!RobotContainer.coral)
-          {status = Status.DEFAULT;}
         else
           {m_Coral.set(Manipulators.coralHoldingSpeed);}
         break;
