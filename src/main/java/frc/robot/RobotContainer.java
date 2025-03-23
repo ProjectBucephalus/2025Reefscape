@@ -421,7 +421,7 @@ public class RobotContainer
       );
 
     copilot.back().or(copilot.start())
-      .onTrue(s_Climber.runOnce(s_Climber::unlockClimb));
+      .onTrue(Commands.runOnce(s_Climber::unlockClimb));
 
     /* Game piece scoring and intake positions */
     copilot.y()
