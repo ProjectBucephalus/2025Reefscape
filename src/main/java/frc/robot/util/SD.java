@@ -18,6 +18,7 @@ public class SD
   public static final DoubleKey  IO_LL_EXPOSURE = new DoubleKey("Exposure Setting", 0);
   public static final BooleanKey IO_LL_EXPOSURE_UP = new BooleanKey("Increase Exposure", false);
   public static final BooleanKey IO_LL_EXPOSURE_DOWN = new BooleanKey("Decrease Exposure", false);
+  public static final DoubleKey  IO_LED_BRIGHTNESS = new DoubleKey("LED Brightness", 1);
 
   public static final BooleanKey CALIBRATE_BOT_ROTATION = new BooleanKey("Rotation Known", false);
   public static final BooleanKey CALIBRATE_DIFF = new BooleanKey("Overide: Calibrate Arm", false);
@@ -66,6 +67,7 @@ public class SD
 
   public static final BooleanKey DIFF_ESTOP = new BooleanKey("Diffector E-Stop", false);
   public static final BooleanKey OVERRIDE = new BooleanKey("OVERIDE MODE", false);
+  public static final BooleanKey CLIMB_OVERRIDE = new BooleanKey("Override Climber", false);
 
   public static void initSwerveDisplay(CommandSwerveDrivetrain s_Swerve)
   {

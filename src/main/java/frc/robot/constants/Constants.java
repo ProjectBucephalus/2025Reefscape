@@ -47,7 +47,7 @@ public final class Constants
     public static final double manualDiffectorRotationScalar = 2;
     /** Scalar for braking effect of diffector arm being higher than 1m */
     public static final double armBrakeRate = 1.5;
-    public static final double manualClimberScale = -1;
+    public static final double manualClimberScale = 1;
   }
 
   public static final class Vision
@@ -223,12 +223,12 @@ public final class Constants
       public static final Translation2d processorPositionPort   = new Translation2d(0.43,  90);
       public static final Translation2d processorPositionStbd   = new Translation2d(0.43,  270);
  
-      public static final Translation2d coral4PortPosition      = new Translation2d(1.62, 340);
-      public static final Translation2d coral4StbdPosition      = new Translation2d(1.62,  20);
+      public static final Translation2d coral4PortPosition      = new Translation2d(1.72, 325);
+      public static final Translation2d coral4StbdPosition      = new Translation2d(1.72,  35);
       public static final Translation2d coral3PortPosition      = new Translation2d(1.05, 325);
       public static final Translation2d coral3StbdPosition      = new Translation2d(1.05,  35);
-      public static final Translation2d coral2PortPosition      = new Translation2d(0.68, 325);
-      public static final Translation2d coral2StbdPosition      = new Translation2d(0.68,  35);
+      public static final Translation2d coral2PortPosition      = new Translation2d(0.675, 325);
+      public static final Translation2d coral2StbdPosition      = new Translation2d(0.675,  35);
       public static final Translation2d coral1ClawPortPosition  = new Translation2d(DiffectorGeometry.algaeClawElevation,  76);
       public static final Translation2d coral1ClawStbdPosition  = new Translation2d(DiffectorGeometry.algaeClawElevation, 284);
       public static final Translation2d coral1PortPosition      = new Translation2d(DiffectorGeometry.coralFunnelElevation, 210);
@@ -240,8 +240,8 @@ public final class Constants
       public static final Translation2d coralClawStbdPosition   = new Translation2d(0.73, 229); // TODO
       public static final Translation2d coralStowPosition       = new Translation2d(0.72,   0);
  
-      public static final Translation2d algaeIntakePortPosition = new Translation2d(0.67,  70); // +20cm for testing
-      public static final Translation2d algaeIntakeStbdPosition = new Translation2d(0.67, 290); // +20cm for testing
+      public static final Translation2d algaeIntakePortPosition = new Translation2d(0.47,  70); // +20cm for testing
+      public static final Translation2d algaeIntakeStbdPosition = new Translation2d(0.47, 290); // +20cm for testing
       public static final Translation2d algaeStowPosition       = new Translation2d(0.80, 180);
 
       public static final ArrayList<Translation2d> lowDiffectorPositions = new ArrayList<Translation2d>()
@@ -293,15 +293,16 @@ public final class Constants
   public static final class Manipulators 
   {
     /* Coral manipulator speeds */
-    public static final double coralDeliverySpeed = -0.55;
-    public static final double coralHoldingSpeed  = -0.15;
+    public static final double coralLvl4DeliverySpeed = 0.15;
+    public static final double coralDeliverySpeed     = 0.30;
+    public static final double coralHoldingSpeed      = -0.10;
 
     /* Algae manipulator speeds */
     public static final double algaeIntakeSpeed    = -1;
     public static final double algaeHoldingVoltage = -1.35;
     public static final double algaeNetSpeed       =  1;
-    public static final double algaeProcessorSpeed = 0.23;
-    public static final double algaeHeldCurrent    = 55;
+    public static final double algaeProcessorSpeed =  0.9;
+    public static final double algaeHeldCurrent    = 45;
     public static final double algaeReleaseCurrent =  4;
 
     /** Algae net shooting range for rotation snapping, m */
@@ -312,12 +313,14 @@ public final class Constants
   {
     public static final double stowWinchPos    = 0.0;
     public static final double safeWinchPos    = 4.5;
-    public static final double prepareWinchPos = 6.2; // TODO
-    public static final double climbWinchPos   = 2.5; // TODO
+    public static final double startDrivePos   = 4.7;
+    public static final double offGroundPos    = 2.5;
+    public static final double prepareWinchPos = 5.5; // TODO
+    public static final double climbWinchPos   = 2.0; // TODO
     /** The furthest into the robot the climber can attempt to go whilst balancing */
-    public static final double climbActiveInnerLimit = 1.75; // TODO
+    public static final double climbActiveInnerLimit = 1.4; // TODO
     /** The furthest out of the robot the climber can attempt to go whilst balancing */
-    public static final double climbActiveOuterLimit = 3.0; // TODO
+    public static final double climbActiveOuterLimit = 2; // TODO
   }
 
   public static final class LEDStrip
@@ -328,7 +331,7 @@ public final class Constants
     /** PWM port the strip is connected to. */
     public static final int LEDPWMPort = IDConstants.LEDPWM; 
     /** # of LED's in the strip, if more than one strip daisy-chained, total # of LED's */
-    public static final int lightsLen = 120; 
+    public static final int lightsLen = 118; 
     /** default width for a partial display layer. a good number is about 1/4 lightsLen */
     public static final int viewWidth = 30;
     /** Start and end positions for Volaans displays */

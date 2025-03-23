@@ -13,7 +13,9 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.util.FieldUtils;
@@ -122,9 +124,7 @@ public class Robot extends TimedRobot
 
   @Override
   public void autonomousInit() 
-  {  
-    //RobotContainer.io_LimelightPort.setIMUMode(2);
-    //RobotContainer.io_LimelightStbd.setIMUMode(2);    
+  {     
     RobotContainer.io_LimelightPort.setThrottle(0);
     RobotContainer.io_LimelightStbd.setThrottle(0);
     
@@ -141,8 +141,6 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit() 
   {
-    //RobotContainer.io_LimelightPort.setIMUMode(2);
-    //RobotContainer.io_LimelightStbd.setIMUMode(2);    
     RobotContainer.io_LimelightPort.setThrottle(0);
     RobotContainer.io_LimelightStbd.setThrottle(0);
 
@@ -151,6 +149,15 @@ public class Robot extends TimedRobot
 
     RobotContainer.s_Coral.setStatus(CoralManipulator.Status.DEFAULT);
     RobotContainer.s_Algae.setStatus(AlgaeManipulator.Status.EMPTY);
+
+    RobotContainer.io_Rumbler.requestCommand(true, Sides.DRIVER_LEFT, "Teleop Start")
+      .andThen(Commands.waitSeconds(1.5))
+      .andThen(RobotContainer.io_Rumbler.requestCommand(false, Sides.DRIVER_LEFT, "Teleop Start"))
+      .schedule();
+    RobotContainer.io_Rumbler.requestCommand(true, Sides.DRIVER_RIGHT, "Teleop Start")
+      .andThen(Commands.waitSeconds(1.5))
+      .andThen(RobotContainer.io_Rumbler.requestCommand(false, Sides.DRIVER_RIGHT, "Teleop Start"))
+      .schedule();
   }
 
   @Override
