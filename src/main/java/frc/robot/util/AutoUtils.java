@@ -251,9 +251,9 @@ public class AutoUtils
     {
       double distanceFromFieldCenter = Math.abs(RobotContainer.swerveState.Pose.getY() - (FieldUtils.fieldWidth / 2));
       int nearestCageNumber;
-      if (distanceFromFieldCenter > 3.425) 
+      if (distanceFromFieldCenter > 2.85) 
         {nearestCageNumber = 3;}
-      else if (distanceFromFieldCenter > 2.825)
+      else if (distanceFromFieldCenter > 2.60)
         {nearestCageNumber = 2;}
       else 
         {nearestCageNumber = 1;}
