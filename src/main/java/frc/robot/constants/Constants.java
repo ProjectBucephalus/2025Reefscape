@@ -335,7 +335,16 @@ public final class Constants
     /** # of LED's in the strip, if more than one strip daisy-chained, total # of LED's */
     public static final int lightsLen = 118; 
     /** default width for a partial display layer. a good number is about 1/4 lightsLen */
-    public static final int viewWidth = 30; 
+    public static final int viewWidth = 30;
+    /** Start and end positions for Volaans displays */
+    public static final int stbdStatusStart = 86;
+    public static final int stbdStatusWidth = 30;
+    public static final int portStatusStart = 0;
+    public static final int portStatusWidth = 30;
+    public static final int stbdHaloStart = 58;
+    public static final int stbdHaloWidth = 28;
+    public static final int portHaloStart = 30;
+    public static final int portHaloWidth = 28;
     /** LED # at 0 degrees */
     public static final int startOffset = 1; 
     /** used to calculate the LED pointing in a particular direction */
@@ -352,10 +361,10 @@ public final class Constants
     public static final int pointerGradientThreshold = 5; 
     /** start and end LED #'s for the 'starboard' segment */
     public static final int stbdLEDsStart = 0; 
-    public static final int stbdLEDsEnd = 59;
+    public static final int stbdLEDsEnd = 57;
     /** start and end LED #'s for the 'port' segment */
-    public static final int portLEDsStart = 60; 
-    public static final int portLEDsEnd = 119;
+    public static final int portLEDsStart = 58; 
+    public static final int portLEDsEnd = 115;
     /** maximum colour layers in disco mode */
     public static final int discoMax = 10;  
     /** minimum colour layers in disco mode */
