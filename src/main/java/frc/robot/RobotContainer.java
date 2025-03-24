@@ -33,12 +33,9 @@ import frc.robot.util.FieldUtils;
 import frc.robot.util.SD;
 import frc.robot.util.Triggers;
 import frc.robot.util.leds.LightLayer;
-import frc.robot.util.leds.LightLayer.*;
 import frc.robot.util.libraries.Telemetry;
-import frc.robot.util.leds.*;
 import frc.robot.util.leds.LightLayer.Mode;
 import frc.robot.util.leds.LightLayer.LayerType;
-import edu.wpi.first.wpilibj.util.Color;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
