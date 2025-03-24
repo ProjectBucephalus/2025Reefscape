@@ -417,7 +417,7 @@ public class RobotContainer
         Commands.sequence
         (
           s_Diffector.moveAndWaitCommand(Presets.climbSafePosition)
-            .onlyIf(() -> !s_Diffector.atRelativePosition(Presets.climbPosition)),
+            .unless(() -> s_Diffector.atRelativePosition(Presets.climbPosition)),
           s_Climber.setStatusCommand(Climber.Status.ACTIVE),
           Commands.waitUntil(s_Climber::armSafe),
           s_Diffector.moveToCommand(Presets.climbPosition),

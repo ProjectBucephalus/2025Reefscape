@@ -112,7 +112,7 @@ public class Climber extends SubsystemBase
         break;
 
       case ACTIVE:
-        if (RobotContainer.s_Diffector.climbSafe())
+        if (RobotContainer.s_Diffector.climbSafe() || (m_Climber.getPosition().getValueAsDouble() >= ClimberConstants.climbWinchPos))
         {
           m_Climber.setControl(motionMagic.withPosition(ClimberConstants.prepareWinchPos));
           SD.CLIMBER_TARGET.put(ClimberConstants.prepareWinchPos);
