@@ -100,6 +100,11 @@ public class Rumbler extends SubsystemBase
     }
   }
 
+  public Command whileTriggerRequestCommand(Sides queue, String requestID)
+  {
+    return Commands.startEnd(() -> addRequest(queue, requestID), () -> removeRequest(queue, requestID));
+  }
+
   public Command timedRequestCommand(Sides queue, String requestID, double durationSeconds)
   {
     return 

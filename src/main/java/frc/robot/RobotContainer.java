@@ -603,19 +603,15 @@ public class RobotContainer
   {
     /* Driver rumble bindings */
     Triggers.opposingReefZoneTrigger
-      .onTrue(io_Rumbler.requestCommand(true, Sides.DRIVER_LEFT, "Penalty Reef Zone"))
-      .onFalse(io_Rumbler.requestCommand(false, Sides.DRIVER_LEFT, "Penalty Reef Zone"));
+      .whileTrue(io_Rumbler.whileTriggerRequestCommand(Sides.DRIVER_LEFT, "Penalty Reef Zone"));
     Triggers.opposingBargeZoneTrigger
-      .onTrue(io_Rumbler.requestCommand(true, Sides.DRIVER_LEFT, "Penalty Barge Zone"))
-      .onFalse(io_Rumbler.requestCommand(false, Sides.DRIVER_LEFT, "Penalty Barge Zone"));
+      .whileTrue(io_Rumbler.whileTriggerRequestCommand(Sides.DRIVER_LEFT, "Penalty Barge Zone"));
     Triggers.driverRightRumbleTrigger
-      .onTrue(io_Rumbler.requestCommand(true, Sides.DRIVER_RIGHT, "Intaked Successfully"))
-      .onFalse(io_Rumbler.requestCommand(false, Sides.DRIVER_RIGHT, "Intaked Successfully"));
+      .whileTrue(io_Rumbler.whileTriggerRequestCommand(Sides.DRIVER_RIGHT, "Intaked Successfully"));
 
     /* Copilot rumble bindings */
     Triggers.copilotLeftRumbleTrigger
-      .onTrue(io_Rumbler.requestCommand(true, Sides.COPILOT_LEFT, "Intake Full"))
-      .onFalse(io_Rumbler.requestCommand(false, Sides.COPILOT_LEFT, "Intake Full"));
+      .whileTrue(io_Rumbler.whileTriggerRequestCommand(Sides.COPILOT_LEFT, "Intake Full"));
   }
 
   private void configureTestBindings()
