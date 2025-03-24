@@ -12,6 +12,7 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
@@ -25,7 +26,6 @@ import frc.robot.constants.Constants.DiffectorConstants;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.AlgaeManipulator.Status;
-import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.util.AutoUtils;
 import frc.robot.util.Conversions;
 import frc.robot.util.FieldUtils;
@@ -71,7 +71,10 @@ public class RobotContainer
   public static final Limelight io_LimelightPort       = new Limelight(IDConstants.llPortName);
   public static final Limelight io_LimelightStbd       = new Limelight(IDConstants.llStbdName);
   public static final CANifierAccess io_Canifier       = new CANifierAccess();
-  public static final Rumbler io_Rumbler               = new Rumbler(driver, copilot);
+  public static final RumbleRequester io_driverRight   = new RumbleRequester(driver, RumbleType.kRightRumble, SD.RUMBLE_D_R::put, SD.IO_RUMBLE_D::get);
+  public static final RumbleRequester io_driverLeft    = new RumbleRequester(driver, RumbleType.kLeftRumble, SD.RUMBLE_D_L::put, SD.IO_RUMBLE_D::get);
+  public static final RumbleRequester io_copilotRight  = new RumbleRequester(copilot, RumbleType.kRightRumble, SD.RUMBLE_C_R::put, SD.IO_RUMBLE_C::get);
+  public static final RumbleRequester io_copilotLeft   = new RumbleRequester(copilot, RumbleType.kLeftRumble, SD.RUMBLE_C_L::put, SD.IO_RUMBLE_C::get);
   private final LEDRenderer io_Lights                  = new LEDRenderer();
   private LightLayer portStatusLayer                   = new LightLayer(s_Swerve, "PortStatus");
   private LightLayer stbdStatusLayer                   = new LightLayer(s_Swerve, "StbdStatus");
@@ -416,7 +419,7 @@ public class RobotContainer
           s_Climber.setStatusCommand(Climber.Status.ACTIVE),
           Commands.waitUntil(s_Climber::armSafe),
           s_Diffector.moveToCommand(Presets.climbPosition),
-          io_Rumbler.timedRequestCommand(Sides.COPILOT_RIGHT, "Climb Ready", 1)
+          io_copilotRight.timedRequestCommand("Climb Ready", 1)
         )
         .withName("PrepareClimb")
       );
@@ -602,16 +605,12 @@ public class RobotContainer
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
-    Triggers.opposingReefZoneTrigger
-      .whileTrue(io_Rumbler.whileTriggerRequestCommand(Sides.DRIVER_LEFT, "Penalty Reef Zone"));
-    Triggers.opposingBargeZoneTrigger
-      .whileTrue(io_Rumbler.whileTriggerRequestCommand(Sides.DRIVER_LEFT, "Penalty Barge Zone"));
-    Triggers.driverRightRumbleTrigger
-      .whileTrue(io_Rumbler.whileTriggerRequestCommand(Sides.DRIVER_RIGHT, "Intaked Successfully"));
+    io_driverLeft.addRumbleTrigger("Penalty Reef Zone", Triggers.opposingReefZoneTrigger);
+    io_driverLeft.addRumbleTrigger("Penalty Barge Zone", Triggers.opposingBargeZoneTrigger);
+    io_driverRight.addRumbleTrigger( "Intaked Successfully", Triggers.driverRightRumbleTrigger);
 
     /* Copilot rumble bindings */
-    Triggers.copilotLeftRumbleTrigger
-      .whileTrue(io_Rumbler.whileTriggerRequestCommand(Sides.COPILOT_LEFT, "Intake Full"));
+    io_copilotLeft.addRumbleTrigger("Intake Full", Triggers.copilotLeftRumbleTrigger);
   }
 
   private void configureTestBindings()

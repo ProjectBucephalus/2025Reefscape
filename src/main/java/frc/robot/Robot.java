@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Rumbler.Sides;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.util.FieldUtils;
@@ -149,8 +148,8 @@ public class Robot extends TimedRobot
     RobotContainer.s_Coral.setStatus(CoralManipulator.Status.DEFAULT);
     RobotContainer.s_Algae.setStatus(AlgaeManipulator.Status.EMPTY);
 
-    RobotContainer.io_Rumbler.timedRequestCommand(Sides.DRIVER_LEFT, "Teleop Start", 1.5).schedule();
-    RobotContainer.io_Rumbler.timedRequestCommand(Sides.DRIVER_RIGHT, "Teleop Start", 1.5).schedule();
+    RobotContainer.io_driverLeft.timedRequestCommand("Teleop Start", 1.5).schedule();
+    RobotContainer.io_driverRight.timedRequestCommand("Teleop Start", 1.5).schedule();
   }
 
   @Override
