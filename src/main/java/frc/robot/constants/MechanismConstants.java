@@ -22,13 +22,13 @@ public class MechanismConstants
   {
     public static final double winchBalanceScalar = 0.05;
 
-    public static final double winchPlanetaryRatio = 75;
+    public static final double winchPlanetaryRatio = 45;
     public static final double winchGearIn   = 20;
     public static final double winchGearOut  = 60;
     public static final double winchGearRatio = ((winchGearOut / winchGearIn) * winchPlanetaryRatio);
     public static final double winchDefaultCruise = 100;
-    public static final double winchClimbCruise = 10;
-    public static final double winchMotionMagicAccel  = 10;
+    public static final double winchClimbCruise = 100;
+    public static final double winchMotionMagicAccel  = 100;
 
     public static final TalonFXConfiguration climberMotorConfig = new TalonFXConfiguration();
     static

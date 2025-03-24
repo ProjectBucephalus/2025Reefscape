@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.util.SD;
@@ -84,6 +86,34 @@ public class Rumbler extends SubsystemBase
       default:
         return false;
     }    
+  }
+
+  public Command requestCommand(boolean addRequest, Sides queue, String requestID)
+  {
+    if (addRequest) 
+    {
+      return Commands.runOnce(() -> addRequest(queue, requestID));   
+    }
+    else
+    {
+      return Commands.runOnce(() -> removeRequest(queue, requestID)); 
+    }
+  }
+
+  public Command whileTriggerRequestCommand(Sides queue, String requestID)
+  {
+    return Commands.startEnd(() -> addRequest(queue, requestID), () -> removeRequest(queue, requestID));
+  }
+
+  public Command timedRequestCommand(Sides queue, String requestID, double durationSeconds)
+  {
+    return 
+    Commands.sequence
+    (
+      requestCommand(true, queue, requestID),
+      Commands.waitSeconds(durationSeconds),
+      requestCommand(false, queue, requestID)
+    );
   }
 
   @Override

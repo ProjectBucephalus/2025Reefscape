@@ -4,7 +4,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,6 +25,7 @@ public class Climber extends SubsystemBase
   private final MotionMagicVoltage motionMagic;
   private double speed;
   private TalonFXConfiguration motorConfig = ClimberConfigs.climberMotorConfig;
+  private boolean climbLocked = true;
 
   public enum Status 
   {
@@ -45,6 +45,8 @@ public class Climber extends SubsystemBase
     motionMagic = new MotionMagicVoltage(0);
 
     setStatus(Status.STOW);
+
+    SD.CLIMB_OVERRIDE.init();
   }
   
   private void setStatus(Status newStatus)
@@ -75,14 +77,16 @@ public class Climber extends SubsystemBase
   }
 
   public boolean climbReady()
-  {
-    return 
-      status == Status.ACTIVE &&
-      m_Climber.getPosition().getValueAsDouble() >= ClimberConstants.prepareWinchPos;
-  }
+    {return m_Climber.getPosition().getValueAsDouble() >= ClimberConstants.prepareWinchPos;}
 
   public boolean armSafe()
     {return m_Climber.getPosition().getValueAsDouble() >= ClimberConstants.safeWinchPos;}  
+
+  public boolean autoDriveAngle()
+    {return m_Climber.getPosition().getValueAsDouble() < ClimberConstants.startDrivePos;}
+
+  public boolean offGround()
+    {return m_Climber.getPosition().getValueAsDouble() < ClimberConstants.offGroundPos;}  
 
   public boolean manualOveride(double motorSpeed)
   {
@@ -91,10 +95,14 @@ public class Climber extends SubsystemBase
     return true;
   }
 
+  public void unlockClimb()
+    {climbLocked = false;}
+
   @Override
   public void periodic()
   {
     SD.CLIMBER_POS.put(m_Climber.getPosition().getValueAsDouble());
+    if (SD.CLIMB_OVERRIDE.get()) {climbLocked = false;}
 
     switch (status)
     {
@@ -118,7 +126,7 @@ public class Climber extends SubsystemBase
           
           if (SD.OVERRIDE.get()) 
           {
-            adjustedClimberPos += RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() * ClimberConfigs.winchBalanceScalar;
+            adjustedClimberPos += (RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() - ClimberConstants.targetRobotClimbPitch) * ClimberConfigs.winchBalanceScalar;
             adjustedClimberPos = Conversions.clamp(adjustedClimberPos, ClimberConstants.climbActiveInnerLimit, ClimberConstants.climbActiveOuterLimit);
           }
 
@@ -128,7 +136,15 @@ public class Climber extends SubsystemBase
         break;
 
       case MANUAL:
-        if (speed != 0)
+        if 
+        (
+          (
+            (speed > 0 && m_Climber.getPosition().getValueAsDouble() <= 1.05 * ClimberConstants.prepareWinchPos) || 
+            (speed < 0 && m_Climber.getPosition().getValueAsDouble() >= 0) || 
+            (speed != 0 && SD.CLIMB_OVERRIDE.get())
+          ) 
+          && !climbLocked
+        )
           {m_Climber.set(speed * Control.manualClimberScale);}
         else
         {

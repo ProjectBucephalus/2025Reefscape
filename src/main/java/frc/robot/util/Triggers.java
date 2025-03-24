@@ -26,6 +26,15 @@ public class Triggers
       RobotContainer.copilot.getRawAxis(RobotContainer.manualDiffectorRotationAxis) > Constants.Control.manualDiffectorDeadband
     )
   );
+  public static final Trigger opposingBargeZoneTrigger = new Trigger
+  (
+    () -> 
+    (
+      (FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.bargeZoneBlue : FieldUtils.GeoFencing.bargeZoneRed)
+      .getDistance(RobotContainer.swerveState.Pose.getTranslation())
+    ) 
+    < FieldConstants.bargeWarningRange
+  );
   public static final Trigger opposingReefZoneTrigger = new Trigger
   (
     () -> 
@@ -46,19 +55,21 @@ public class Triggers
       .getDistance(RobotContainer.swerveState.Pose.getTranslation())
     ) 
     < 
-    (FieldUtils.GeoFencing.circumscribedReefZoneDiameter / 2) + 1
+    (FieldUtils.GeoFencing.circumscribedReefZoneDiameter / 2) + 0.3
   );
-  public static final Trigger algaeIntakeTrigger = new Trigger
+  public static final Trigger algaeIntakePosTrigger = new Trigger
   (
     homeReefZoneTrigger.and
-    (() ->
+    (
+      () ->
       {
         Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
         var reefIntakePositions = List.of(Presets.algae2PortPosition, Presets.algae2StbdPosition, Presets.algae3PortPosition, Presets.algae3StbdPosition).stream();
-        return (reefIntakePositions.anyMatch(relativeTarget::equals) && !RobotContainer.algae);
+        return (reefIntakePositions.anyMatch(relativeTarget::equals));
       }
     )
   );
+  public static final Trigger algaeIntakeTrigger = algaeIntakePosTrigger.and(() -> !RobotContainer.algae);
   public static final Trigger coralIntakeTrigger = new Trigger
   (
     () ->
@@ -80,7 +91,7 @@ public class Triggers
       return FieldUtils.getNearestCoralStation(robotPos).getDistance(robotPos) < FieldConstants.coralStationRange;
     }
   );
-  public static final Trigger copilotLeftRumbleTrigger = coralIntakeTrigger.or(() -> {return RobotContainer.copilot.leftTrigger().getAsBoolean() && RobotContainer.algae;});
+  public static final Trigger copilotLeftRumbleTrigger = coralIntakeTrigger.or(algaeIntakePosTrigger.and(() -> RobotContainer.algae));
   public static final Trigger driverRightRumbleTrigger = 
     coralIntakeTrigger
     .and(atCoralStationTrigger)
@@ -91,21 +102,8 @@ public class Triggers
         var groundIntakePositions = List.of(Presets.algaeIntakePortPosition, Presets.algaeIntakeStbdPosition).stream();
         return groundIntakePositions.anyMatch(position -> RobotContainer.s_Diffector.getRelativeTarget().equals(position)) && RobotContainer.algae;
       }
-    );
-  public static final Trigger copliotRightRumbleTrigger = new Trigger
-  (
-    () -> 
-    {
-      Translation2d robotPos = RobotContainer.swerveState.Pose.getTranslation();
-      Translation2d nearestClimbLineup = 
-      FieldUtils.isRedAlliance() ? 
-      robotPos.nearest(FieldConstants.redClimbLineups)
-      :
-      robotPos.nearest(FieldConstants.blueClimbLineups);
-
-      return RobotContainer.s_Climber.climbReady() && RobotContainer.s_Diffector.climbReady() && RobotContainer.swerveState.Pose.getTranslation().getDistance(nearestClimbLineup) < Constants.Auto.atPosTolerance;
-    }
-  );
+    )
+    .or(homeReefZoneTrigger.and(() -> RobotContainer.algae));
   public static final Trigger bargeLEDs = new Trigger
   (
     () ->
