@@ -117,11 +117,11 @@ public final class Constants
   public static final class Auto
   {   
     /** m/s */
-    public static final double pathplannerMaxSpeed = 10;
+    public static final double pathplannerMaxSpeed = 4.35;
     /** m/s */
-    public static final double pathplannerSlowedSpeed = 0.1;
+    public static final double pathplannerSlowedSpeed = 1.5;
     /** m/s^2 */
-    public static final double pathplannerMaxAcceleration = 3;
+    public static final double pathplannerMaxAcceleration = 5;
     /** degrees/s */
     public static final double pathplannerMaxAngularSpeed = 720;
     /** degrees/s^2 */
