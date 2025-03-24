@@ -454,7 +454,7 @@ public class LightLayer
 
       // use the LEDPattern object again to apply the map to the buffer
       display = LEDPattern.steps(statDisPat);
-      double timeFactor = Timer.getTimestamp()/period;
+      double timeFactor = Timer.getTimestamp() * period;
       timeFactor = timeFactor - Math.floor(timeFactor);
       display = display.offsetBy((int)(width * timeFactor));
       if (reversed) {display = display.reversed();}
@@ -502,6 +502,7 @@ public class LightLayer
     if (displayType == LayerType.ALTERNATING)
     {
       patternBlack.applyTo(tempBuff);
+      currTime = Timer.getTimestamp();
       if (currTime - lastTime > period)
       {
         if (state != 0)

@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.swerve.*;
 import frc.robot.constants.*;
 import frc.robot.constants.Constants.DiffectorConstants;
+import frc.robot.constants.Constants.LEDStrip;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.AlgaeManipulator.Status;
@@ -34,6 +35,10 @@ import frc.robot.util.Triggers;
 import frc.robot.util.leds.LightLayer;
 import frc.robot.util.leds.LightLayer.*;
 import frc.robot.util.libraries.Telemetry;
+import frc.robot.util.leds.*;
+import frc.robot.util.leds.LightLayer.Mode;
+import frc.robot.util.leds.LightLayer.LayerType;
+import edu.wpi.first.wpilibj.util.Color;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -628,8 +633,8 @@ public class RobotContainer
   { 
     portStatusLayer.setSegments(6);
     portStatusLayer.setMode(Mode.STATICSEGMENT);
-    portStatusLayer.setStart(0);
-    portStatusLayer.setWidth(30);
+    portStatusLayer.setStart(LEDStrip.portStatusStart);
+    portStatusLayer.setWidth(LEDStrip.portStatusWidth);
     portStatusLayer.setType(LayerType.STATUS);
     portStatusLayer.setPriority(1);
     portStatusLayer.setColor(Color.kBlack, Color.kTeal);
@@ -638,27 +643,27 @@ public class RobotContainer
 
     stbdStatusLayer.setSegments(6);
     stbdStatusLayer.setMode(Mode.STATICSEGMENT);
-    stbdStatusLayer.setStart(90);
-    stbdStatusLayer.setWidth(28);
+    stbdStatusLayer.setStart(LEDStrip.stbdStatusStart);
+    stbdStatusLayer.setWidth(LEDStrip.stbdStatusWidth);
     stbdStatusLayer.setType(LayerType.STATUS);
     stbdStatusLayer.setPriority(1);
-    stbdStatusLayer.setColor(Color.kBlack, Color.kPurple);
+    stbdStatusLayer.setColor(Color.kBlack, Color.kTeal);
     stbdStatusLayer.setReversed(true);
     stbdStatusLayer.setPeriod(0.2);
     stbdStatusLayer.setBorder(false);
 
-    haloPortLayer.setStart(30);
-    haloPortLayer.setWidth(30);
+    haloPortLayer.setStart(LEDStrip.portHaloStart);
+    haloPortLayer.setWidth(LEDStrip.portHaloWidth);
     haloPortLayer.setMode(Mode.STATICSEGMENT);
     haloPortLayer.setType(LayerType.SOLID);
     haloPortLayer.setPeriod(0.2);
     haloPortLayer.setPriority(1);
-    haloPortLayer.setColor(Color.kOrange, Color.kBlack);
+    haloPortLayer.setColor(Color.kYellow, Color.kBlack);
     haloPortLayer.setSegments(10);
     haloPortLayer.setBorder(false);
 
-    haloStbdLayer.setStart(60);
-    haloStbdLayer.setWidth(30);
+    haloStbdLayer.setStart(LEDStrip.stbdHaloStart);
+    haloStbdLayer.setWidth(LEDStrip.portHaloWidth);
     haloStbdLayer.setMode(Mode.STATICSEGMENT);
     haloStbdLayer.setType(LayerType.SOLID);
     haloStbdLayer.setPeriod(0.2);
