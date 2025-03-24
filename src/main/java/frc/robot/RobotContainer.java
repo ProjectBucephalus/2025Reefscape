@@ -610,8 +610,9 @@ public class RobotContainer
   private void configureRumbleBindings()
   {
     /* Driver rumble bindings */
-    io_driverLeft.addRumbleTrigger("Penalty Reef Zone", Triggers.opposingReefZoneTrigger);
-    io_driverLeft.addRumbleTrigger("Penalty Barge Zone", Triggers.opposingBargeZoneTrigger);
+    io_driverLeft
+      .addRumbleTrigger("Penalty Reef Zone", Triggers.opposingReefZoneTrigger)
+      .addRumbleTrigger("Penalty Barge Zone", Triggers.opposingBargeZoneTrigger);
     io_driverRight.addRumbleTrigger( "Intaked Successfully", Triggers.driverRightRumbleTrigger);
 
     /* Copilot rumble bindings */

@@ -39,8 +39,12 @@ public class RumbleRequester extends SubsystemBase
   public Command requestCommand(boolean addRequest, String requestID)
     {return addRequest ? Commands.runOnce(() -> addRequest(requestID)) : Commands.runOnce(() -> removeRequest(requestID));}
 
-  public void addRumbleTrigger(String requestID, Trigger trigger)
-    {trigger.whileTrue(Commands.startEnd(() -> addRequest(requestID), () -> removeRequest(requestID)));}
+  /** Adds a rumble with the provided ID that runs while the given trigger is true. Returns the subsystem for easier chaining. */
+  public RumbleRequester addRumbleTrigger(String requestID, Trigger trigger)
+  {
+    trigger.whileTrue(Commands.startEnd(() -> addRequest(requestID), () -> removeRequest(requestID)));
+    return this;
+  }
 
   public Command timedRequestCommand(String requestID, double durationSeconds)
   {
