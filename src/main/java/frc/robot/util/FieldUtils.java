@@ -16,7 +16,9 @@ import frc.robot.util.GeoFenceObject.ObjectTypes;
 
 public class FieldUtils 
 {
+  /** Length of the field in the X direction, metres */
   public static final double fieldLength = 17.548;
+  /** Width of the field in the Y direction, metres */
   public static final double fieldWidth = 8.051;
 
   public static boolean isRedAlliance() 
@@ -40,10 +42,24 @@ public class FieldUtils
   public static Pose2d flipPose(Pose2d pose) 
   {
     // flip pose when red
-    if (isRedAlliance()) {
+    if (isRedAlliance()) 
+    {
       Rotation2d rot = pose.getRotation();
       // reflect the pose over center line, flip both the X and the rotation
       return new Pose2d(fieldLength - pose.getX(), pose.getY(), new Rotation2d(-rot.getCos(), rot.getSin()));
+    }
+
+    // Blue or we don't know; return the original pose
+    return pose;
+  }
+
+  public static Pose2d rotatePose(Pose2d pose) 
+  {
+    // flip pose when red
+    if (isRedAlliance()) 
+    {
+      // reflect the pose around center point, flip both the X and Y position and rotation
+      return pose.rotateAround(new Translation2d(fieldLength/2, fieldWidth/2), Rotation2d.k180deg);
     }
 
     // Blue or we don't know; return the original pose
