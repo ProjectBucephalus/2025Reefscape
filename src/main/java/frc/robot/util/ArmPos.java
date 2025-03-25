@@ -89,7 +89,7 @@ public class ArmPos
     {return (360 - wrap(angle));}
 
   /** Wraps the angle component [0..360] */
-  public double wrap()
+  public double wrapped()
     {return wrap(R);}
 
   /** Wraps the input angle [0..360] */
@@ -126,8 +126,8 @@ public class ArmPos
       (
         other.getZ() == Z &&
         (
-          other.wrap() == wrap() ||
-          other.wrap() == flip()
+          other.wrapped() == wrapped() ||
+          other.wrapped() == flip()
         )
       )
     );

@@ -314,7 +314,7 @@ public class Diffector extends SubsystemBase
   {
     return
       Math.abs(elevation - checkTarget.getZ()) < DiffectorGeometry.elevationTolerance &&
-      Math.abs(getRelativeRotation() - checkTarget.wrap()) < DiffectorGeometry.angleTolerance;
+      Math.abs(getRelativeRotation() - checkTarget.wrapped()) < DiffectorGeometry.angleTolerance;
   }
 
   /** Returns true if the diffector is safely in climb position */
