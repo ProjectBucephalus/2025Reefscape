@@ -314,7 +314,7 @@ public class Diffector extends SubsystemBase
   {
     return
       Math.abs(elevation - checkTarget.getZ()) < DiffectorGeometry.elevationTolerance &&
-      Math.abs(getRelativeRotation() - Conversions.mod(checkTarget.getR(), 360)) < DiffectorGeometry.angleTolerance;
+      Math.abs(getRelativeRotation() - checkTarget.wrap()) < DiffectorGeometry.angleTolerance;
   }
 
   /** Returns true if the diffector is safely in climb position */
@@ -366,10 +366,10 @@ public class Diffector extends SubsystemBase
     manualControl = false;
     if (RobotContainer.algae)
     {
-      if (getRelativeRotation() < 180 && Conversions.mod(newTarget, 360) > 180)
+      if (getRelativeRotation() < 180 && ArmPos.wrap(newTarget) > 180)
         {targetAngle = arm.goAnticlockwise(newTarget, angle);} // Going Anticlockwise to take held Algae over robot
 
-      else if (getRelativeRotation() > 180 && Conversions.mod(newTarget, 360) < 180)
+      else if (getRelativeRotation() > 180 && ArmPos.wrap(newTarget) < 180)
         {targetAngle = arm.goClockwise(newTarget, angle);} // Going Clockwise to take held Algae over robot
         
       else

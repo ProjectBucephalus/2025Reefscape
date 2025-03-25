@@ -29,9 +29,7 @@ public class ArmPos
 
   /** Constructs an ArmPos object with 0 values */
   public ArmPos()
-  {
-    this(0, 0, true);
-  }
+    {this(0, 0, true);}
 
   /**
    * Constructs an ArmPos object with the given values
@@ -39,19 +37,14 @@ public class ArmPos
    * @param R Angle, degrees anticlockwise
    */
   public ArmPos(double Z, double R)
-  {
-    this(Z, R, true);
-  }
-
+    {this(Z, R, true);}
 
   /**
    * Constructs an ArmPos object from the provided Translation2d
    * @param translation Assumes X/Y are directly mapped to Z/R
    */
   public ArmPos(Translation2d translation)
-  {
-    this(translation.getX(), translation.getY(), true);
-  }
+    {this(translation.getX(), translation.getY(), true);}
 
   /**
    * Constructs an ArmPos object from the provided Translation2d
@@ -59,9 +52,7 @@ public class ArmPos
    * @param portside True if the position is on the Port side of the robot
    */
   public ArmPos(Translation2d translation, boolean portside)
-  {
-    this(translation.getX(), translation.getY(), portside);
-  }
+    {this(translation.getX(), translation.getY(), portside);}
 
   /** Returns the Z elevation component of the position */
   public double getZ()
@@ -97,6 +88,10 @@ public class ArmPos
   public static double flip(double angle)
     {return (360 - wrap(angle));}
 
+  /** Wraps the angle component [0..360] */
+  public double wrap()
+    {return wrap(R);}
+
   /** Wraps the input angle [0..360] */
   public static double wrap(double angle)
     {return Conversions.mod(angle, 360);}
@@ -131,8 +126,8 @@ public class ArmPos
       (
         other.getZ() == Z &&
         (
-          wrap(other.getR()) == wrap(R) ||
-          wrap(other.getR()) == flip()
+          other.wrap() == wrap() ||
+          other.wrap() == flip()
         )
       )
     );
