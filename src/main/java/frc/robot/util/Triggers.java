@@ -63,9 +63,9 @@ public class Triggers
     (
       () ->
       {
-        Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-        var reefIntakePositions = List.of(Presets.algae2PortPosition, Presets.algae2StbdPosition, Presets.algae3PortPosition, Presets.algae3StbdPosition).stream();
-        return (reefIntakePositions.anyMatch(relativeTarget::equals));
+        ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+        var reefIntakePositions = List.of(Presets.algae2Position, Presets.algae3Position).stream();
+        return (reefIntakePositions.anyMatch(relativeTarget::relativeEquals));
       }
     )
   );
@@ -74,13 +74,13 @@ public class Triggers
   (
     () ->
     {
-      Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coralIntakePositions = List.of(Presets.coralIntakePortPosition, Presets.coralIntakeStbdPosition).stream();
-      var clawIntakePositions = List.of(Presets.coralClawPortPosition, Presets.coralClawStbdPosition).stream();
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      var coralIntakePositions = List.of(Presets.coralIntakePosition).stream();
+      var clawIntakePositions = List.of(Presets.coralClawPosition).stream();
       return 
-      (coralIntakePositions.anyMatch(relativeTarget::equals) && RobotContainer.coral) 
+      (coralIntakePositions.anyMatch(relativeTarget::relativeEquals) && RobotContainer.coral) 
       || 
-      (clawIntakePositions.anyMatch(relativeTarget::equals) && RobotContainer.algae);
+      (clawIntakePositions.anyMatch(relativeTarget::relativeEquals) && RobotContainer.algae);
     }
   );
   public static final Trigger atCoralStationTrigger = new Trigger
@@ -99,8 +99,8 @@ public class Triggers
     (
       () ->
       {
-        var groundIntakePositions = List.of(Presets.algaeIntakePortPosition, Presets.algaeIntakeStbdPosition).stream();
-        return groundIntakePositions.anyMatch(position -> RobotContainer.s_Diffector.getRelativeTarget().equals(position)) && RobotContainer.algae;
+        var groundIntakePositions = List.of(Presets.algaeIntakePosition).stream();
+        return groundIntakePositions.anyMatch(position -> RobotContainer.s_Diffector.getRelativeTarget().relativeEquals(position)) && RobotContainer.algae;
       }
     )
     .or(homeReefZoneTrigger.and(() -> RobotContainer.algae));
@@ -108,130 +108,130 @@ public class Triggers
   (
     () ->
     {
-      Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
       var algaeBargePosition = List.of(Presets.netPosition).stream();
       return
-      (algaeBargePosition.anyMatch(relativeTarget::equals));
+      (algaeBargePosition.anyMatch(relativeTarget::relativeEquals));
     }
   );
   public static final Trigger Lvl4LEDs = new Trigger
   (
     () ->
     {
-      Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coral4Positions = List.of(Presets.coral4PortPosition, Presets.coral4StbdPosition).stream();
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      var coral4Positions = List.of(Presets.coral4Position).stream();
       return
-      (coral4Positions.anyMatch(relativeTarget::equals));
+      (coral4Positions.anyMatch(relativeTarget::relativeEquals));
     }
   );
   public static final Trigger lvl3AlgaeLEDs = new Trigger
   (
     () ->
     {
-      Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var algae3Positions = List.of(Presets.algae3PortPosition, Presets.algae3StbdPosition).stream();
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      var algae3Positions = List.of(Presets.algae3Position).stream();
       return
-      algae3Positions.anyMatch(relativeTarget::equals);
+      algae3Positions.anyMatch(relativeTarget::relativeEquals);
     }
   );
   public static final Trigger lvl3CoralLEDs = new Trigger
   (
     () ->
     {
-      Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coral3Positions = List.of(Presets.coral3PortPosition, Presets.coral3StbdPosition).stream();
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      var coral3Positions = List.of(Presets.coral3Position).stream();
       return
-      coral3Positions.anyMatch(relativeTarget::equals);
+      coral3Positions.anyMatch(relativeTarget::relativeEquals);
     }
   );
   public static final Trigger coralStationClawLEDs = new Trigger
   (
     () ->
     {
-      Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var clawIntakePositions = List.of(Presets.coralClawPortPosition, Presets.coralClawStbdPosition).stream();
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      var clawIntakePositions = List.of(Presets.coralClawPosition).stream();
       return
-      clawIntakePositions.anyMatch(relativeTarget::equals);
+      clawIntakePositions.anyMatch(relativeTarget::relativeEquals);
     }
   );
   public static final Trigger coralStationIntakeLEDs = new Trigger
   (
     () ->
     {
-      Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coralIntakePositions = List.of(Presets.coralIntakePortPosition, Presets.coralIntakeStbdPosition).stream();
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      var coralIntakePositions = List.of(Presets.coralIntakePosition).stream();
       return
-      coralIntakePositions.anyMatch(relativeTarget::equals);
+      coralIntakePositions.anyMatch(relativeTarget::relativeEquals);
     }
   );
   public static final Trigger lvl2AlgaeLEDs = new Trigger
   (
     () ->
     {
-      Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var algae2Positions = List.of(Presets.algae2PortPosition, Presets.algae2StbdPosition).stream();
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      var algae2Positions = List.of(Presets.algae2Position).stream();
       return
-      algae2Positions.anyMatch(relativeTarget::equals);
+      algae2Positions.anyMatch(relativeTarget::relativeEquals);
     }
   );
   public static final Trigger lvl2CoralLEDs = new Trigger
   (
     () ->
     {
-      Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coral2Positions = List.of(Presets.coral2PortPosition, Presets.coral2StbdPosition).stream();
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      var coral2Positions = List.of(Presets.coral2Position).stream();
       return
-      coral2Positions.anyMatch(relativeTarget::equals);
+      coral2Positions.anyMatch(relativeTarget::relativeEquals);
     }
   );
   public static final Trigger lvl1ClawLEDs = new Trigger
   (
     () ->
     {
-      Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var claw1Positions = List.of(Presets.coral1ClawPortPosition, Presets.coral1ClawStbdPosition).stream();
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      var claw1Positions = List.of(Presets.coral1ClawPosition).stream();
       return
-      claw1Positions.anyMatch(relativeTarget::equals);
+      claw1Positions.anyMatch(relativeTarget::relativeEquals);
     }
   );
   public static final Trigger lvl1CoralLEDs = new Trigger
   (
     () ->
     {
-      Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coral1Positions = List.of(Presets.coral1PortPosition, Presets.coral1StbdPosition).stream();
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      var coral1Positions = List.of(Presets.coral1Position).stream();
       return
-      coral1Positions.anyMatch(relativeTarget::equals);
+      coral1Positions.anyMatch(relativeTarget::relativeEquals);
     }
   );
   public static final Trigger groundIntakeOrProcessorLEDs = new Trigger
   (
     () ->
     {
-      Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var algaeLowPositions = List.of(Presets.algaeIntakePortPosition, Presets.algaeIntakeStbdPosition, Presets.processorPositionPort, Presets.processorPositionStbd).stream();
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      var algaeLowPositions = List.of(Presets.algaeIntakePosition, Presets.processorPosition).stream();
       return
-      algaeLowPositions.anyMatch(relativeTarget::equals);
+      algaeLowPositions.anyMatch(relativeTarget::relativeEquals);
     }
   );
   public static final Trigger ClimbLEDs = new Trigger
   (
     () ->
     {
-      Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
       var climbPosition = List.of(Presets.climbPosition).stream();
       return
-      climbPosition.anyMatch(relativeTarget::equals);
+      climbPosition.anyMatch(relativeTarget::relativeEquals);
     }
   );
   public static final Trigger stowedLEDs = new Trigger
   (
     () ->
     {
-      Translation2d relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
       var stowPositions = List.of(Presets.coralStowPosition, Presets.algaeStowPosition).stream();
       return
-      stowPositions.anyMatch(relativeTarget::equals);
+      stowPositions.anyMatch(relativeTarget::relativeEquals);
     }
   );
   public static final Trigger manualControlLEDs = new Trigger(

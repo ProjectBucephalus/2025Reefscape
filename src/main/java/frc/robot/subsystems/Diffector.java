@@ -30,6 +30,7 @@ import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.constants.IDConstants;
 import frc.robot.constants.MechanismConstants.DiffectorConfigs;
 import frc.robot.util.ArmCalculator;
+import frc.robot.util.ArmPos;
 import frc.robot.util.Conversions;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.SD;
@@ -59,21 +60,21 @@ public class Diffector extends SubsystemBase
 
   private double[] motorTargets = new double[2];
 
-  private Translation2d targetPosition;
+  private ArmPos targetPosition;
   private double targetElevation;
   private double targetAngle;
-  private Translation2d oldTarget;
-  private Translation2d relativeTarget;
+  private ArmPos oldTarget;
+  private ArmPos relativeTarget;
 
   private double angle;
   private double elevation;
-  private Translation2d armPosition;
+  private ArmPos armPosition;
 
   private static ArmCalculator arm;
 
   private double projectionElevation = DiffectorGeometry.projectionElevation;
   private double projectionAngle     = DiffectorGeometry.projectionAngle;
-  private ArrayList<Translation2d> plannedPathPoints = new ArrayList<Translation2d>();
+  private ArrayList<ArmPos> plannedPathPoints = new ArrayList<ArmPos>();
 
   private int calibrationCounter = 0;
 
@@ -100,14 +101,14 @@ public class Diffector extends SubsystemBase
     m_UA.getConfigurator().apply(motorConfigUA);
     m_DA.getConfigurator().apply(motorConfigDA);
     
-    elevation = Presets.startPosition.getX();
+    elevation = Presets.startPosition.getZ();
 
     positionOveride(getMeasuredElevation(), getMeasuredAngle());
     
     targetElevation = elevation;
     targetAngle     = angle;
     
-    targetPosition  = new Translation2d(targetElevation, targetAngle);
+    targetPosition  = new ArmPos(targetElevation, targetAngle);
     
     oldTarget       = targetPosition;
     relativeTarget  = targetPosition;
@@ -139,13 +140,13 @@ public class Diffector extends SubsystemBase
    * Calculates arm elevation and rotation based on motor positions
    * @return Arm position, metres over ground, degrees anticlockwise, 0 = coral at top
    */
-  private Translation2d calculatePosition()
+  private ArmPos calculatePosition()
   {
     elevation = ((Units.rotationsToDegrees(m_UA.getPosition().getValueAsDouble()) - Units.rotationsToDegrees(m_DA.getPosition().getValueAsDouble())) / 2) * travelRatio;
     angle = ((Units.rotationsToDegrees(m_UA.getPosition().getValueAsDouble()) + Units.rotationsToDegrees(m_DA.getPosition().getValueAsDouble())) * rotationRatio) / 2;
-    armPosition = new Translation2d(elevation, angle);
+    armPosition = new ArmPos(elevation, angle);
     
-    if (Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::equals))
+    if (Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals))
     {
       if (elevation < targetElevation - DiffectorGeometry.elevationTolerance)
         {eStop = true;}
@@ -160,7 +161,7 @@ public class Diffector extends SubsystemBase
     )
     {eStop = true;}
 
-    if (atPosition() && !Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::equals))
+    if (atPosition() && !Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals))
     {
       calibrationCounter++;
       if (calibrationCounter == DiffectorConstants.calibrationDelay) 
@@ -202,15 +203,15 @@ public class Diffector extends SubsystemBase
    * @return Arm rotation, wrapped, degrees anticlockwise, 0 = coral at top, [0..360]
    */
   public double getRelativeRotation()
-    {return Conversions.mod(angle, 360);}
+    {return ArmPos.wrap(angle);}
 
-  public Translation2d getRelativeTarget()
+  public ArmPos getRelativeTarget()
     {return relativeTarget;}
 
   private void calculatePath()
   {
-    targetPosition = new Translation2d(targetElevation, targetAngle);
-    relativeTarget = new Translation2d(targetElevation, Conversions.mod(targetAngle, 360));
+    targetPosition = new ArmPos(targetElevation, targetAngle);
+    relativeTarget = new ArmPos(targetElevation, ArmPos.wrap(targetAngle));
 
     if (!targetPosition.equals(oldTarget))
     {
@@ -218,7 +219,7 @@ public class Diffector extends SubsystemBase
       (
         !(
           MathUtil.isNear(RobotContainer.swerveState.Pose.getX(), FieldUtils.fieldLength / 2, DiffectorGeometry.bargeSafetyWidth) &&
-          targetPosition.getX() > DiffectorGeometry.bargeSafetyHeight
+          targetPosition.getZ() > DiffectorGeometry.bargeSafetyHeight
         )
       )
     
@@ -242,7 +243,7 @@ public class Diffector extends SubsystemBase
    * @param angleTarget Target angle of the arm, degrees anticlockwise, 0 = unwound with coral at top
    * @return [motor1 target, motor2 target]
    */
-  private double[] calculateMotorTargets(Translation2d target)
+  private double[] calculateMotorTargets(ArmPos target)
   {
     if (RobotContainer.algae)
     { // Reduce speed when holding Algae
@@ -255,7 +256,7 @@ public class Diffector extends SubsystemBase
       m_DA.getConfigurator().apply(motorConfigDA.MotionMagic.withMotionMagicCruiseVelocity(DiffectorConfigs.diffectorCruise));
     }
 
-    if (MathUtil.isNear(angle, target.getY(), DiffectorGeometry.angleTolerance))
+    if (MathUtil.isNear(angle, target.getR(), DiffectorGeometry.angleTolerance))
     { // If movement is only elevation, use elevation acceleration limits
       m_UA.getConfigurator().apply(motorConfigUA.MotionMagic.withMotionMagicAcceleration(DiffectorConfigs.diffectorElevationAcceleration));
       m_DA.getConfigurator().apply(motorConfigDA.MotionMagic.withMotionMagicAcceleration(DiffectorConfigs.diffectorElevationAcceleration));
@@ -276,8 +277,8 @@ public class Diffector extends SubsystemBase
 
     double[] calculatedTargets = new double[2];
 
-    calculatedTargets[0] = (target.getY() / rotationRatio) + (target.getX() / travelRatio);
-    calculatedTargets[1] = (target.getY() / rotationRatio) - (target.getX() / travelRatio);
+    calculatedTargets[0] = (target.getR() / rotationRatio) + (target.getZ() / travelRatio);
+    calculatedTargets[1] = (target.getR() / rotationRatio) - (target.getZ() / travelRatio);
 
     return calculatedTargets;
   }
@@ -298,22 +299,22 @@ public class Diffector extends SubsystemBase
    * Returns true if the diffector is at the given absolute position
    * @param checkTarget target elevation/rotation to check against
    */
-  public boolean atPosition(Translation2d checkTarget)
+  public boolean atPosition(ArmPos checkTarget)
   {
     return
-      Math.abs(elevation - checkTarget.getX()) < DiffectorGeometry.elevationTolerance &&
-      Math.abs(angle - checkTarget.getY()) < DiffectorGeometry.angleTolerance;
+      Math.abs(elevation - checkTarget.getZ()) < DiffectorGeometry.elevationTolerance &&
+      Math.abs(angle - checkTarget.getR()) < DiffectorGeometry.angleTolerance;
   }
 
   /**
    * Returns true if the diffector is at the given relative position
    * @param checkTarget target elevation/rotation to check against
    */
-  public boolean atRelativePosition(Translation2d checkTarget)
+  public boolean atRelativePosition(ArmPos checkTarget)
   {
     return
-      Math.abs(elevation - checkTarget.getX()) < DiffectorGeometry.elevationTolerance &&
-      Math.abs(getRelativeRotation() - Conversions.mod(checkTarget.getY(), 360)) < DiffectorGeometry.angleTolerance;
+      Math.abs(elevation - checkTarget.getZ()) < DiffectorGeometry.elevationTolerance &&
+      Math.abs(getRelativeRotation() - checkTarget.wrapped()) < DiffectorGeometry.angleTolerance;
   }
 
   /** Returns true if the diffector is safely in climb position */
@@ -340,7 +341,7 @@ public class Diffector extends SubsystemBase
   public boolean unwind()
   {
     manualControl = false;
-    targetAngle = Presets.startPosition.getY();
+    targetAngle = Presets.startPosition.getR();
     targetElevation = DiffectorGeometry.safeElevation;
     return Math.abs(angle) < stowThreshold;
   }
@@ -365,10 +366,10 @@ public class Diffector extends SubsystemBase
     manualControl = false;
     if (RobotContainer.algae)
     {
-      if (getRelativeRotation() < 180 && Conversions.mod(newTarget, 360) > 180)
+      if (getRelativeRotation() < 180 && ArmPos.wrap(newTarget) > 180)
         {targetAngle = arm.goAnticlockwise(newTarget, angle);} // Going Anticlockwise to take held Algae over robot
 
-      else if (getRelativeRotation() > 180 && Conversions.mod(newTarget, 360) < 180)
+      else if (getRelativeRotation() > 180 && ArmPos.wrap(newTarget) < 180)
         {targetAngle = arm.goClockwise(newTarget, angle);} // Going Clockwise to take held Algae over robot
         
       else
@@ -398,13 +399,13 @@ public class Diffector extends SubsystemBase
     return nearSetPos;
   }
 
-  public void setTargetPosition(Translation2d targetPosition)
+  public void setTargetPosition(ArmPos targetPosition)
   {
-    setElevationTarget(targetPosition.getX());
-    goToAngle(targetPosition.getY());
+    setElevationTarget(targetPosition.getZ());
+    goToAngle(targetPosition.getR());
   }
 
-  public Command moveToCommand(Translation2d targetPosition)
+  public Command moveToCommand(ArmPos targetPosition)
   {
     return 
     runOnce(() -> setTargetPosition(targetPosition))
@@ -412,7 +413,7 @@ public class Diffector extends SubsystemBase
     .ignoringDisable(true);
   }
 
-  public Command moveAndWaitCommand(Translation2d targetPosition)
+  public Command moveAndWaitCommand(ArmPos targetPosition)
   {
     return moveToCommand(targetPosition).andThen(Commands.waitUntil(this::atPosition));
   }
@@ -422,16 +423,16 @@ public class Diffector extends SubsystemBase
     if (robotPos.get().getX() > FieldUtils.fieldLength/2 ^ robotPos.get().getY() > FieldUtils.fieldWidth/2)
     {
       if (algae.getAsBoolean())
-        return moveToCommand(Presets.coralClawStbdPosition);
+        return moveToCommand(Presets.coralClawPosition.stbd());
       else
-        return moveToCommand(Presets.coralIntakeStbdPosition);  
+        return moveToCommand(Presets.coralIntakePosition.stbd());  
     }
     else
     {
       if (algae.getAsBoolean())
-        return moveToCommand(Presets.coralClawPortPosition);
+        return moveToCommand(Presets.coralClawPosition.port());
       else
-        return moveToCommand(Presets.coralIntakePortPosition);  
+        return moveToCommand(Presets.coralIntakePosition.port());  
     }
   }
 
@@ -440,12 +441,12 @@ public class Diffector extends SubsystemBase
     int nearestReefFace = FieldUtils.getNearestReefFace(robotPos.get());
     boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
 
-    Translation2d target = 
+    ArmPos target = 
     level2 
     ?
-    portReefFace ? Presets.algae2PortPosition : Presets.algae2StbdPosition
+    portReefFace ? Presets.algae2Position.port() : Presets.algae2Position.stbd()
     :
-    portReefFace ? Presets.algae3PortPosition : Presets.algae3StbdPosition;
+    portReefFace ? Presets.algae3Position.port() : Presets.algae3Position.stbd();
 
     return moveAndWaitCommand(target);
   }
@@ -467,18 +468,18 @@ public class Diffector extends SubsystemBase
     int nearestReefFace = FieldUtils.getNearestReefFace(robotPos.get());
     boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
 
-    Translation2d target = 
+    ArmPos target = 
     switch (level)
     {
-      case 4 -> portReefFace ? Presets.coral4PortPosition : Presets.coral4StbdPosition;
+      case 4 -> portReefFace ? Presets.coral4Position.port()     : Presets.coral4Position.stbd();
 
-      case 3 -> portReefFace ? Presets.coral3PortPosition : Presets.coral3StbdPosition;
+      case 3 -> portReefFace ? Presets.coral3Position.port()     : Presets.coral3Position.stbd();
 
-      case 2 -> portReefFace ? Presets.coral2PortPosition : Presets.coral2StbdPosition;
+      case 2 -> portReefFace ? Presets.coral2Position.port()     : Presets.coral2Position.stbd();
 
-      case 1 -> portReefFace ? Presets.coral1ClawPortPosition : Presets.coral1ClawStbdPosition;
+      case 1 -> portReefFace ? Presets.coral1ClawPosition.port() : Presets.coral1ClawPosition.stbd();
 
-      case 0 -> portReefFace ? Presets.coral1PortPosition : Presets.coral1StbdPosition;
+      case 0 -> portReefFace ? Presets.coral1Position.port()     : Presets.coral1Position.stbd();
 
       default -> Presets.coralStowPosition;
     };

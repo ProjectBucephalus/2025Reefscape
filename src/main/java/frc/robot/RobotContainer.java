@@ -27,6 +27,8 @@ import frc.robot.constants.Constants.LEDStrip;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.AlgaeManipulator.Status;
+import frc.robot.subsystems.Rumbler.Sides;
+import frc.robot.util.ArmPos;
 import frc.robot.util.AutoUtils;
 import frc.robot.util.Conversions;
 import frc.robot.util.FieldUtils;
@@ -161,8 +163,8 @@ public class RobotContainer
           s_Coral.startEnd(() -> s_Coral.setStatus(CoralManipulator.Status.DELIVERY_SMART), () -> s_Coral.setStatus(CoralManipulator.Status.DEFAULT)), 
           () -> 
           {
-            Translation2d target = s_Diffector.getRelativeTarget();
-            return target.equals(Constants.DiffectorConstants.Presets.coral1PortPosition) || target.equals(Constants.DiffectorConstants.Presets.coral1StbdPosition);
+            ArmPos target = s_Diffector.getRelativeTarget();
+            return target.relativeEquals(Constants.DiffectorConstants.Presets.coral1Position);
           }
         )
         .withName("EjectCoral")
@@ -176,13 +178,11 @@ public class RobotContainer
           var highCoralPositions = 
           List.of
           (
-            Presets.coral4PortPosition, 
-            Presets.coral4StbdPosition, 
-            Presets.coral3PortPosition, 
-            Presets.coral3StbdPosition
+            Presets.coral4Position, 
+            Presets.coral3Position
           ).stream();
           return
-          (highCoralPositions.anyMatch(s_Diffector.getRelativeTarget()::equals));
+          (highCoralPositions.anyMatch(s_Diffector.getRelativeTarget()::relativeEquals));
         }
       )
       .onTrue(s_Diffector.runOnce(() -> s_Diffector.goToAngle(0)));
@@ -195,8 +195,8 @@ public class RobotContainer
       (
         Commands.either // Algae intake pos
         (
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePortPosition), 
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakeStbdPosition), 
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePosition.port()), 
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePosition.stbd()), 
           () ->
           {
             double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
@@ -473,8 +473,8 @@ public class RobotContainer
         (
           Commands.either
           (
-            s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPositionStbd), 
-            s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPositionPort), 
+            s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPosition.stbd()), 
+            s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPosition.port()), 
             () -> swerveState.Pose.getX() >= 8.774
           )
           .withName("Processor"),
@@ -502,8 +502,8 @@ public class RobotContainer
         (
           Commands.either
           (
-            s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePortPosition), 
-            s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakeStbdPosition), 
+            s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePosition.port()), 
+            s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePosition.stbd()), 
             () ->
             {
               double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
@@ -532,9 +532,9 @@ public class RobotContainer
       (
         () ->
         {
-          var coralIntakePositions = List.of(Presets.coralIntakePortPosition, Presets.coralIntakeStbdPosition).stream();
+          var coralIntakePositions = List.of(Presets.coralIntakePosition).stream();
           return 
-          (coralIntakePositions.anyMatch(s_Diffector.getRelativeTarget()::equals));
+          (coralIntakePositions.anyMatch(s_Diffector.getRelativeTarget()::relativeEquals));
         }
       )
       .onTrue(s_Coral.setStatusCommand(CoralManipulator.Status.INTAKE))
@@ -545,9 +545,9 @@ public class RobotContainer
       (
         () ->
         {
-          var clawIntakePositions = List.of(Presets.coralClawPortPosition, Presets.coralClawStbdPosition).stream();
+          var clawIntakePositions = List.of(Presets.coralClawPosition).stream();
           return 
-          (clawIntakePositions.anyMatch(s_Diffector.getRelativeTarget()::equals));
+          (clawIntakePositions.anyMatch(s_Diffector.getRelativeTarget()::relativeEquals));
         }
       )
       .onTrue(s_Algae.setStatusCommand(AlgaeManipulator.Status.INTAKE))
@@ -618,12 +618,12 @@ public class RobotContainer
 
   private void configureTestBindings()
   {
-    testing.y().onTrue(s_Diffector.moveToCommand(new Translation2d(1.5, 90)));
-    testing.a().onTrue(s_Diffector.moveToCommand(new Translation2d(0.5, 90)));
-    testing.povUp().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 0)));
-    testing.povRight().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 90)));
-    testing.povDown().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 180)));
-    testing.povLeft().onTrue(s_Diffector.moveToCommand(new Translation2d(1, 270)));
+    testing.y().onTrue(s_Diffector.moveToCommand(new ArmPos(1.5, 90)));
+    testing.a().onTrue(s_Diffector.moveToCommand(new ArmPos(0.5, 90)));
+    testing.povUp().onTrue(s_Diffector.moveToCommand(new ArmPos(1, 0)));
+    testing.povRight().onTrue(s_Diffector.moveToCommand(new ArmPos(1, 90)));
+    testing.povDown().onTrue(s_Diffector.moveToCommand(new ArmPos(1, 180)));
+    testing.povLeft().onTrue(s_Diffector.moveToCommand(new ArmPos(1, 270)));
   }
 
   private void initLED()

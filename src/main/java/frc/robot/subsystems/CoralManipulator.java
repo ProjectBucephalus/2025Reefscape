@@ -88,7 +88,7 @@ public class CoralManipulator extends SubsystemBase
         armAngle = RobotContainer.s_Diffector.getRelativeRotation();
         double armHeight = RobotContainer.s_Diffector.getElevation();
         speed = 
-        MathUtil.isNear(Presets.coral4PortPosition.getX(), armHeight, DiffectorGeometry.elevationTolerance) ?
+        MathUtil.isNear(Presets.coral4Position.getZ(), armHeight, DiffectorGeometry.elevationTolerance) ?
         Manipulators.coralLvl4DeliverySpeed
         :
         Manipulators.coralDeliverySpeed;
