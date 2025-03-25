@@ -64,13 +64,13 @@ public class ArmCalculator
    * Calculates desired path for arm to follow: Ensures the arm is at a safe height, rotates to target, elevates to target
    * @param targetPosition target height/rotation of elevator carriage, (metres above deck)/(degrees total anticlockwise)
    * @param startPosition initial height/rotation of elevator carriage, (metres above deck)/(degrees total anticlockwise)
-   * @return Translation2d array containing the projected path
+   * @return ArmPos array containing the projected path
    */
-  public ArrayList<Translation2d> pathfindArm(Translation2d targetPosition, Translation2d startPosition)
+  public ArrayList<ArmPos> pathfindArm(ArmPos targetPosition, ArmPos startPosition)
   {
-    ArrayList<Translation2d> pathOutput = new ArrayList<Translation2d>();
+    ArrayList<ArmPos> pathOutput = new ArrayList<ArmPos>();
 
-    Translation2d relativeTarget = new Translation2d(targetPosition.getX(), Conversions.mod(targetPosition.getY(), 360));
+    ArmPos relativeTarget = new ArmPos(targetPosition.getZ(), Conversions.mod(targetPosition.getR(), 360));
 
     Translation2d robotPos = RobotContainer.swerveState.Pose.getTranslation();
 
@@ -84,28 +84,28 @@ public class ArmCalculator
       {safeElevation = DiffectorGeometry.safeElevation;}
 
     // Certain positions put the arm lower than it would otherwise be allowed to go
-    if (Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::equals))
+    if (Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals))
     { // Forced safe path for unsafe targets
-      pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), startPosition.getY()));
-      pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), targetPosition.getY()));
-      pathOutput.add(new Translation2d(safeElevation, targetPosition.getY())); // Ensuring arm is not rotating
+      pathOutput.add(new ArmPos(Math.max(safeElevation, startPosition.getZ()), startPosition.getR()));
+      pathOutput.add(new ArmPos(Math.max(safeElevation, startPosition.getZ()), targetPosition.getR()));
+      pathOutput.add(new ArmPos(safeElevation, targetPosition.getR())); // Ensuring arm is not rotating
       pathOutput.add(targetPosition);
 
       return pathOutput;
     }
 
-    if (Presets.highDiffectorPositions.stream().anyMatch(relativeTarget::equals))
+    if (Presets.highDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals))
     { // Forced safe path for high scoring positions
-      pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), startPosition.getY()));
-      if (MathUtil.isNear(relativeTarget.getY(), 180, 90))
+      pathOutput.add(new ArmPos(Math.max(safeElevation, startPosition.getZ()), startPosition.getR()));
+      if (MathUtil.isNear(relativeTarget.getR(), 180, 90))
       {
-        pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), goShortest(180, targetPosition.getY())));
-        pathOutput.add(new Translation2d(targetPosition.getX(), goShortest(180, targetPosition.getY())));
+        pathOutput.add(new ArmPos(Math.max(safeElevation, startPosition.getZ()), goShortest(180, targetPosition.getR())));
+        pathOutput.add(new ArmPos(targetPosition.getZ(), goShortest(180, targetPosition.getR())));
       }
       else
       {
-        pathOutput.add(new Translation2d(Math.max(safeElevation, startPosition.getX()), goShortest(0, targetPosition.getY())));
-        pathOutput.add(new Translation2d(targetPosition.getX(), goShortest(0, targetPosition.getY())));
+        pathOutput.add(new ArmPos(Math.max(safeElevation, startPosition.getZ()), goShortest(0, targetPosition.getR())));
+        pathOutput.add(new ArmPos(targetPosition.getZ(), goShortest(0, targetPosition.getR())));
       }
       pathOutput.add(targetPosition);
 
@@ -114,19 +114,19 @@ public class ArmCalculator
     
     
     // Any other position should be made safe
-    targetPosition = new Translation2d(checkPosition(targetPosition), targetPosition.getY());
+    targetPosition = new ArmPos(checkPosition(targetPosition), targetPosition.getR());
     
     // Path of arm starts above safe limits, path is safe as given
-    if (startPosition.getX() >= safeElevation)
+    if (startPosition.getZ() >= safeElevation)
     { // Go to target rotation
-      pathOutput.add(new Translation2d(startPosition.getX(), targetPosition.getY()));
+      pathOutput.add(new ArmPos(startPosition.getZ(), targetPosition.getR()));
       // Go to target posititon
       pathOutput.add(targetPosition);
       return pathOutput;
     }
 
-    double angleChange = targetPosition.getY() - startPosition.getY();
-    double angleRelative = Conversions.mod(startPosition.getY(), 360);
+    double angleChange = targetPosition.getR() - startPosition.getR();
+    double angleRelative = Conversions.mod(startPosition.getR(), 360);
 
     // Elevation change only
     if (Math.abs(angleChange) <= DiffectorGeometry.angleTolerance)
@@ -150,8 +150,8 @@ public class ArmCalculator
     )
     {
       // Intermediate waypoint: Safe elevation at initial rotation
-      pathOutput.add(new Translation2d(Math.max(startPosition.getX(), safeElevation), startPosition.getY()));
-      pathOutput.add(new Translation2d(Math.max(startPosition.getX(), safeElevation), targetPosition.getY()));
+      pathOutput.add(new ArmPos(Math.max(startPosition.getZ(), safeElevation), startPosition.getR()));
+      pathOutput.add(new ArmPos(Math.max(startPosition.getZ(), safeElevation), targetPosition.getR()));
     }
     
     else if
@@ -164,8 +164,8 @@ public class ArmCalculator
     )
     {
       // Intermediate waypoint: Safe elevation at initial rotation
-      pathOutput.add(new Translation2d(Math.max(algaeClawElevation, startPosition.getX()), startPosition.getY()));
-      pathOutput.add(new Translation2d(Math.max(algaeClawElevation, startPosition.getX()), targetPosition.getY()));
+      pathOutput.add(new ArmPos(Math.max(algaeClawElevation, startPosition.getZ()), startPosition.getR()));
+      pathOutput.add(new ArmPos(Math.max(algaeClawElevation, startPosition.getZ()), targetPosition.getR()));
     }
 
     else if
@@ -178,27 +178,27 @@ public class ArmCalculator
     )
     {
       // Intermediate waypoint: Safe elevation at initial rotation
-      pathOutput.add(new Translation2d(Math.max(coralClawElevation, startPosition.getX()), startPosition.getY()));
-      pathOutput.add(new Translation2d(Math.max(coralClawElevation, startPosition.getX()), targetPosition.getY()));
+      pathOutput.add(new ArmPos(Math.max(coralClawElevation, startPosition.getZ()), startPosition.getR()));
+      pathOutput.add(new ArmPos(Math.max(coralClawElevation, startPosition.getZ()), targetPosition.getR()));
     }
 
 
     // Rotation does not go past vertical -> never needs to go higher than start or end
-    else if (startPosition.getX() < checkAngle(targetPosition.getY())) // Start is lower than is safe for final rotation
+    else if (startPosition.getZ() < checkAngle(targetPosition.getR())) // Start is lower than is safe for final rotation
     { // Go to safe elevation for final rotation, then rotate
-      pathOutput.add(new Translation2d(checkAngle(targetPosition.getY()), startPosition.getY()));
-      pathOutput.add(new Translation2d(checkAngle(targetPosition.getY()), targetPosition.getY()));
+      pathOutput.add(new ArmPos(checkAngle(targetPosition.getR()), startPosition.getR()));
+      pathOutput.add(new ArmPos(checkAngle(targetPosition.getR()), targetPosition.getR()));
     }
 
     /* Arm starts lower than is safe
     else if (startPosition.getX() <= checkAngle(startPosition.getY()))
     { // Ensure the arm is safe before moving from vertical
-      pathOutput.add(new Translation2d(safeElevation, startPosition.getY()));
-      pathOutput.add(new Translation2d(safeElevation, targetPosition.getY()));
+      pathOutput.add(new ArmPos(safeElevation, startPosition.getY()));
+      pathOutput.add(new ArmPos(safeElevation, targetPosition.getY()));
     }*/
 
     else // Start is high enough to rotate to final rotation
-      {pathOutput.add(new Translation2d(startPosition.getX(), targetPosition.getY()));}
+      {pathOutput.add(new ArmPos(startPosition.getZ(), targetPosition.getR()));}
 
 
     // Add Target waypoint:
@@ -213,8 +213,8 @@ public class ArmCalculator
    * @param currentAngle the angle of the arm to check
    * @return maximum of the intended elevation and the safe elevation for the given angle
    */
-  public double checkPosition(Translation2d position)
-    {return MathUtil.clamp(position.getX(), checkAngle(position.getY()), maxElevation);}
+  public double checkPosition(ArmPos position)
+    {return MathUtil.clamp(position.getZ(), checkAngle(position.getR()), maxElevation);}
 
   /**
    * Returns the minimum safe arm height for a given angle

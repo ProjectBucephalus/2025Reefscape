@@ -107,7 +107,7 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.moveAndWaitCommand(Presets.coralIntakePortPosition)
+              s_Diffector.moveAndWaitCommand(Presets.coralIntakePosition.port())
             )
           );
 
@@ -311,7 +311,7 @@ public class AutoUtils
     return
     Commands.sequence
     (
-      s_Diffector.moveAndWaitCommand(net ? Presets.netPosition : Presets.processorPositionPort), 
+      s_Diffector.moveAndWaitCommand(net ? Presets.netPosition : Presets.processorPosition.port()), 
       s_Algae.setStatusCommand(AlgaeManipulator.Status.EJECT)
     );
   }
@@ -321,12 +321,12 @@ public class AutoUtils
     int nearestReefFace = FieldUtils.getNearestReefFace(posSup.get());
     boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
 
-    Translation2d target = 
+    ArmPos target = 
     nearestReefFace % 2 == 0 
     ?
-    portReefFace ? Presets.algae2StbdPosition : Presets.algae2PortPosition
+    portReefFace ? Presets.algae2Position.stbd() : Presets.algae2Position.port()
     :
-    portReefFace ? Presets.algae3StbdPosition : Presets.algae3PortPosition;
+    portReefFace ? Presets.algae3Position.stbd() : Presets.algae3Position.port();
 
     return
     Commands.sequence

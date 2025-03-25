@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotContainer;
+import frc.robot.util.ArmPos;
 import frc.robot.util.AutoUtils;
 
 public final class Constants 
@@ -211,55 +212,37 @@ public final class Constants
      */
     public static class Presets
     {
-      public static final Translation2d startPosition           = new Translation2d(0.616,  0);
-      public static final Translation2d climbSafePosition       = new Translation2d(0.80,  90); // TODO
-      public static final Translation2d climbPosition           = new Translation2d(0.425, 90);
- 
-      public static final Translation2d netPosition             = new Translation2d(DiffectorGeometry.maxZ, 150);
-      public static final Translation2d algae3PortPosition      = new Translation2d(1.08, 113);
-      public static final Translation2d algae3StbdPosition      = new Translation2d(1.08, 247);
-      public static final Translation2d algae2PortPosition      = new Translation2d(0.65, 113);
-      public static final Translation2d algae2StbdPosition      = new Translation2d(0.65, 247);
-      public static final Translation2d processorPositionPort   = new Translation2d(0.43,  90);
-      public static final Translation2d processorPositionStbd   = new Translation2d(0.43,  270);
- 
-      public static final Translation2d coral4PortPosition      = new Translation2d(1.72, 325);
-      public static final Translation2d coral4StbdPosition      = new Translation2d(1.72,  35);
-      public static final Translation2d coral3PortPosition      = new Translation2d(1.05, 325);
-      public static final Translation2d coral3StbdPosition      = new Translation2d(1.05,  35);
-      public static final Translation2d coral2PortPosition      = new Translation2d(0.675, 325);
-      public static final Translation2d coral2StbdPosition      = new Translation2d(0.675,  35);
-      public static final Translation2d coral1ClawPortPosition  = new Translation2d(DiffectorGeometry.algaeClawElevation,  76);
-      public static final Translation2d coral1ClawStbdPosition  = new Translation2d(DiffectorGeometry.algaeClawElevation, 284);
-      public static final Translation2d coral1PortPosition      = new Translation2d(DiffectorGeometry.coralFunnelElevation, 210);
-      public static final Translation2d coral1StbdPosition      = new Translation2d(DiffectorGeometry.coralFunnelElevation, 150);
- 
-      public static final Translation2d coralIntakePortPosition = new Translation2d(1.14, 215); // TODO
-      public static final Translation2d coralIntakeStbdPosition = new Translation2d(1.14, 145); // TODO
-      public static final Translation2d coralClawPortPosition   = new Translation2d(0.73, 129); // TODO
-      public static final Translation2d coralClawStbdPosition   = new Translation2d(0.73, 229); // TODO
-      public static final Translation2d coralStowPosition       = new Translation2d(0.72,   0);
- 
-      public static final Translation2d algaeIntakePortPosition = new Translation2d(0.47,  70); // +20cm for testing
-      public static final Translation2d algaeIntakeStbdPosition = new Translation2d(0.47, 290); // +20cm for testing
-      public static final Translation2d algaeStowPosition       = new Translation2d(0.80, 180);
+      public static final ArmPos startPosition       = new ArmPos(0.616,  0);
+      public static final ArmPos climbSafePosition   = new ArmPos(0.80,  90); // TODO
+      public static final ArmPos climbPosition       = new ArmPos(0.425, 90);
+      public static final ArmPos netPosition         = new ArmPos(DiffectorGeometry.maxZ, 150, false);
+      public static final ArmPos algae3Position      = new ArmPos(1.08, 113);
+      public static final ArmPos algae2Position      = new ArmPos(0.65, 113);
+      public static final ArmPos processorPosition   = new ArmPos(0.43,  90);
+      public static final ArmPos coral4Position      = new ArmPos(1.72, 325);
+      public static final ArmPos coral3Position      = new ArmPos(1.05, 325);
+      public static final ArmPos coral2Position      = new ArmPos(0.675, 325);
+      public static final ArmPos coral1ClawPosition  = new ArmPos(DiffectorGeometry.algaeClawElevation,  76);
+      public static final ArmPos coral1Position      = new ArmPos(DiffectorGeometry.coralFunnelElevation, 210);
+      public static final ArmPos coralIntakePosition = new ArmPos(1.14, 215); // TODO
+      public static final ArmPos coralClawPosition   = new ArmPos(0.73, 129); // TODO
+      public static final ArmPos coralStowPosition   = new ArmPos(0.72,   0);
+      public static final ArmPos algaeIntakePosition = new ArmPos(0.47,  70); // +20cm for testing
+      public static final ArmPos algaeStowPosition   = new ArmPos(0.80, 180);
 
-      public static final ArrayList<Translation2d> lowDiffectorPositions = new ArrayList<Translation2d>()
+      public static final ArrayList<ArmPos> lowDiffectorPositions = new ArrayList<ArmPos>()
       {{
         add(startPosition);
-        add(algaeIntakePortPosition);
-        add(algaeIntakeStbdPosition);
+        add(algaeIntakePosition);
         add(climbPosition);
         add(algaeStowPosition);
       }};
 
-      public static final ArrayList<Translation2d> highDiffectorPositions = new ArrayList<Translation2d>()
+      public static final ArrayList<ArmPos> highDiffectorPositions = new ArrayList<ArmPos>()
       {{
         add(netPosition);
-        add(coral4PortPosition);
-        add(coral4StbdPosition);
-        add(coral3PortPosition);
-        add(coral3StbdPosition);
+        add(coral4Position);
+        add(coral3Position);
       }};
     }
 
