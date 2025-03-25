@@ -10,12 +10,15 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.constants.Constants;
+import frc.robot.constants.DiffectorGeometry;
+import frc.robot.constants.FieldConstants;
 import frc.robot.util.GeoFenceObject.ObjectTypes;
 
 public class FieldUtils 
 {
+  /** Length of the field in the X direction, metres */
   public static final double fieldLength = 17.548;
+  /** Width of the field in the Y direction, metres */
   public static final double fieldWidth = 8.051;
 
   public static boolean isRedAlliance() 
@@ -24,10 +27,23 @@ public class FieldUtils
     return alliance.isPresent() && alliance.get() == Alliance.Red;
   }
 
+  public static final int getDriverLocation()
+  {
+    if (DriverStation.getLocation().isPresent())
+    {
+      return DriverStation.getLocation().getAsInt();
+    }
+    else
+    {
+      return 0;
+    }
+  }
+
   public static Pose2d flipPose(Pose2d pose) 
   {
     // flip pose when red
-    if (isRedAlliance()) {
+    if (isRedAlliance()) 
+    {
       Rotation2d rot = pose.getRotation();
       // reflect the pose over center line, flip both the X and the rotation
       return new Pose2d(fieldLength - pose.getX(), pose.getY(), new Rotation2d(-rot.getCos(), rot.getSin()));
@@ -37,23 +53,30 @@ public class FieldUtils
     return pose;
   }
 
+  public static Pose2d rotatePose(Pose2d pose) 
+  {
+    // flip pose when red
+    if (isRedAlliance()) 
+    {
+      // reflect the pose around center point, flip both the X and Y position and rotation
+      return pose.rotateAround(new Translation2d(fieldLength/2, fieldWidth/2), Rotation2d.k180deg);
+    }
+
+    // Blue or we don't know; return the original pose
+    return pose;
+  }
+
   public static int getNearestReefFace(Translation2d robotPos)
   {
     int nearestReefFace;
-    ArrayList<Translation2d> localList;
-
-    if (isRedAlliance()) 
-    {   
-      localList = Constants.Auto.reefRedMidPoints;
-    }
-    else
-    {
-      localList = Constants.Auto.reefBlueMidPoints;
-    }
+    ArrayList<Translation2d> localList =
+    isRedAlliance() ? 
+    FieldConstants.redReefMidpoints :
+    FieldConstants.blueReefMidpoints;
 
     nearestReefFace = localList.indexOf(robotPos.nearest(localList)); 
 
-    nearestReefFace = Conversions.wrap(nearestReefFace, 1, 6);
+    nearestReefFace = (int)Conversions.wrap(nearestReefFace, 1, 6);
     
     return nearestReefFace;
   }
@@ -61,20 +84,25 @@ public class FieldUtils
   public static Translation2d getNearestBargePoint(Translation2d robotPos)
   {
     Translation2d nearestBargePoint;
-    ArrayList<Translation2d> localList;
-
-    if (isRedAlliance()) 
-    {   
-      localList = Constants.Auto.redBargePoints;
-    }
-    else
-    {
-      localList = Constants.Auto.blueBargePoints;
-    }
+    ArrayList<Translation2d> localList =
+    isRedAlliance() ? 
+    FieldConstants.redBargePoints :
+    FieldConstants.blueBargePoints;
 
     nearestBargePoint = robotPos.nearest(localList); 
     
     return nearestBargePoint;
+  }
+
+  public static GeoFenceObject getNearestCoralStation(Translation2d robotPos)
+  {
+    boolean northHalf = robotPos.getY() >= fieldWidth / 2;
+
+    return
+    robotPos.getX() >= fieldLength / 2 ?
+    northHalf ? GeoFencing.cornerNRed : GeoFencing.cornerSRed
+    :
+    northHalf ? GeoFencing.cornerNBlue : GeoFencing.cornerSBlue;
   }
 
   public static PathPlannerPath loadPath(String pathName) 
@@ -114,7 +142,7 @@ public class FieldUtils
     /** Inscribed diameter of the reef hexagon (i.e. distance between opposite faces) in metres */
     public static final double inscribedReefDiameter = 1.663;
     /** Circumscribed diameter of the reef hexagon (i.e. distance between opposite points) in metres */
-    public static final double circumscribedReefDiameter = 1.920;
+    public static final double circumscribedReefDiameter = 1.820;
     /** Circumscribed diameter of the reef zone hexagon (i.e. distance between opposite points) in metres */
     public static final double circumscribedReefZoneDiameter = 3;
     
@@ -156,7 +184,7 @@ public class FieldUtils
       reefBlue, 
       reefZoneRed, 
       bargeColumn, 
-      bargeZoneRed, // TODO: Box objects are inverted
+      bargeZoneRed,
       cornerSBlue, 
       cornerNBlue, 
       cornerSRed, 
@@ -169,7 +197,7 @@ public class FieldUtils
       reefRed, 
       reefZoneBlue, 
       bargeColumn, 
-      bargeZoneBlue, // TODO: Box objects are inverted
+      bargeZoneBlue,
       cornerSBlue, 
       cornerNBlue, 
       cornerSRed, 
@@ -187,7 +215,17 @@ public class FieldUtils
     public static final Pair<Translation2d, Translation2d> redAllianceBargeDynamic = new Pair<Translation2d,Translation2d>(new Translation2d(8.19, 4.331), new Translation2d(9.358, fieldWidth));
 
     /* Barge Exclusion Zone -> Keep the arm pivot far enough away from the net to prevent touching it */
-    public static final double bargeSafetyWidth = Constants.DiffectorConstants.IKGeometry.bargeSafetyWidth - robotRadiusInscribed;
+    public static final double bargeSafetyWidth = DiffectorGeometry.bargeSafetyWidth - robotRadiusInscribed;
     public static final GeoFenceObject netProtectionZone = new GeoFenceObject((fieldLength/2), fieldSouth, (fieldLength/2), fieldNorth, 0.25, bargeSafetyWidth, ObjectTypes.line);
+  }
+
+  public static final class DriverFieldRefs
+  {
+    public static final Translation2d driverBlue1 = new Translation2d(0.0, 5.278);
+    public static final Translation2d driverBlue2 = new Translation2d(0.0, 4.026);
+    public static final Translation2d driverBlue3 = new Translation2d(0.0,2.278);
+    public static final Translation2d driverRed1 = new Translation2d(fieldLength,2.278);
+    public static final Translation2d driverRed2 = new Translation2d(fieldLength,4.026);
+    public static final Translation2d driverRed3 = new Translation2d(fieldLength,5.278);
   }
 }
