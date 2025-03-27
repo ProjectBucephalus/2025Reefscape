@@ -13,6 +13,9 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -60,6 +63,24 @@ public class AutoUtils
     {
       switch (splitCommand.charAt(0)) 
       {
+        case 'g':
+          int seperatorIndex = splitCommand.indexOf(":");
+          Translation2d posTarget = 
+          new Translation2d
+          (
+            MathUtil.clamp(Double.parseDouble(splitCommand.substring(1, seperatorIndex)), 0.5, (FieldUtils.fieldLength / 2) - 0.5), 
+            MathUtil.clamp(Double.parseDouble(splitCommand.substring(seperatorIndex + 1)), 0.5, FieldUtils.fieldWidth - 0.5)
+          );
+
+          if (FieldUtils.isRedAlliance()) 
+          {
+            posTarget = posTarget.rotateAround(new Translation2d(FieldUtils.fieldLength / 2, FieldUtils.fieldWidth / 2), Rotation2d.k180deg);
+          }
+
+          commandList.add(AutoBuilder.pathfindToPose(new Pose2d(posTarget, FieldUtils.isRedAlliance() ? Rotation2d.kZero: Rotation2d.k180deg), defaultConstraints));
+          prevEndPoint = posTarget;
+          break;
+
         case 'w':
           commandList.add(Commands.waitSeconds(Double.parseDouble(splitCommand.substring(1))));
           break;
