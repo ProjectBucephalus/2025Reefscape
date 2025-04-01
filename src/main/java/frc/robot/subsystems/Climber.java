@@ -135,6 +135,8 @@ public class Climber extends SubsystemBase
             adjustedClimberPos = ClimberConstants.climbWinchPos;
           }
 
+          SmartDashboard.putNumber("robot pitch", RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble());
+          SmartDashboard.putNumber("adjusted Climber target", adjustedClimberPos);
           m_Climber.setControl(motionMagic.withPosition(adjustedClimberPos));
           SD.CLIMBER_TARGET.put(adjustedClimberPos);
         }

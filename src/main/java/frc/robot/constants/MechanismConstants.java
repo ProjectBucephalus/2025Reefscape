@@ -20,7 +20,7 @@ public class MechanismConstants
 
   public static class ClimberConfigs
   {
-    public static final double winchBalanceScalar = 0.05;
+    public static final double winchBalanceScalar = 1;
 
     public static final double winchPlanetaryRatio = 45;
     public static final double winchGearIn   = 20;
