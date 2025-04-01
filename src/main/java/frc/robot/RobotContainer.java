@@ -511,8 +511,7 @@ public class RobotContainer
           )
           .withName("AlgaeGroundIntake"),
           s_Coral.setStatusCommand(CoralManipulator.Status.WIGGLE)
-            .repeatedly()
-            .until(copilot.povDown().negate())
+            .andThen(Commands.waitUntil(copilot.povDown().negate()))
             .andThen(s_Coral.setStatusCommand(CoralManipulator.Status.DEFAULT))
             .withName("CoralWiggle"),
           algaeModifier
@@ -608,8 +607,8 @@ public class RobotContainer
   {
     /* Driver rumble bindings */
     io_driverLeft
-      .addRumbleTrigger("Penalty Reef Zone", Triggers.opposingReefZoneTrigger)
-      .addRumbleTrigger("Penalty Barge Zone", Triggers.opposingBargeZoneTrigger);
+      .addRumbleTrigger("Penalty Reef Zone", Triggers.opposingReefZoneTrigger.and(Triggers.usePenaltyRumbleTrigger))
+      .addRumbleTrigger("Penalty Barge Zone", Triggers.opposingBargeZoneTrigger.and(Triggers.usePenaltyRumbleTrigger));
     io_driverRight.addRumbleTrigger( "Intaked Successfully", Triggers.driverRightRumbleTrigger);
 
     /* Copilot rumble bindings */

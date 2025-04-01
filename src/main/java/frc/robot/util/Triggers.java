@@ -59,6 +59,10 @@ public class Triggers
     < 
     (FieldUtils.GeoFencing.circumscribedReefZoneDiameter / 2) + 0.3
   );
+  public static final Trigger usePenaltyRumbleTrigger = new Trigger
+  (
+    () -> SD.IO_LL.get() && !SD.IO_GEOFENCE.get() && Limelight.rotationKnown
+  );
   public static final Trigger algaeIntakePosTrigger = new Trigger
   (
     homeReefZoneTrigger.and
