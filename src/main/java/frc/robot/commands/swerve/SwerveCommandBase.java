@@ -5,6 +5,7 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.DiffectorGeometry;
 import frc.robot.constants.Constants.Control;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Limelight;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
 import frc.robot.util.SD;
@@ -90,37 +91,40 @@ public abstract class SwerveCommandBase extends Command
     /* Apply braking */
     motionXY = motionXY.times(MathUtil.interpolate(Control.maxThrottle, Control.minThrottle, brakeVal));
     
-    /* Adjust the virtual radius of the robot to protect the robot when moving fast */
-    robotSpeed = Math.hypot(RobotContainer.swerveState.Speeds.vxMetersPerSecond, RobotContainer.swerveState.Speeds.vyMetersPerSecond);
-    
-    if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
-      {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
-    else
-      {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
-    
-    // Invert processing input when on red alliance
-    if (redAlliance)
-      {motionXY = motionXY.unaryMinus();}
-
-    if (RobotContainer.s_Diffector.getElevation() > DiffectorGeometry.bargeSafetyHeight && !SD.OVERRIDE.get())
+    if (SD.IO_LL.get() && Limelight.rotationKnown)
     {
-      motionXY = FieldUtils.GeoFencing.netProtectionZone.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
-    }
-    
-    if (fencedSup.getAsBoolean() && !SD.IO_GEOFENCE.get())
-    {   
-      // Read down the list of geofence objects
-      // Outer wall is index 0, so has highest authority by being processed last
-      for (int i = fieldGeoFence.length - 1; i >= 0; i--)
+      /* Adjust the virtual radius of the robot to protect the robot when moving fast */
+      robotSpeed = Math.hypot(RobotContainer.swerveState.Speeds.vxMetersPerSecond, RobotContainer.swerveState.Speeds.vyMetersPerSecond);
+      
+      if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
+        {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
+      else
+        {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
+      
+      // Invert processing input when on red alliance
+      if (redAlliance)
+        {motionXY = motionXY.unaryMinus();}
+
+      if (RobotContainer.s_Diffector.getElevation() > DiffectorGeometry.bargeSafetyHeight && SD.IO_BARGE_PROTECTION.get())
       {
-        Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
-        motionXY = inputDamping;
+        motionXY = FieldUtils.GeoFencing.netProtectionZone.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
       }
-    } 
-    
-    // Uninvert processing output when on red alliance
-    if (redAlliance)
-      {motionXY = motionXY.unaryMinus();}
+      
+      if (fencedSup.getAsBoolean() && !SD.IO_GEOFENCE.get())
+      {   
+        // Read down the list of geofence objects
+        // Outer wall is index 0, so has highest authority by being processed last
+        for (int i = fieldGeoFence.length - 1; i >= 0; i--)
+        {
+          Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
+          motionXY = inputDamping;
+        }
+      } 
+      
+      // Uninvert processing output when on red alliance
+      if (redAlliance)
+        {motionXY = motionXY.unaryMinus();}
+    }
 
     return motionXY;
   }

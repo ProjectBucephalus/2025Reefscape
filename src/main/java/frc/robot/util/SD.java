@@ -32,6 +32,7 @@ public class SD
   public static final StringKey  IO_AUTO = new StringKey("Auto Input", Constants.Auto.defaultAuto);
   public static final DoubleKey  IO_RUMBLE_D = new DoubleKey("Driver Rumble", Constants.RumblerConstants.driverDefault);
   public static final DoubleKey  IO_RUMBLE_C = new DoubleKey("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
+  public static final BooleanKey IO_BARGE_PROTECTION = new BooleanKey("Use Barge Protection", true);
 
   public static final BooleanKey STATE_PP_WARMUP = new BooleanKey("Warmup Finished", false);
   public static final StringKey  STATE_ALGAE = new StringKey("Algae Manipulator State", "Empty");
