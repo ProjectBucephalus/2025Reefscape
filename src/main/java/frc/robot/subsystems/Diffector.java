@@ -83,6 +83,7 @@ public class Diffector extends SubsystemBase
   {
     eStop = false;
     SD.DIFF_ESTOP.init();
+    SD.IO_BARGE_PROTECTION.init();
     manualControl = false;
     arm = new ArmCalculator();
     
