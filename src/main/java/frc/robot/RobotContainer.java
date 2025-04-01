@@ -3,7 +3,6 @@ package frc.robot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
@@ -20,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.swerve.*;
 import frc.robot.constants.*;
 import frc.robot.constants.Constants.DiffectorConstants;
@@ -97,7 +97,7 @@ public class RobotContainer
   public static final int manualDiffectorRotationAxis  = Axis.kRightX.value;
 
   /* Control Modifiers */
-  private static final BooleanSupplier algaeModifier = copilot.rightTrigger();
+  private static final Trigger algaeModifier = copilot.rightTrigger();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() 
@@ -494,28 +494,28 @@ public class RobotContainer
         .withName("StowPos")
       );
 
-    copilot.povDown()
+    copilot.povDown().and(algaeModifier)
       .onTrue
       (
         Commands.either
         (
-          Commands.either
-          (
-            s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePosition.port()), 
-            s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePosition.stbd()), 
-            () ->
-            {
-              double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
-              return robotRotation < 180;
-            }
-          )
-          .withName("AlgaeGroundIntake"),
-          s_Coral.setStatusCommand(CoralManipulator.Status.WIGGLE)
-            .andThen(Commands.waitUntil(copilot.povDown().negate()))
-            .andThen(s_Coral.setStatusCommand(CoralManipulator.Status.DEFAULT))
-            .withName("CoralWiggle"),
-          algaeModifier
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePosition.port()), 
+          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePosition.stbd()), 
+          () ->
+          {
+            double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
+            return robotRotation < 180;
+          }
         )
+        .withName("AlgaeGroundIntake")
+      );
+
+    copilot.povDown().and(algaeModifier.negate())
+      .whileTrue
+      (
+        s_Coral.setStatusCommand(CoralManipulator.Status.WIGGLE)
+          .finallyDo(() -> s_Coral.setStatus(CoralManipulator.Status.DEFAULT))
+          .withName("CoralWiggle")
       );
 
     /* Game piece intake position controls */
@@ -523,7 +523,7 @@ public class RobotContainer
       .onTrue
       (
         s_Diffector.defer(() -> s_Diffector.stationIntakePosCommand(() -> swerveState.Pose.getTranslation(), algaeModifier)
-        .withName("CoralStation"))
+          .withName("CoralStation"))
       );
 
     Triggers.atCoralStationTrigger.and(() -> !coral)
