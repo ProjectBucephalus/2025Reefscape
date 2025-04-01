@@ -8,6 +8,7 @@ import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.HeadingStates;
 import frc.robot.constants.Constants;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
+import frc.robot.subsystems.Limelight;
 import frc.robot.constants.FieldConstants;
 
 public class Triggers 
@@ -17,6 +18,7 @@ public class Triggers
   public static final Trigger scoreDriveTrigger      = new Trigger(() -> RobotContainer.headingState == HeadingStates.REEF_LOCK);
   public static final Trigger stationDriveTrigger    = new Trigger(() -> RobotContainer.headingState == HeadingStates.STATION_LOCK);
   public static final Trigger processorDriveTrigger  = new Trigger(() -> RobotContainer.headingState == HeadingStates.PROCESSOR_LOCK);
+  public static final Trigger allowAutoDriveTrigger  = new Trigger(() -> Limelight.rotationKnown && SD.IO_LL.get());
   public static final Trigger autoScoreCancelTrigger = new Trigger
   (
     unlockHeadingTrigger.or
