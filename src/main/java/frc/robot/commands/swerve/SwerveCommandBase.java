@@ -91,7 +91,7 @@ public abstract class SwerveCommandBase extends Command
     /* Apply braking */
     motionXY = motionXY.times(MathUtil.interpolate(Control.maxThrottle, Control.minThrottle, brakeVal));
     
-    if (SD.IO_LL.get() && Limelight.rotationKnown)
+    if (SD.IO_LL.get())
     {
       /* Adjust the virtual radius of the robot to protect the robot when moving fast */
       robotSpeed = Math.hypot(RobotContainer.swerveState.Speeds.vxMetersPerSecond, RobotContainer.swerveState.Speeds.vyMetersPerSecond);

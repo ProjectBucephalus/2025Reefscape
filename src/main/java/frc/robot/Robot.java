@@ -150,6 +150,9 @@ public class Robot extends TimedRobot
     if (autonomousCommand != null) 
       {autonomousCommand.cancel();}
 
+    if (!Limelight.rotationKnown)
+      {SD.IO_LL.put(false);}
+
     RobotContainer.s_Coral.setStatus(CoralManipulator.Status.DEFAULT);
     RobotContainer.s_Algae.setStatus(AlgaeManipulator.Status.EMPTY);
 

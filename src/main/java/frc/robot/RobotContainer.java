@@ -214,7 +214,7 @@ public class RobotContainer
         .withName("SmartIntake")
       );
 
-    driver.back()
+    /* driver.back()
       .onTrue
       (
         Commands.defer
@@ -241,7 +241,7 @@ public class RobotContainer
           Set.of(s_Diffector, s_Algae, s_Coral)
         )
         .withName("AutoScore")
-      );
+      ); */
   }
 
   private void configureAutoDriveBindings()

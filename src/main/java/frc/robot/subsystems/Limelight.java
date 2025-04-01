@@ -167,7 +167,7 @@ public class Limelight extends SubsystemBase
     
     LimelightHelpers.SetFiducialIDFiltersOverride(limelightName, validIDs);
     
-    if (SD.IO_LL.get() && rotationKnown)
+    if (SD.IO_LL.get())
     {
       mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
       
