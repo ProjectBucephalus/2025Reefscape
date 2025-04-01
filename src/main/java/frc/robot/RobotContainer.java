@@ -511,6 +511,7 @@ public class RobotContainer
           )
           .withName("AlgaeGroundIntake"),
           s_Coral.setStatusCommand(CoralManipulator.Status.WIGGLE)
+            .repeatedly()
             .until(copilot.povDown().negate())
             .andThen(s_Coral.setStatusCommand(CoralManipulator.Status.DEFAULT))
             .withName("CoralWiggle"),
