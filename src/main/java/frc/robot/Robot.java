@@ -96,6 +96,11 @@ public class Robot extends TimedRobot
     SD.IO_PROCESS_AUTO.init();
     SD.CALIBRATE_BOT_ROTATION.init();
     Limelight.rotationKnown = false;
+
+    RobotContainer.io_copilotLeft.clearRequests();
+    RobotContainer.io_copilotRight.clearRequests();
+    RobotContainer.io_driverLeft.clearRequests();
+    RobotContainer.io_driverRight.clearRequests();
   }
 
   @Override
