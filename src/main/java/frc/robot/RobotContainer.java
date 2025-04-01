@@ -383,7 +383,9 @@ public class RobotContainer
         Commands.sequence
         (
           s_Diffector.moveAndWaitCommand(Presets.climbPosition),
-          s_Climber.setStatusCommand(Climber.Status.CLIMB)
+          s_Climber.setStatusCommand(Climber.Status.CLIMB),
+          Commands.waitUntil(s_Climber::offGround),
+          Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED)
         )
         .withName("Climb")
       );
