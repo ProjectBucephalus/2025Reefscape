@@ -6,7 +6,6 @@ import java.util.Set;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
 import edu.wpi.first.math.Pair;
@@ -384,28 +383,7 @@ public class RobotContainer
         Commands.sequence
         (
           s_Diffector.moveAndWaitCommand(Presets.climbPosition),
-          s_Climber.setStatusCommand(Climber.Status.CLIMB),
-          Commands.waitUntil(s_Climber::autoDriveAngle),
-          s_Swerve.defer
-          (
-            () -> 
-            AutoBuilder.pathfindToPose
-            (
-              new Pose2d
-              (
-                swerveState.Pose.getTranslation().nearest
-                (
-                  FieldUtils.isRedAlliance() ? 
-                  FieldConstants.redClimbLineups : 
-                  FieldConstants.blueClimbLineups
-                ), 
-                Rotation2d.kZero
-              ), 
-              Constants.Auto.slowedConstraints
-            )
-          )
-          .until(s_Climber::offGround),
-          Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED)
+          s_Climber.setStatusCommand(Climber.Status.CLIMB)
         )
         .withName("Climb")
       );

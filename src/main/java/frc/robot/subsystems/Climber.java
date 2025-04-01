@@ -125,10 +125,14 @@ public class Climber extends SubsystemBase
         {
           double adjustedClimberPos = m_Climber.getPosition().getValueAsDouble();
           
-          if (SD.OVERRIDE.get()) 
+          if (SD.OVERRIDE.get() && (adjustedClimberPos < ClimberConstants.offGroundPos)) 
           {
             adjustedClimberPos += Units.degreesToRotations((RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() - ClimberConstants.targetRobotClimbPitch) * ClimberConfigs.winchBalanceScalar);
             adjustedClimberPos = Conversions.clamp(adjustedClimberPos, ClimberConstants.climbActiveInnerLimit, ClimberConstants.climbActiveOuterLimit);
+          }
+          else
+          {
+            adjustedClimberPos = ClimberConstants.climbWinchPos;
           }
 
           m_Climber.setControl(motionMagic.withPosition(adjustedClimberPos));
