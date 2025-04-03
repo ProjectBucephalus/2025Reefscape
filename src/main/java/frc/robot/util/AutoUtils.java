@@ -232,7 +232,7 @@ public class AutoUtils
       
         case LEFT, RIGHT -> 
           {
-            boolean flippedFace = (nearestReefFace == 3 || nearestReefFace == 4 || nearestReefFace == 5);
+            boolean flippedFace = (nearestReefFace == 4);
             int unicodeValueOffset = 
             dpadValue == DpadOptions.RIGHT 
             ? 

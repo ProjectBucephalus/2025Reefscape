@@ -32,50 +32,57 @@ public class TargetScoreDrive extends HeadingLockedDrive
 
   @Override
   protected void updateTargetHeading()
-  {  
-    if (MathUtil.isNear(robotXY.getX(), (FieldUtils.fieldLength / 2), Constants.Manipulators.algaeRange)) 
+  { 
+    if 
+    (
+      FieldUtils.GeoFencing.reefBlue.getDistance(robotXY) >= FieldUtils.GeoFencing.robotRadiusCircumscribed &&
+      FieldUtils.GeoFencing.reefRed.getDistance(robotXY) >= FieldUtils.GeoFencing.robotRadiusCircumscribed
+    )
     {
-      targetHeading = Rotation2d.kZero;
-      super.rotationOffset = this.rotationOffsetBase.unaryMinus();
-    }
-    else
-    {
-      nearestReefFace = FieldUtils.getNearestReefFace(robotXY);
-
-      switch (nearestReefFace) 
+      if (MathUtil.isNear(robotXY.getX(), (FieldUtils.fieldLength / 2), Constants.Manipulators.algaeRange)) 
       {
-        case 1:
-          targetHeading = Rotation2d.kZero;
-          super.rotationOffset = this.rotationOffsetBase;
-          break;
+        targetHeading = Rotation2d.kZero;
+        super.rotationOffset = this.rotationOffsetBase.unaryMinus();
+      }
+      else
+      {
+        nearestReefFace = FieldUtils.getNearestReefFace(robotXY);
 
-        case 2:
-          targetHeading = new Rotation2d(Units.degreesToRadians(60));
-          super.rotationOffset = this.rotationOffsetBase;
-          break;
+        switch (nearestReefFace) 
+        {
+          case 1:
+            targetHeading = Rotation2d.kZero;
+            super.rotationOffset = this.rotationOffsetBase;
+            break;
 
-        case 3:
-          targetHeading = new Rotation2d(Units.degreesToRadians(120));
-          super.rotationOffset = this.rotationOffsetBase;
-          break;
+          case 2:
+            targetHeading = new Rotation2d(Units.degreesToRadians(60));
+            super.rotationOffset = this.rotationOffsetBase;
+            break;
 
-        case 4:
-          targetHeading = Rotation2d.kZero;
-          super.rotationOffset = this.rotationOffsetBase.unaryMinus();
-          break;
+          case 3:
+            targetHeading = new Rotation2d(Units.degreesToRadians(120));
+            super.rotationOffset = this.rotationOffsetBase;
+            break;
 
-        case 5:
-          targetHeading = new Rotation2d(Units.degreesToRadians(-120));
-          super.rotationOffset = this.rotationOffsetBase.unaryMinus();
-          break;
+          case 4:
+            targetHeading = Rotation2d.kZero;
+            super.rotationOffset = this.rotationOffsetBase.unaryMinus();
+            break;
 
-        case 6:
-          targetHeading = new Rotation2d(Units.degreesToRadians(-60));
-          super.rotationOffset = this.rotationOffsetBase.unaryMinus();
-          break;
-          
-        default:
-          break;
+          case 5:
+            targetHeading = new Rotation2d(Units.degreesToRadians(-120));
+            super.rotationOffset = this.rotationOffsetBase.unaryMinus();
+            break;
+
+          case 6:
+            targetHeading = new Rotation2d(Units.degreesToRadians(-60));
+            super.rotationOffset = this.rotationOffsetBase.unaryMinus();
+            break;
+            
+          default:
+            break;
+        }
       }
     }
   }

@@ -82,8 +82,6 @@ public class Diffector extends SubsystemBase
   public Diffector() 
   {
     eStop = false;
-    SD.DIFF_ESTOP.init();
-    SD.IO_BARGE_PROTECTION.init();
     manualControl = false;
     arm = new ArmCalculator();
     
@@ -120,9 +118,6 @@ public class Diffector extends SubsystemBase
 
     plannedPathPoints.clear();
     plannedPathPoints.add(targetPosition);
-
-    SD.CALIBRATE_DIFF.init();
-    SD.CALIBRATE_DIFF_TARGET.init();
   }
 
   /**

@@ -276,7 +276,7 @@ public final class Constants
   public static final class Manipulators 
   {
     /* Coral manipulator speeds */
-    public static final double coralLvl4DeliverySpeed = 0.15;
+    public static final double coralLvl4DeliverySpeed = 0.25;
     public static final double coralDeliverySpeed     = 0.30;
     public static final double coralHoldingSpeed      = -0.10;
 

@@ -50,7 +50,6 @@ public class AlgaeManipulator extends SubsystemBase
     status = Status.EMPTY;
     m_Algae = new TalonFX(IDConstants.algaeMotorID);
     m_Algae.getConfigurator().apply(AlgaeConfigs.currentLimits);
-    SD.IO_ALGAE_HOLD.init();
   }
 
   public void setStatus(Status newStatus)

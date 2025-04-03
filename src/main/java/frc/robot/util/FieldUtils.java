@@ -142,7 +142,7 @@ public class FieldUtils
     /** Inscribed diameter of the reef hexagon (i.e. distance between opposite faces) in metres */
     public static final double inscribedReefDiameter = 1.663;
     /** Circumscribed diameter of the reef hexagon (i.e. distance between opposite points) in metres */
-    public static final double circumscribedReefDiameter = 1.820;
+    public static final double circumscribedReefDiameter = 1.720;
     /** Circumscribed diameter of the reef zone hexagon (i.e. distance between opposite points) in metres */
     public static final double circumscribedReefZoneDiameter = 3;
     
@@ -152,8 +152,8 @@ public class FieldUtils
     /** Buffer zone for the barge zone in metres */
     public static final double bargeBuffer = 0.5;
 
-    public static final double cornerWidth  = 1.276;
-    public static final double cornerLength = 1.758;
+    public static final double cornerWidth  = 1.250;
+    public static final double cornerLength = 1.715;
 
     public static final GeoFenceObject field = new GeoFenceObject
     (
@@ -207,7 +207,7 @@ public class FieldUtils
     /** Radius from robot centre in metres where geofence is triggered */
     public static final double robotRadiusInscribed = 0.47;
     /** Radius from robot centre in metres where geofence is triggered */
-    public static final double robotRadiusCircumscribed = 0.65;
+    public static final double robotRadiusCircumscribed = 0.7;
     /** Speed threshold at which the robot changes between radii, in meters per second*/
     public static final double robotSpeedThreshold = 1.5;
     

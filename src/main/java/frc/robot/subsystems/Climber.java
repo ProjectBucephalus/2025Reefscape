@@ -46,8 +46,6 @@ public class Climber extends SubsystemBase
     motionMagic = new MotionMagicVoltage(0);
 
     setStatus(Status.STOW);
-
-    SD.CLIMB_OVERRIDE.init();
   }
   
   private void setStatus(Status newStatus)

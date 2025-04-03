@@ -70,6 +70,26 @@ public class SD
   public static final BooleanKey OVERRIDE = new BooleanKey("OVERIDE MODE", false);
   public static final BooleanKey CLIMB_OVERRIDE = new BooleanKey("Override Climber", false);
 
+  public static void initOutputs()
+  {
+    SD.IO_LL_EXPOSURE.init();
+    SD.IO_LL_EXPOSURE_UP.init();
+    SD.IO_LL_EXPOSURE_DOWN.init();
+    SD.CALIBRATE_BOT_ROTATION.init();
+    SD.OVERRIDE.init();
+    SD.IO_PROCESS_AUTO.init();
+    SD.IO_AUTO.init();
+    SD.IO_GEOFENCE.init();
+    SD.IO_ALGAE_HOLD.init();
+    SD.CLIMB_OVERRIDE.init();
+    SD.DIFF_ESTOP.init();
+    SD.IO_BARGE_PROTECTION.init();
+    SD.CALIBRATE_DIFF.init();
+    SD.CALIBRATE_DIFF_TARGET.init();
+    SD.IO_LL.init();
+    SD.IO_LED_BRIGHTNESS.init();
+  }
+
   public static void initSwerveDisplay(CommandSwerveDrivetrain s_Swerve)
   {
     SmartDashboard.putData

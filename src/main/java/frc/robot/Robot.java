@@ -41,17 +41,15 @@ public class Robot extends TimedRobot
   {
     robotContainer = new RobotContainer();
     warmupCommand = PathfindingCommand.warmupCommand();
-
     warmupCommand.schedule();
+
+    RobotContainer.s_Swerve.getPigeon2().setYaw(0);
 
     RobotContainer.io_LimelightPort.setThrottle(0);
     RobotContainer.io_LimelightStbd.setThrottle(0);
     RobotContainer.io_LimelightPort.setIMUMode(1);
     RobotContainer.io_LimelightStbd.setIMUMode(1);
-    SD.IO_LL_EXPOSURE.init();
-    SD.IO_LL_EXPOSURE_UP.init();
-    SD.IO_LL_EXPOSURE_DOWN.init();
-    SD.CALIBRATE_BOT_ROTATION.init();
+    SD.initOutputs();
   }
 
   /**
@@ -147,9 +145,6 @@ public class Robot extends TimedRobot
 
     if (autonomousCommand != null) 
       {autonomousCommand.cancel();}
-
-    if (!Limelight.rotationKnown)
-      {SD.IO_LL.put(false);}
 
     RobotContainer.s_Coral.setStatus(CoralManipulator.Status.DEFAULT);
     RobotContainer.s_Algae.setStatus(AlgaeManipulator.Status.EMPTY);

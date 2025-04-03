@@ -86,7 +86,7 @@ public abstract class SwerveCommandBase extends Command
     brakeVal = combinedBrake();
 
     /* Apply deadband */
-    if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
+    applyTranslationDeadband();
 
     /* Apply braking */
     motionXY = motionXY.times(MathUtil.interpolate(Control.maxThrottle, Control.minThrottle, brakeVal));
@@ -127,6 +127,11 @@ public abstract class SwerveCommandBase extends Command
     }
 
     return motionXY;
+  }
+
+  protected void applyTranslationDeadband()
+  {
+    if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
   }
 
   /**

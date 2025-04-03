@@ -52,8 +52,6 @@ public class Limelight extends SubsystemBase
   public Limelight(String name) 
   {
     limelightName = name;
-
-    SD.IO_LL.init();
   }
 
   public void setIMUMode(int mode)

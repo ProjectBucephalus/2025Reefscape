@@ -103,7 +103,6 @@ public class RobotContainer
   {
     swerveState = s_Swerve.getState();
 
-    SD.IO_GEOFENCE.init();
     s_Swerve.setDefaultCommand
     (
       new ManualDrive
@@ -117,7 +116,6 @@ public class RobotContainer
       )
     );
 
-    SD.IO_AUTO.init();
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
 
     // Configure button bindings
@@ -303,7 +301,7 @@ public class RobotContainer
     Triggers.cageDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new HeadingLockedDrive
+        new TargetCageDrive
         (
           s_Swerve,
           () -> -driver.getRawAxis(translationAxis), 
