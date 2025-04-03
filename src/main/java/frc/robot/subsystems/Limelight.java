@@ -149,7 +149,6 @@ public class Limelight extends SubsystemBase
       if (rotationKnown) 
       {
         rotationData.clear();
-        setThrottle(150);
         lastCycleRotationKnown = true;
       }
     }

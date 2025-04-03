@@ -168,7 +168,6 @@ public class RobotContainer
         .withName("EjectCoral")
       );
     driver.leftTrigger()
-      .and(() -> !coral)
       .and
       (
         () ->
@@ -183,7 +182,14 @@ public class RobotContainer
           (highCoralPositions.anyMatch(s_Diffector.getRelativeTarget()::relativeEquals));
         }
       )
-      .onTrue(s_Diffector.runOnce(() -> s_Diffector.goToAngle(0)));
+      .onTrue
+      (
+        Commands.sequence
+        (
+          Commands.waitUntil(() -> !coral).withTimeout(0.2),
+          s_Diffector.runOnce(() -> s_Diffector.goToAngle(0))
+        )
+      );
     driver.leftBumper()
       .onTrue(s_Algae.setStatusCommand(AlgaeManipulator.Status.EJECT)).onFalse(s_Algae.setStatusCommand(AlgaeManipulator.Status.EMPTY));
 
@@ -328,7 +334,7 @@ public class RobotContainer
     Triggers.processorDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetProcessorDrive
+        new HeadingLockedDrive
         (
           s_Swerve,
           () -> -driver.getRawAxis(translationAxis), 

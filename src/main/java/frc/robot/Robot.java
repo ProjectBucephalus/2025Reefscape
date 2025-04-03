@@ -44,6 +44,8 @@ public class Robot extends TimedRobot
 
     warmupCommand.schedule();
 
+    RobotContainer.io_LimelightPort.setThrottle(0);
+    RobotContainer.io_LimelightStbd.setThrottle(0);
     RobotContainer.io_LimelightPort.setIMUMode(1);
     RobotContainer.io_LimelightStbd.setIMUMode(1);
     SD.IO_LL_EXPOSURE.init();
@@ -74,7 +76,7 @@ public class Robot extends TimedRobot
 
     RobotContainer.swerveState = RobotContainer.s_Swerve.getState();
 
-    RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
+    //RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
     
     CommandScheduler.getInstance().run();
     
@@ -87,11 +89,7 @@ public class Robot extends TimedRobot
   {
     RobotContainer.io_LimelightPort.setIMUMode(1);
     RobotContainer.io_LimelightStbd.setIMUMode(1);
-    if (Limelight.rotationKnown)
-    {
-      RobotContainer.io_LimelightPort.setThrottle(150);
-      RobotContainer.io_LimelightStbd.setThrottle(150);
-    }
+
     SD.OVERRIDE.init();
     SD.IO_PROCESS_AUTO.init();
     SD.CALIBRATE_BOT_ROTATION.init();
@@ -128,8 +126,8 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit() 
   {     
-    RobotContainer.io_LimelightPort.setThrottle(0);
-    RobotContainer.io_LimelightStbd.setThrottle(0);
+    RobotContainer.io_LimelightPort.setIMUMode(1);
+    RobotContainer.io_LimelightStbd.setIMUMode(1);
     
     if (autonomousCommand == null) 
       {autonomousCommand = robotContainer.getAutoCommand();}
@@ -144,8 +142,8 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit() 
   {
-    RobotContainer.io_LimelightPort.setThrottle(0);
-    RobotContainer.io_LimelightStbd.setThrottle(0);
+    RobotContainer.io_LimelightPort.setIMUMode(1);
+    RobotContainer.io_LimelightStbd.setIMUMode(1);
 
     if (autonomousCommand != null) 
       {autonomousCommand.cancel();}
