@@ -213,7 +213,7 @@ public final class Constants
     public static class Presets
     {
       public static final ArmPos startPosition       = new ArmPos(0.616,  0);
-      public static final ArmPos climbSafePosition   = new ArmPos(0.80,  90); // TODO
+      public static final ArmPos climbSafePosition   = new ArmPos(DiffectorGeometry.safeElevation,  90); // TODO
       public static final ArmPos climbPosition       = new ArmPos(0.425, 90);
       public static final ArmPos netPosition         = new ArmPos(DiffectorGeometry.maxZ, 150, false);
       public static final ArmPos algae3Position      = new ArmPos(1.08, 113);
