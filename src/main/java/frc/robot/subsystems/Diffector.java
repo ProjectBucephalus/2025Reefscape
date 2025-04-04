@@ -31,7 +31,6 @@ import frc.robot.constants.IDConstants;
 import frc.robot.constants.MechanismConstants.DiffectorConfigs;
 import frc.robot.util.ArmCalculator;
 import frc.robot.util.ArmPos;
-import frc.robot.util.Conversions;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.SD;
 

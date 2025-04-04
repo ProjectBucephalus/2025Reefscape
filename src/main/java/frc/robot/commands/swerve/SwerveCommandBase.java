@@ -5,7 +5,6 @@ import frc.robot.constants.Constants;
 import frc.robot.constants.DiffectorGeometry;
 import frc.robot.constants.Constants.Control;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.Limelight;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.GeoFenceObject;
 import frc.robot.util.SD;
