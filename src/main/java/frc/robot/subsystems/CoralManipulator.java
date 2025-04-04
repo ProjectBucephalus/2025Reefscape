@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -60,6 +61,7 @@ public class CoralManipulator extends SubsystemBase
   public void periodic() 
   {
     RobotContainer.coral = !RobotContainer.io_Canifier.coralPortSensor() || !RobotContainer.io_Canifier.coralStbdSensor();
+    SmartDashboard.putBoolean("Coral", RobotContainer.coral);
 
     switch(status)
     {
@@ -105,7 +107,7 @@ public class CoralManipulator extends SubsystemBase
 
       case DELIVERY_LEFT:
       case DELIVERY_RIGHT:
-        speed = -Manipulators.coralDeliverySpeed;
+        speed = Manipulators.coralDeliverySpeed;
 
         armAngle = RobotContainer.s_Diffector.getRelativeRotation();
         double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
