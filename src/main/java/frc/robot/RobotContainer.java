@@ -532,7 +532,7 @@ public class RobotContainer
         }
       )
       .onTrue(s_Algae.setStatusCommand(AlgaeManipulator.Status.INTAKE))
-      .onFalse(s_Algae.setStatusCommand(AlgaeManipulator.Status.HOLDING));
+      .onFalse(s_Algae.setStatusCommand(AlgaeManipulator.Status.HOLDING).andThen(Commands.runOnce(() -> algae = true)));
 
     Triggers.algaeIntakeTrigger
       .onTrue(s_Algae.setStatusCommand(Status.INTAKE))
