@@ -137,7 +137,7 @@ public class FieldUtils
     /** Buffer zone for the field walls in metres */
     public static final double wallBuffer = 0.5;
     /** Radius for the field walls in metres */
-    public static final double wallRadius = 0.25;
+    public static final double wallRadius = 0.15;
     
     /** Inscribed diameter of the reef hexagon (i.e. distance between opposite faces) in metres */
     public static final double inscribedReefDiameter = 1.663;
