@@ -81,7 +81,7 @@ public class Climber extends SubsystemBase
   public boolean armSafe()
     {return m_Climber.getPosition().getValueAsDouble() >= ClimberConstants.safeWinchPos;}  
 
-  public boolean autoDriveAngle()
+  public boolean driverRumbleAngle()
     {return m_Climber.getPosition().getValueAsDouble() < ClimberConstants.startDrivePos;}
 
   public boolean offGround()

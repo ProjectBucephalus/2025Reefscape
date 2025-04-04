@@ -388,6 +388,8 @@ public class RobotContainer
         (
           s_Diffector.moveAndWaitCommand(Presets.climbPosition),
           s_Climber.setStatusCommand(Climber.Status.CLIMB),
+          Commands.waitUntil(s_Climber::driverRumbleAngle),
+          io_driverLeft.timedRequestCommand("Climb Drive", 0.25),
           Commands.waitUntil(s_Climber::offGround),
           Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED)
         )
@@ -403,7 +405,7 @@ public class RobotContainer
             .unless(() -> s_Diffector.atRelativePosition(Presets.climbPosition)),
           s_Climber.setStatusCommand(Climber.Status.ACTIVE),
           Commands.waitUntil(s_Climber::armSafe),
-          s_Diffector.moveToCommand(Presets.climbPosition),
+          s_Diffector.moveAndWaitCommand(Presets.climbPosition),
           io_copilotRight.timedRequestCommand("Climb Ready", 1)
         )
         .withName("PrepareClimb")
@@ -593,6 +595,7 @@ public class RobotContainer
 
     /* Copilot rumble bindings */
     io_copilotLeft.addRumbleTrigger("Intake Full", Triggers.copilotLeftRumbleTrigger);
+    io_copilotRight.addRumbleTrigger("Diffector E-stopped", new Trigger(() -> SD.DIFF_ESTOP.get()));
   }
 
   private void configureTestBindings()
