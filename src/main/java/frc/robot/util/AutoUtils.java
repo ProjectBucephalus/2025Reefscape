@@ -102,7 +102,7 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.coralScorePosCommandUndeferred(() -> prevEndPoint, Integer.parseInt(splitCommand.substring(2)))
+              s_Diffector.coralScorePosCommandUndeferredAllianceLocked(() -> prevEndPoint, Integer.parseInt(splitCommand.substring(2)))
             )
           );
 
@@ -110,8 +110,14 @@ public class AutoUtils
           
           if (splitCommand.charAt(2) == '4') 
           {
-            commandList.add(Commands.waitSeconds(0.1));
-            commandList.add(s_Diffector.coralScorePosInstantCommand(() -> prevEndPoint, 3));
+            commandList.add
+            (
+              Commands.sequence
+              (
+                Commands.waitSeconds(0.2),
+                s_Diffector.runOnce(() -> s_Diffector.goToAngle(0))
+              )
+            );
           }
           
           commandList.add(Commands.waitUntil(() -> !RobotContainer.coral));
@@ -120,15 +126,16 @@ public class AutoUtils
 
         case 'c':
           nextPath = FieldUtils.loadPath(Constants.Auto.autoMap.get(splitCommand).pathName);
+          ArmPos armPos = splitCommand.charAt(1) == 'r' ? Presets.coralIntakePosition.port() : Presets.coralIntakePosition.stbd();
 
           Pathfinding.setStartPosition(prevEndPoint);
-          
+
           commandList.add
           (
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.moveAndWaitCommand(Presets.coralIntakePosition.port())
+              s_Diffector.moveAndWaitCommand(armPos)
             )
           );
 

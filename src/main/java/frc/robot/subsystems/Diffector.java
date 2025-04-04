@@ -457,9 +457,8 @@ public class Diffector extends SubsystemBase
     return defer(() -> algaeIntakePosCommand(robotPos, level2));
   }
 
-  public Command coralScorePosInstantCommand(Supplier<Translation2d> robotPos, int level)
+  public Command coralScorePosInstantCommand(Supplier<Translation2d> robotPos, int level, int nearestReefFace)
   {
-    int nearestReefFace = FieldUtils.getNearestReefFace(robotPos.get());
     boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
 
     ArmPos target = 
@@ -483,7 +482,12 @@ public class Diffector extends SubsystemBase
 
   public Command coralScorePosCommandUndeferred(Supplier<Translation2d> robotPos, int level)
   {
-    return coralScorePosInstantCommand(robotPos, level).andThen(Commands.waitUntil(this::atPosition));
+    return coralScorePosInstantCommand(robotPos, level, FieldUtils.getNearestReefFace(robotPos.get())).andThen(Commands.waitUntil(this::atPosition));
+  }
+
+  public Command coralScorePosCommandUndeferredAllianceLocked(Supplier<Translation2d> robotPos, int level)
+  {
+    return coralScorePosInstantCommand(robotPos, level, FieldUtils.getNearestReefFaceAllianceLocked(robotPos.get())).andThen(Commands.waitUntil(this::atPosition));
   }
 
   public Command coralScorePosCommand(int level)

@@ -66,6 +66,18 @@ public class FieldUtils
     return pose;
   }
 
+  public static int getNearestReefFaceAllianceLocked(Translation2d robotPos)
+  {
+    int nearestReefFace;
+    ArrayList<Translation2d> localList = FieldConstants.blueReefMidpoints;
+
+    nearestReefFace = localList.indexOf(robotPos.nearest(localList)); 
+
+    nearestReefFace = (int)Conversions.wrap(nearestReefFace, 1, 6);
+    
+    return nearestReefFace;
+  }
+
   public static int getNearestReefFace(Translation2d robotPos)
   {
     int nearestReefFace;
