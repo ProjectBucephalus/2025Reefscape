@@ -60,7 +60,7 @@ public class Triggers
   );
   public static final Trigger usePenaltyRumbleTrigger = new Trigger
   (
-    () -> SD.IO_LL.get() && !SD.IO_GEOFENCE.get()
+    () -> SD.IO_LL.get() && SD.IO_GEOFENCE.get()
   );
   public static final Trigger algaeIntakePosTrigger = new Trigger
   (

@@ -34,6 +34,7 @@ public abstract class SwerveCommandBase extends Command
   protected double translationVal;
   protected double strafeVal;
   protected Translation2d motionXY;
+  protected double motionXYCache;
   protected Translation2d robotXY;  
   protected double brakeVal;
 
@@ -101,6 +102,8 @@ public abstract class SwerveCommandBase extends Command
       else
         {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
       
+      motionXYCache = motionXY.getNorm();
+
       // Invert processing input when on red alliance
       if (redAlliance)
         {motionXY = motionXY.unaryMinus();}
@@ -110,7 +113,7 @@ public abstract class SwerveCommandBase extends Command
         motionXY = FieldUtils.GeoFencing.netProtectionZone.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
       }
       
-      if (fencedSup.getAsBoolean() && !SD.IO_GEOFENCE.get())
+      if (fencedSup.getAsBoolean() && SD.IO_GEOFENCE.get())
       {   
         // Read down the list of geofence objects
         // Outer wall is index 0, so has highest authority by being processed last
@@ -124,6 +127,8 @@ public abstract class SwerveCommandBase extends Command
       // Uninvert processing output when on red alliance
       if (redAlliance)
         {motionXY = motionXY.unaryMinus();}
+      
+      SD.IO_GEOFENCE_IMPACT.put(Math.max(Double.MIN_VALUE, motionXY.getNorm()) / Math.max(Double.MIN_VALUE, motionXYCache));
     }
 
     return motionXY;

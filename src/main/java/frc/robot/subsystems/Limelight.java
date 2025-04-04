@@ -35,7 +35,7 @@ public class Limelight extends SubsystemBase
   
   private final String limelightName;
 
-  private int pipelineIndex = 0;
+  private int pipelineIndex = (int)SD.IO_LL_EXPOSURE.defaultValue();
   public static boolean rotationKnown = false;
   private ArrayList<Double> rotationData = new ArrayList<Double>();
   private boolean lastCycleRotationKnown = false;

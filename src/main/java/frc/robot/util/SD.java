@@ -28,7 +28,8 @@ public class SD
 
   public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Speed", Constants.Manipulators.algaeHoldingVoltage);
   public static final BooleanKey IO_PROCESS_AUTO = new BooleanKey("Process Auto", false);
-  public static final BooleanKey IO_GEOFENCE = new BooleanKey("IgnoreFence", false);
+  public static final BooleanKey IO_GEOFENCE = new BooleanKey("Use Fence", true);
+  public static final DoubleKey  IO_GEOFENCE_IMPACT = new DoubleKey("Fence Impact", 1);
   public static final StringKey  IO_AUTO = new StringKey("Auto Input", Constants.Auto.defaultAuto);
   public static final DoubleKey  IO_RUMBLE_D = new DoubleKey("Driver Rumble", Constants.RumblerConstants.driverDefault);
   public static final DoubleKey  IO_RUMBLE_C = new DoubleKey("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
@@ -88,6 +89,7 @@ public class SD
     SD.CALIBRATE_DIFF_TARGET.init();
     SD.IO_LL.init();
     SD.IO_LED_BRIGHTNESS.init();
+    SD.IO_GEOFENCE_IMPACT.init();
   }
 
   public static void initSwerveDisplay(CommandSwerveDrivetrain s_Swerve)
