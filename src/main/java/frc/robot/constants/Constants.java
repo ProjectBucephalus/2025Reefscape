@@ -320,14 +320,14 @@ public final class Constants
     /** default width for a partial display layer. a good number is about 1/4 lightsLen */
     public static final int viewWidth = 30;
     /** Start and end positions for Volaans displays */
-    public static final int stbdStatusStart = 86;
-    public static final int stbdStatusWidth = 30;
-    public static final int portStatusStart = 0;
-    public static final int portStatusWidth = 30;
-    public static final int stbdHaloStart = 58;
-    public static final int stbdHaloWidth = 28;
-    public static final int portHaloStart = 30;
-    public static final int portHaloWidth = 28;
+    public static final int stbdStatusStart = 0; //86;
+    public static final int stbdStatusWidth = 30; //30;
+    public static final int portStatusStart = 83; //0;
+    public static final int portStatusWidth = 30; //30;
+    public static final int stbdHaloStart = 30; //58;
+    public static final int stbdHaloWidth = 26; //28;
+    public static final int portHaloStart = 56; //30;
+    public static final int portHaloWidth = 27; //28;
     /** LED # at 0 degrees */
     public static final int startOffset = 1; 
     /** used to calculate the LED pointing in a particular direction */
