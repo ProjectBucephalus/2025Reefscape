@@ -108,6 +108,8 @@ public class AutoUtils
             )
           );
 
+          commandList.add(Commands.waitSeconds(0.1));
+
           commandList.add(s_Coral.setStatusCommand(CoralManipulator.Status.DELIVERY_SMART));
           
           if (splitCommand.charAt(2) == '4') 
@@ -144,6 +146,7 @@ public class AutoUtils
 
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
 
+          commandList.add(s_Coral.setStatusCommand(CoralManipulator.Status.INTAKE));
           commandList.add(Commands.waitUntil(() -> RobotContainer.coral));
           commandList.add(s_Diffector.moveToCommand(Presets.coralStowPosition));
           break;
@@ -320,7 +323,7 @@ public class AutoUtils
       Commands.parallel
       (
         AutoBuilder.pathfindToPose(algaePath.getStartingHolonomicPose().get(), brakeSup.getAsBoolean() ? slowedConstraints : defaultConstraints),
-        s_Diffector.algaeIntakePosCommand(nearestReefFace)
+        intakeAlgaeSequenceCommand(s_Diffector, s_Algae, nearestReefFace)
       ),
       AutoBuilder.followPath(algaePath),
       s_Diffector.coralScorePosCommand(coralLevel),
@@ -328,6 +331,16 @@ public class AutoUtils
       s_Coral.setStatusCommand(CoralManipulator.Status.DELIVERY_SMART)
     )
     .until(cancelTrigger);
+  }
+
+  public static Command intakeAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, int nearestReefFace)
+  {
+    return 
+    Commands.sequence
+    (
+      s_Diffector.algaeIntakePosCommand(nearestReefFace),
+      s_Algae.setStatusCommand(AlgaeManipulator.Status.INTAKE)
+    );
   }
 
   public static Command scoreAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, boolean net)
