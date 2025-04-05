@@ -26,7 +26,7 @@ public class SD
 
   public static final StringKey  STATE_HEADING = new StringKey("Heading State", "");
 
-  public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Speed", Constants.Manipulators.algaeHoldingVoltage);
+  public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Speed", 10);
   public static final BooleanKey IO_PROCESS_AUTO = new BooleanKey("Process Auto", false);
   public static final BooleanKey IO_GEOFENCE = new BooleanKey("Use Fence", true);
   public static final DoubleKey  IO_GEOFENCE_IMPACT = new DoubleKey("Fence Impact", 1);
