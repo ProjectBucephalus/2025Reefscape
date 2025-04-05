@@ -121,7 +121,7 @@ public final class Constants
     /** m/s */
     public static final double pathplannerSlowedSpeed = 1.5;
     /** m/s^2 */
-    public static final double pathplannerMaxAcceleration = 5;
+    public static final double pathplannerMaxAcceleration = 4.0;
     /** degrees/s */
     public static final double pathplannerMaxAngularSpeed = 720;
     /** degrees/s^2 */
@@ -223,7 +223,7 @@ public final class Constants
       public static final ArmPos coral2Position         = new ArmPos(0.675, 325);
       public static final ArmPos coral1ClawPosition     = new ArmPos(DiffectorGeometry.algaeClawElevation,  76);
       public static final ArmPos coral1Position         = new ArmPos(DiffectorGeometry.coralFunnelElevation, 210);
-      public static final ArmPos coralIntakePosition    = new ArmPos(1.14, 215); // TODO
+      public static final ArmPos coralIntakePosition    = new ArmPos(1.16, 215); // TODO
       public static final ArmPos coralIntakeAltPosition = new ArmPos(1.09, 215); // TODO
       public static final ArmPos coralClawPosition      = new ArmPos(0.73, 129); // TODO
       public static final ArmPos coralStowPosition      = new ArmPos(0.72,   0);
