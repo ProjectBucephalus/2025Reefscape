@@ -496,8 +496,7 @@ public class RobotContainer
       );
 
     copilot.povDown().and(algaeModifier.negate())
-      .onTrue(s_Coral.setStatusCommand(CoralManipulator.Status.WIGGLE))
-      .onFalse(s_Coral.setStatusCommand(CoralManipulator.Status.DEFAULT));
+      .onTrue(s_Coral.setStatusCommand(CoralManipulator.Status.WIGGLE));
 
     /* Game piece intake position controls */
     copilot.rightBumper()
