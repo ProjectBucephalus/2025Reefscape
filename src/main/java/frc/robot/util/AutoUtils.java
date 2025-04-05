@@ -164,6 +164,10 @@ public class AutoUtils
           );
           commandList.add(AutoBuilder.followPath(nextPath));
 
+          commandList.add(Commands.waitSeconds(0.25));
+
+          commandList.add(AutoBuilder.pathfindToPose(nextPath.getStartingHolonomicPose().get(), defaultConstraints));
+
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();   
           break;
       
