@@ -108,7 +108,7 @@ public class AutoUtils
             )
           );
 
-          commandList.add(Commands.waitSeconds(0.1));
+          commandList.add(Commands.waitSeconds(0.2));
 
           commandList.add(s_Coral.setStatusCommand(CoralManipulator.Status.DELIVERY_SMART));
           
