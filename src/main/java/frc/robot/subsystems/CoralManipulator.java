@@ -56,12 +56,12 @@ public class CoralManipulator extends SubsystemBase
 
   public void setStatus(Status newStatus)
   {
-    status = newStatus;
     if (newStatus == Status.WIGGLE && status != Status.WIGGLE)
     {
       wiggleCounter = 0;
       portWiggle = false;
     }
+    status = newStatus;
   }
 
   public Command setStatusCommand(Status status)
@@ -104,6 +104,7 @@ public class CoralManipulator extends SubsystemBase
         else 
         {
           setStatus(Status.DEFAULT);
+          wiggleCounter = 0;
         }
         break;
 
