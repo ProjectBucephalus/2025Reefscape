@@ -42,6 +42,7 @@ public class AlgaeManipulator extends SubsystemBase
     INTAKE,
     HOLDING,
     EJECT,
+    WEAK_EJECT,
     EMPTY
   }
 
@@ -92,6 +93,10 @@ public class AlgaeManipulator extends SubsystemBase
 
         else
           {status = Status.EMPTY;}
+        break;
+
+      case WEAK_EJECT:
+        m_Algae.set(0.3);
         break;
 
       case EJECT:
