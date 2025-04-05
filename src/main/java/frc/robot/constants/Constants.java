@@ -285,7 +285,7 @@ public final class Constants
     public static final double algaeHoldingVoltage = -12;
     public static final double algaeNetSpeed       =  1;
     public static final double algaeProcessorSpeed =  0.9;
-    public static final double algaeHeldCurrent    = 50;
+    public static final double algaeHeldCurrent    = 40;
     //public static final double algaeReleaseCurrent =  4;
 
     /** Algae net shooting range for rotation snapping, m */

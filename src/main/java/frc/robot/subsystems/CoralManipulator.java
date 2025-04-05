@@ -38,6 +38,9 @@ public class CoralManipulator extends SubsystemBase
   /* Declaration of the enum variable */
   private Status status;
 
+  private int wiggleCounter = 0;
+  private boolean portWiggle = false;
+
   /** For use in switch cases with smart directionality */
   private double speed;
   private double armAngle;
@@ -52,7 +55,14 @@ public class CoralManipulator extends SubsystemBase
     {return status;}
 
   public void setStatus(Status newStatus)
-    {status = newStatus;}
+  {
+    status = newStatus;
+    if (newStatus == Status.WIGGLE && status != Status.WIGGLE)
+    {
+      wiggleCounter = 0;
+      portWiggle = false;
+    }
+  }
 
   public Command setStatusCommand(Status status)
     {return runOnce(() -> setStatus(status)).withName("SetCoralStatus");}
@@ -66,19 +76,40 @@ public class CoralManipulator extends SubsystemBase
     switch(status)
     {
       case WIGGLE:
-        if (RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor())
-          {m_Coral.set(Manipulators.coralHoldingSpeed);}
+        if (wiggleCounter < 4) //TODO 4 as constant
+        {
+          if (RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor())
+          {
+            m_Coral.set(Manipulators.coralHoldingSpeed);
+            if (!portWiggle)
+            {
+              portWiggle = true;
+              wiggleCounter++;
+            }
+          }
 
-        else if (!RobotContainer.io_Canifier.coralPortSensor() && RobotContainer.io_Canifier.coralStbdSensor()) 
-          {m_Coral.set(-Manipulators.coralHoldingSpeed);} 
+          else if (!RobotContainer.io_Canifier.coralPortSensor() && RobotContainer.io_Canifier.coralStbdSensor()) 
+          {
+            m_Coral.set(-Manipulators.coralHoldingSpeed);
+            if (portWiggle)
+            {
+              portWiggle = false;
+              wiggleCounter++;
+            }
+          } 
 
-        else if (!RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor() && (m_Coral.get() == 0)) 
-          {m_Coral.set(-Manipulators.coralHoldingSpeed);}
+          else if (!RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor() && (m_Coral.get() == 0)) 
+            {m_Coral.set(-Manipulators.coralHoldingSpeed);}
+        }
+        else 
+        {
+          setStatus(Status.DEFAULT);
+        }
         break;
 
       case INTAKE:
         if (RobotContainer.coral) 
-          {status = Status.DEFAULT;}
+          {setStatus(Status.WIGGLE);}
         else
         {
           speed = Manipulators.coralHoldingSpeed;

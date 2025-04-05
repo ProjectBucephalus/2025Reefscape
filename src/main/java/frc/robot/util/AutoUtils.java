@@ -140,7 +140,7 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.moveAndWaitCommand(armPos)
+              Commands.waitSeconds(0.25).andThen(s_Diffector.moveAndWaitCommand(armPos))
             )
           );
 
@@ -162,7 +162,7 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindToPose(nextPath.getStartingHolonomicPose().get(), defaultConstraints),
-              Commands.waitSeconds(0.1).andThen(autoMapValue.command.get())
+              Commands.waitSeconds(0.25).andThen(autoMapValue.command.get())
             )
           );
           commandList.add(AutoBuilder.followPath(nextPath));
