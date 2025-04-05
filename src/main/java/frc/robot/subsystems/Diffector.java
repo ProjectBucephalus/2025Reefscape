@@ -412,22 +412,21 @@ public class Diffector extends SubsystemBase
     return moveToCommand(targetPosition).andThen(Commands.waitUntil(this::atPosition));
   }
 
-  public Command stationIntakePosCommand(Supplier<Translation2d> robotPos, BooleanSupplier algae)
+  public Command stationIntakePosCommand(Supplier<Translation2d> robotPos, BooleanSupplier algae, BooleanSupplier altPos)
   {
-    if (robotPos.get().getX() > FieldUtils.fieldLength/2 ^ robotPos.get().getY() > FieldUtils.fieldWidth/2)
-    {
-      if (algae.getAsBoolean())
-        return moveToCommand(Presets.coralClawPosition.stbd());
-      else
-        return moveToCommand(Presets.coralIntakePosition.stbd());  
-    }
+    ArmPos armPos;
+
+    if (algae.getAsBoolean())
+      armPos = Presets.coralClawPosition.port();
+    else if (altPos.getAsBoolean())
+      armPos = Presets.coralIntakeAltPosition.port();
     else
-    {
-      if (algae.getAsBoolean())
-        return moveToCommand(Presets.coralClawPosition.port());
-      else
-        return moveToCommand(Presets.coralIntakePosition.port());  
-    }
+      armPos = Presets.coralIntakePosition.port();  
+
+    if (robotPos.get().getX() > FieldUtils.fieldLength/2 ^ robotPos.get().getY() > FieldUtils.fieldWidth/2)
+      armPos = armPos.stbd();  
+
+    return moveToCommand(armPos);
   }
 
   public Command algaeIntakePosCommand(Supplier<Translation2d> robotPos, boolean level2)

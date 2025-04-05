@@ -503,8 +503,16 @@ public class RobotContainer
     copilot.rightBumper()
       .onTrue
       (
-        s_Diffector.defer(() -> s_Diffector.stationIntakePosCommand(() -> swerveState.Pose.getTranslation(), algaeModifier)
-          .withName("CoralStation"))
+        s_Diffector.defer
+        (
+          () -> s_Diffector.stationIntakePosCommand
+          (
+            () -> swerveState.Pose.getTranslation(), 
+            algaeModifier, 
+            () -> s_Diffector.getRelativeTarget().relativeEquals(Presets.coralIntakePosition)
+          )
+        )
+        .withName("CoralStation")
       );
 
     Triggers.atCoralStationTrigger.and(() -> !coral)
