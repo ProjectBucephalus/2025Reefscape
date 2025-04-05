@@ -122,16 +122,22 @@ public final class Constants
     public static final double pathplannerSlowedSpeed = 1.5;
     /** m/s^2 */
     public static final double pathplannerMaxAcceleration = 4.0;
+    /** m/s^2 */
+    public static final double pathplannerStationAcceleration = 4.5;
     /** degrees/s */
     public static final double pathplannerMaxAngularSpeed = 720;
     /** degrees/s^2 */
     public static final double pathplannerMaxAngularAcceleration = 1050;
+
     public static final PathConstraints defaultConstraints = new PathConstraints
       (pathplannerMaxSpeed, pathplannerMaxAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
     
     public static final PathConstraints slowedConstraints = new PathConstraints
       (pathplannerSlowedSpeed, pathplannerMaxAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
     
+    public static final PathConstraints stationConstraints = new PathConstraints
+      (pathplannerMaxSpeed, pathplannerStationAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
+
     public static final Map<Translation2d, Integer> reefMidPointMap = new HashMap<>(6)
     {{
       put(new Translation2d(3.658, 4.026), 1);

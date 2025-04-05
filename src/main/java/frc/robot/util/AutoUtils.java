@@ -37,6 +37,7 @@ public class AutoUtils
 {
   private static final PathConstraints defaultConstraints = Constants.Auto.defaultConstraints;
   private static final PathConstraints slowedConstraints = Constants.Auto.slowedConstraints;
+  private static final PathConstraints stationConstraints = Constants.Auto.stationConstraints;
 
   private static Translation2d prevEndPoint;
 
@@ -139,7 +140,7 @@ public class AutoUtils
           (
             Commands.parallel
             (
-              AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
+              AutoBuilder.pathfindThenFollowPath(nextPath, stationConstraints),
               Commands.waitSeconds(0.25).andThen(s_Diffector.moveAndWaitCommand(armPos))
             )
           );
