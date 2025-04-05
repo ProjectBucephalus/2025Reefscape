@@ -525,8 +525,7 @@ public class RobotContainer
           (coralIntakePositions.anyMatch(s_Diffector.getRelativeTarget()::relativeEquals));
         }
       )
-      .onTrue(s_Coral.setStatusCommand(CoralManipulator.Status.INTAKE))
-      .onFalse(s_Coral.setStatusCommand(CoralManipulator.Status.DEFAULT));
+      .onTrue(s_Coral.setStatusCommand(CoralManipulator.Status.INTAKE));
 
     Triggers.atCoralStationTrigger.and(() -> !algae)
       .and

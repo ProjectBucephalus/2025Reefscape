@@ -52,6 +52,7 @@ public class Limelight extends SubsystemBase
   public Limelight(String name) 
   {
     limelightName = name;
+    LimelightHelpers.setPipelineIndex(limelightName, pipelineIndex);
   }
 
   public void setIMUMode(int mode)
