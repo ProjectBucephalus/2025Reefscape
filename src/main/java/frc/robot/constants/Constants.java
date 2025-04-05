@@ -212,24 +212,24 @@ public final class Constants
      */
     public static class Presets
     {
-      public static final ArmPos startPosition       = new ArmPos(0.616,  0);
-      public static final ArmPos climbSafePosition   = new ArmPos(DiffectorGeometry.safeElevation,  90); // TODO
-      public static final ArmPos climbPosition       = new ArmPos(0.425, 90);
-      public static final ArmPos netPosition         = new ArmPos(DiffectorGeometry.maxZ, 150, false);
-      public static final ArmPos algae3Position      = new ArmPos(1.08, 113);
-      public static final ArmPos algae2Position      = new ArmPos(0.65, 113);
-      public static final ArmPos processorPosition   = new ArmPos(0.43,  90);
-      public static final ArmPos coral4Position      = new ArmPos(1.72, 325);
-      public static final ArmPos coral3Position      = new ArmPos(1.05, 325);
-      public static final ArmPos coral2Position      = new ArmPos(0.675, 325);
-      public static final ArmPos coral1ClawPosition  = new ArmPos(DiffectorGeometry.algaeClawElevation,  76);
-      public static final ArmPos coral1Position      = new ArmPos(DiffectorGeometry.coralFunnelElevation, 210);
-      public static final ArmPos coralIntakePosition = new ArmPos(1.14, 215); // TODO
-      public static final ArmPos coralIntakeAltPosition = new ArmPos(1.10, 215); // TODO
-      public static final ArmPos coralClawPosition   = new ArmPos(0.73, 129); // TODO
-      public static final ArmPos coralStowPosition   = new ArmPos(0.72,   0);
-      public static final ArmPos algaeIntakePosition = new ArmPos(0.47,  70); // +20cm for testing
-      public static final ArmPos algaeStowPosition   = new ArmPos(0.80, 180);
+      public static final ArmPos startPosition          = new ArmPos(0.616,  0);
+      public static final ArmPos climbSafePosition      = new ArmPos(DiffectorGeometry.safeElevation,  90); // TODO
+      public static final ArmPos climbPosition          = new ArmPos(0.425, 90);
+      public static final ArmPos netPosition            = new ArmPos(DiffectorGeometry.maxZ, 150, false);
+      public static final ArmPos algae3Position         = new ArmPos(1.08, 113);
+      public static final ArmPos algae2Position         = new ArmPos(0.65, 113);
+      public static final ArmPos processorPosition      = new ArmPos(0.43,  90);
+      public static final ArmPos coral4Position         = new ArmPos(1.72, 325);
+      public static final ArmPos coral3Position         = new ArmPos(1.05, 325);
+      public static final ArmPos coral2Position         = new ArmPos(0.675, 325);
+      public static final ArmPos coral1ClawPosition     = new ArmPos(DiffectorGeometry.algaeClawElevation,  76);
+      public static final ArmPos coral1Position         = new ArmPos(DiffectorGeometry.coralFunnelElevation, 210);
+      public static final ArmPos coralIntakePosition    = new ArmPos(1.14, 215); // TODO
+      public static final ArmPos coralIntakeAltPosition = new ArmPos(1.09, 215); // TODO
+      public static final ArmPos coralClawPosition      = new ArmPos(0.73, 129); // TODO
+      public static final ArmPos coralStowPosition      = new ArmPos(0.72,   0);
+      public static final ArmPos algaeIntakePosition    = new ArmPos(0.47,  70); // +20cm for testing
+      public static final ArmPos algaeStowPosition      = new ArmPos(0.80, 180);
 
       public static final ArrayList<ArmPos> lowDiffectorPositions = new ArrayList<ArmPos>()
       {{
