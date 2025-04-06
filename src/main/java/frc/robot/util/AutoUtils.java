@@ -156,6 +156,12 @@ public class AutoUtils
           autoMapValue = Constants.Auto.autoMap.get(splitCommand);
           nextPath = FieldUtils.loadPath(autoMapValue.pathName);
 
+          if (FieldUtils.isRedAlliance())
+          {
+            nextPath = nextPath.flipPath();
+            nextPath.preventFlipping = true;
+          }
+
           Pathfinding.setStartPosition(prevEndPoint);
           
           commandList.add
