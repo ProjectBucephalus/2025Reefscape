@@ -258,22 +258,11 @@ public final class Constants
     public static final InterpolatingDoubleTreeMap potInterpolation = new InterpolatingDoubleTreeMap()
     {
       {
-        put(0.09, 0.36);
-        put(0.15, 0.47);
-        put(0.25, 0.61);
-        put(0.30, 0.70);
-        put(0.43, 0.90);
-        put(0.52, 1.02);
-        put(0.57, 1.10);
-        put(0.64, 1.20);
-        put(0.71, 1.31);
-        put(0.72, 1.33);
-        put(0.86, 1.54);
-        put(0.91, 1.61);
-        put(0.94, 1.66);
-        put(0.96, 1.69);
-        put(0.98, 1.72);
-        put(0.99, 1.74);
+        put(0.08, 0.36);
+        put(0.25, 0.64);
+        put(0.40, 0.87);
+        put(0.61, 1.18);
+        put(0.80, 1.46);
         put(1.00, 1.76);
       }
     };
