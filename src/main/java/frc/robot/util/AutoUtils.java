@@ -172,6 +172,8 @@ public class AutoUtils
 
           commandList.add(AutoBuilder.pathfindToPose(nextPath.getStartingHolonomicPose().get(), defaultConstraints));
 
+          commandList.add(s_Diffector.moveToCommand(Presets.algaeStowPosition));
+
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();   
           break;
       
