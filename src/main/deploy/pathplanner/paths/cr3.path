@@ -47,7 +47,7 @@
   "reversed": false,
   "folder": "Right Station Paths",
   "idealStartingState": {
-    "velocity": 0.25,
+    "velocity": 1.5,
     "rotation": 144.0
   },
   "useDefaultConstraints": true

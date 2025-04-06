@@ -47,7 +47,7 @@
   "reversed": false,
   "folder": "Reef Paths",
   "idealStartingState": {
-    "velocity": 0.0,
+    "velocity": 0.1,
     "rotation": 90.0
   },
   "useDefaultConstraints": true
