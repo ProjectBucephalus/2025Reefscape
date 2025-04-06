@@ -119,7 +119,7 @@ public class AutoUtils
             (
               Commands.sequence
               (
-                Commands.waitSeconds(0.2), //TODO: reduce delay
+                Commands.waitSeconds(0.05),
                 s_Diffector.runOnce(() -> s_Diffector.goToAngle(0))
               )
             );

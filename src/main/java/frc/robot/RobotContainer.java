@@ -183,7 +183,7 @@ public class RobotContainer
       (
         Commands.sequence
         (
-          Commands.waitUntil(() -> !coral).withTimeout(0.2),
+          Commands.waitUntil(() -> !coral).withTimeout(0.05),
           s_Diffector.runOnce(() -> s_Diffector.goToAngle(0))
         )
       );

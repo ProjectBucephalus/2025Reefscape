@@ -156,7 +156,7 @@ public class Diffector extends SubsystemBase
     )
     {eStop = true;}
 
-    if (atPosition() && (!Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals) && !Presets.highDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals)))
+    if (atPosition() && !Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals))
     {
       calibrationCounter++;
       if (calibrationCounter == DiffectorConstants.calibrationDelay) 
