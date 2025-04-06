@@ -224,7 +224,7 @@ public final class Constants
       public static final ArmPos algae3Position         = new ArmPos(1.08, 113);
       public static final ArmPos algae2Position         = new ArmPos(0.65, 113);
       public static final ArmPos processorPosition      = new ArmPos(0.43,  90);
-      public static final ArmPos coral4Position         = new ArmPos(1.8, 315); //TODO: confirm
+      public static final ArmPos coral4Position         = new ArmPos(DiffectorGeometry.maxZ, 315); //TODO: confirm
       public static final ArmPos coral3Position         = new ArmPos(1.05, 325);
       public static final ArmPos coral2Position         = new ArmPos(0.675, 325);
       public static final ArmPos coral1ClawPosition     = new ArmPos(DiffectorGeometry.algaeClawElevation,  76);
@@ -300,8 +300,9 @@ public final class Constants
 
   public static final class ClimberConstants
   {
+    public static final double startWinchPos   = 4.5;
     public static final double stowWinchPos    = 0.0;
-    public static final double safeWinchPos    = 4.5;
+    public static final double safeWinchPos    = 4.4;
     public static final double startDrivePos   = 4.7;
     public static final double offGroundPos    = 2.5;
     public static final double prepareWinchPos = 5.5; // TODO

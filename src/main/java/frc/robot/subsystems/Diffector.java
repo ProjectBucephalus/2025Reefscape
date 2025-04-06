@@ -156,7 +156,7 @@ public class Diffector extends SubsystemBase
     )
     {eStop = true;}
 
-    if (atPosition() && !Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals))
+    if (atPosition() && (!Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals) && !Presets.highDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals)))
     {
       calibrationCounter++;
       if (calibrationCounter == DiffectorConstants.calibrationDelay) 
@@ -214,8 +214,11 @@ public class Diffector extends SubsystemBase
       (
         !(
           MathUtil.isNear(RobotContainer.swerveState.Pose.getX(), FieldUtils.fieldLength / 2, DiffectorGeometry.bargeSafetyWidth) &&
-          targetPosition.getZ() > DiffectorGeometry.bargeSafetyHeight && SD.IO_LL.get() && SD.IO_BARGE_PROTECTION.get()
-        )
+          targetPosition.getZ() > DiffectorGeometry.bargeSafetyHeight && 
+          SD.IO_LL.get() && 
+          SD.IO_BARGE_PROTECTION.get()
+         ) &&
+        RobotContainer.s_Climber.armSafe()
       )
       {oldTarget = targetPosition;}
 

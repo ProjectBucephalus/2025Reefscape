@@ -398,15 +398,12 @@ public class RobotContainer
     copilot.back()
       .onTrue
       (
-        Commands.sequence
+        Commands.parallel
         (
-          s_Diffector.moveAndWaitCommand(Presets.climbSafePosition)
-            .unless(() -> s_Diffector.atRelativePosition(Presets.climbPosition)),
-          s_Climber.setStatusCommand(Climber.Status.ACTIVE),
-          Commands.waitUntil(s_Climber::armSafe),
           s_Diffector.moveAndWaitCommand(Presets.climbPosition),
-          io_copilotRight.timedRequestCommand("Climb Ready", 1)
+          s_Climber.setStatusCommand(Climber.Status.ACTIVE).andThen(Commands.waitUntil(s_Climber::climbReady))
         )
+        .andThen(io_copilotRight.timedRequestCommand("Climb Ready", 1))
         .withName("PrepareClimb")
       );
 

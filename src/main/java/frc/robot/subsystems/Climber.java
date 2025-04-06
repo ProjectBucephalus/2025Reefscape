@@ -41,7 +41,7 @@ public class Climber extends SubsystemBase
   { 
     m_Climber = new TalonFX(IDConstants.climberWinchMotorID);
     m_Climber.getConfigurator().apply(motorConfig);
-    m_Climber.setPosition(ClimberConstants.stowWinchPos);
+    m_Climber.setPosition(ClimberConstants.startWinchPos);
     
     motionMagic = new MotionMagicVoltage(0);
 
@@ -50,42 +50,26 @@ public class Climber extends SubsystemBase
   
   private void setStatus(Status newStatus)
   {
-    
-    if (newStatus == Status.CLIMB)
-    {
-      if (status == Status.STOW)
-      { // Active state has required protections for leaving Stow position
-        status = Status.ACTIVE;
-      }
-      else
-      {
-        m_Climber.getConfigurator().apply(motorConfig.MotionMagic.withMotionMagicCruiseVelocity(ClimberConfigs.winchClimbCruise));
-        status = newStatus;
-      }
-    }
-    else
-    {
-      m_Climber.getConfigurator().apply(motorConfig.MotionMagic.withMotionMagicCruiseVelocity(ClimberConfigs.winchDefaultCruise));
-      status = newStatus;
-    }
+    status = (newStatus == Status.CLIMB && status == Status.STOW) ? Status.ACTIVE : newStatus;
   }
 
   public Command setStatusCommand(Status status)
-  {
-    return runOnce(() -> setStatus(status)).withName("SetClimberStatus");
-  }
+    {return runOnce(() -> setStatus(status)).withName("SetClimberStatus");}
+
+  public double getPos()
+    {return m_Climber.getPosition().getValueAsDouble();}
 
   public boolean climbReady()
-    {return m_Climber.getPosition().getValueAsDouble() >= ClimberConstants.prepareWinchPos;}
+    {return getPos() >= ClimberConstants.prepareWinchPos;}
 
   public boolean armSafe()
-    {return m_Climber.getPosition().getValueAsDouble() >= ClimberConstants.safeWinchPos;}  
+    {return getPos() >= ClimberConstants.safeWinchPos;}  
 
   public boolean driverRumbleAngle()
-    {return m_Climber.getPosition().getValueAsDouble() < ClimberConstants.startDrivePos;}
+    {return getPos() < ClimberConstants.startDrivePos;}
 
   public boolean offGround()
-    {return m_Climber.getPosition().getValueAsDouble() < ClimberConstants.offGroundPos;}  
+    {return getPos() < ClimberConstants.offGroundPos;}  
 
   public boolean manualOveride(double motorSpeed)
   {
@@ -100,7 +84,7 @@ public class Climber extends SubsystemBase
   @Override
   public void periodic()
   {
-    SD.CLIMBER_POS.put(m_Climber.getPosition().getValueAsDouble());
+    SD.CLIMBER_POS.put(getPos());
     if (SD.CLIMB_OVERRIDE.get()) {climbLocked = false;}
 
     switch (status)
@@ -111,7 +95,7 @@ public class Climber extends SubsystemBase
         break;
 
       case ACTIVE:
-        if (RobotContainer.s_Diffector.climbSafe() || (m_Climber.getPosition().getValueAsDouble() >= ClimberConstants.climbWinchPos))
+        if (RobotContainer.s_Diffector.climbSafe() || (getPos() >= ClimberConstants.climbWinchPos))
         {
           m_Climber.setControl(motionMagic.withPosition(ClimberConstants.prepareWinchPos));
           SD.CLIMBER_TARGET.put(ClimberConstants.prepareWinchPos);
@@ -121,7 +105,7 @@ public class Climber extends SubsystemBase
       case CLIMB:
         if (RobotContainer.s_Diffector.climbReady())
         {
-          double adjustedClimberPos = m_Climber.getPosition().getValueAsDouble();
+          double adjustedClimberPos = getPos();
           
           if (SD.OVERRIDE.get() && (adjustedClimberPos < ClimberConstants.offGroundPos)) 
           {
@@ -144,8 +128,8 @@ public class Climber extends SubsystemBase
         if 
         (
           (
-            (speed > 0 && m_Climber.getPosition().getValueAsDouble() <= 1.05 * ClimberConstants.prepareWinchPos) || 
-            (speed < 0 && m_Climber.getPosition().getValueAsDouble() >= 0) || 
+            (speed > 0 && getPos() <= 1.05 * ClimberConstants.prepareWinchPos) || 
+            (speed < 0 && getPos() >= 0) || 
             (speed != 0 && SD.CLIMB_OVERRIDE.get())
           ) 
           && !climbLocked
@@ -153,8 +137,8 @@ public class Climber extends SubsystemBase
           {m_Climber.set(speed * Control.manualClimberScale);}
         else
         {
-          m_Climber.setControl(motionMagic.withPosition(m_Climber.getPosition().getValueAsDouble()));
-          status = Status.HOLD;
+          m_Climber.setControl(motionMagic.withPosition(getPos()));
+          setStatus(Status.HOLD);
         }
         break;
       

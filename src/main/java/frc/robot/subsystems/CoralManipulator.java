@@ -47,7 +47,7 @@ public class CoralManipulator extends SubsystemBase
 
   public CoralManipulator() 
   {
-    status = Status.DEFAULT;
+    setStatus(Status.DEFAULT);
     m_Coral = new TalonFX(IDConstants.coralMotorID);
   }
 
