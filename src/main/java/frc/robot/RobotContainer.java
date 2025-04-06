@@ -598,9 +598,6 @@ public class RobotContainer
     /* Copilot rumble bindings */
     io_copilotLeft.addRumbleTrigger("Intake Full", Triggers.copilotLeftRumbleTrigger);
     io_copilotRight.addRumbleTrigger("Diffector E-stopped", new Trigger(() -> SD.DIFF_ESTOP.get()));
-
-    //new Trigger(s_Climber::getSwitch)
-     // .onTrue(io_copilotRight.timedRequestCommand("Cage Secured", 0.5));
   }
 
   private void configureTestBindings()

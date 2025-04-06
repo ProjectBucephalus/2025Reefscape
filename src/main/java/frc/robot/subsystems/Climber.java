@@ -5,7 +5,6 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,7 +20,6 @@ public class Climber extends SubsystemBase
 {
   /* Declarations of the motor controller */
   private TalonFX m_Climber;
-  private DigitalInput io_CageSwitch;
   private Status status;
 
   /* Declarations of all the motion magic variables */
@@ -44,8 +42,6 @@ public class Climber extends SubsystemBase
     m_Climber = new TalonFX(IDConstants.climberWinchMotorID);
     m_Climber.getConfigurator().apply(motorConfig);
     m_Climber.setPosition(ClimberConstants.startWinchPos);
-
-    io_CageSwitch = new DigitalInput(IDConstants.cageSwitchDIO);
     
     motionMagic = new MotionMagicVoltage(0);
 
@@ -59,9 +55,6 @@ public class Climber extends SubsystemBase
 
   public Command setStatusCommand(Status status)
     {return runOnce(() -> setStatus(status)).withName("SetClimberStatus");}
-
-  public boolean getSwitch()
-    {return io_CageSwitch.get();}
 
   public double getPos()
     {return m_Climber.getPosition().getValueAsDouble();}

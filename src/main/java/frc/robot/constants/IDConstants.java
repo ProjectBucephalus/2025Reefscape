@@ -41,7 +41,6 @@ public final class IDConstants
   /* Climber */
   /* _______ */
   public static final int climberWinchMotorID = 20;
-  public static final int cageSwitchDIO = 0;
 
   /* Manipulator */
   /* ___________ */
