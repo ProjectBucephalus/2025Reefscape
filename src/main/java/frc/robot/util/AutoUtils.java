@@ -141,7 +141,7 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, stationConstraints),
-              Commands.waitSeconds(0.25).andThen(s_Diffector.moveAndWaitCommand(armPos)) //TODO: reduce delay?
+              Commands.waitSeconds(0.15).andThen(s_Diffector.moveAndWaitCommand(armPos)) //TODO: reduce delay?
             )
           );
 
