@@ -220,9 +220,10 @@ public class Diffector extends SubsystemBase
          ) &&
         RobotContainer.s_Climber.armSafe()
       )
-      {oldTarget = targetPosition;}
-
-      plannedPathPoints = arm.pathfindArm(targetPosition, armPosition);
+      {
+        oldTarget = targetPosition;
+        plannedPathPoints = arm.pathfindArm(targetPosition, armPosition);
+      }
     }
 
     if (plannedPathPoints.size() != 0)
