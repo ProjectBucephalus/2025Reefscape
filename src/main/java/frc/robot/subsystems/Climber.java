@@ -90,8 +90,8 @@ public class Climber extends SubsystemBase
     switch (status)
     {
       case STOW:
-        m_Climber.setControl(motionMagic.withPosition(ClimberConstants.stowWinchPos));
-        SD.CLIMBER_TARGET.put(ClimberConstants.stowWinchPos);
+        m_Climber.setControl(motionMagic.withPosition(ClimberConstants.startWinchPos));
+        SD.CLIMBER_TARGET.put(ClimberConstants.startWinchPos);
         break;
 
       case ACTIVE:
