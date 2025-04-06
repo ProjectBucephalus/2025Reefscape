@@ -5,6 +5,7 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import frc.robot.constants.Constants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -28,6 +29,20 @@ public class TargetScoreDrive extends HeadingLockedDrive
   {
     super(s_Swerve, translationSup, strafeSup, Rotation2d.kZero, rotationOffset, brakeSup, fencedSup);
     this.rotationOffsetBase = rotationOffset;
+  }
+
+  @Override
+  protected void applyTranslationDeadband() 
+  {
+    if (MathUtil.isNear(robotXY.getX(), (FieldUtils.fieldLength / 2), Constants.Manipulators.algaeRange)) 
+    {
+      double translationOut = Math.abs(translationVal) < Math.abs(strafeVal) ? 0 : translationVal;
+      double strafeOut = Math.abs(strafeVal) < Math.abs(translationVal) ? 0 : strafeVal;
+
+      motionXY = new Translation2d(translationOut, strafeOut);
+    }
+    
+    if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
   }
 
   @Override
