@@ -80,7 +80,7 @@ public class AlgaeManipulator extends SubsystemBase
   public void periodic() 
   {
     RobotContainer.algae = 
-      Math.abs(m_Algae.getStatorCurrent().getValueAsDouble()) >= Constants.Manipulators.algaeHeldCurrent ||
+      Math.abs(m_Algae.getStatorCurrent().getValueAsDouble()) >= Constants.Manipulators.algaeHeldCurrentThreshold ||
       (RobotContainer.algae); // && Math.abs(algaeMotor.getStatorCurrent().getValueAsDouble()) >= Constants.GamePiecesManipulator.algaeReleaseCurrent);
     SD.SENSOR_ALGAE.put(RobotContainer.algae);
     SD.STATE_ALGAE.put(status.name());
