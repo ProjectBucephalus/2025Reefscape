@@ -318,7 +318,7 @@ public class RobotContainer
           s_Swerve, 
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
-          Rotation2d.kZero,
+          Rotation2d.k180deg,
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )

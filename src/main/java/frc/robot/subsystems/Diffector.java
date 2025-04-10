@@ -421,14 +421,14 @@ public class Diffector extends SubsystemBase
     ArmPos armPos;
 
     if (algae.getAsBoolean())
-      armPos = Presets.coralClawPosition.port();
+      armPos = Presets.coralClawPosition.stbd();
     else if (altPos.getAsBoolean())
-      armPos = Presets.coralIntakeAltPosition.port();
+      armPos = Presets.coralIntakeAltPosition.stbd();
     else
-      armPos = Presets.coralIntakePosition.port();  
+      armPos = Presets.coralIntakePosition.stbd();  
 
     if (robotPos.get().getX() > FieldUtils.fieldLength/2 ^ robotPos.get().getY() > FieldUtils.fieldWidth/2)
-      armPos = armPos.stbd();  
+      armPos = armPos.port();  
 
     return moveToCommand(armPos);
   }
