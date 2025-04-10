@@ -4,7 +4,7 @@
     {
       "anchor": {
         "x": 2.902,
-        "y": 4.011
+        "y": 3.986
       },
       "prevControl": null,
       "nextControl": {
@@ -17,7 +17,7 @@
     {
       "anchor": {
         "x": 3.202,
-        "y": 4.011
+        "y": 3.986
       },
       "prevControl": {
         "x": 2.948548355680935,
