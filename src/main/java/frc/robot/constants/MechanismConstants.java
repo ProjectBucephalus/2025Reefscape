@@ -11,7 +11,7 @@ public class MechanismConstants
   {
     public static final CurrentLimitsConfigs currentLimits = 
     new CurrentLimitsConfigs()
-      .withStatorCurrentLimit(40);
+      .withStatorCurrentLimit(35);
   }
 
   public static class ClimberConfigs
