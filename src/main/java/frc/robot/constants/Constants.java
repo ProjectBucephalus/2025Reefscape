@@ -253,17 +253,19 @@ public final class Constants
     }
 
     /** Raw value when fully released, indicating string has snapped or the sensor is unavailable */
-    public static final double potErrValue = 0.06;
+    public static final double potErrValue = 0.035;
 
     public static final InterpolatingDoubleTreeMap potInterpolation = new InterpolatingDoubleTreeMap()
     {
       {
-        put(0.08, 0.36);
-        put(0.25, 0.64);
-        put(0.40, 0.87);
-        put(0.61, 1.18);
-        put(0.80, 1.46);
-        put(1.00, 1.76);
+        put(0.040, 0.360);
+        put(0.201, 0.615);
+        put(0.400, 0.915);
+        put(0.600, 1.210);
+        put(0.701, 1.360);
+        put(0.800, 1.510);
+        put(0.898, 1.660);
+        put(0.978, 1.775);
       }
     };
   }
