@@ -365,7 +365,7 @@ public class RobotContainer
       (
         Commands.sequence
         (
-          s_Diffector.moveAndWaitCommand(Presets.climbPosition),
+          s_Diffector.moveToCommand(Presets.climbPosition),
           s_Climber.setStatusCommand(Climber.Status.CLIMB),
           Commands.waitUntil(s_Climber::driverRumbleAngle),
           io_driverLeft.timedRequestCommand("Climb Drive", 0.25),
