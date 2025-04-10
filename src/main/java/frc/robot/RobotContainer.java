@@ -1,13 +1,10 @@
 package frc.robot;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
-import com.pathplanner.lib.pathfinding.Pathfinding;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController.Axis;
@@ -342,23 +339,6 @@ public class RobotContainer
           () -> true
         )
         .withName("ProcessorLock")
-      );
-
-    Triggers.processorDriveTrigger
-      .whileTrue
-      (
-        Commands.startEnd
-        (
-          () -> 
-          {
-            ArrayList<Pair<Translation2d, Translation2d>> bargeObstacle = new ArrayList<Pair<Translation2d, Translation2d>>();
-            bargeObstacle.add(FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.redAllianceBargeDynamic : FieldUtils.GeoFencing.blueAllianceBargeDynamic);
-
-            Pathfinding.setDynamicObstacles(bargeObstacle, swerveState.Pose.getTranslation());
-          }, 
-          () -> Pathfinding.setDynamicObstacles(new ArrayList<Pair<Translation2d, Translation2d>>(), swerveState.Pose.getTranslation())
-        )
-        .withName("BargeObstacle")
       );
 
     Triggers.scoreDriveTrigger.and(driver.povCenter())
