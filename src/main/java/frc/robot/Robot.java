@@ -7,6 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.commands.PathfindingCommand;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -72,8 +73,6 @@ public class Robot extends TimedRobot
     }
 
     RobotContainer.swerveState = RobotContainer.s_Swerve.getState();
-
-    //RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
     
     CommandScheduler.getInstance().run();
     
@@ -89,7 +88,7 @@ public class Robot extends TimedRobot
 
     SD.OVERRIDE.init();
     SD.IO_PROCESS_AUTO.init();
-    SD.CALIBRATE_BOT_ROTATION.init();
+    SD.ROTATION_KNOWN.init();
     Limelight.rotationKnown = false;
 
     RobotContainer.io_copilotLeft.clearRequests();
@@ -125,6 +124,8 @@ public class Robot extends TimedRobot
   {     
     RobotContainer.io_LimelightPort.setIMUMode(1);
     RobotContainer.io_LimelightStbd.setIMUMode(1);
+
+    RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
     
     if (autonomousCommand == null) 
       {autonomousCommand = robotContainer.getAutoCommand();}
@@ -144,6 +145,8 @@ public class Robot extends TimedRobot
 
     if (autonomousCommand != null) 
       {autonomousCommand.cancel();}
+
+    RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
 
     RobotContainer.s_Coral.setStatus(CoralManipulator.Status.DEFAULT);
     RobotContainer.s_Algae.setStatus(AlgaeManipulator.Status.EMPTY);

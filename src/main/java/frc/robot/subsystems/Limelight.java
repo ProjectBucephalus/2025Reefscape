@@ -10,6 +10,7 @@ import com.ctre.phoenix6.Utils;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -109,7 +110,7 @@ public class Limelight extends SubsystemBase
   @Override
   public void periodic() 
   { 
-    rotationKnown = SD.CALIBRATE_BOT_ROTATION.get();
+    rotationKnown = SD.ROTATION_KNOWN.get();
 
     if (!rotationKnown) 
     {
@@ -135,7 +136,7 @@ public class Limelight extends SubsystemBase
           if (highest - lowest < 1)
           {
             rotationKnown = true;
-            SD.CALIBRATE_BOT_ROTATION.put(true);
+            SD.ROTATION_KNOWN.put(true);
             SmartDashboard.putNumber("limelight " + limelightName + " average rotation reading", (highest + lowest) / 2);
             RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
           }
@@ -149,6 +150,7 @@ public class Limelight extends SubsystemBase
       {
         rotationData.clear();
         lastCycleRotationKnown = true;
+        RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
       }
     }
 

@@ -140,8 +140,10 @@ public class RobotContainer
 
             pigeon.setYaw(FieldUtils.isRedAlliance() ? 0 : 180);
             s_Swerve.resetPose(new Pose2d(swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(pigeon.getYaw().getValueAsDouble()))));
+            SD.ROTATION_KNOWN.put(false);
           }
         )
+        .ignoringDisable(true)
         .withName("HeadingReset")
       );
       

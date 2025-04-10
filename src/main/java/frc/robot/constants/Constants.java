@@ -221,8 +221,8 @@ public final class Constants
       public static final ArmPos climbSafePosition      = new ArmPos(DiffectorGeometry.safeElevation,  90); // TODO
       public static final ArmPos climbPosition          = new ArmPos(0.425, 90);
       public static final ArmPos netPosition            = new ArmPos(DiffectorGeometry.maxZ, 150, false);
-      public static final ArmPos algae3Position         = new ArmPos(1.08, 113);
-      public static final ArmPos algae2Position         = new ArmPos(0.65, 113);
+      public static final ArmPos algae3Position         = new ArmPos(1.33, 90);
+      public static final ArmPos algae2Position         = new ArmPos(0.90, 90);
       public static final ArmPos processorPosition      = new ArmPos(0.43,  90);
       public static final ArmPos coral4Position         = new ArmPos(DiffectorGeometry.maxZ, 315); //TODO: confirm
       public static final ArmPos coral3Position         = new ArmPos(1.08, 325);
@@ -282,7 +282,7 @@ public final class Constants
     public static final double algaeHoldingVoltage = -12;
     public static final double algaeNetSpeed       =  1;
     public static final double algaeProcessorSpeed =  0.9;
-    public static final double algaeHeldCurrent    = 40;
+    public static final double algaeHeldCurrent    =  40;
     //public static final double algaeReleaseCurrent =  4;
 
     /** Algae net shooting range for rotation snapping, m */

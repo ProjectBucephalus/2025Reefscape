@@ -20,7 +20,7 @@ public class SD
   public static final BooleanKey IO_LL_EXPOSURE_DOWN = new BooleanKey("Decrease Exposure", false);
   public static final DoubleKey  IO_LED_BRIGHTNESS = new DoubleKey("LED Brightness", 1);
 
-  public static final BooleanKey CALIBRATE_BOT_ROTATION = new BooleanKey("Rotation Known", false);
+  public static final BooleanKey ROTATION_KNOWN = new BooleanKey("Rotation Known", false);
   public static final BooleanKey CALIBRATE_DIFF = new BooleanKey("Overide: Calibrate Arm", false);
   public static final BooleanKey CALIBRATE_DIFF_TARGET = new BooleanKey("Overide: Arm At Target", false);
 
@@ -76,7 +76,7 @@ public class SD
     SD.IO_LL_EXPOSURE.init();
     SD.IO_LL_EXPOSURE_UP.init();
     SD.IO_LL_EXPOSURE_DOWN.init();
-    SD.CALIBRATE_BOT_ROTATION.init();
+    SD.ROTATION_KNOWN.init();
     SD.OVERRIDE.init();
     SD.IO_PROCESS_AUTO.init();
     SD.IO_AUTO.init();
