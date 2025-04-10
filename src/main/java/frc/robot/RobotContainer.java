@@ -201,7 +201,7 @@ public class RobotContainer
           () ->
           {
             double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
-            return robotRotation > 180 ^ FieldUtils.isRedAlliance();
+            return robotRotation < 180 ^ FieldUtils.isRedAlliance();
           }
         )
         .andThen(s_Algae.run(() -> {if (s_Diffector.atPosition()) s_Algae.setStatus(AlgaeManipulator.Status.INTAKE);}))
