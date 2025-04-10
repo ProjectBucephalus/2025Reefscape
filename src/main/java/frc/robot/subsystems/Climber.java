@@ -85,7 +85,7 @@ public class Climber extends SubsystemBase
   public void periodic()
   {
     SD.CLIMBER_POS.put(getPos());
-    if (SD.CLIMB_OVERRIDE.get()) {climbLocked = false;}
+    if (SD.CLIMB_OVERRIDE.get()) {unlockClimb();}
 
     switch (status)
     {
