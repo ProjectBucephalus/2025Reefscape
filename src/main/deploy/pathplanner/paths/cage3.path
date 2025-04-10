@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.0,
-        "y": 7.260999999999999
+        "x": 8.070932905855903,
+        "y": 7.196998991856082
       },
       "isLocked": false,
       "linkedName": null
@@ -20,15 +20,20 @@
         "y": 7.261
       },
       "prevControl": {
-        "x": 7.85,
-        "y": 7.260999999999999
+        "x": 7.849857834012273,
+        "y": 7.235944589821719
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9,
+      "rotationDegrees": -90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -48,7 +53,7 @@
   "folder": "Cage Paths",
   "idealStartingState": {
     "velocity": 0.25,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }
