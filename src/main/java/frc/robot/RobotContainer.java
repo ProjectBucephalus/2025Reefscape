@@ -120,7 +120,7 @@ public class RobotContainer
     configureCopilotBindings();
     configureRumbleBindings();
     configureManualBindings();
-    configureTestBindings();
+    //configureTestBindings();
 
     s_Swerve.registerTelemetry(logger::telemeterize);
     initLED();

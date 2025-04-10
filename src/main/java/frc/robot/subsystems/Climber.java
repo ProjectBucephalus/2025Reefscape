@@ -95,33 +95,25 @@ public class Climber extends SubsystemBase
         break;
 
       case ACTIVE:
-        if (RobotContainer.s_Diffector.climbSafe() || (getPos() >= ClimberConstants.climbWinchPos))
-        {
-          m_Climber.setControl(motionMagic.withPosition(ClimberConstants.prepareWinchPos));
-          SD.CLIMBER_TARGET.put(ClimberConstants.prepareWinchPos);
-        }
+        m_Climber.setControl(motionMagic.withPosition(ClimberConstants.prepareWinchPos));
+        SD.CLIMBER_TARGET.put(ClimberConstants.prepareWinchPos);
         break;
 
       case CLIMB:
-        if (RobotContainer.s_Diffector.climbReady())
+        double adjustedClimberPos = getPos();
+        
+        if (SD.OVERRIDE.get() && (adjustedClimberPos < ClimberConstants.offGroundPos)) 
         {
-          double adjustedClimberPos = getPos();
-          
-          if (SD.OVERRIDE.get() && (adjustedClimberPos < ClimberConstants.offGroundPos)) 
-          {
-            adjustedClimberPos += Units.degreesToRotations((RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() - ClimberConstants.targetRobotClimbPitch) * ClimberConfigs.winchBalanceScalar);
-            adjustedClimberPos = Conversions.clamp(adjustedClimberPos, ClimberConstants.climbActiveInnerLimit, ClimberConstants.climbActiveOuterLimit);
-          }
-          else
-          {
-            adjustedClimberPos = ClimberConstants.climbWinchPos;
-          }
-
-          SmartDashboard.putNumber("robot pitch", RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble());
-          SmartDashboard.putNumber("adjusted Climber target", adjustedClimberPos);
-          m_Climber.setControl(motionMagic.withPosition(adjustedClimberPos));
-          SD.CLIMBER_TARGET.put(adjustedClimberPos);
+          adjustedClimberPos += Units.degreesToRotations((RobotContainer.s_Swerve.getPigeon2().getPitch().getValueAsDouble() - ClimberConstants.targetRobotClimbPitch) * ClimberConfigs.winchBalanceScalar);
+          adjustedClimberPos = Conversions.clamp(adjustedClimberPos, ClimberConstants.climbActiveInnerLimit, ClimberConstants.climbActiveOuterLimit);
         }
+        else
+        {
+          adjustedClimberPos = ClimberConstants.climbWinchPos;
+        }
+
+        m_Climber.setControl(motionMagic.withPosition(adjustedClimberPos));
+        SD.CLIMBER_TARGET.put(adjustedClimberPos);
         break;
 
       case MANUAL:
