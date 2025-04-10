@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -37,13 +38,16 @@ public class CoralManipulator extends SubsystemBase
   /* Declaration of the enum variable */
   private Status status;
 
+  private int wiggleCounter = 0;
+  private boolean portWiggle = false;
+
   /** For use in switch cases with smart directionality */
   private double speed;
   private double armAngle;
 
   public CoralManipulator() 
   {
-    status = Status.DEFAULT;
+    setStatus(Status.DEFAULT);
     m_Coral = new TalonFX(IDConstants.coralMotorID);
   }
 
@@ -51,7 +55,14 @@ public class CoralManipulator extends SubsystemBase
     {return status;}
 
   public void setStatus(Status newStatus)
-    {status = newStatus;}
+  {
+    if (newStatus == Status.WIGGLE && status != Status.WIGGLE)
+    {
+      wiggleCounter = 0;
+      portWiggle = false;
+    }
+    status = newStatus;
+  }
 
   public Command setStatusCommand(Status status)
     {return runOnce(() -> setStatus(status)).withName("SetCoralStatus");}
@@ -60,19 +71,46 @@ public class CoralManipulator extends SubsystemBase
   public void periodic() 
   {
     RobotContainer.coral = !RobotContainer.io_Canifier.coralPortSensor() || !RobotContainer.io_Canifier.coralStbdSensor();
+    SmartDashboard.putBoolean("Coral", RobotContainer.coral);
 
     switch(status)
     {
       case WIGGLE:
-        if (!RobotContainer.io_Canifier.coralPortSensor() && RobotContainer.io_Canifier.coralStbdSensor()) 
-          {m_Coral.set(-Manipulators.coralHoldingSpeed);} 
-        else
-          {m_Coral.set(Manipulators.coralHoldingSpeed);}
+        if (wiggleCounter < 6) //TODO count as constant
+        {
+          if (RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor())
+          {
+            m_Coral.set(Manipulators.coralHoldingSpeed);
+            if (!portWiggle)
+            {
+              portWiggle = true;
+              wiggleCounter++;
+            }
+          }
+
+          else if (!RobotContainer.io_Canifier.coralPortSensor() && RobotContainer.io_Canifier.coralStbdSensor()) 
+          {
+            m_Coral.set(-Manipulators.coralHoldingSpeed);
+            if (portWiggle)
+            {
+              portWiggle = false;
+              wiggleCounter++;
+            }
+          } 
+
+          else if (!RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor() && (m_Coral.get() == 0)) 
+            {m_Coral.set(-Manipulators.coralHoldingSpeed);}
+        }
+        else 
+        {
+          setStatus(Status.DEFAULT);
+          wiggleCounter = 0;
+        }
         break;
 
       case INTAKE:
         if (RobotContainer.coral) 
-          {status = Status.DEFAULT;}
+          {setStatus(Status.WIGGLE);}
         else
         {
           speed = Manipulators.coralHoldingSpeed;
@@ -101,7 +139,7 @@ public class CoralManipulator extends SubsystemBase
 
       case DELIVERY_LEFT:
       case DELIVERY_RIGHT:
-        speed = -Manipulators.coralDeliverySpeed;
+        speed = Manipulators.coralDeliverySpeed;
 
         armAngle = RobotContainer.s_Diffector.getRelativeRotation();
         double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);

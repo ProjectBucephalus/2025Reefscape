@@ -15,7 +15,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 public class SD 
 {
   public static final BooleanKey IO_LL = new BooleanKey("Use Limelight", true);
-  public static final DoubleKey  IO_LL_EXPOSURE = new DoubleKey("Exposure Setting", 0);
+  public static final DoubleKey  IO_LL_EXPOSURE = new DoubleKey("Exposure Setting", 3);
   public static final BooleanKey IO_LL_EXPOSURE_UP = new BooleanKey("Increase Exposure", false);
   public static final BooleanKey IO_LL_EXPOSURE_DOWN = new BooleanKey("Decrease Exposure", false);
   public static final DoubleKey  IO_LED_BRIGHTNESS = new DoubleKey("LED Brightness", 1);
@@ -26,12 +26,14 @@ public class SD
 
   public static final StringKey  STATE_HEADING = new StringKey("Heading State", "");
 
-  public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Speed", Constants.Manipulators.algaeHoldingVoltage);
+  public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Speed", 10);
   public static final BooleanKey IO_PROCESS_AUTO = new BooleanKey("Process Auto", false);
-  public static final BooleanKey IO_GEOFENCE = new BooleanKey("IgnoreFence", false);
+  public static final BooleanKey IO_GEOFENCE = new BooleanKey("Use Fence", true);
+  public static final DoubleKey  IO_GEOFENCE_IMPACT = new DoubleKey("Fence Impact", 1);
   public static final StringKey  IO_AUTO = new StringKey("Auto Input", Constants.Auto.defaultAuto);
   public static final DoubleKey  IO_RUMBLE_D = new DoubleKey("Driver Rumble", Constants.RumblerConstants.driverDefault);
   public static final DoubleKey  IO_RUMBLE_C = new DoubleKey("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
+  public static final BooleanKey IO_BARGE_PROTECTION = new BooleanKey("Use Barge Protection", true);
 
   public static final BooleanKey STATE_PP_WARMUP = new BooleanKey("Warmup Finished", false);
   public static final StringKey  STATE_ALGAE = new StringKey("Algae Manipulator State", "Empty");
@@ -68,6 +70,27 @@ public class SD
   public static final BooleanKey DIFF_ESTOP = new BooleanKey("Diffector E-Stop", false);
   public static final BooleanKey OVERRIDE = new BooleanKey("OVERIDE MODE", false);
   public static final BooleanKey CLIMB_OVERRIDE = new BooleanKey("Override Climber", false);
+
+  public static void initOutputs()
+  {
+    SD.IO_LL_EXPOSURE.init();
+    SD.IO_LL_EXPOSURE_UP.init();
+    SD.IO_LL_EXPOSURE_DOWN.init();
+    SD.CALIBRATE_BOT_ROTATION.init();
+    SD.OVERRIDE.init();
+    SD.IO_PROCESS_AUTO.init();
+    SD.IO_AUTO.init();
+    SD.IO_GEOFENCE.init();
+    SD.IO_ALGAE_HOLD.init();
+    SD.CLIMB_OVERRIDE.init();
+    SD.DIFF_ESTOP.init();
+    SD.IO_BARGE_PROTECTION.init();
+    SD.CALIBRATE_DIFF.init();
+    SD.CALIBRATE_DIFF_TARGET.init();
+    SD.IO_LL.init();
+    SD.IO_LED_BRIGHTNESS.init();
+    SD.IO_GEOFENCE_IMPACT.init();
+  }
 
   public static void initSwerveDisplay(CommandSwerveDrivetrain s_Swerve)
   {

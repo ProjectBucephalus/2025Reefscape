@@ -97,8 +97,6 @@ public class LightLayer
         default:target = DriverFieldRefs.driverBlue1;
       }
     }
-
-    SD.IO_LED_BRIGHTNESS.init();
   }
 
   public void setSegments(int newSegments)

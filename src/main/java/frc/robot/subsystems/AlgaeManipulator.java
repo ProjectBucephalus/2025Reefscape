@@ -13,6 +13,7 @@ import frc.robot.constants.IDConstants;
 import frc.robot.constants.MechanismConstants.AlgaeConfigs;
 import frc.robot.util.SD;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 /**
@@ -23,6 +24,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
  */
 public class AlgaeManipulator extends SubsystemBase 
 {
+  private CurrentLimitsConfigs algaeCurrentConfig = AlgaeConfigs.currentLimits;
 
   /* Declaration of the motor controllers */
   private TalonFX m_Algae;
@@ -42,19 +44,31 @@ public class AlgaeManipulator extends SubsystemBase
     INTAKE,
     HOLDING,
     EJECT,
+    WEAK_EJECT,
     EMPTY
   }
 
   public AlgaeManipulator() 
   {
-    status = Status.EMPTY;
+    setStatus(Status.EMPTY);
     m_Algae = new TalonFX(IDConstants.algaeMotorID);
-    m_Algae.getConfigurator().apply(AlgaeConfigs.currentLimits);
-    SD.IO_ALGAE_HOLD.init();
+    m_Algae.getConfigurator().apply(algaeCurrentConfig.withStatorCurrentLimitEnable(false));
+  }
+
+  private void setCurrentLimitEnable(boolean currentLimit)
+  {
+    m_Algae.getConfigurator().apply(algaeCurrentConfig.withStatorCurrentLimitEnable(currentLimit));
   }
 
   public void setStatus(Status newStatus)
-    {status = newStatus;}
+  {
+    if (newStatus == Status.HOLDING)
+      setCurrentLimitEnable(true);
+    else if (status == Status.HOLDING)
+      setCurrentLimitEnable(false);
+    
+    status = newStatus;
+  }
 
   public Command setStatusCommand(Status status)
     {return runOnce(() -> setStatus(status)).withName("SetAlgaeStatus");}
@@ -72,7 +86,6 @@ public class AlgaeManipulator extends SubsystemBase
     SD.STATE_ALGAE.put(status.name());
     SD.SENSOR_ALGAE_CURRENT.put(Math.abs(m_Algae.getStatorCurrent().getValueAsDouble()));
     SD.SENSOR_ALGAE_TMEP.put(m_Algae.getDeviceTemp().getValueAsDouble());
-    double algaeHoldingVoltage = SD.IO_ALGAE_HOLD.get();
 
     switch(status)
     {
@@ -84,15 +97,19 @@ public class AlgaeManipulator extends SubsystemBase
         m_Algae.set(Constants.Manipulators.algaeIntakeSpeed);
 
         if (RobotContainer.algae) 
-          {status = Status.HOLDING;}
+          {setStatus(Status.HOLDING);}
         break;
 
       case HOLDING:
         if (RobotContainer.algae) 
-          {m_Algae.setVoltage(algaeHoldingVoltage);}
+          {m_Algae.setVoltage(Constants.Manipulators.algaeHoldingVoltage);}
 
         else
-          {status = Status.EMPTY;}
+          {setStatus(Status.EMPTY);}
+        break;
+
+      case WEAK_EJECT:
+        m_Algae.set(0.3);
         break;
 
       case EJECT:

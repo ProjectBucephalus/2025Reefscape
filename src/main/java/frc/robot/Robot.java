@@ -7,7 +7,6 @@ package frc.robot;
 import com.pathplanner.lib.commands.PathfindingCommand;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -41,15 +40,15 @@ public class Robot extends TimedRobot
   {
     robotContainer = new RobotContainer();
     warmupCommand = PathfindingCommand.warmupCommand();
-
     warmupCommand.schedule();
 
+    RobotContainer.s_Swerve.getPigeon2().setYaw(0);
+
+    RobotContainer.io_LimelightPort.setThrottle(0);
+    RobotContainer.io_LimelightStbd.setThrottle(0);
     RobotContainer.io_LimelightPort.setIMUMode(1);
     RobotContainer.io_LimelightStbd.setIMUMode(1);
-    SD.IO_LL_EXPOSURE.init();
-    SD.IO_LL_EXPOSURE_UP.init();
-    SD.IO_LL_EXPOSURE_DOWN.init();
-    SD.CALIBRATE_BOT_ROTATION.init();
+    SD.initOutputs();
   }
 
   /**
@@ -74,7 +73,7 @@ public class Robot extends TimedRobot
 
     RobotContainer.swerveState = RobotContainer.s_Swerve.getState();
 
-    RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
+    //RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
     
     CommandScheduler.getInstance().run();
     
@@ -87,15 +86,16 @@ public class Robot extends TimedRobot
   {
     RobotContainer.io_LimelightPort.setIMUMode(1);
     RobotContainer.io_LimelightStbd.setIMUMode(1);
-    if (Limelight.rotationKnown)
-    {
-      RobotContainer.io_LimelightPort.setThrottle(150);
-      RobotContainer.io_LimelightStbd.setThrottle(150);
-    }
+
     SD.OVERRIDE.init();
     SD.IO_PROCESS_AUTO.init();
     SD.CALIBRATE_BOT_ROTATION.init();
     Limelight.rotationKnown = false;
+
+    RobotContainer.io_copilotLeft.clearRequests();
+    RobotContainer.io_copilotRight.clearRequests();
+    RobotContainer.io_driverLeft.clearRequests();
+    RobotContainer.io_driverRight.clearRequests();
   }
 
   @Override
@@ -123,8 +123,8 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit() 
   {     
-    RobotContainer.io_LimelightPort.setThrottle(0);
-    RobotContainer.io_LimelightStbd.setThrottle(0);
+    RobotContainer.io_LimelightPort.setIMUMode(1);
+    RobotContainer.io_LimelightStbd.setIMUMode(1);
     
     if (autonomousCommand == null) 
       {autonomousCommand = robotContainer.getAutoCommand();}
@@ -139,8 +139,8 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit() 
   {
-    RobotContainer.io_LimelightPort.setThrottle(0);
-    RobotContainer.io_LimelightStbd.setThrottle(0);
+    RobotContainer.io_LimelightPort.setIMUMode(1);
+    RobotContainer.io_LimelightStbd.setIMUMode(1);
 
     if (autonomousCommand != null) 
       {autonomousCommand.cancel();}

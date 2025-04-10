@@ -46,6 +46,9 @@ public class RumbleRequester extends SubsystemBase
     return this;
   }
 
+  public void clearRequests()
+    {queue.clear();}
+
   public Command timedRequestCommand(String requestID, double durationSeconds)
   {
     return 

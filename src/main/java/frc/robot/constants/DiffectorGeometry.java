@@ -11,7 +11,7 @@ public class DiffectorGeometry
   public static final double turnBackThreshold = 135;
   
   /** Physical upper limit of the elevator, metres above the ground */
-  public static final double maxZ = 1.725;
+  public static final double maxZ = 1.76;
   /** Physical lower limit of the elevator when horizontal, metres above the ground */
   public static final double minZ = 0.36;
   /** Elevation at which all rotations are safe */

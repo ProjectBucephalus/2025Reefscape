@@ -4,6 +4,7 @@
 package frc.robot.util;
 
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
@@ -13,11 +14,15 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.DpadOptions;
 import frc.robot.constants.Constants;
@@ -27,12 +32,12 @@ import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
-import frc.robot.subsystems.CoralManipulator.Status;
 
 public class AutoUtils 
 {
   private static final PathConstraints defaultConstraints = Constants.Auto.defaultConstraints;
   private static final PathConstraints slowedConstraints = Constants.Auto.slowedConstraints;
+  private static final PathConstraints stationConstraints = Constants.Auto.stationConstraints;
 
   private static Translation2d prevEndPoint;
 
@@ -60,6 +65,25 @@ public class AutoUtils
     {
       switch (splitCommand.charAt(0)) 
       {
+        case 'g':
+          int seperatorIndex = splitCommand.indexOf(":");
+          Translation2d posTarget = 
+          new Translation2d
+          (
+            MathUtil.clamp(Double.parseDouble(splitCommand.substring(1, seperatorIndex)), 0.5, (FieldUtils.fieldLength / 2) - 0.5), 
+            MathUtil.clamp(Double.parseDouble(splitCommand.substring(seperatorIndex + 1)), 0.5, FieldUtils.fieldWidth - 0.5)
+          );
+
+          if (FieldUtils.isRedAlliance()) 
+          {
+            posTarget = posTarget.rotateAround(new Translation2d(FieldUtils.fieldLength / 2, FieldUtils.fieldWidth / 2), Rotation2d.k180deg);
+          }
+
+          Translation2d finalPosTarget = posTarget;
+          commandList.add(Commands.defer(() -> AutoBuilder.pathfindToPose(new Pose2d(finalPosTarget, RobotContainer.swerveState.Pose.getRotation()), defaultConstraints), Set.of()));
+          prevEndPoint = posTarget;
+          break;
+
         case 'w':
           commandList.add(Commands.waitSeconds(Double.parseDouble(splitCommand.substring(1))));
           break;
@@ -81,39 +105,49 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.coralScorePosCommandUndeferred(() -> prevEndPoint, Integer.parseInt(splitCommand.substring(2)))
+              s_Diffector.coralScorePosCommandUndeferredAllianceLocked(() -> prevEndPoint, Integer.parseInt(splitCommand.substring(2)))
             )
           );
+
+          commandList.add(Commands.waitSeconds(0.2)); //TODO: reduce delay?
 
           commandList.add(s_Coral.setStatusCommand(CoralManipulator.Status.DELIVERY_SMART));
           
           if (splitCommand.charAt(2) == '4') 
           {
-            commandList.add(Commands.waitSeconds(0.1));
-            commandList.add(s_Diffector.coralScorePosInstantCommand(() -> prevEndPoint, 3));
+            commandList.add
+            (
+              Commands.sequence
+              (
+                Commands.waitSeconds(0.05),
+                s_Diffector.runOnce(() -> s_Diffector.goToAngle(0))
+              )
+            );
           }
           
           commandList.add(Commands.waitUntil(() -> !RobotContainer.coral));
           commandList.add(s_Coral.setStatusCommand(CoralManipulator.Status.DEFAULT));
+          commandList.add(s_Diffector.moveToCommand(Presets.coralStowPosition));
           break;
 
         case 'c':
           nextPath = FieldUtils.loadPath(Constants.Auto.autoMap.get(splitCommand).pathName);
+          ArmPos armPos = splitCommand.charAt(1) == 'r' ? Presets.coralIntakePosition.port() : Presets.coralIntakePosition.stbd();
 
           Pathfinding.setStartPosition(prevEndPoint);
-          
+
           commandList.add
           (
             Commands.parallel
             (
-              AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.moveAndWaitCommand(Presets.coralIntakePosition.port())
+              AutoBuilder.pathfindThenFollowPath(nextPath, stationConstraints),
+              Commands.waitSeconds(0.15).andThen(s_Diffector.moveAndWaitCommand(armPos)) //TODO: reduce delay?
             )
           );
 
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();    
 
-          commandList.add(s_Coral.setStatusCommand(Status.INTAKE));
+          commandList.add(s_Coral.setStatusCommand(CoralManipulator.Status.INTAKE));
           commandList.add(Commands.waitUntil(() -> RobotContainer.coral));
           commandList.add(s_Diffector.moveToCommand(Presets.coralStowPosition));
           break;
@@ -122,6 +156,12 @@ public class AutoUtils
           autoMapValue = Constants.Auto.autoMap.get(splitCommand);
           nextPath = FieldUtils.loadPath(autoMapValue.pathName);
 
+          if (FieldUtils.isRedAlliance())
+          {
+            nextPath = nextPath.flipPath();
+            nextPath.preventFlipping = true;
+          }
+
           Pathfinding.setStartPosition(prevEndPoint);
           
           commandList.add
@@ -129,10 +169,16 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindToPose(nextPath.getStartingHolonomicPose().get(), defaultConstraints),
-              autoMapValue.command.get()
+              Commands.waitSeconds(0.25).andThen(autoMapValue.command.get()) //TODO: reduce delay?
             )
           );
           commandList.add(AutoBuilder.followPath(nextPath));
+
+          commandList.add(Commands.waitSeconds(0.25));
+
+          commandList.add(AutoBuilder.pathfindToPose(nextPath.getStartingHolonomicPose().get(), defaultConstraints));
+
+          commandList.add(s_Diffector.moveToCommand(Presets.algaeStowPosition));
 
           prevEndPoint = nextPath.getWaypoints().get(nextPath.getWaypoints().size() - 1).anchor();   
           break;
@@ -158,7 +204,7 @@ public class AutoUtils
       }
     }
 
-    return new SequentialCommandGroup(commandList.toArray(Command[]::new));
+    return new SequentialCommandGroup(commandList.toArray(Command[]::new)).withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
   }
 
   public static Command pathfindAndFollowCommand(Supplier<String> pathNameSup, BooleanSupplier brakeSup)
@@ -211,7 +257,7 @@ public class AutoUtils
       
         case LEFT, RIGHT -> 
           {
-            boolean flippedFace = (nearestReefFace == 3 || nearestReefFace == 4 || nearestReefFace == 5);
+            boolean flippedFace = (nearestReefFace == 4);
             int unicodeValueOffset = 
             dpadValue == DpadOptions.RIGHT 
             ? 
@@ -295,7 +341,7 @@ public class AutoUtils
     )
     .until(cancelTrigger);
   }
-  
+
   public static Command intakeAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, int nearestReefFace)
   {
     return 
@@ -312,7 +358,8 @@ public class AutoUtils
     Commands.sequence
     (
       s_Diffector.moveAndWaitCommand(net ? Presets.netPosition : Presets.processorPosition.port()), 
-      s_Algae.setStatusCommand(AlgaeManipulator.Status.EJECT)
+      s_Algae.setStatusCommand(AlgaeManipulator.Status.EJECT),
+      s_Diffector.moveToCommand(Presets.algaeStowPosition)
     );
   }
 

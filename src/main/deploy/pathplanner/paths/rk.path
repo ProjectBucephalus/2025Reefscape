@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.045,
-        "y": 5.31449364905389
+        "x": 4.215980986332311,
+        "y": 5.039925462596177
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.07,
-        "y": 5.271
+        "x": 4.09,
+        "y": 5.236
       },
       "prevControl": {
-        "x": 3.9450000000000003,
-        "y": 5.487506350946109
+        "x": 3.925399679372146,
+        "y": 5.509086955087193
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,9 +34,9 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 6.5,
+    "maxAcceleration": 3.75,
     "maxAngularVelocity": 720.0,
-    "maxAngularAcceleration": 1050.0,
+    "maxAngularAcceleration": 850.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -47,8 +47,8 @@
   "reversed": false,
   "folder": "Reef Paths",
   "idealStartingState": {
-    "velocity": 1,
+    "velocity": 0.1,
     "rotation": -150.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

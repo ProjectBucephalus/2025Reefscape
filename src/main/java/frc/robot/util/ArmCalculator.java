@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.RobotContainer;
 import frc.robot.constants.DiffectorGeometry;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
@@ -94,7 +95,7 @@ public class ArmCalculator
       return pathOutput;
     }
 
-    if (Presets.highDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals))
+    if (Presets.highDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals) && DriverStation.isTeleop())
     { // Forced safe path for high scoring positions
       pathOutput.add(new ArmPos(Math.max(safeElevation, startPosition.getZ()), startPosition.getR()));
       if (MathUtil.isNear(relativeTarget.getR(), 180, 90))

@@ -4,8 +4,8 @@ import static edu.wpi.first.units.Units.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.path.PathConstraints;
@@ -15,7 +15,6 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.RobotContainer;
 import frc.robot.util.ArmPos;
 import frc.robot.util.AutoUtils;
@@ -65,26 +64,26 @@ public final class Constants
 
     public static final int[] reefIDs = 
     {
-      //6, 7, 8, 9, 10, 11,    // Red Reef
+      6, 7, 8, 9, 10, 11,    // Red Reef
       17, 18, 19, 20, 21, 22 // Blue Reef
     };
 
     public static final int[] bargeIDs = 
     {
-      //4, 5,  // Red Barge
+      4, 5,  // Red Barge
       14, 15 // Blue Barge
     };
 
     public static final int[] humanPlayerStationIDs = 
     {
-      //1, 2, 3,   // Red Human Player Stations
+      1, 2, 3,   // Red Human Player Stations
       12, 13, 16 // Blue Human Player Stations
     };
 
     /** Baseline 1 meter, 1 tag stddev for x and y, in meters */
     public static final double linearStdDevBaseline = 0.08;
     /** Baseline 1 meter, 1 tag stddev rotation, in radians */
-    public static final double rotStdDevBaseline = 0.012;
+    public static final double rotStdDevBaseline = 999;
   }
 
   public static final class Swerve
@@ -122,17 +121,23 @@ public final class Constants
     /** m/s */
     public static final double pathplannerSlowedSpeed = 1.5;
     /** m/s^2 */
-    public static final double pathplannerMaxAcceleration = 5;
+    public static final double pathplannerMaxAcceleration = 4.0;
+    /** m/s^2 */
+    public static final double pathplannerStationAcceleration = 4.5;
     /** degrees/s */
     public static final double pathplannerMaxAngularSpeed = 720;
     /** degrees/s^2 */
     public static final double pathplannerMaxAngularAcceleration = 1050;
+
     public static final PathConstraints defaultConstraints = new PathConstraints
       (pathplannerMaxSpeed, pathplannerMaxAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
     
     public static final PathConstraints slowedConstraints = new PathConstraints
       (pathplannerSlowedSpeed, pathplannerMaxAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
     
+    public static final PathConstraints stationConstraints = new PathConstraints
+      (pathplannerMaxSpeed, pathplannerStationAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
+
     public static final Map<Translation2d, Integer> reefMidPointMap = new HashMap<>(6)
     {{
       put(new Translation2d(3.658, 4.026), 1);
@@ -188,7 +193,7 @@ public final class Constants
       put("p"  , new AutoMapping("p"  , () -> AutoUtils.scoreAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, false)));                
       put("kl" , new AutoMapping("kl", null));
       put("kr" , new AutoMapping("kr", null));
-      put("e"  , new AutoMapping(null, () -> Commands.defer(() -> AutoUtils.ejectAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, () -> RobotContainer.swerveState.Pose.getTranslation()), new HashSet<Subsystem>(){{add(RobotContainer.s_Algae); add(RobotContainer.s_Diffector);}})));
+      put("e"  , new AutoMapping(null, () -> Commands.defer(() -> AutoUtils.ejectAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, () -> RobotContainer.swerveState.Pose.getTranslation()), Set.of(RobotContainer.s_Algae, RobotContainer.s_Diffector))));
     }};
 
     /** How close we have to be to the path start point to just follow the path without using pathfinding */
@@ -212,23 +217,24 @@ public final class Constants
      */
     public static class Presets
     {
-      public static final ArmPos startPosition       = new ArmPos(0.616,  0);
-      public static final ArmPos climbSafePosition   = new ArmPos(0.80,  90); // TODO
-      public static final ArmPos climbPosition       = new ArmPos(0.425, 90);
-      public static final ArmPos netPosition         = new ArmPos(DiffectorGeometry.maxZ, 150, false);
-      public static final ArmPos algae3Position      = new ArmPos(1.08, 113);
-      public static final ArmPos algae2Position      = new ArmPos(0.65, 113);
-      public static final ArmPos processorPosition   = new ArmPos(0.43,  90);
-      public static final ArmPos coral4Position      = new ArmPos(1.72, 325);
-      public static final ArmPos coral3Position      = new ArmPos(1.05, 325);
-      public static final ArmPos coral2Position      = new ArmPos(0.675, 325);
-      public static final ArmPos coral1ClawPosition  = new ArmPos(DiffectorGeometry.algaeClawElevation,  76);
-      public static final ArmPos coral1Position      = new ArmPos(DiffectorGeometry.coralFunnelElevation, 210);
-      public static final ArmPos coralIntakePosition = new ArmPos(1.14, 215); // TODO
-      public static final ArmPos coralClawPosition   = new ArmPos(0.73, 129); // TODO
-      public static final ArmPos coralStowPosition   = new ArmPos(0.72,   0);
-      public static final ArmPos algaeIntakePosition = new ArmPos(0.47,  70); // +20cm for testing
-      public static final ArmPos algaeStowPosition   = new ArmPos(0.80, 180);
+      public static final ArmPos startPosition          = new ArmPos(0.616,  0);
+      public static final ArmPos climbSafePosition      = new ArmPos(DiffectorGeometry.safeElevation,  90); // TODO
+      public static final ArmPos climbPosition          = new ArmPos(0.425, 90);
+      public static final ArmPos netPosition            = new ArmPos(DiffectorGeometry.maxZ, 150, false);
+      public static final ArmPos algae3Position         = new ArmPos(1.08, 113);
+      public static final ArmPos algae2Position         = new ArmPos(0.65, 113);
+      public static final ArmPos processorPosition      = new ArmPos(0.43,  90);
+      public static final ArmPos coral4Position         = new ArmPos(DiffectorGeometry.maxZ, 315); //TODO: confirm
+      public static final ArmPos coral3Position         = new ArmPos(1.08, 325);
+      public static final ArmPos coral2Position         = new ArmPos(0.675, 325);
+      public static final ArmPos coral1ClawPosition     = new ArmPos(DiffectorGeometry.algaeClawElevation,  76);
+      public static final ArmPos coral1Position         = new ArmPos(DiffectorGeometry.coralFunnelElevation, 210);
+      public static final ArmPos coralIntakePosition    = new ArmPos(1.16, 215);
+      public static final ArmPos coralIntakeAltPosition = new ArmPos(1.09, 215);
+      public static final ArmPos coralClawPosition      = new ArmPos(0.75, 129);
+      public static final ArmPos coralStowPosition      = new ArmPos(0.75,   0);
+      public static final ArmPos algaeIntakePosition    = new ArmPos(0.49,  65);
+      public static final ArmPos algaeStowPosition      = new ArmPos(0.80, 180);
 
       public static final ArrayList<ArmPos> lowDiffectorPositions = new ArrayList<ArmPos>()
       {{
@@ -247,28 +253,19 @@ public final class Constants
     }
 
     /** Raw value when fully released, indicating string has snapped or the sensor is unavailable */
-    public static final double potErrValue = 0.06;
+    public static final double potErrValue = 0.035;
 
     public static final InterpolatingDoubleTreeMap potInterpolation = new InterpolatingDoubleTreeMap()
     {
       {
-        put(0.09, 0.36);
-        put(0.15, 0.47);
-        put(0.25, 0.61);
-        put(0.30, 0.70);
-        put(0.43, 0.90);
-        put(0.52, 1.02);
-        put(0.57, 1.10);
-        put(0.64, 1.20);
-        put(0.71, 1.31);
-        put(0.72, 1.33);
-        put(0.86, 1.54);
-        put(0.91, 1.61);
-        put(0.94, 1.66);
-        put(0.96, 1.69);
-        put(0.98, 1.72);
-        put(0.99, 1.74);
-        put(1.00, 1.76);
+        put(0.040, 0.360);
+        put(0.201, 0.615);
+        put(0.400, 0.915);
+        put(0.600, 1.210);
+        put(0.701, 1.360);
+        put(0.800, 1.510);
+        put(0.898, 1.660);
+        put(0.978, 1.775);
       }
     };
   }
@@ -276,17 +273,17 @@ public final class Constants
   public static final class Manipulators 
   {
     /* Coral manipulator speeds */
-    public static final double coralLvl4DeliverySpeed = 0.15;
+    public static final double coralLvl4DeliverySpeed = 0.25;
     public static final double coralDeliverySpeed     = 0.30;
     public static final double coralHoldingSpeed      = -0.10;
 
     /* Algae manipulator speeds */
     public static final double algaeIntakeSpeed    = -1;
-    public static final double algaeHoldingVoltage = -1.35;
+    public static final double algaeHoldingVoltage = -12;
     public static final double algaeNetSpeed       =  1;
     public static final double algaeProcessorSpeed =  0.9;
-    public static final double algaeHeldCurrent    = 45;
-    public static final double algaeReleaseCurrent =  4;
+    public static final double algaeHeldCurrent    = 40;
+    //public static final double algaeReleaseCurrent =  4;
 
     /** Algae net shooting range for rotation snapping, m */
     public static final double algaeRange = 2.5;
@@ -294,11 +291,12 @@ public final class Constants
 
   public static final class ClimberConstants
   {
+    public static final double startWinchPos   = 4.0;
     public static final double stowWinchPos    = 0.0;
-    public static final double safeWinchPos    = 4.5;
+    public static final double safeWinchPos    = 3.9;
     public static final double startDrivePos   = 4.7;
     public static final double offGroundPos    = 2.5;
-    public static final double prepareWinchPos = 5.5; // TODO
+    public static final double prepareWinchPos = 5.6; // TODO
     public static final double climbWinchPos   = 2.0; // TODO
     /** The furthest into the robot the climber can attempt to go whilst balancing */
     public static final double climbActiveInnerLimit = 1.7; // TODO
@@ -320,14 +318,14 @@ public final class Constants
     /** default width for a partial display layer. a good number is about 1/4 lightsLen */
     public static final int viewWidth = 30;
     /** Start and end positions for Volaans displays */
-    public static final int stbdStatusStart = 86;
-    public static final int stbdStatusWidth = 30;
-    public static final int portStatusStart = 0;
-    public static final int portStatusWidth = 30;
-    public static final int stbdHaloStart = 58;
-    public static final int stbdHaloWidth = 28;
-    public static final int portHaloStart = 30;
-    public static final int portHaloWidth = 28;
+    public static final int stbdStatusStart = 0; //86;
+    public static final int stbdStatusWidth = 30; //30;
+    public static final int portStatusStart = 83; //0;
+    public static final int portStatusWidth = 30; //30;
+    public static final int stbdHaloStart = 30; //58;
+    public static final int stbdHaloWidth = 26; //28;
+    public static final int portHaloStart = 56; //30;
+    public static final int portHaloWidth = 27; //28;
     /** LED # at 0 degrees */
     public static final int startOffset = 1; 
     /** used to calculate the LED pointing in a particular direction */

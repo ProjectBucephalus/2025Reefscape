@@ -31,7 +31,6 @@ import frc.robot.constants.IDConstants;
 import frc.robot.constants.MechanismConstants.DiffectorConfigs;
 import frc.robot.util.ArmCalculator;
 import frc.robot.util.ArmPos;
-import frc.robot.util.Conversions;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.SD;
 
@@ -82,7 +81,6 @@ public class Diffector extends SubsystemBase
   public Diffector() 
   {
     eStop = false;
-    SD.DIFF_ESTOP.init();
     manualControl = false;
     arm = new ArmCalculator();
     
@@ -119,9 +117,6 @@ public class Diffector extends SubsystemBase
 
     plannedPathPoints.clear();
     plannedPathPoints.add(targetPosition);
-
-    SD.CALIBRATE_DIFF.init();
-    SD.CALIBRATE_DIFF_TARGET.init();
   }
 
   /**
@@ -161,7 +156,7 @@ public class Diffector extends SubsystemBase
     )
     {eStop = true;}
 
-    if (atPosition() && !Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals))
+    if (atPosition() && !Presets.lowDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals) && ! relativeTarget.relativeEquals(Presets.coralIntakePosition))
     {
       calibrationCounter++;
       if (calibrationCounter == DiffectorConstants.calibrationDelay) 
@@ -219,13 +214,16 @@ public class Diffector extends SubsystemBase
       (
         !(
           MathUtil.isNear(RobotContainer.swerveState.Pose.getX(), FieldUtils.fieldLength / 2, DiffectorGeometry.bargeSafetyWidth) &&
-          targetPosition.getZ() > DiffectorGeometry.bargeSafetyHeight
-        )
+          targetPosition.getZ() > DiffectorGeometry.bargeSafetyHeight && 
+          SD.IO_LL.get() && 
+          SD.IO_BARGE_PROTECTION.get()
+         ) &&
+        RobotContainer.s_Climber.armSafe()
       )
-    
-      oldTarget = targetPosition;
-
-      plannedPathPoints = arm.pathfindArm(targetPosition, armPosition);
+      {
+        oldTarget = targetPosition;
+        plannedPathPoints = arm.pathfindArm(targetPosition, armPosition);
+      }
     }
 
     if (plannedPathPoints.size() != 0)
@@ -418,22 +416,21 @@ public class Diffector extends SubsystemBase
     return moveToCommand(targetPosition).andThen(Commands.waitUntil(this::atPosition));
   }
 
-  public Command stationIntakePosCommand(Supplier<Translation2d> robotPos, BooleanSupplier algae)
+  public Command stationIntakePosCommand(Supplier<Translation2d> robotPos, BooleanSupplier algae, BooleanSupplier altPos)
   {
-    if (robotPos.get().getX() > FieldUtils.fieldLength/2 ^ robotPos.get().getY() > FieldUtils.fieldWidth/2)
-    {
-      if (algae.getAsBoolean())
-        return moveToCommand(Presets.coralClawPosition.stbd());
-      else
-        return moveToCommand(Presets.coralIntakePosition.stbd());  
-    }
+    ArmPos armPos;
+
+    if (algae.getAsBoolean())
+      armPos = Presets.coralClawPosition.port();
+    else if (altPos.getAsBoolean())
+      armPos = Presets.coralIntakeAltPosition.port();
     else
-    {
-      if (algae.getAsBoolean())
-        return moveToCommand(Presets.coralClawPosition.port());
-      else
-        return moveToCommand(Presets.coralIntakePosition.port());  
-    }
+      armPos = Presets.coralIntakePosition.port();  
+
+    if (robotPos.get().getX() > FieldUtils.fieldLength/2 ^ robotPos.get().getY() > FieldUtils.fieldWidth/2)
+      armPos = armPos.stbd();  
+
+    return moveToCommand(armPos);
   }
 
   public Command algaeIntakePosCommand(Supplier<Translation2d> robotPos, boolean level2)
@@ -463,9 +460,8 @@ public class Diffector extends SubsystemBase
     return defer(() -> algaeIntakePosCommand(robotPos, level2));
   }
 
-  public Command coralScorePosInstantCommand(Supplier<Translation2d> robotPos, int level)
+  public Command coralScorePosInstantCommand(Supplier<Translation2d> robotPos, int level, int nearestReefFace)
   {
-    int nearestReefFace = FieldUtils.getNearestReefFace(robotPos.get());
     boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
 
     ArmPos target = 
@@ -489,7 +485,12 @@ public class Diffector extends SubsystemBase
 
   public Command coralScorePosCommandUndeferred(Supplier<Translation2d> robotPos, int level)
   {
-    return coralScorePosInstantCommand(robotPos, level).andThen(Commands.waitUntil(this::atPosition));
+    return coralScorePosInstantCommand(robotPos, level, FieldUtils.getNearestReefFace(robotPos.get())).andThen(Commands.waitUntil(this::atPosition));
+  }
+
+  public Command coralScorePosCommandUndeferredAllianceLocked(Supplier<Translation2d> robotPos, int level)
+  {
+    return coralScorePosInstantCommand(robotPos, level, FieldUtils.getNearestReefFaceAllianceLocked(robotPos.get())).andThen(Commands.waitUntil(this::atPosition));
   }
 
   public Command coralScorePosCommand(int level)

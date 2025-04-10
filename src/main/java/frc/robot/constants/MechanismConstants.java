@@ -11,16 +11,12 @@ public class MechanismConstants
   {
     public static final CurrentLimitsConfigs currentLimits = 
     new CurrentLimitsConfigs()
-      .withStatorCurrentLimitEnable(true)
-      .withSupplyCurrentLimit(40)
-      .withSupplyCurrentLowerLimit(5)
-      .withSupplyCurrentLowerTime(1)
-      .withStatorCurrentLimit(60);
+      .withStatorCurrentLimit(35);
   }
 
   public static class ClimberConfigs
   {
-    public static final double winchBalanceScalar = 0.05;
+    public static final double winchBalanceScalar = 1;
 
     public static final double winchPlanetaryRatio = 45;
     public static final double winchGearIn   = 20;
