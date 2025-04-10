@@ -233,7 +233,7 @@ public final class Constants
       public static final ArmPos coralIntakeAltPosition = new ArmPos(1.09, 215);
       public static final ArmPos coralClawPosition      = new ArmPos(0.75, 129);
       public static final ArmPos coralStowPosition      = new ArmPos(0.75,   0);
-      public static final ArmPos algaeIntakePosition    = new ArmPos(0.47,  65);
+      public static final ArmPos algaeIntakePosition    = new ArmPos(0.49,  65);
       public static final ArmPos algaeStowPosition      = new ArmPos(0.80, 180);
 
       public static final ArrayList<ArmPos> lowDiffectorPositions = new ArrayList<ArmPos>()
