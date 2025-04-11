@@ -486,8 +486,7 @@ public class RobotContainer
           () -> s_Diffector.stationIntakePosCommand
           (
             () -> swerveState.Pose.getTranslation(), 
-            algaeModifier, 
-            () -> s_Diffector.getRelativeTarget().relativeEquals(Presets.coralIntakePosition)
+            algaeModifier
           )
         )
         .withName("CoralStation")

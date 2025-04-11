@@ -416,16 +416,19 @@ public class Diffector extends SubsystemBase
     return moveToCommand(targetPosition).andThen(Commands.waitUntil(this::atPosition));
   }
 
-  public Command stationIntakePosCommand(Supplier<Translation2d> robotPos, BooleanSupplier algae, BooleanSupplier altPos)
+  public ArmPos dualPosSelector(ArmPos def, ArmPos alt) 
+  {
+    return getRelativeTarget().relativeEquals(def) ? alt : def;
+  }
+
+  public Command stationIntakePosCommand(Supplier<Translation2d> robotPos, BooleanSupplier algae)
   {
     ArmPos armPos;
 
     if (algae.getAsBoolean())
       armPos = Presets.coralClawPosition.stbd();
-    else if (altPos.getAsBoolean())
-      armPos = Presets.coralIntakeAltPosition.stbd();
     else
-      armPos = Presets.coralIntakePosition.stbd();  
+      armPos = dualPosSelector(Presets.coralIntakePosition.stbd(), Presets.coralIntakeAltPosition.stbd());  
 
     if (robotPos.get().getX() > FieldUtils.fieldLength/2 ^ robotPos.get().getY() > FieldUtils.fieldWidth/2)
       armPos = armPos.port();  
@@ -469,9 +472,9 @@ public class Diffector extends SubsystemBase
     {
       case 4 -> portReefFace ? Presets.coral4Position.port()     : Presets.coral4Position.stbd();
 
-      case 3 -> portReefFace ? Presets.coral3Position.port()     : Presets.coral3Position.stbd();
+      case 3 -> {ArmPos armPos = dualPosSelector(Presets.coral3Position, Presets.coral3AltPosition); yield portReefFace ? armPos.port() : armPos.stbd();}
 
-      case 2 -> portReefFace ? Presets.coral2Position.port()     : Presets.coral2Position.stbd();
+      case 2 -> {ArmPos armPos = dualPosSelector(Presets.coral2Position, Presets.coral2AltPosition); yield portReefFace ? armPos.port() : armPos.stbd();}
 
       case 1 -> portReefFace ? Presets.coral1ClawPosition.port() : Presets.coral1ClawPosition.stbd();
 
