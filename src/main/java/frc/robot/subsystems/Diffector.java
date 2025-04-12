@@ -504,19 +504,17 @@ public class Diffector extends SubsystemBase
   @Override
   public void periodic() 
   { 
-    if (SD.CALIBRATE_DIFF.get())
+    if (SD.CALIBRATE_DIFF.button())
     {
       positionOveride(getMeasuredElevation(), getMeasuredAngle());
-      SD.CALIBRATE_DIFF.put(false);
     }
     
     if (SD.OVERRIDE.get())
     {
-      if (SD.CALIBRATE_DIFF_TARGET.get())
+      if (SD.CALIBRATE_DIFF_TARGET.button())
       {
         positionOveride(targetElevation, targetAngle);
         plannedPathPoints.clear();
-        SD.CALIBRATE_DIFF_TARGET.put(false);
       }
     }
 

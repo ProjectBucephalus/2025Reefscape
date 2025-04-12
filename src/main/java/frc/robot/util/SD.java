@@ -4,6 +4,8 @@
 
 package frc.robot.util;
 
+import java.util.Set;
+
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -71,25 +73,46 @@ public class SD
   public static final BooleanKey OVERRIDE = new BooleanKey("OVERIDE MODE", false);
   public static final BooleanKey CLIMB_OVERRIDE = new BooleanKey("Override Climber", false);
 
+  public static final BooleanKey IO_POSE_PATHFIND = new BooleanKey("Pathfind to selected Pose", false);
+  public static final DoubleKey IO_POSE_X = new DoubleKey("Pose X", 0.0);
+  public static final DoubleKey IO_POSE_Y = new DoubleKey("Pose Y", 0.0);
+  public static final DoubleKey IO_POSE_R = new DoubleKey("Pose Rotation", 0.0);
+
   public static void initOutputs()
   {
+    for 
+    (
+      BooleanKey key : 
+      Set.of
+      (
+        IO_LL_EXPOSURE_UP,
+        IO_LL_EXPOSURE_DOWN,
+        ROTATION_KNOWN,
+        OVERRIDE,
+        IO_PROCESS_AUTO,
+        IO_GEOFENCE,
+        CLIMB_OVERRIDE,
+        DIFF_ESTOP,
+        IO_BARGE_PROTECTION,
+        CALIBRATE_DIFF,
+        CALIBRATE_DIFF_TARGET,
+        IO_LL,
+        IO_POSE_PATHFIND
+      )
+    )
+    {
+      key.init();
+    }
+
     SD.IO_LL_EXPOSURE.init();
-    SD.IO_LL_EXPOSURE_UP.init();
-    SD.IO_LL_EXPOSURE_DOWN.init();
-    SD.ROTATION_KNOWN.init();
-    SD.OVERRIDE.init();
-    SD.IO_PROCESS_AUTO.init();
     SD.IO_AUTO.init();
-    SD.IO_GEOFENCE.init();
     SD.IO_ALGAE_HOLD.init();
-    SD.CLIMB_OVERRIDE.init();
-    SD.DIFF_ESTOP.init();
-    SD.IO_BARGE_PROTECTION.init();
-    SD.CALIBRATE_DIFF.init();
-    SD.CALIBRATE_DIFF_TARGET.init();
-    SD.IO_LL.init();
     SD.IO_LED_BRIGHTNESS.init();
     SD.IO_GEOFENCE_IMPACT.init();
+
+    SD.IO_POSE_X.init();
+    SD.IO_POSE_Y.init();
+    IO_POSE_R.init();
   }
 
   public static void initSwerveDisplay(CommandSwerveDrivetrain s_Swerve)
@@ -122,9 +145,29 @@ public class SD
     );
   }
 
+  public interface Key 
+  {
+    public Boolean get();
+
+    public void init();
+
+    public void put(boolean value);
+  }
+
   public record BooleanKey (String label, boolean defaultValue)
   {
-    public Boolean get() {return SmartDashboard.getBoolean(label, defaultValue);}
+    public boolean get() {return SmartDashboard.getBoolean(label, defaultValue);}
+
+    public boolean button() 
+    {
+      if (SmartDashboard.getBoolean(label, defaultValue)) 
+      {
+        put(false); 
+        return true;
+      } 
+      else 
+        {return false;}
+    }
 
     public void init() {SmartDashboard.putBoolean(label, defaultValue);}
 

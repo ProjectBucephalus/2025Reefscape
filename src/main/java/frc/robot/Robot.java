@@ -104,10 +104,9 @@ public class Robot extends TimedRobot
   {
     SD.STATE_PP_WARMUP.put(!warmupCommand.isScheduled());
 
-    if (SD.IO_PROCESS_AUTO.get())
+    if (SD.IO_PROCESS_AUTO.button())
     {
       autonomousCommand = robotContainer.getAutoCommand();
-      SD.IO_PROCESS_AUTO.put(false);
     }
 
     if (!allianceKnown) 

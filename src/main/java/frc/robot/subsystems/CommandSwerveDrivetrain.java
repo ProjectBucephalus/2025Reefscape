@@ -19,6 +19,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -33,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.util.SD;
 
 /**
  * Class that extends the Phoenix 6 SwerveDrivetrain class and implements
@@ -330,6 +332,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
       );
     }
     field.setRobotPose(RobotContainer.swerveState.Pose);
+    
+    field.getObject("Target Pose").setPose
+    (
+      SD.IO_POSE_X.get(), 
+      SD.IO_POSE_Y.get(), 
+      new Rotation2d(Units.degreesToRadians(SD.IO_POSE_R.get()))
+    );
   }
 
   private void startSimThread() 

@@ -93,15 +93,13 @@ public class Limelight extends SubsystemBase
 
   public int updateLimelightPipeline()
   {
-    if (SD.IO_LL_EXPOSURE_UP.get())
+    if (SD.IO_LL_EXPOSURE_UP.button())
     {
       SD.IO_LL_EXPOSURE.put(MathUtil.clamp(SD.IO_LL_EXPOSURE.get().intValue() + 1, 0, 7));
-      SD.IO_LL_EXPOSURE_UP.put(false);
     }
-    if (SD.IO_LL_EXPOSURE_DOWN.get())
+    if (SD.IO_LL_EXPOSURE_DOWN.button())
     {
       SD.IO_LL_EXPOSURE.put(MathUtil.clamp(SD.IO_LL_EXPOSURE.get().intValue() - 1, 0, 7));
-      SD.IO_LL_EXPOSURE_DOWN.put(false);
     }
     
     return SD.IO_LL_EXPOSURE.get().intValue();

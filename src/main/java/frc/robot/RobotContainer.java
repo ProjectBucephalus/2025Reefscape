@@ -4,8 +4,10 @@ import java.util.List;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -121,6 +123,7 @@ public class RobotContainer
     configureRumbleBindings();
     configureManualBindings();
     //configureTestBindings();
+    configurePoseFindBindings();
 
     s_Swerve.registerTelemetry(logger::telemeterize);
     initLED();
@@ -591,6 +594,27 @@ public class RobotContainer
     testing.povLeft().onTrue(s_Diffector.moveToCommand(new ArmPos(1, 270)));
   }
 
+  private void configurePoseFindBindings()
+  {
+    new Trigger(SD.IO_POSE_PATHFIND::button)
+      .onTrue
+      (
+        s_Swerve.defer
+        (
+          () -> AutoBuilder.pathfindToPose
+          (
+            new Pose2d
+            (
+              SD.IO_POSE_X.get(), 
+              SD.IO_POSE_Y.get(), 
+              new Rotation2d(Units.degreesToRadians(SD.IO_POSE_R.get()))
+            ), 
+            Constants.Auto.defaultConstraints
+          )
+        )
+      );
+  }
+
   private void initLED()
   { 
     portStatusLayer.setSegments(6);
@@ -885,6 +909,7 @@ public class RobotContainer
 
 //    allLEDsLayer.setPriority(-(allLEDsLayer.getPriority()));
   } 
+  
   public Command getAutoCommand()
   {
     // Gets the input string of command phrases, processes into a list of commands, and puts them into a sequential command group
