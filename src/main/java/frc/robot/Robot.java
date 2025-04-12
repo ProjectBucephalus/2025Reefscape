@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.commands.PathfindingCommand;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -49,6 +50,7 @@ public class Robot extends TimedRobot
     RobotContainer.io_LimelightStbd.setThrottle(0);
     RobotContainer.io_LimelightPort.setIMUMode(1);
     RobotContainer.io_LimelightStbd.setIMUMode(1);
+    SignalLogger.enableAutoLogging(false);
     SD.initOutputs();
   }
 
