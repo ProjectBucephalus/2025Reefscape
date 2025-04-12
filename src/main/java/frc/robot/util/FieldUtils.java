@@ -93,16 +93,18 @@ public class FieldUtils
     return nearestReefFace;
   }
 
-  public static Translation2d getNearestBargePoint(Translation2d robotPos)
+  public static int getNearestBargePoint(Translation2d robotPos)
   {
-    Translation2d nearestBargePoint;
+    int nearestBargePoint;
     ArrayList<Translation2d> localList =
     isRedAlliance() ? 
     FieldConstants.redBargePoints :
     FieldConstants.blueBargePoints;
-
-    nearestBargePoint = robotPos.nearest(localList); 
     
+    nearestBargePoint = localList.indexOf(robotPos.nearest(localList));
+
+    nearestBargePoint = (int)Conversions.wrap(nearestBargePoint, 1, 5);
+
     return nearestBargePoint;
   }
 

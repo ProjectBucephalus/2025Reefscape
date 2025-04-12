@@ -287,7 +287,7 @@ public class RobotContainer
     Triggers.scoreDriveTrigger.and(driver.povUp())   .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.CENTRE), driver.rightTrigger())));
     Triggers.scoreDriveTrigger.and(driver.povLeft()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.LEFT), driver.rightTrigger())));
     Triggers.scoreDriveTrigger.and(driver.povRight()).and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.RIGHT), driver.rightTrigger())));
-    Triggers.scoreDriveTrigger.and(driver.povDown()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getBargePathName(), driver.rightTrigger())));
+    Triggers.scoreDriveTrigger.and(driver.povDown()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.bargePathNameSup, driver.rightTrigger())));
 
     /* 
       * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed

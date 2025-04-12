@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.DpadOptions;
 import frc.robot.constants.Constants;
-import frc.robot.constants.FieldConstants;
 import frc.robot.constants.Constants.Auto.AutoMapping;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.AlgaeManipulator;
@@ -38,6 +37,8 @@ public class AutoUtils
   private static final PathConstraints defaultConstraints = Constants.Auto.defaultConstraints;
   private static final PathConstraints slowedConstraints = Constants.Auto.slowedConstraints;
   private static final PathConstraints stationConstraints = Constants.Auto.stationConstraints;
+
+  public static final Supplier<String> bargePathNameSup = () -> ("b" + FieldUtils.getNearestBargePoint(RobotContainer.swerveState.Pose.getTranslation())).toLowerCase();
 
   private static Translation2d prevEndPoint;
 
@@ -226,21 +227,6 @@ public class AutoUtils
     )
     .until(RobotContainer.driver.povCenter())
     .withName("PathfindAndFollow");
-  }
-
-  public static Supplier<String> getBargePathName()
-  {
-    return 
-    () ->
-    {
-      Translation2d nearestBargePoint = FieldUtils.getNearestBargePoint(RobotContainer.swerveState.Pose.getTranslation());
-
-      ArrayList<Translation2d> localList = FieldUtils.isRedAlliance() ? FieldConstants.redBargePoints : FieldConstants.blueBargePoints;
-  
-      int nearestBargePointNumber = localList.indexOf(nearestBargePoint) + 1;
-  
-      return ("b" + nearestBargePointNumber).toLowerCase();
-    };
   }
 
   public static Supplier<String> getReefPathName(DpadOptions dpadValue)
