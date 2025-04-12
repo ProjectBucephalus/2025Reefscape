@@ -101,9 +101,7 @@ public class FieldUtils
     FieldConstants.redBargePoints :
     FieldConstants.blueBargePoints;
     
-    nearestBargePoint = localList.indexOf(robotPos.nearest(localList));
-
-    nearestBargePoint = (int)Conversions.wrap(nearestBargePoint, 1, 5);
+    nearestBargePoint = localList.indexOf(robotPos.nearest(localList)) + 1;
 
     return nearestBargePoint;
   }
