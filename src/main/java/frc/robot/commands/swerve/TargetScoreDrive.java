@@ -41,19 +41,6 @@ public class TargetScoreDrive extends HeadingLockedDrive
 
       motionXY = new Translation2d(translationOut, strafeOut);
     }
-    else if 
-    (
-      FieldUtils.GeoFencing.reefBlue.getDistance(robotXY) <= Constants.Control.driveSnappingRange ||
-      FieldUtils.GeoFencing.reefRed.getDistance(robotXY) <= Constants.Control.driveSnappingRange
-    )
-    {
-      Translation2d motionTN = motionXY.rotateBy(targetHeading);
-      motionXY = new Translation2d
-      (
-        Math.abs(motionTN.getX()) < Math.abs(motionTN.getY()) ? 0 : motionTN.getX(),
-        Math.abs(motionTN.getY()) < Math.abs(motionTN.getX()) ? 0 : motionTN.getY()
-      ).rotateBy(targetHeading.unaryMinus());
-    }
     
     if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
   }
