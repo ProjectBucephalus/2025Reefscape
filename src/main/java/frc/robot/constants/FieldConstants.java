@@ -22,7 +22,7 @@ public class FieldConstants
 
   public static final ArrayList<Translation2d> redBargePoints = new ArrayList<Translation2d>(blueBargePoints)
   {{
-    forEach(point -> point.rotateAround(new Translation2d(FieldUtils.fieldLength / 2, FieldUtils.fieldWidth / 2), Rotation2d.k180deg));
+    forEach(point -> point.rotateAround(FieldUtils.fieldCentre, Rotation2d.k180deg));
   }};
 
   public static final ArrayList<Translation2d> blueClimbLineups = new ArrayList<Translation2d>()
@@ -34,7 +34,7 @@ public class FieldConstants
 
   public static final ArrayList<Translation2d> redClimbLineups = new ArrayList<Translation2d>(blueClimbLineups)
   {{
-    forEach(point -> point.rotateAround(new Translation2d(FieldUtils.fieldLength / 2, FieldUtils.fieldWidth / 2), Rotation2d.k180deg));
+    forEach(point -> point.rotateAround(FieldUtils.fieldCentre, Rotation2d.k180deg));
   }};
 
   public static final double coralStationRange = 0.6;

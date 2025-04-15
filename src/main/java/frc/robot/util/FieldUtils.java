@@ -21,6 +21,8 @@ public class FieldUtils
   /** Width of the field in the Y direction, metres */
   public static final double fieldWidth = 8.051;
 
+  public static final Translation2d fieldCentre = new Translation2d(fieldLength / 2, fieldWidth / 2);
+
   public static boolean isRedAlliance() 
   {
     Optional<Alliance> alliance = DriverStation.getAlliance();
@@ -59,7 +61,7 @@ public class FieldUtils
     if (isRedAlliance()) 
     {
       // reflect the pose around center point, flip both the X and Y position and rotation
-      return pose.rotateAround(new Translation2d(fieldLength/2, fieldWidth/2), Rotation2d.k180deg);
+      return pose.rotateAround(FieldUtils.fieldCentre, Rotation2d.k180deg);
     }
 
     // Blue or we don't know; return the original pose
