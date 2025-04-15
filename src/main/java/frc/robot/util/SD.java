@@ -107,7 +107,8 @@ public class SD
         CALIBRATE_DIFF,
         CALIBRATE_DIFF_TARGET,
         IO_LL,
-        IO_POSE_PATHFIND
+        IO_POSE_PATHFIND,
+        IO_DIFF_GOTO
       )
     )
     {
@@ -123,6 +124,8 @@ public class SD
     SD.IO_POSE_X.init();
     SD.IO_POSE_Y.init();
     IO_POSE_R.init();
+    IO_DIFF_ANGLE.init();
+    IO_DIFF_ELEVATION.init();
   }
 
   public static void initSwerveDisplay(CommandSwerveDrivetrain s_Swerve)
