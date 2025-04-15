@@ -32,6 +32,24 @@ import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
 
+/*
+ * PATH MOVER REFERENCE
+ * --------------------
+ * 
+ * From repo root (2025Reefscape\), run "./pathm" through vscode terminal. 
+ * 
+ * ARGUMENTS
+ * Pattern String(s) (string): Strings to match paths against. Seperate each string with a comma. 
+ *                             Matches any paths that start with an input string.
+ * Amount (float, signed):     How many meters, robot-relative, to move the path by.
+ *                             Positive values move the path forward robot relative, or left if sideways is true.
+ * Sideways (bool) (OPTIONAL): If true, moves the path sideways relative to the robot. 
+ *                             Moves path forward robot-relative if this arg is false, unspecified, or invalid.
+ * 
+ * EXAMPLE:
+ * ./pathm cl2,cr2 0.406
+ * Moves paths cl2 and cr2 0.406 meters, forward relative to the robot.
+ */
 public class AutoUtils 
 {
   private static final PathConstraints defaultConstraints = Constants.Auto.defaultConstraints;
