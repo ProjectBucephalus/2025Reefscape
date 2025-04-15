@@ -274,15 +274,7 @@ public class Triggers
 
   public static final Trigger headingLockLEDs = new Trigger
   (
-    () ->
-    {
-      return
-        cageDriveTrigger.getAsBoolean() ||
-        scoreDriveTrigger.getAsBoolean() ||
-        stationDriveTrigger.getAsBoolean() ||
-        processorDriveTrigger.getAsBoolean() ||
-        SD.STATE_DRIVE.get().equals("Heading Locked");
-    }
+    () -> SD.STATE_DRIVE.get().equals("Heading Locked")
   )
   .and(atCoralStationTrigger.negate());
 
