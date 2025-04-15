@@ -88,11 +88,11 @@ public class SD
   public static final DoubleKey IO_POSE_Y = new DoubleKey("Pose Y", 0.0);
   public static final DoubleKey IO_POSE_R = new DoubleKey("Pose Rotation", 0.0);
 
-  public static void initOutputs()
+  static
   {
     for 
     (
-      BooleanKey key : 
+      Initable key : 
       Set.of
       (
         IO_LL_EXPOSURE_UP,
@@ -108,24 +108,22 @@ public class SD
         CALIBRATE_DIFF_TARGET,
         IO_LL,
         IO_POSE_PATHFIND,
-        IO_DIFF_GOTO
+        IO_DIFF_GOTO,
+        IO_LL_EXPOSURE,
+        IO_AUTO,
+        IO_ALGAE_HOLD,
+        IO_LED_BRIGHTNESS,
+        IO_GEOFENCE_IMPACT,
+        IO_POSE_X,
+        IO_POSE_Y,
+        IO_POSE_R,
+        IO_DIFF_ANGLE,
+        IO_DIFF_ELEVATION
       )
     )
     {
       key.init();
     }
-
-    SD.IO_LL_EXPOSURE.init();
-    SD.IO_AUTO.init();
-    SD.IO_ALGAE_HOLD.init();
-    SD.IO_LED_BRIGHTNESS.init();
-    SD.IO_GEOFENCE_IMPACT.init();
-
-    SD.IO_POSE_X.init();
-    SD.IO_POSE_Y.init();
-    IO_POSE_R.init();
-    IO_DIFF_ANGLE.init();
-    IO_DIFF_ELEVATION.init();
   }
 
   public static void initSwerveDisplay(CommandSwerveDrivetrain s_Swerve)
@@ -158,16 +156,12 @@ public class SD
     );
   }
 
-  public interface Key 
+  public interface Initable
   {
-    public Boolean get();
-
     public void init();
-
-    public void put(boolean value);
   }
 
-  public record BooleanKey (String label, boolean defaultValue)
+  public record BooleanKey (String label, boolean defaultValue) implements Initable
   {
     public boolean get() {return SmartDashboard.getBoolean(label, defaultValue);}
 
@@ -187,7 +181,7 @@ public class SD
     public void put(boolean value) {SmartDashboard.putBoolean(label, value);}
   }
 
-  public record DoubleKey (String label, double defaultValue)
+  public record DoubleKey (String label, double defaultValue) implements Initable
   {
     public Double get() {return SmartDashboard.getNumber(label, defaultValue);}
 
@@ -196,7 +190,7 @@ public class SD
     public void put(double value) {SmartDashboard.putNumber(label, value);}
   }
 
-  public record StringKey (String label, String defaultValue)
+  public record StringKey (String label, String defaultValue) implements Initable
   {
     public String get() {return SmartDashboard.getString(label, defaultValue);}
 

@@ -51,7 +51,6 @@ public class Robot extends TimedRobot
     RobotContainer.io_LimelightPort.setIMUMode(1);
     RobotContainer.io_LimelightStbd.setIMUMode(1);
     SignalLogger.enableAutoLogging(false);
-    SD.initOutputs();
   }
 
   /**
