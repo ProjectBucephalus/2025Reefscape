@@ -216,10 +216,12 @@ public class FieldUtils
       cornerNRed
     };
     
-    /** Radius from robot centre in metres where geofence is triggered */
+    /** Radius from robot centre in metres where geofence is triggered for slow movements */
     public static final double robotRadiusInscribed = 0.47;
-    /** Radius from robot centre in metres where geofence is triggered */
+    /** Radius from robot centre in metres where geofence is triggered for fast movements */
     public static final double robotRadiusCircumscribed = 0.7;
+    /** Radius from robot centre in metres where geofence is triggered for closer approaches */
+    public static final double robotRadiusMinimum = 0.25;
     /** Speed threshold at which the robot changes between radii, in meters per second*/
     public static final double robotSpeedThreshold = 1.5;
     
