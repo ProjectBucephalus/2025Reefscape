@@ -57,7 +57,7 @@ public class AlgaeManipulator extends SubsystemBase
 
   private void setCurrentLimitEnable(boolean currentLimit)
   {
-    m_Algae.getConfigurator().apply(algaeCurrentConfig.withStatorCurrentLimitEnable(currentLimit));
+    m_Algae.getConfigurator().apply(algaeCurrentConfig.withStatorCurrentLimitEnable(currentLimit).withStatorCurrentLimit(SD.IO_ALGAE_HOLD.get()));
   }
 
   public void setStatus(Status newStatus)

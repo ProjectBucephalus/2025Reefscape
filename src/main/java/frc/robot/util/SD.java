@@ -11,6 +11,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.MechanismConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 /** Simplified interface for most SmartDashboard interactions */
@@ -33,7 +34,7 @@ public class SD
   public static final StringKey  STATE_LED_HAL = new StringKey("LEDs Halo", "");
   public static final StringKey  STATE_LED_ALL = new StringKey("LEDs All", "");
 
-  public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Speed", 10);
+  public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Value", MechanismConstants.AlgaeConfigs.algaeHoldingCurrent);
   public static final BooleanKey IO_PROCESS_AUTO = new BooleanKey("Process Auto", false);
   public static final BooleanKey IO_GEOFENCE = new BooleanKey("Use Fence", true);
   public static final DoubleKey  IO_GEOFENCE_IMPACT = new DoubleKey("Fence Impact", 1);
@@ -68,6 +69,10 @@ public class SD
   public static final DoubleKey DIFF_DA_ER = new DoubleKey("DA Error", 0);  
   public static final DoubleKey DIFF_HEIGHT = new DoubleKey("Height over deck", 0);  
   public static final DoubleKey DIFF_ANGLE_ER = new DoubleKey("Offset", 0);
+
+  public static final DoubleKey  IO_DIFF_ELEVATION = new DoubleKey ("Manual Elevation Target", 1);
+  public static final DoubleKey  IO_DIFF_ANGLE     = new DoubleKey ("Manual Angle Target", 0);
+  public static final BooleanKey IO_DIFF_GOTO      = new BooleanKey("Arm To Manual Target", false);
 
   public static final StringKey RUMBLE_D_R = new StringKey("DriverRight Rumble Queue", "");
   public static final StringKey RUMBLE_D_L = new StringKey("DriverLeft Rumble Queue", "");

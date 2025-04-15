@@ -9,9 +9,10 @@ public class MechanismConstants
 {
   public static class AlgaeConfigs
   {
+    public static final double algaeHoldingCurrent = 40;
     public static final CurrentLimitsConfigs currentLimits = 
     new CurrentLimitsConfigs()
-      .withStatorCurrentLimit(40);
+      .withStatorCurrentLimit(algaeHoldingCurrent);
   }
 
   public static class ClimberConfigs

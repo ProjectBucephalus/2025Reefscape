@@ -123,7 +123,7 @@ public class RobotContainer
     configureRumbleBindings();
     configureManualBindings();
     //configureTestBindings();
-    configurePoseFindBindings();
+    configureSDButtonBindings();
 
     s_Swerve.registerTelemetry(logger::telemeterize);
     initLED();
@@ -594,7 +594,7 @@ public class RobotContainer
     testing.povLeft().onTrue(s_Diffector.moveToCommand(new ArmPos(1, 270)));
   }
 
-  private void configurePoseFindBindings()
+  private void configureSDButtonBindings()
   {
     new Trigger(SD.IO_POSE_PATHFIND::button)
       .onTrue
@@ -611,6 +611,15 @@ public class RobotContainer
             ), 
             Constants.Auto.defaultConstraints
           )
+        )
+      );
+
+    new Trigger(SD.IO_DIFF_GOTO::button)
+      .onTrue
+      (
+        s_Diffector.defer
+        (
+          () -> s_Diffector.moveToCommand(new ArmPos(SD.IO_DIFF_ELEVATION.get(), SD.IO_DIFF_ANGLE.get()))
         )
       );
   }
