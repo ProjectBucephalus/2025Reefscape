@@ -34,12 +34,25 @@ public class TargetScoreDrive extends HeadingLockedDrive
   @Override
   protected void applyTranslationDeadband() 
   {
-    if (MathUtil.isNear(robotXY.getX(), (FieldUtils.fieldLength / 2), Constants.Manipulators.algaeRange)) 
+    if (MathUtil.isNear(robotXY.getX(), (FieldUtils.fieldLength / 2), Constants.Control.driveSnappingRange)) 
     {
       double translationOut = Math.abs(translationVal) < Math.abs(strafeVal) ? 0 : translationVal;
       double strafeOut = Math.abs(strafeVal) < Math.abs(translationVal) ? 0 : strafeVal;
 
       motionXY = new Translation2d(translationOut, strafeOut);
+    }
+    else if 
+    (
+      FieldUtils.GeoFencing.reefBlue.getDistance(robotXY) <= Constants.Control.driveSnappingRange ||
+      FieldUtils.GeoFencing.reefRed.getDistance(robotXY) <= Constants.Control.driveSnappingRange
+    )
+    {
+      Translation2d motionTN = motionXY.rotateBy(targetHeading);
+      motionXY = new Translation2d
+      (
+        Math.abs(motionTN.getX()) < Math.abs(motionTN.getY()) ? 0 : motionTN.getX(),
+        Math.abs(motionTN.getY()) < Math.abs(motionTN.getX()) ? 0 : motionTN.getY()
+      ).rotateBy(targetHeading.unaryMinus());
     }
     
     if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}

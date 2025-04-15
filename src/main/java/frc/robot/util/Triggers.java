@@ -3,6 +3,8 @@ package frc.robot.util;
 import java.util.List;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.HeadingStates;
@@ -109,6 +111,8 @@ public class Triggers
       }
     )
     .or(homeReefZoneTrigger.and(() -> RobotContainer.algae));
+
+
   public static final Trigger bargeLEDs = new Trigger
   (
     () ->
@@ -144,7 +148,7 @@ public class Triggers
     () ->
     {
       ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coral3Positions = List.of(Presets.coral3Position).stream();
+      var coral3Positions = List.of(Presets.coral3Position, Presets.coral3AltPosition).stream();
       return
       coral3Positions.anyMatch(relativeTarget::relativeEquals);
     }
@@ -164,7 +168,7 @@ public class Triggers
     () ->
     {
       ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coralIntakePositions = List.of(Presets.coralIntakePosition).stream();
+      var coralIntakePositions = List.of(Presets.coralIntakePosition, Presets.coralIntakeAltPosition).stream();
       return
       coralIntakePositions.anyMatch(relativeTarget::relativeEquals);
     }
@@ -184,7 +188,7 @@ public class Triggers
     () ->
     {
       ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coral2Positions = List.of(Presets.coral2Position).stream();
+      var coral2Positions = List.of(Presets.coral2Position, Presets.coral2AltPosition).stream();
       return
       coral2Positions.anyMatch(relativeTarget::relativeEquals);
     }
@@ -239,43 +243,49 @@ public class Triggers
       stowPositions.anyMatch(relativeTarget::relativeEquals);
     }
   );
-  public static final Trigger manualControlLEDs = new Trigger(
+  public static final Trigger manualControlLEDs = new Trigger
+  (
     () ->
     {
       return
-      RobotContainer.copilot.axisGreaterThan(5,0.8).getAsBoolean() ||
-      RobotContainer.copilot.axisGreaterThan(5,-0.8).getAsBoolean() ||
-      RobotContainer.copilot.axisGreaterThan(6,-0.8).getAsBoolean() ||
-      RobotContainer.copilot.axisGreaterThan(6,0.8).getAsBoolean();
+      RobotContainer.copilot.axisMagnitudeGreaterThan(5,0.3).getAsBoolean() ||
+      RobotContainer.copilot.axisMagnitudeGreaterThan(6,0.3).getAsBoolean();
     }
   );
   
 
-  public static final Trigger eStopLEDs = new Trigger(
+  public static final Trigger eStopLEDs = new Trigger
+  (
     () ->
     {
       return
       SD.DIFF_ESTOP.get();
     }
-  );
-  public static final Trigger manualDriveLEDs = new Trigger
+    );
+    
+  public static final Trigger manualDriveLEDs = unlockHeadingTrigger;
+  
+  public static final Trigger intakeFullLEDs = new Trigger
   (
-    () ->
-    {
-      return unlockHeadingTrigger.getAsBoolean();
+    () -> {
+      return atCoralStationTrigger.getAsBoolean() && (RobotContainer.coral || RobotContainer.algae);
     }
   );
+
   public static final Trigger headingLockLEDs = new Trigger
   (
     () ->
     {
       return
-      cageDriveTrigger.getAsBoolean() ||
-      scoreDriveTrigger.getAsBoolean() ||
-      stationDriveTrigger.getAsBoolean() ||
-      processorDriveTrigger.getAsBoolean();
+        cageDriveTrigger.getAsBoolean() ||
+        scoreDriveTrigger.getAsBoolean() ||
+        stationDriveTrigger.getAsBoolean() ||
+        processorDriveTrigger.getAsBoolean() ||
+        SD.STATE_DRIVE.get().equals("Heading Locked");
     }
-  );
+  )
+  .and(atCoralStationTrigger.negate());
+
   // public static final Trigger pathfindingLEDs = new Trigger
   // (
   //   () ->
@@ -306,13 +316,30 @@ public class Triggers
     {
       Translation2d robotPos = RobotContainer.swerveState.Pose.getTranslation();
       Translation2d nearestClimbLineup = 
-      FieldUtils.isRedAlliance() ? 
-      robotPos.nearest(FieldConstants.redClimbLineups)
-      :
-      robotPos.nearest(FieldConstants.blueClimbLineups);
+        FieldUtils.isRedAlliance() ? 
+          robotPos.nearest(FieldConstants.redClimbLineups)
+          :
+          robotPos.nearest(FieldConstants.blueClimbLineups);
       return
-      RobotContainer.s_Climber.climbReady() && RobotContainer.s_Diffector.climbReady() && RobotContainer.swerveState.Pose.getTranslation().getDistance(nearestClimbLineup) < Constants.Auto.atPosTolerance;
+        RobotContainer.s_Climber.climbReady() && 
+        RobotContainer.s_Diffector.climbReady() && 
+        RobotContainer.swerveState.Pose.getTranslation()
+          .getDistance(nearestClimbLineup) < Constants.Auto.atPosTolerance;
     }
   );
+
   public static final Trigger atCoralStationLEDs = atCoralStationTrigger;
+
+  public static final Trigger timerClimbLEDs = new Trigger
+  (
+    () -> {
+      return (DriverStation.isTeleop() && Math.floor(Timer.getMatchTime()) == Math.floor(SD.IO_CLIMB_WARNING.get()));
+    }
+  );
+
+  public static final Trigger pathFollowing = new Trigger
+    (() -> {return SD.STATE_DRIVE.get().equals("Following");});
+
+  public static final Trigger pathTarget = new Trigger
+    (() -> {return SD.STATE_DRIVE.get().equals("At Target");});
 }

@@ -14,6 +14,7 @@ import edu.wpi.first.math.MathUtil;
 import frc.robot.constants.Constants.Control;
 import frc.robot.constants.Constants.Swerve;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.util.SD;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ManualDrive extends SwerveCommandBase 
@@ -42,6 +43,9 @@ public class ManualDrive extends SwerveCommandBase
     rotationVal = rotationSup.getAsDouble();
     if (Math.abs(rotationVal) <= deadband) {rotationVal = 0;}
     rotationVal *= MathUtil.interpolate(Control.maxRotThrottle, Control.minRotThrottle, brakeVal);
+
+    if (motionXY.getNorm() != 0)
+      {SD.STATE_DRIVE.put("Manual");}
 
     s_Swerve.setControl
     (
