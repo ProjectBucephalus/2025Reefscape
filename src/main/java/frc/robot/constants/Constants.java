@@ -48,6 +48,7 @@ public final class Constants
     /** Scalar for braking effect of diffector arm being higher than 1m */
     public static final double armBrakeRate = 1.5;
     public static final double manualClimberScale = 1;
+    public static final double driveSnappingRange = 1.5;
   }
 
   public static final class Vision
