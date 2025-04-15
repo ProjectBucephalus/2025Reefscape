@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants.Swerve;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.util.SD;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class HeadingLockedDrive extends SwerveCommandBase 
@@ -57,6 +58,9 @@ public class HeadingLockedDrive extends SwerveCommandBase
 
     updateTargetHeading();
     updateRotationPID();
+
+    if (motionXY.getNorm() != 0)
+      {SD.STATE_DRIVE.put("Heading Locked");}
 
     s_Swerve.setControl
     (

@@ -21,12 +21,17 @@ public class SD
   public static final BooleanKey IO_LL_EXPOSURE_UP = new BooleanKey("Increase Exposure", false);
   public static final BooleanKey IO_LL_EXPOSURE_DOWN = new BooleanKey("Decrease Exposure", false);
   public static final DoubleKey  IO_LED_BRIGHTNESS = new DoubleKey("LED Brightness", 1);
+  public static final DoubleKey  IO_CLIMB_WARNING = new DoubleKey("Climb Warning Time", 30);
 
   public static final BooleanKey ROTATION_KNOWN = new BooleanKey("Rotation Known", false);
   public static final BooleanKey CALIBRATE_DIFF = new BooleanKey("Overide: Calibrate Arm", false);
   public static final BooleanKey CALIBRATE_DIFF_TARGET = new BooleanKey("Overide: Arm At Target", false);
 
   public static final StringKey  STATE_HEADING = new StringKey("Heading State", "");
+  
+  public static final StringKey  STATE_LED_BAR = new StringKey("LEDs Bar", "");
+  public static final StringKey  STATE_LED_HAL = new StringKey("LEDs Halo", "");
+  public static final StringKey  STATE_LED_ALL = new StringKey("LEDs All", "");
 
   public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Speed", 10);
   public static final BooleanKey IO_PROCESS_AUTO = new BooleanKey("Process Auto", false);

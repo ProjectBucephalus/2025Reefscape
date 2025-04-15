@@ -213,19 +213,34 @@ public class AutoUtils
     PathPlannerPath path = FieldUtils.loadPath(pathNameSup.get());
     BooleanSupplier atPathStart = () -> RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.atPosTolerance;
     
+    displayPose(path.getPathPoses().get(path.getPathPoses().size()-1));
+
     return 
-    Commands.either
+    Commands.runOnce(() -> {SD.STATE_DRIVE.put("Following");})
+    .andThen
     (
-      AutoBuilder.followPath(path), 
       Commands.either
       (
-        AutoBuilder.pathfindThenFollowPath(path, slowedConstraints), 
-        AutoBuilder.pathfindThenFollowPath(path, defaultConstraints), 
-        brakeSup
-      ),
-      atPathStart
+        AutoBuilder.followPath(path), 
+        Commands.either
+        (
+          AutoBuilder.pathfindThenFollowPath(path, slowedConstraints), 
+          AutoBuilder.pathfindThenFollowPath(path, defaultConstraints), 
+          brakeSup
+        ),
+        atPathStart
+      )
+      .until(RobotContainer.driver.povCenter())
+      .andThen
+      (
+        Commands.either
+        (
+          Commands.runOnce(() -> {SD.STATE_DRIVE.put("Heading Locked");}),
+          Commands.runOnce(() -> {SD.STATE_DRIVE.put("At Target");}),
+          RobotContainer.driver.povCenter()
+        )
+      )
     )
-    .until(RobotContainer.driver.povCenter())
     .withName("PathfindAndFollow");
   }
 
@@ -239,7 +254,7 @@ public class AutoUtils
       String pathName =
       switch (dpadValue) 
       {
-        case CENTRE -> "a" + nearestReefFace;
+        case CENTRE -> "a" + nearestReefFace; // TODO: Does this need 'break;'?
       
         case LEFT, RIGHT -> 
           {
@@ -367,5 +382,12 @@ public class AutoUtils
       s_Diffector.moveAndWaitCommand(target), 
       s_Algae.setStatusCommand(AlgaeManipulator.Status.EJECT)
     );
+  }
+
+  public static void displayPose(Pose2d pose)
+  {
+    SD.IO_POSE_X.put(pose.getX());
+    SD.IO_POSE_Y.put(pose.getY());
+    SD.IO_POSE_R.put(pose.getRotation().getDegrees());
   }
 }
