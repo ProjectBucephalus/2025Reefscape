@@ -256,12 +256,8 @@ public class Triggers
 
   public static final Trigger eStopLEDs = new Trigger
   (
-    () ->
-    {
-      return
-      SD.DIFF_ESTOP.get();
-    }
-    );
+    SD.DIFF_ESTOP::get
+  );
     
   public static final Trigger manualDriveLEDs = unlockHeadingTrigger;
   
