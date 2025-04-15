@@ -39,4 +39,15 @@ public class TargetCageDrive extends HeadingLockedDrive
     
     if (motionXY.getNorm() <= deadband) {motionXY = Translation2d.kZero;}
   }
+
+  @Override
+  protected void updateRobotRadius()
+  {
+    if (MathUtil.isNear(robotXY.getX(), (FieldUtils.fieldLength / 2), Constants.Control.driveSnappingRange))
+      {robotRadius = FieldUtils.GeoFencing.robotRadiusMinimum;}
+    else if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
+      {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
+    else
+      {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
+  }
 }
