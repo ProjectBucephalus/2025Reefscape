@@ -617,59 +617,59 @@ public class RobotContainer
 
   private void initLED()
   { 
-    portStatusLayer.setSegments(6);
-    portStatusLayer.setMode(Mode.STATICSEGMENT);
-    portStatusLayer.setStart(LEDStrip.portStatusStart);
-    portStatusLayer.setWidth(LEDStrip.portStatusWidth);
-    portStatusLayer.setType(LayerType.STATUS);
-    portStatusLayer.setPriority(1);
-    portStatusLayer.setColor(Color.kBlack, Color.kTeal);
-    portStatusLayer.setPeriod(0.2);
-    portStatusLayer.setBorder(false);
-    portStatusLayer.setReversed(true);
+    portStatusLayer.setSegments(6)
+      .setMode(Mode.STATICSEGMENT)
+      .setStart(LEDStrip.portStatusStart)
+      .setWidth(LEDStrip.portStatusWidth)
+      .setType(LayerType.STATUS)
+      .setPriority(1)
+      .setColor(Color.kBlack, Color.kTeal)
+      .setPeriod(0.2)
+      .setBorder(false)
+      .setReversed(true);
 
-    stbdStatusLayer.setSegments(6);
-    stbdStatusLayer.setMode(Mode.STATICSEGMENT);
-    stbdStatusLayer.setStart(LEDStrip.stbdStatusStart);
-    stbdStatusLayer.setWidth(LEDStrip.stbdStatusWidth);
-    stbdStatusLayer.setType(LayerType.STATUS);
-    stbdStatusLayer.setPriority(1);
-    stbdStatusLayer.setColor(Color.kBlack, Color.kTeal);
-    stbdStatusLayer.setPeriod(0.2);
-    stbdStatusLayer.setBorder(false);
+    stbdStatusLayer.setSegments(6)
+      .setMode(Mode.STATICSEGMENT)
+      .setStart(LEDStrip.stbdStatusStart)
+      .setWidth(LEDStrip.stbdStatusWidth)
+      .setType(LayerType.STATUS)
+      .setPriority(1)
+      .setColor(Color.kBlack, Color.kTeal)
+      .setPeriod(0.2)
+      .setBorder(false);
 
-    haloPortLayer.setStart(LEDStrip.portHaloStart);
-    haloPortLayer.setWidth(LEDStrip.portHaloWidth);
-    haloPortLayer.setMode(Mode.STATICSEGMENT);
-    haloPortLayer.setType(LayerType.SOLID);
-    haloPortLayer.setPeriod(0.2);
-    haloPortLayer.setPriority(1);
-    haloPortLayer.setColor(Color.kYellow, Color.kBlack);
-    haloPortLayer.setSegments(10);
-    haloPortLayer.setBorder(false);
-    haloPortLayer.setReversed(true);
+    haloPortLayer.setStart(LEDStrip.portHaloStart)
+      .setWidth(LEDStrip.portHaloWidth)
+      .setMode(Mode.STATICSEGMENT)
+      .setType(LayerType.SOLID)
+      .setPeriod(0.2)
+      .setPriority(1)
+      .setColor(Color.kYellow, Color.kBlack)
+      .setSegments(10)
+      .setBorder(false)
+      .setReversed(true);
 
-    haloStbdLayer.setStart(LEDStrip.stbdHaloStart);
-    haloStbdLayer.setWidth(LEDStrip.stbdHaloWidth);
-    haloStbdLayer.setMode(Mode.STATICSEGMENT);
-    haloStbdLayer.setType(LayerType.SOLID);
-    haloStbdLayer.setPeriod(0.2);
-    haloStbdLayer.setPriority(1);
-    haloStbdLayer.setColor(Color.kYellow, Color.kBlack);
-    haloStbdLayer.setSegments(10);
-    haloStbdLayer.setBorder(false);
+    haloStbdLayer.setStart(LEDStrip.stbdHaloStart)
+      .setWidth(LEDStrip.stbdHaloWidth)
+      .setMode(Mode.STATICSEGMENT)
+      .setType(LayerType.SOLID)
+      .setPeriod(0.2)
+      .setPriority(1)
+      .setColor(Color.kYellow, Color.kBlack)
+      .setSegments(10)
+      .setBorder(false);
 
-    allLEDsLayer.setMode(Mode.WHOLESTRIP);
-    allLEDsLayer.setType(LayerType.SOLID);
-    allLEDsLayer.setPriority(9);
-    allLEDsLayer.setColor(Color.kBlack, Color.kRed);
-    allLEDsLayer.setBorder(false);
+    allLEDsLayer.setMode(Mode.WHOLESTRIP)
+      .setType(LayerType.SOLID)
+      .setPriority(9)
+      .setColor(Color.kBlack, Color.kRed)
+      .setBorder(false);
 
-    io_Lights.addLayer(portStatusLayer);
-    io_Lights.addLayer(stbdStatusLayer);
-    io_Lights.addLayer(haloPortLayer);
-    io_Lights.addLayer(haloStbdLayer);
-    io_Lights.addLayer(allLEDsLayer);
+    io_Lights.addLayer(portStatusLayer)
+      .addLayer(stbdStatusLayer)
+      .addLayer(haloPortLayer)
+      .addLayer(haloStbdLayer)
+      .addLayer(allLEDsLayer);
 
     Triggers.bargeLEDs
       .onTrue

@@ -99,13 +99,13 @@ public class LightLayer
     }
   }
 
-  public void setSegments(int newSegments)
+  /**
+   * sets the number of segments for the STATUS and SCROLLER displayTypes.
+   * 
+   * <p> Note this operation is destructive of any currrent STATUS, all segments will be reset to 'off'
+   */
+  public LightLayer setSegments(int newSegments)
   {
-    /**
-     * sets the number of segments for the STATUS and SCROLLER displayTypes.
-     * 
-     * <p> Note this operation is destructive of any currrent STATUS, all segments will be reset to 'off'
-     */
     // redefine the arrays to new size
     segments = newSegments;
     statusOn = new Color[segments];
@@ -118,20 +118,25 @@ public class LightLayer
       statusOn[i] = colorOn;
       statusCol[i] = colorOff;
     }
+
+    return this;
   }
 
-  public void setProgress (double newProgress)
-    /**
-     * Set the progress value for PROGRESS displayType
-     * <p> valid values 0.0 - 1.0, values outside this range will be clamped.
-     */
-    {progress = newProgress;}
-
-  public void setReversed (boolean reverse)
+  /**
+   * Set the progress value for PROGRESS displayType
+   * <p> valid values 0.0 - 1.0, values outside this range will be clamped.
+   */
+  public LightLayer setProgress (double newProgress)
   {
-    /**
-     * Set whether the display for this layer should be reversed
-     */
+    progress = newProgress;
+    return this;
+  }
+
+  /**
+   * Set whether the display for this layer should be reversed
+   */
+  public LightLayer setReversed (boolean reverse)
+  {
     if ((reversed != reverse) && (displayType == LayerType.INDIVIDUAL))
     {
       // if the value is different, and the displayType is INDIVIDUAL, flip the current buffer.
@@ -144,23 +149,31 @@ public class LightLayer
       }
     }  
     reversed = reverse;
+
+    return this;
   }
 
-  public void setTarget (Translation2d newTarget)
-    /**
-     * set a new target location for the layer.
-     */
-    {target = newTarget;}
+  /**
+   * set a new target location for the layer.
+   */
+  public LightLayer setTarget (Translation2d newTarget)
+  {
+    target = newTarget;
+    return this;
+  }
 
-  public void setStart(int LEDStart)
-    /**
-     * Set the starting location (LED) for the layer
-     * <p> Note this value is relative to the start of the segment for Near/Far segment diplayModes
-     * and is unused for target/driver facing and wholestrip modes
-     */
-    {startSegment = LEDStart;}
+  /**
+   * Set the starting location (LED) for the layer
+   * <p> Note this value is relative to the start of the segment for Near/Far segment diplayModes
+   * and is unused for target/driver facing and wholestrip modes
+   */
+  public LightLayer setStart(int LEDStart)
+  {
+    startSegment = LEDStart;
+    return this;
+  }
 
-  public boolean setWidth (int newWidth)
+  public LightLayer setWidth (int newWidth)
   {
     /**
      * set new width (number of LED's) for this layer.
@@ -176,11 +189,6 @@ public class LightLayer
       {
         width = newWidth;
         tempBuff = new AddressableLEDBuffer(width);
-        return true;
-      }
-      else
-      {
-        return false;
       }
     }
     else
@@ -192,13 +200,10 @@ public class LightLayer
       {
         width = newWidth;
         tempBuff = new AddressableLEDBuffer(width);
-        return true;
-      }
-      else
-      {
-        return false;
       }
     }
+
+    return this;
   }
 
   public int getWidth()
@@ -208,14 +213,16 @@ public class LightLayer
 
     {return width;}
 
-  public void setPriority (int newPriority)
-    /**
-     * set new value for the layer priority.
-     * <p> Higher priority layers will be drawn on top of others.
-     * <p> A layer with negative priority will not be drawn.
-     */
-
-    {priority = newPriority;}
+  /**
+   * set new value for the layer priority.
+   * <p> Higher priority layers will be drawn on top of others.
+   * <p> A layer with negative priority will not be drawn.
+   */
+  public LightLayer setPriority (int newPriority)
+  {
+    priority = newPriority;
+    return this;
+  }
 
   public int getPriority()
     /**
@@ -232,7 +239,7 @@ public class LightLayer
 
     {return name;}
 
-  public void setMode (Mode newMode)
+  public LightLayer setMode (Mode newMode)
   {
     /**
      * Sets the displayMode for the layer
@@ -270,29 +277,35 @@ public class LightLayer
       width = LEDStrip.lightsLen;
       tempBuff = new AddressableLEDBuffer(width);
     }
+
+    return this;
   }
 
-  public void setPeriod (double newPeriod)
   /**
    * Sets the period of effects in seconds (time to repeat the pattern, or scroll the width of the segment)
    */
-  {period = newPeriod;}
-
-  public void setType (LayerType newType)
-    /**
-     * Sets the displayType for the layer.
-     */
-
-    {displayType = newType;}
-
-  public void setColor (Color front,Color back)
+  public LightLayer setPeriod (double newPeriod)
   {
-    /**
-     * Set the front/on and back/off Colors for the layer.
-     * 
-     * <p> Note that if called while in STATUS display type will overwrite individual status colours.
-     */
+    period = newPeriod;
+    return this;
+  }
 
+  /**
+   * Sets the displayType for the layer.
+   */
+  public LightLayer setType (LayerType newType)
+  {
+    displayType = newType;
+    return this;
+  }
+
+  /**
+   * Set the front/on and back/off Colors for the layer.
+   * 
+   * <p> Note that if called while in STATUS display type will overwrite individual status colours.
+   */
+  public LightLayer setColor (Color front,Color back)
+  {
     colorOn = front;
     colorOff = back;
     if (displayType == LayerType.STATUS)
@@ -308,23 +321,29 @@ public class LightLayer
           {statusCol[i] = colorOff;}
       }
     }
+
+    return this;
   }
 
-  public void setBorder (boolean borderState)
-    /**
-     * Set whether to draw a border for this layer (one LED on either end, in a different Color)
-     */
+  /**
+   * Set whether to draw a border for this layer (one LED on either end, in a different Color)
+   */
+  public LightLayer setBorder (boolean borderState)
+  {
+    drawBorder = borderState;
+    return this;
+  }
 
-    {drawBorder = borderState;}
+  /**
+   * Set the border Color for this layer.
+   */
+  public LightLayer setBorderColor (Color newBorder)
+  {
+    borderColor = newBorder;
+    return this;
+  }
 
-  public void setBorderColor (Color newBorder)
-    /**
-     * Set the border Color for this layer.
-     */
-
-    {borderColor = newBorder;}
-
-  public void setStatusColor (int index, Color on, Color off)
+  public LightLayer setStatusColor (int index, Color on, Color off)
   {
     /**
      * Set the on / off Colors for a STATUS indicator.
@@ -346,9 +365,11 @@ public class LightLayer
     {
       statusCol[index] = off;
     }
+
+    return this;
   }
 
-  public void setStatus (int index, boolean newStatus)
+  public LightLayer setStatus (int index, boolean newStatus)
   {
     /**
      * Set a STATUS indicator to off or on.
@@ -362,17 +383,19 @@ public class LightLayer
     {
       statusCol[index] = statusOff[index];
     }
+
+    return this;
   }
     
-  public boolean setLight (int num, int red, int green, int blue)
+  public LightLayer setLight (int num, int red, int green, int blue)
   {
     /**
      * Set an individual LED to Color (R,G,B)
      * <p> Will return false if displayType is not INDIVIDUAL, or if index is greater than width-1.
      */
 
-    if (displayType != LayerType.INDIVIDUAL) {return false;}
-    if (tempBuff.getLength()<num) {return false;}
+    if (displayType != LayerType.INDIVIDUAL) {return this;}
+    if (tempBuff.getLength()<num) {return this;}
     if (reversed)
     {
       tempBuff.setRGB((width - 1) - num, red, green, blue);
@@ -381,18 +404,18 @@ public class LightLayer
     {
       tempBuff.setRGB(num, red, green, blue);
     }
-    return true;
+    return this;
   }
 
-  public boolean setLight (int num, Color shade)
+  public LightLayer setLight (int num, Color shade)
   {
     /**
      * Set an individual LED to Color
      * <p> Will return false if displayType is not INDIVIDUAL, or if index is greater than width-1.
      */
 
-    if (displayType != LayerType.INDIVIDUAL) {return false;}
-    if (tempBuff.getLength()<num) {return false;}
+    if (displayType != LayerType.INDIVIDUAL) {return this;}
+    if (tempBuff.getLength()<num) {return this;}
     if (reversed)
     {
       tempBuff.setLED((width - 1) - num, shade);
@@ -401,7 +424,7 @@ public class LightLayer
     {
       tempBuff.setLED(num, shade);
     }
-    return true;
+    return this;
   }
 
   public Color adjustBrightness(Color inputColour)
