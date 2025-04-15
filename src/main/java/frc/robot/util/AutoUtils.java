@@ -96,7 +96,7 @@ public class AutoUtils
 
           if (FieldUtils.isRedAlliance()) 
           {
-            posTarget = posTarget.rotateAround(new Translation2d(FieldUtils.fieldLength / 2, FieldUtils.fieldWidth / 2), Rotation2d.k180deg);
+            posTarget = posTarget.rotateAround(FieldUtils.fieldCentre, Rotation2d.k180deg);
           }
 
           Translation2d finalPosTarget = posTarget;
@@ -232,7 +232,18 @@ public class AutoUtils
     PathPlannerPath path = FieldUtils.loadPath(pathNameSup.get());
     BooleanSupplier atPathStart = () -> RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.atPosTolerance;
     
-    displayPose(path.getPathPoses().get(path.getPathPoses().size()-1));
+    displayPose
+    (
+      path.getPathPoses().get(path.getPathPoses().size()-1)
+        .rotateAround
+        (
+          FieldUtils.fieldCentre, 
+          FieldUtils.isRedAlliance() ? 
+            Rotation2d.k180deg : 
+            Rotation2d.kZero
+        ),
+      (FieldUtils.isRedAlliance() ? path.getGoalEndState().flip() : path.getGoalEndState()).rotation()
+    );
 
     return 
     Commands.runOnce(() -> {SD.STATE_DRIVE.put("Following");})
@@ -403,10 +414,15 @@ public class AutoUtils
     );
   }
 
-  public static void displayPose(Pose2d pose)
+  public static void displayPose(Pose2d pose, Rotation2d rotation)
   {
     SD.IO_POSE_X.put(pose.getX());
     SD.IO_POSE_Y.put(pose.getY());
-    SD.IO_POSE_R.put(pose.getRotation().getDegrees());
+    SD.IO_POSE_R.put(rotation.getDegrees());
+  }
+
+  public static void displayPose(Pose2d pose) 
+  {
+    displayPose(pose, pose.getRotation());
   }
 }
