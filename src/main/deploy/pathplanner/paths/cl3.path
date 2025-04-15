@@ -3,52 +3,71 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.91,
-        "y": 6.46
+        "x": 0.9323218060431533,
+        "y": 6.547008178509772
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.7630536869268815,
-        "y": 6.662254248593737
+        "x": 0.7853754929700352,
+        "y": 6.749262427103509
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.76,
-        "y": 6.67
+        "x": 0.7273218060431534,
+        "y": 6.827008178509772
       },
       "prevControl": {
-        "x": 0.9069463130731186,
-        "y": 6.467745751406262
+        "x": 0.8742681191162716,
+        "y": 6.624753929916035
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
-  "pointTowardsZones": [],
-  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
     "maxAcceleration": 5.0,
-    "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 850.0,
+    "maxAngularVelocity": 720.0,
+    "maxVelocity": 3.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
-  "goalEndState": {
-    "velocity": 0,
-    "rotation": 36.0
+  "idealStartingState": {
+    "rotation": 36.0,
+    "velocity": 1.5
   },
+  "eventMarkers": [],
+  "useDefaultConstraints": true,
+  "pointTowardsZones": [],
+  "rotationTargets": [],
   "reversed": false,
   "folder": "Left Station Paths",
-  "idealStartingState": {
-    "velocity": 1.5,
+  "constraintZones": [],
+  "goalEndState": {
+    "velocity": 0.0,
     "rotation": 36.0
   },
-  "useDefaultConstraints": true
+  "eventMarkers": [],
+  "reversed": false,
+  "rotationTargets": [],
+  "useDefaultConstraints": true,
+  "globalConstraints": {
+    "maxAcceleration": 5.0,
+    "maxAngularAcceleration": 850.0,
+    "maxAngularVelocity": 720.0,
+    "maxVelocity": 3.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "folder": "Left Station Paths",
+  "constraintZones": [],
+  "idealStartingState": {
+    "rotation": 36.0,
+    "velocity": 1.5
+  },
+  "pointTowardsZones": []
 }

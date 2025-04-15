@@ -3,52 +3,71 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.845,
-        "y": 0.93
+        "x": 1.5892436054756105,
+        "y": 1.0277101966287396
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6980536869268816,
-        "y": 0.7277457514062633
+        "x": 1.4422972924024924,
+        "y": 0.8254559480350029
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.705,
-        "y": 0.73
+        "x": 1.3842436054756107,
+        "y": 0.7477101966287399
       },
       "prevControl": {
-        "x": 1.8519463130731182,
-        "y": 0.932254248593737
+        "x": 1.531189918548729,
+        "y": 0.9499644452224768
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
   "constraintZones": [],
-  "pointTowardsZones": [],
+  "reversed": false,
   "eventMarkers": [],
+  "folder": "Right Station Paths",
+  "useDefaultConstraints": true,
+  "rotationTargets": [],
+  "pointTowardsZones": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
     "maxAcceleration": 5.0,
-    "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 850.0,
+    "maxAngularVelocity": 720.0,
+    "maxVelocity": 3.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
-  "goalEndState": {
-    "velocity": 0,
-    "rotation": -36.0
-  },
-  "reversed": false,
-  "folder": "Right Station Paths",
   "idealStartingState": {
-    "velocity": 1.5,
+    "rotation": -36.0,
+    "velocity": 1.5
+  },
+  "goalEndState": {
+    "velocity": 0.0,
     "rotation": -36.0
   },
-  "useDefaultConstraints": true
+  "folder": "Right Station Paths",
+  "constraintZones": [],
+  "idealStartingState": {
+    "rotation": -36.0,
+    "velocity": 1.5
+  },
+  "useDefaultConstraints": true,
+  "globalConstraints": {
+    "maxAcceleration": 5.0,
+    "maxAngularAcceleration": 850.0,
+    "maxAngularVelocity": 720.0,
+    "maxVelocity": 3.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "pointTowardsZones": [],
+  "reversed": false,
+  "eventMarkers": [],
+  "rotationTargets": []
 }
