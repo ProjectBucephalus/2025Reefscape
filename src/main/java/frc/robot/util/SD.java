@@ -118,7 +118,11 @@ public class SD
         IO_POSE_Y,
         IO_POSE_R,
         IO_DIFF_ANGLE,
-        IO_DIFF_ELEVATION
+        IO_DIFF_ELEVATION,
+        IO_CLIMB_WARNING,
+        STATE_LED_BAR,
+        STATE_LED_HAL,
+        STATE_LED_ALL
       )
     )
     {
