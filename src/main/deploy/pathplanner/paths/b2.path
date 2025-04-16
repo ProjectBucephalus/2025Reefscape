@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.274,
+        "x": 7.224,
         "y": 6.615
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.733183829682197,
+        "x": 7.683183829682197,
         "y": 6.616985808712633
       },
       "isLocked": false,
@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 7.624,
+        "x": 7.574,
         "y": 6.615
       },
       "prevControl": {
-        "x": 7.313195572388288,
+        "x": 7.263195572388288,
         "y": 6.615787081839637
       },
       "nextControl": null,
@@ -28,27 +28,46 @@
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
-  "pointTowardsZones": [],
+  "idealStartingState": {
+    "rotation": -90.0,
+    "velocity": 0
+  },
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
     "maxAcceleration": 5.0,
-    "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 850.0,
+    "maxAngularVelocity": 720.0,
+    "maxVelocity": 3.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
+  "useDefaultConstraints": true,
+  "reversed": false,
+  "rotationTargets": [],
+  "pointTowardsZones": [],
+  "folder": "Barge Paths",
+  "constraintZones": [],
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": -90.0
   },
+  "pointTowardsZones": [],
+  "globalConstraints": {
+    "maxAcceleration": 5.0,
+    "maxAngularAcceleration": 850.0,
+    "maxAngularVelocity": 720.0,
+    "maxVelocity": 3.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "eventMarkers": [],
+  "rotationTargets": [],
   "reversed": false,
   "folder": "Barge Paths",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": -90.0
+    "rotation": -90.0,
+    "velocity": 0
   },
+  "constraintZones": [],
   "useDefaultConstraints": true
 }
