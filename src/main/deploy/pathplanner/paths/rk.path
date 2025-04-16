@@ -1,63 +1,44 @@
 {
-  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9,
-        "y": 5.565641016151377
+        "x": 3.787416697508023,
+        "y": 5.500641016151377
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.1959809863323105,
-        "y": 5.074566478747554
+        "x": 4.083397683840333,
+        "y": 5.009566478747554
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.069999999999999,
-        "y": 5.2706410161513775
+        "x": 3.9574166975080223,
+        "y": 5.205641016151377
       },
       "prevControl": {
-        "x": 3.905399679372146,
-        "y": 5.543727971238571
+        "x": 3.792816376880169,
+        "y": 5.478727971238571
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
-  "useDefaultConstraints": false,
-  "constraintZones": [],
-  "globalConstraints": {
-    "maxAcceleration": 3.75,
-    "maxAngularAcceleration": 850.0,
-    "maxAngularVelocity": 720.0,
-    "maxVelocity": 3.0,
-    "nominalVoltage": 12.0,
-    "unlimited": false
-  },
-  "reversed": false,
-  "pointTowardsZones": [],
-  "folder": "Reef Paths",
-  "idealStartingState": {
-    "rotation": -150.0,
-    "velocity": 0.1
-  },
-  "eventMarkers": [],
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -150.0
+    "rotation": 30.0
   },
+  "folder": "Reef Paths",
+  "version": "2025.0",
+  "constraintZones": [],
   "idealStartingState": {
-    "rotation": -150.0,
+    "rotation": 30.0,
     "velocity": 0.1
   },
   "eventMarkers": [],
-  "pointTowardsZones": [],
-  "constraintZones": [],
   "globalConstraints": {
     "maxAcceleration": 3.75,
     "maxAngularAcceleration": 850.0,
@@ -66,8 +47,8 @@
     "nominalVoltage": 12.0,
     "unlimited": false
   },
-  "reversed": false,
+  "rotationTargets": [],
   "useDefaultConstraints": false,
-  "folder": "Reef Paths",
-  "rotationTargets": []
+  "reversed": false,
+  "pointTowardsZones": []
 }

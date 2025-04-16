@@ -28,25 +28,7 @@
       "linkedName": null
     }
   ],
-  "pointTowardsZones": [],
-  "globalConstraints": {
-    "maxAcceleration": 3.75,
-    "maxAngularAcceleration": 850.0,
-    "maxAngularVelocity": 720.0,
-    "maxVelocity": 3.0,
-    "nominalVoltage": 12.0,
-    "unlimited": false
-  },
-  "reversed": false,
   "folder": "Reef Paths",
-  "rotationTargets": [],
-  "useDefaultConstraints": false,
-  "constraintZones": [],
-  "idealStartingState": {
-    "rotation": -90.0,
-    "velocity": 0.1
-  },
-  "eventMarkers": [],
   "goalEndState": {
     "velocity": 0.0,
     "rotation": -90.0

@@ -28,25 +28,6 @@
       "linkedName": null
     }
   ],
-  "idealStartingState": {
-    "rotation": -90.0,
-    "velocity": 0
-  },
-  "rotationTargets": [],
-  "pointTowardsZones": [],
-  "useDefaultConstraints": true,
-  "eventMarkers": [],
-  "globalConstraints": {
-    "maxAcceleration": 5.0,
-    "maxAngularAcceleration": 850.0,
-    "maxAngularVelocity": 720.0,
-    "maxVelocity": 3.0,
-    "nominalVoltage": 12.0,
-    "unlimited": false
-  },
-  "folder": "Barge Paths",
-  "constraintZones": [],
-  "reversed": false,
   "goalEndState": {
     "velocity": 0.0,
     "rotation": -90.0

@@ -28,25 +28,6 @@
       "linkedName": null
     }
   ],
-  "pointTowardsZones": [],
-  "useDefaultConstraints": true,
-  "rotationTargets": [],
-  "folder": "Left Station Paths",
-  "idealStartingState": {
-    "rotation": 36.0,
-    "velocity": 1.5
-  },
-  "globalConstraints": {
-    "maxAcceleration": 5.0,
-    "maxAngularAcceleration": 850.0,
-    "maxAngularVelocity": 720.0,
-    "maxVelocity": 3.0,
-    "nominalVoltage": 12.0,
-    "unlimited": false
-  },
-  "eventMarkers": [],
-  "constraintZones": [],
-  "reversed": false,
   "goalEndState": {
     "velocity": 0.0,
     "rotation": 36.0

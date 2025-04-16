@@ -1,60 +1,41 @@
 {
-  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6229999999999998,
-        "y": 5.405641016151378
+        "x": 3.510416697508023,
+        "y": 5.340641016151378
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.898884291527202,
-        "y": 4.918802083008583
+        "x": 3.786300989035225,
+        "y": 4.853802083008582
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.793,
-        "y": 5.110641016151377
+        "x": 3.680416697508023,
+        "y": 5.045641016151377
       },
       "prevControl": {
-        "x": 3.652294125549035,
-        "y": 5.358476495731244
+        "x": 3.539710823057058,
+        "y": 5.293476495731244
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "pointTowardsZones": [],
-  "rotationTargets": [],
-  "reversed": false,
-  "idealStartingState": {
-    "rotation": -150.0,
-    "velocity": 0.1
-  },
-  "folder": "Reef Paths",
-  "useDefaultConstraints": false,
-  "constraintZones": [],
-  "globalConstraints": {
-    "maxAcceleration": 3.75,
-    "maxAngularAcceleration": 850.0,
-    "maxAngularVelocity": 720.0,
-    "maxVelocity": 3.0,
-    "nominalVoltage": 12.0,
-    "unlimited": false
-  },
-  "eventMarkers": [],
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -150.0
+    "rotation": 30.0
   },
-  "eventMarkers": [],
-  "reversed": false,
   "useDefaultConstraints": false,
-  "rotationTargets": [],
+  "constraintZones": [],
+  "folder": "Reef Paths",
+  "pointTowardsZones": [],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxAcceleration": 3.75,
     "maxAngularAcceleration": 850.0,
@@ -64,10 +45,10 @@
     "unlimited": false
   },
   "idealStartingState": {
-    "rotation": -150.0,
+    "rotation": 30.0,
     "velocity": 0.1
   },
-  "pointTowardsZones": [],
-  "constraintZones": [],
-  "folder": "Reef Paths"
+  "reversed": false,
+  "rotationTargets": [],
+  "version": "2025.0"
 }

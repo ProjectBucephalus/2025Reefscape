@@ -1,59 +1,39 @@
 {
-  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
-        "x": 5.215999999999999,
-        "y": 2.5653589838486224
+        "x": 5.103416697508022,
+        "y": 2.5003589838486224
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.074988013403041,
-        "y": 2.8195082186775338
+        "x": 4.962404710911064,
+        "y": 2.754508218677534
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.045999999999999,
-        "y": 2.8603589838486223
+        "x": 4.933416697508022,
+        "y": 2.7953589838486224
       },
       "prevControl": {
-        "x": 5.158317096576369,
-        "y": 2.637009773380677
+        "x": 5.045733794084392,
+        "y": 2.5720097733806773
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "idealStartingState": {
-    "rotation": -150.0,
-    "velocity": 0.1
-  },
-  "globalConstraints": {
-    "maxAcceleration": 3.75,
-    "maxAngularAcceleration": 850.0,
-    "maxAngularVelocity": 720.0,
-    "maxVelocity": 3.0,
-    "nominalVoltage": 12.0,
-    "unlimited": false
-  },
-  "constraintZones": [],
-  "useDefaultConstraints": false,
-  "rotationTargets": [],
-  "eventMarkers": [],
-  "folder": "Reef Paths",
-  "pointTowardsZones": [],
-  "reversed": false,
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": -150.0
+    "rotation": 30.0
   },
-  "pointTowardsZones": [],
   "folder": "Reef Paths",
-  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
   "globalConstraints": {
     "maxAcceleration": 3.75,
     "maxAngularAcceleration": 850.0,
@@ -62,12 +42,13 @@
     "nominalVoltage": 12.0,
     "unlimited": false
   },
+  "version": "2025.0",
   "idealStartingState": {
-    "rotation": -150.0,
+    "rotation": 30.0,
     "velocity": 0.1
   },
-  "useDefaultConstraints": false,
-  "constraintZones": [],
   "eventMarkers": [],
-  "reversed": false
+  "useDefaultConstraints": false,
+  "reversed": false,
+  "rotationTargets": []
 }

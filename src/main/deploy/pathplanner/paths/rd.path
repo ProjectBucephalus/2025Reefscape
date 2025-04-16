@@ -1,60 +1,46 @@
 {
-  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9,
-        "y": 2.486358983848622
+        "x": 3.787416697508023,
+        "y": 2.551358983848622
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.038713408712464,
-        "y": 2.7422325152423133
+        "x": 3.926130106220487,
+        "y": 2.807232515242313
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.07,
-        "y": 2.781358983848622
+        "x": 3.957416697508023,
+        "y": 2.846358983848622
       },
       "prevControl": {
-        "x": 3.952793452601154,
-        "y": 2.560536373487178
+        "x": 3.840210150109177,
+        "y": 2.625536373487178
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "folder": "Reef Paths",
-  "rotationTargets": [],
-  "idealStartingState": {
-    "rotation": 150.0,
-    "velocity": 0.1
-  },
-  "useDefaultConstraints": false,
-  "pointTowardsZones": [],
-  "constraintZones": [],
-  "eventMarkers": [],
-  "globalConstraints": {
-    "maxAcceleration": 3.75,
-    "maxAngularAcceleration": 850.0,
-    "maxAngularVelocity": 720.0,
-    "maxVelocity": 3.0,
-    "nominalVoltage": 12.0,
-    "unlimited": false
-  },
-  "reversed": false,
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 150.0
+    "rotation": -30.0
   },
-  "useDefaultConstraints": false,
-  "reversed": false,
-  "constraintZones": [],
+  "pointTowardsZones": [],
+  "idealStartingState": {
+    "rotation": -30.0,
+    "velocity": 0.1
+  },
   "rotationTargets": [],
+  "version": "2025.0",
+  "reversed": false,
+  "eventMarkers": [],
+  "constraintZones": [],
   "globalConstraints": {
     "maxAcceleration": 3.75,
     "maxAngularAcceleration": 850.0,
@@ -63,11 +49,6 @@
     "nominalVoltage": 12.0,
     "unlimited": false
   },
-  "eventMarkers": [],
-  "folder": "Reef Paths",
-  "pointTowardsZones": [],
-  "idealStartingState": {
-    "rotation": 150.0,
-    "velocity": 0.1
-  }
+  "useDefaultConstraints": false,
+  "folder": "Reef Paths"
 }

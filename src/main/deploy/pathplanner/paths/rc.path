@@ -1,57 +1,42 @@
 {
-  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6229999999999998,
-        "y": 2.6463589838486223
+        "x": 3.510416697508023,
+        "y": 2.7113589838486223
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.9077598820926736,
-        "y": 3.1337774790483106
+        "x": 3.7951765796006964,
+        "y": 3.1987774790483106
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.793,
-        "y": 2.9413589838486223
+        "x": 3.680416697508023,
+        "y": 3.006358983848622
       },
       "prevControl": {
-        "x": 3.6437491194834495,
-        "y": 2.684833753840113
+        "x": 3.5311658169914724,
+        "y": 2.7498337538401127
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "eventMarkers": [],
-  "useDefaultConstraints": false,
-  "globalConstraints": {
-    "maxAcceleration": 3.75,
-    "maxAngularAcceleration": 850.0,
-    "maxAngularVelocity": 720.0,
-    "maxVelocity": 3.0,
-    "nominalVoltage": 12.0,
-    "unlimited": false
-  },
-  "pointTowardsZones": [],
-  "rotationTargets": [],
-  "reversed": false,
-  "folder": "Reef Paths",
-  "idealStartingState": {
-    "rotation": 150.0,
-    "velocity": 0.1
-  },
-  "constraintZones": [],
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 150.0
+    "rotation": -29.999999999999996
   },
-  "folder": "Reef Paths",
+  "rotationTargets": [],
+  "version": "2025.0",
+  "reversed": false,
+  "useDefaultConstraints": false,
+  "pointTowardsZones": [],
+  "constraintZones": [],
   "globalConstraints": {
     "maxAcceleration": 3.75,
     "maxAngularAcceleration": 850.0,
@@ -60,14 +45,10 @@
     "nominalVoltage": 12.0,
     "unlimited": false
   },
-  "reversed": false,
-  "rotationTargets": [],
-  "useDefaultConstraints": false,
-  "pointTowardsZones": [],
+  "folder": "Reef Paths",
+  "eventMarkers": [],
   "idealStartingState": {
-    "rotation": 150.0,
+    "rotation": -29.999999999999996,
     "velocity": 0.1
-  },
-  "constraintZones": [],
-  "eventMarkers": []
+  }
 }

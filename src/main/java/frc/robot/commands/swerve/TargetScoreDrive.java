@@ -72,12 +72,12 @@ public class TargetScoreDrive extends HeadingLockedDrive
 
           case 2:
             targetHeading = new Rotation2d(Units.degreesToRadians(60));
-            super.rotationOffset = this.rotationOffsetBase;
+            super.rotationOffset = this.rotationOffsetBase.unaryMinus();
             break;
 
           case 3:
             targetHeading = new Rotation2d(Units.degreesToRadians(120));
-            super.rotationOffset = this.rotationOffsetBase;
+            super.rotationOffset = this.rotationOffsetBase.unaryMinus();
             break;
 
           case 4:
@@ -87,12 +87,12 @@ public class TargetScoreDrive extends HeadingLockedDrive
 
           case 5:
             targetHeading = new Rotation2d(Units.degreesToRadians(-120));
-            super.rotationOffset = this.rotationOffsetBase.unaryMinus();
+            super.rotationOffset = this.rotationOffsetBase;
             break;
 
           case 6:
             targetHeading = new Rotation2d(Units.degreesToRadians(-60));
-            super.rotationOffset = this.rotationOffsetBase.unaryMinus();
+            super.rotationOffset = this.rotationOffsetBase;
             break;
             
           default:
