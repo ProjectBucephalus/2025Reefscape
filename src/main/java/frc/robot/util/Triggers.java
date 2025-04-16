@@ -330,4 +330,27 @@ public class Triggers
 
   public static final Trigger pathTarget = new Trigger
     (() -> {return SD.STATE_DRIVE.get().equals("At Target");});
+
+  public static final Trigger armAtTarget = new Trigger
+    (() -> RobotContainer.s_Diffector.atPosition());
+
+  public static final Trigger armAtReefCoral = new Trigger
+    (() -> {
+      return 
+      (
+        RobotContainer.s_Diffector.atRelativePosition(Presets.coral4Position) ||
+        RobotContainer.s_Diffector.atRelativePosition(Presets.coral3Position) ||
+        RobotContainer.s_Diffector.atRelativePosition(Presets.coral2Position) ||
+        RobotContainer.s_Diffector.atRelativePosition(Presets.coral1Position)
+      );
+    });
+
+  public static final Trigger armAtReefAlgae = new Trigger
+  (() -> {
+    return 
+    (
+      RobotContainer.s_Diffector.atRelativePosition(Presets.algae3Position) ||
+      RobotContainer.s_Diffector.atRelativePosition(Presets.algae2Position)
+    );
+  });
 }
