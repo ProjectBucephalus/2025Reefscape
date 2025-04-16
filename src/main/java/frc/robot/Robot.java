@@ -4,16 +4,23 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+
 import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.pathfinding.Pathfinding;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CoralManipulator;
@@ -36,8 +43,6 @@ public class Robot extends TimedRobot
 
   private Command warmupCommand;
 
-  private boolean allianceKnown = false;
-
   public Robot()
   {
     robotContainer = new RobotContainer();
@@ -51,6 +56,9 @@ public class Robot extends TimedRobot
     RobotContainer.io_LimelightPort.setIMUMode(1);
     RobotContainer.io_LimelightStbd.setIMUMode(1);
     SignalLogger.enableAutoLogging(false);
+
+    new Trigger(DriverStation.getAlliance()::isPresent)
+      .onTrue(Commands.runOnce(this::allianceInit));
   }
 
   /**
@@ -67,7 +75,7 @@ public class Robot extends TimedRobot
 
     if (robotPose.getX() <= 0.25 && robotPose.getY() <= 0.25) 
     {
-      if (allianceKnown && DriverStation.getAlliance().get() == Alliance.Blue)
+      if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue)
         RobotContainer.s_Swerve.resetPose(new Pose2d((FieldUtils.fieldLength/2) - 1.5, FieldUtils.fieldWidth/2, robotPose.getRotation()));
       else
         RobotContainer.s_Swerve.resetPose(new Pose2d((FieldUtils.fieldLength/2) + 1.5, FieldUtils.fieldWidth/2, robotPose.getRotation()));
@@ -106,16 +114,6 @@ public class Robot extends TimedRobot
     if (SD.IO_PROCESS_AUTO.button())
     {
       autonomousCommand = robotContainer.getAutoCommand();
-    }
-
-    if (!allianceKnown) 
-    {
-      if (DriverStation.getAlliance().isPresent()) 
-      {
-        allianceKnown = true;
-        if (DriverStation.getAlliance().get() == Alliance.Blue && !Limelight.rotationKnown) 
-          {RobotContainer.s_Swerve.getPigeon2().setYaw(180);}
-      }  
     }
   }
 
@@ -170,4 +168,15 @@ public class Robot extends TimedRobot
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+  private void allianceInit() 
+  {
+    ArrayList<Pair<Translation2d, Translation2d>> bargeObstacle = new ArrayList<Pair<Translation2d, Translation2d>>();
+    bargeObstacle.add(FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.redAllianceBargeDynamic : FieldUtils.GeoFencing.blueAllianceBargeDynamic);
+
+    Pathfinding.setDynamicObstacles(bargeObstacle, RobotContainer.swerveState.Pose.getTranslation());
+
+    if (DriverStation.getAlliance().get() == Alliance.Blue && !Limelight.rotationKnown) 
+      {RobotContainer.s_Swerve.getPigeon2().setYaw(180);}
+  }
 }
