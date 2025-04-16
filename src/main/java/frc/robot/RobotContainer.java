@@ -687,9 +687,9 @@ public class RobotContainer
         (() -> {
           SD.STATE_LED_BAR.put("net true");
           portStatusLayer.setStatus(5, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
           stbdStatusLayer.setStatus(5, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
         })
       )
       .onFalse
@@ -698,9 +698,9 @@ public class RobotContainer
         (() -> {
           SD.STATE_LED_BAR.put("net false");
           portStatusLayer.setStatus(5, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
           stbdStatusLayer.setStatus(5, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
         })
       );
 
@@ -735,9 +735,9 @@ public class RobotContainer
         (() -> {
           SD.STATE_LED_BAR.put("a3 true");
           portStatusLayer.setStatus(4, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
           stbdStatusLayer.setStatus(4, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
         })
       )
       .onFalse
@@ -746,9 +746,9 @@ public class RobotContainer
         (() -> {
           SD.STATE_LED_BAR.put("a3 false");
           portStatusLayer.setStatus(4, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
           stbdStatusLayer.setStatus(4, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
         })
       );
 
@@ -783,9 +783,9 @@ public class RobotContainer
         (() -> {
           SD.STATE_LED_BAR.put("a intake true");
           portStatusLayer.setStatus(3, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
           stbdStatusLayer.setStatus(3, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
         })
       )
       .onFalse
@@ -794,9 +794,9 @@ public class RobotContainer
         (() -> {
           SD.STATE_LED_BAR.put("a intake false");
           portStatusLayer.setStatus(3, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
           stbdStatusLayer.setStatus(3, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
         })
       );
 
@@ -831,9 +831,9 @@ public class RobotContainer
         (() -> {
           SD.STATE_LED_BAR.put("a2 true");
           portStatusLayer.setStatus(2, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
           stbdStatusLayer.setStatus(2, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
         })
       )
       .onFalse
@@ -842,9 +842,9 @@ public class RobotContainer
         (() -> {
           SD.STATE_LED_BAR.put("a2 false");
           portStatusLayer.setStatus(2, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
           stbdStatusLayer.setStatus(2, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
         })
       );
 
@@ -879,9 +879,9 @@ public class RobotContainer
         (() -> {
           SD.STATE_LED_BAR.put("a1 true");
           portStatusLayer.setStatus(1, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
           stbdStatusLayer.setStatus(1, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
         })
       )
       .onFalse
@@ -890,9 +890,9 @@ public class RobotContainer
         (() -> {
           SD.STATE_LED_BAR.put("a1 false");
           portStatusLayer.setStatus(1, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
           stbdStatusLayer.setStatus(1, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
         })
       );
 
@@ -927,9 +927,9 @@ public class RobotContainer
         (() -> {
           SD.STATE_LED_BAR.put("ground true");
           portStatusLayer.setStatus(0, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
           stbdStatusLayer.setStatus(0, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
         })
       )
       .onFalse
@@ -938,9 +938,9 @@ public class RobotContainer
         (() -> {
           SD.STATE_LED_BAR.put("ground false");
           portStatusLayer.setStatus(0, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
           stbdStatusLayer.setStatus(0, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
         })
       );
 
