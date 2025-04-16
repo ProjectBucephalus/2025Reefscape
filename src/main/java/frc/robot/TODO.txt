@@ -12,4 +12,4 @@
 (^) Barge scoring distance
 ( ) Cage auto-drive
 (*) LEDs 
-( ) Undo changes to navgrid, add temp-object over full half field at all times
+(-) Undo changes to navgrid, add temp-object over full half field at all times
