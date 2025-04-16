@@ -3,37 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9323218060431533,
-        "y": 1.504991821490228
+        "x": 0.9499553636119273,
+        "y": 1.5292623313214764
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.7853754929700352,
-        "y": 1.3027375728964912
+        "x": 0.8030090505388093,
+        "y": 1.3270080827277395
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.7273218060431534,
-        "y": 1.2249918214902282
+        "x": 0.7449553636119276,
+        "y": 1.2492623313214766
       },
       "prevControl": {
-        "x": 0.8742681191162718,
-        "y": 1.427246070083965
+        "x": 0.8919016766850459,
+        "y": 1.4515165799152134
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "idealStartingState": {
-    "rotation": -36.0,
-    "velocity": 1.5
-  },
-  "useDefaultConstraints": true,
-  "reversed": false,
+  "eventMarkers": [],
+  "rotationTargets": [],
+  "pointTowardsZones": [],
+  "constraintZones": [],
   "globalConstraints": {
     "maxAcceleration": 5.0,
     "maxAngularAcceleration": 850.0,
@@ -42,24 +40,23 @@
     "nominalVoltage": 12.0,
     "unlimited": false
   },
+  "idealStartingState": {
+    "rotation": -36.0,
+    "velocity": 1.5
+  },
+  "reversed": false,
   "folder": "Right Station Paths",
-  "pointTowardsZones": [],
-  "constraintZones": [],
-  "rotationTargets": [],
-  "eventMarkers": [],
+  "useDefaultConstraints": true,
   "goalEndState": {
     "velocity": 0.0,
     "rotation": -36.0
   },
-  "folder": "Right Station Paths",
-  "useDefaultConstraints": true,
-  "constraintZones": [],
-  "rotationTargets": [],
-  "eventMarkers": [],
   "idealStartingState": {
     "rotation": -36.0,
     "velocity": 1.5
   },
+  "useDefaultConstraints": true,
+  "rotationTargets": [],
   "pointTowardsZones": [],
   "globalConstraints": {
     "maxAcceleration": 5.0,
@@ -69,5 +66,8 @@
     "nominalVoltage": 12.0,
     "unlimited": false
   },
-  "reversed": false
+  "folder": "Right Station Paths",
+  "constraintZones": [],
+  "reversed": false,
+  "eventMarkers": []
 }

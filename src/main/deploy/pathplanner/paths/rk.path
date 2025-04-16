@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.92,
-        "y": 5.531
+        "x": 3.9,
+        "y": 5.565641016151377
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.215980986332311,
-        "y": 5.039925462596177
+        "x": 4.1959809863323105,
+        "y": 5.074566478747554
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.09,
-        "y": 5.236
+        "x": 4.069999999999999,
+        "y": 5.2706410161513775
       },
       "prevControl": {
-        "x": 3.925399679372146,
-        "y": 5.509086955087193
+        "x": 3.905399679372146,
+        "y": 5.543727971238571
       },
       "nextControl": null,
       "isLocked": false,
@@ -29,26 +29,45 @@
     }
   ],
   "rotationTargets": [],
+  "useDefaultConstraints": false,
   "constraintZones": [],
-  "pointTowardsZones": [],
-  "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
     "maxAcceleration": 3.75,
-    "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 850.0,
+    "maxAngularVelocity": 720.0,
+    "maxVelocity": 3.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
-  "goalEndState": {
-    "velocity": 0,
-    "rotation": -150.0
-  },
   "reversed": false,
+  "pointTowardsZones": [],
   "folder": "Reef Paths",
   "idealStartingState": {
-    "velocity": 0.1,
+    "rotation": -150.0,
+    "velocity": 0.1
+  },
+  "eventMarkers": [],
+  "goalEndState": {
+    "velocity": 0.0,
     "rotation": -150.0
   },
-  "useDefaultConstraints": false
+  "idealStartingState": {
+    "rotation": -150.0,
+    "velocity": 0.1
+  },
+  "eventMarkers": [],
+  "pointTowardsZones": [],
+  "constraintZones": [],
+  "globalConstraints": {
+    "maxAcceleration": 3.75,
+    "maxAngularAcceleration": 850.0,
+    "maxAngularVelocity": 720.0,
+    "maxVelocity": 3.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "reversed": false,
+  "useDefaultConstraints": false,
+  "folder": "Reef Paths",
+  "rotationTargets": []
 }

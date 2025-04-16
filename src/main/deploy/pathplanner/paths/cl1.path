@@ -3,41 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.5892436054756105,
-        "y": 7.024289803371261
+        "x": 1.6186328680902342,
+        "y": 6.983838953652513
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4422972924024924,
-        "y": 7.226544051964997
+        "x": 1.471686555017116,
+        "y": 7.18609320224625
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.3842436054756107,
-        "y": 7.30428980337126
+        "x": 1.4136328680902346,
+        "y": 7.263838953652512
       },
       "prevControl": {
-        "x": 1.5311899185487288,
-        "y": 7.102035554777523
+        "x": 1.5605791811633525,
+        "y": 7.061584705058776
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "reversed": false,
   "eventMarkers": [],
-  "folder": "Left Station Paths",
-  "pointTowardsZones": [],
   "useDefaultConstraints": true,
   "idealStartingState": {
     "rotation": 36.0,
     "velocity": 1.5
   },
-  "rotationTargets": [],
   "globalConstraints": {
     "maxAcceleration": 5.0,
     "maxAngularAcceleration": 850.0,
@@ -47,16 +43,21 @@
     "unlimited": false
   },
   "constraintZones": [],
+  "rotationTargets": [],
+  "reversed": false,
+  "folder": "Left Station Paths",
+  "pointTowardsZones": [],
   "goalEndState": {
     "velocity": 0.0,
     "rotation": 36.0
   },
+  "pointTowardsZones": [],
   "folder": "Left Station Paths",
-  "useDefaultConstraints": true,
-  "constraintZones": [],
+  "idealStartingState": {
+    "rotation": 36.0,
+    "velocity": 1.5
+  },
   "reversed": false,
-  "eventMarkers": [],
-  "rotationTargets": [],
   "globalConstraints": {
     "maxAcceleration": 5.0,
     "maxAngularAcceleration": 850.0,
@@ -65,9 +66,8 @@
     "nominalVoltage": 12.0,
     "unlimited": false
   },
-  "idealStartingState": {
-    "rotation": 36.0,
-    "velocity": 1.5
-  },
-  "pointTowardsZones": []
+  "rotationTargets": [],
+  "eventMarkers": [],
+  "constraintZones": [],
+  "useDefaultConstraints": true
 }
