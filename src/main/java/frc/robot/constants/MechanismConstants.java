@@ -43,7 +43,7 @@ public class MechanismConstants
   
   public static class DiffectorConfigs
   {    
-    public static final double motorStallCurrent = 160; // TODO: Tune this to the point that it will reliably prevent stalls
+    public static final double motorStallCurrent = 160;
 
     private static final double diffectorGearTeethIn  = 8;
     private static final double diffectorGearTeethOut = 60;

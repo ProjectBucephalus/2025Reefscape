@@ -76,7 +76,7 @@ public class CoralManipulator extends SubsystemBase
     switch(status)
     {
       case WIGGLE:
-        if (wiggleCounter < 6) //TODO count as constant
+        if (wiggleCounter < Constants.Manipulators.coralWiggleCount)
         {
           if (RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor())
           {

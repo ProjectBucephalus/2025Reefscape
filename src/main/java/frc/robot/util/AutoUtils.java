@@ -129,7 +129,7 @@ public class AutoUtils
             )
           );
 
-          commandList.add(Commands.waitSeconds(0.2)); //TODO: reduce delay?
+          commandList.add(Commands.waitSeconds(0.2));
 
           commandList.add(s_Coral.setStatusCommand(CoralManipulator.Status.DELIVERY_SMART));
           
@@ -161,7 +161,7 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, stationConstraints),
-              Commands.waitSeconds(0.15).andThen(s_Diffector.moveAndWaitCommand(armPos)) //TODO: reduce delay?
+              Commands.waitSeconds(0.15).andThen(s_Diffector.moveAndWaitCommand(armPos))
             )
           );
 
@@ -189,7 +189,7 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindToPose(nextPath.getStartingHolonomicPose().get(), defaultConstraints),
-              Commands.waitSeconds(0.25).andThen(autoMapValue.command.get()) //TODO: reduce delay?
+              Commands.waitSeconds(0.25).andThen(autoMapValue.command.get())
             )
           );
           commandList.add(AutoBuilder.followPath(nextPath));

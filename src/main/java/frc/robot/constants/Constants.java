@@ -94,7 +94,7 @@ public final class Constants
     public static final double initialHeading = 0;
 
     /* Drive PID Values */
-    public static final double driveKP = 5.4; //TODO: This must be tuned to specific robot
+    public static final double driveKP = 5.4;
     public static final double driveKI = 0.0;
     public static final double driveKD = 0.0;
 
@@ -219,13 +219,13 @@ public final class Constants
     public static class Presets
     {
       public static final ArmPos startPosition          = new ArmPos(0.616, 0);
-      public static final ArmPos climbSafePosition      = new ArmPos(DiffectorGeometry.safeElevation,  90); // TODO
+      public static final ArmPos climbSafePosition      = new ArmPos(DiffectorGeometry.safeElevation,  90);
       public static final ArmPos climbPosition          = new ArmPos(0.425, 90);
       public static final ArmPos netPosition            = new ArmPos(DiffectorGeometry.maxZ, 150, false);
       public static final ArmPos algae3Position         = new ArmPos(1.33,  90);
       public static final ArmPos algae2Position         = new ArmPos(0.90,  90);
       public static final ArmPos processorPosition      = new ArmPos(0.43,  90);
-      public static final ArmPos coral4Position         = new ArmPos(DiffectorGeometry.maxZ, 315); //TODO: confirm
+      public static final ArmPos coral4Position         = new ArmPos(DiffectorGeometry.maxZ, 315);
       public static final ArmPos coral3Position         = new ArmPos(1.08,  325);
       public static final ArmPos coral3AltPosition      = new ArmPos(1.165, 325);
       public static final ArmPos coral2Position         = new ArmPos(0.675, 325);
@@ -275,6 +275,8 @@ public final class Constants
 
   public static final class Manipulators 
   {
+    public static final int coralWiggleCount = 6;
+
     /* Coral manipulator speeds */
     public static final double coralLvl4DeliverySpeed = 0.25;
     public static final double coralDeliverySpeed     = 0.30;
