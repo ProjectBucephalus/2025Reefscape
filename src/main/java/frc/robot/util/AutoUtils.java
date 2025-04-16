@@ -152,7 +152,7 @@ public class AutoUtils
 
         case 'c':
           nextPath = FieldUtils.loadPath(Constants.Auto.autoMap.get(splitCommand).pathName);
-          ArmPos armPos = splitCommand.charAt(1) == 'r' ? Presets.coralIntakePosition.port() : Presets.coralIntakePosition.stbd();
+          ArmPos armPos = splitCommand.charAt(1) == 'r' ? Presets.coralIntakePosition.stbd() : Presets.coralIntakePosition.port();
 
           Pathfinding.setStartPosition(prevEndPoint);
 
