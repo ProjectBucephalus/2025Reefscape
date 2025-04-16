@@ -19,8 +19,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CoralManipulator;
@@ -42,6 +40,8 @@ public class Robot extends TimedRobot
   private Pose2d robotPose;
 
   private Command warmupCommand;
+  
+  private boolean allianceKnown = false;
 
   public Robot()
   {
@@ -56,9 +56,6 @@ public class Robot extends TimedRobot
     RobotContainer.io_LimelightPort.setIMUMode(1);
     RobotContainer.io_LimelightStbd.setIMUMode(1);
     SignalLogger.enableAutoLogging(false);
-
-    new Trigger(DriverStation.getAlliance()::isPresent)
-      .onTrue(Commands.runOnce(this::allianceInit));
   }
 
   /**
@@ -75,7 +72,7 @@ public class Robot extends TimedRobot
 
     if (robotPose.getX() <= 0.25 && robotPose.getY() <= 0.25) 
     {
-      if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue)
+      if (allianceKnown && DriverStation.getAlliance().get() == Alliance.Blue)
         RobotContainer.s_Swerve.resetPose(new Pose2d((FieldUtils.fieldLength/2) - 1.5, FieldUtils.fieldWidth/2, robotPose.getRotation()));
       else
         RobotContainer.s_Swerve.resetPose(new Pose2d((FieldUtils.fieldLength/2) + 1.5, FieldUtils.fieldWidth/2, robotPose.getRotation()));
@@ -114,6 +111,15 @@ public class Robot extends TimedRobot
     if (SD.IO_PROCESS_AUTO.button())
     {
       autonomousCommand = robotContainer.getAutoCommand();
+    }
+    
+    if (!allianceKnown) 
+    {
+      if (DriverStation.getAlliance().isPresent()) 
+      {
+        allianceKnown = true;
+        allianceInit();
+      }  
     }
   }
 
@@ -169,7 +175,7 @@ public class Robot extends TimedRobot
   @Override
   public void testPeriodic() {}
 
-  private void allianceInit() 
+  public static void allianceInit() 
   {
     ArrayList<Pair<Translation2d, Translation2d>> bargeObstacle = new ArrayList<Pair<Translation2d, Translation2d>>();
     bargeObstacle.add(FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.redAllianceBargeDynamic : FieldUtils.GeoFencing.blueAllianceBargeDynamic);
