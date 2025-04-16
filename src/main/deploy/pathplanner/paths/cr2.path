@@ -3,52 +3,71 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.2607827057593821,
-        "y": 1.2663510090594838
+        "x": 1.2784162633281562,
+        "y": 1.2906215188907322
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.1138363926862638,
-        "y": 1.064096760465747
+        "x": 1.131469950255038,
+        "y": 1.0883672702969953
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.055782705759382,
-        "y": 0.9863510090594839
+        "x": 1.0734162633281563,
+        "y": 1.0106215188907324
       },
       "prevControl": {
-        "x": 1.2027290188325004,
-        "y": 1.1886052576532207
+        "x": 1.2203625764012747,
+        "y": 1.2128757674844692
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
+  "reversed": false,
   "rotationTargets": [],
-  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
     "maxAcceleration": 5.0,
-    "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 850.0,
+    "maxAngularVelocity": 720.0,
+    "maxVelocity": 3.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
+  "folder": "Right Station Paths",
+  "idealStartingState": {
+    "rotation": -36.0,
+    "velocity": 1.5
+  },
+  "useDefaultConstraints": true,
+  "constraintZones": [],
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": -36.0
+  },
+  "constraintZones": [],
+  "globalConstraints": {
+    "maxAcceleration": 5.0,
+    "maxAngularAcceleration": 850.0,
+    "maxAngularVelocity": 720.0,
+    "maxVelocity": 3.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
   },
   "reversed": false,
   "folder": "Right Station Paths",
   "idealStartingState": {
-    "velocity": 1.5,
-    "rotation": -36.0
+    "rotation": -36.0,
+    "velocity": 1.5
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": true,
+  "rotationTargets": [],
+  "eventMarkers": [],
+  "pointTowardsZones": []
 }

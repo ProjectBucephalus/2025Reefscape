@@ -3,52 +3,71 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.92,
-        "y": 2.521
+        "x": 3.9,
+        "y": 2.486358983848622
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.058713408712465,
-        "y": 2.776873531393691
+        "x": 4.038713408712464,
+        "y": 2.7422325152423133
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.09,
-        "y": 2.816
+        "x": 4.07,
+        "y": 2.781358983848622
       },
       "prevControl": {
-        "x": 3.972793452601154,
-        "y": 2.5951773896385557
+        "x": 3.952793452601154,
+        "y": 2.560536373487178
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
+  "folder": "Reef Paths",
   "rotationTargets": [],
-  "constraintZones": [],
+  "idealStartingState": {
+    "rotation": 150.0,
+    "velocity": 0.1
+  },
+  "useDefaultConstraints": false,
   "pointTowardsZones": [],
+  "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
     "maxAcceleration": 3.75,
-    "maxAngularVelocity": 720.0,
     "maxAngularAcceleration": 850.0,
+    "maxAngularVelocity": 720.0,
+    "maxVelocity": 3.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
-  "goalEndState": {
-    "velocity": 0,
-    "rotation": 150.0
-  },
   "reversed": false,
-  "folder": "Reef Paths",
-  "idealStartingState": {
-    "velocity": 0.1,
+  "goalEndState": {
+    "velocity": 0.0,
     "rotation": 150.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": false,
+  "reversed": false,
+  "constraintZones": [],
+  "rotationTargets": [],
+  "globalConstraints": {
+    "maxAcceleration": 3.75,
+    "maxAngularAcceleration": 850.0,
+    "maxAngularVelocity": 720.0,
+    "maxVelocity": 3.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "eventMarkers": [],
+  "folder": "Reef Paths",
+  "pointTowardsZones": [],
+  "idealStartingState": {
+    "rotation": 150.0,
+    "velocity": 0.1
+  }
 }

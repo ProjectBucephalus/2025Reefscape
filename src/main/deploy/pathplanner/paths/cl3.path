@@ -3,31 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.9323218060431533,
-        "y": 6.547008178509772
+        "x": 0.9617110686577768,
+        "y": 6.5065573287910246
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.7853754929700352,
-        "y": 6.749262427103509
+        "x": 0.8147647555846588,
+        "y": 6.708811577384761
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.7273218060431534,
-        "y": 6.827008178509772
+        "x": 0.756711068657777,
+        "y": 6.786557328791024
       },
       "prevControl": {
-        "x": 0.8742681191162716,
-        "y": 6.624753929916035
+        "x": 0.9036573817308952,
+        "y": 6.584303080197287
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
+  "useDefaultConstraints": true,
+  "rotationTargets": [],
+  "reversed": false,
+  "pointTowardsZones": [],
   "globalConstraints": {
     "maxAcceleration": 5.0,
     "maxAngularAcceleration": 850.0,
@@ -36,25 +40,24 @@
     "nominalVoltage": 12.0,
     "unlimited": false
   },
+  "eventMarkers": [],
+  "folder": "Left Station Paths",
+  "constraintZones": [],
   "idealStartingState": {
     "rotation": 36.0,
     "velocity": 1.5
   },
-  "eventMarkers": [],
-  "useDefaultConstraints": true,
-  "pointTowardsZones": [],
-  "rotationTargets": [],
-  "reversed": false,
-  "folder": "Left Station Paths",
-  "constraintZones": [],
   "goalEndState": {
     "velocity": 0.0,
     "rotation": 36.0
   },
   "eventMarkers": [],
   "reversed": false,
-  "rotationTargets": [],
   "useDefaultConstraints": true,
+  "idealStartingState": {
+    "rotation": 36.0,
+    "velocity": 1.5
+  },
   "globalConstraints": {
     "maxAcceleration": 5.0,
     "maxAngularAcceleration": 850.0,
@@ -63,11 +66,8 @@
     "nominalVoltage": 12.0,
     "unlimited": false
   },
-  "folder": "Left Station Paths",
+  "pointTowardsZones": [],
   "constraintZones": [],
-  "idealStartingState": {
-    "rotation": 36.0,
-    "velocity": 1.5
-  },
-  "pointTowardsZones": []
+  "rotationTargets": [],
+  "folder": "Left Station Paths"
 }
