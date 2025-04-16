@@ -125,7 +125,7 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.coralScorePosCommandUndeferredAllianceLocked(() -> prevEndPoint, Integer.parseInt(splitCommand.substring(2)))
+              Commands.waitSeconds(0.1).andThen(s_Diffector.coralScorePosCommandUndeferredAllianceLocked(() -> prevEndPoint, Integer.parseInt(splitCommand.substring(2))))
             )
           );
 
