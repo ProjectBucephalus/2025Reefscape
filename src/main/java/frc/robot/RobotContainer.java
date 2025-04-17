@@ -676,7 +676,7 @@ public class RobotContainer
       .setStart(0)
       .setWidth(LEDStrip.lightsLen)
       .setType(LayerType.SOLID)
-      .setPeriod(0.2)
+      .setPeriod(0.1)
       .setPriority(7)
       .setColor(Color.kBlack, Color.kRed)
       .setBorder(false);

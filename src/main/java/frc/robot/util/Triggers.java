@@ -2,6 +2,7 @@ package frc.robot.util;
 
 import java.util.List;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -321,7 +322,7 @@ public class Triggers
   public static final Trigger timerClimbLEDs = new Trigger
   (
     () -> {
-      return (DriverStation.isTeleop() && Math.floor(Timer.getMatchTime()) == Math.floor(SD.IO_CLIMB_WARNING.get()));
+      return (DriverStation.isTeleop() && MathUtil.isNear(Timer.getMatchTime(), SD.IO_CLIMB_WARNING.get(), 1));
     }
   );
 
