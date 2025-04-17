@@ -676,6 +676,7 @@ public class RobotContainer
       .setStart(0)
       .setWidth(LEDStrip.lightsLen)
       .setType(LayerType.SOLID)
+      .setPeriod(0.2)
       .setPriority(7)
       .setColor(Color.kBlack, Color.kRed)
       .setBorder(false);
@@ -1038,9 +1039,9 @@ public class RobotContainer
         (() -> {
           SD.STATE_LED_HAL.put("manual");
           haloPortLayer.setType(LayerType.SOLID);
-          haloPortLayer.setColor(Color.kRed,Color.kBlack);
+          haloPortLayer.setColor(Color.kPurple,Color.kBlack);
           haloStbdLayer.setType(LayerType.SOLID);
-          haloStbdLayer.setColor(Color.kRed,Color.kBlack);
+          haloStbdLayer.setColor(Color.kPurple,Color.kBlack);
         })
       );
 
@@ -1161,7 +1162,7 @@ public class RobotContainer
         Commands.runOnce
         (() -> {
           SD.STATE_LED_ALL.put("climb timer true");
-          allLEDsLayer.setType(LayerType.ALTERNATING);
+          allLEDsLayer.setType(LayerType.ALTERNATING).setColor(Color.kRed,new Color(1, 0, 0));
         })
       )
       .onFalse
@@ -1169,7 +1170,7 @@ public class RobotContainer
         Commands.runOnce
         (() -> {
           SD.STATE_LED_ALL.put("climb timer false");
-          allLEDsLayer.setType(LayerType.SOLID);
+          allLEDsLayer.setType(LayerType.SOLID).setColor(Color.kBlack,Color.kRed);
         })
       );
 
