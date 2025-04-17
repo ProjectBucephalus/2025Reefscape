@@ -19,8 +19,8 @@
         "y": 2.9553589838486225
       },
       "prevControl": {
-        "x": 5.335656812202968,
-        "y": 2.73957336467578
+        "x": 5.335656812202967,
+        "y": 2.7395733646757803
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,12 +31,8 @@
     "velocity": 0.0,
     "rotation": 30.0
   },
-  "rotationTargets": [],
-  "eventMarkers": [],
-  "folder": "Reef Paths",
   "constraintZones": [],
-  "version": "2025.0",
-  "reversed": false,
+  "rotationTargets": [],
   "globalConstraints": {
     "maxAcceleration": 3.75,
     "maxAngularAcceleration": 850.0,
@@ -45,10 +41,14 @@
     "nominalVoltage": 12.0,
     "unlimited": false
   },
+  "pointTowardsZones": [],
+  "version": "2025.0",
   "idealStartingState": {
     "rotation": 30.0,
     "velocity": 0.1
   },
-  "pointTowardsZones": [],
-  "useDefaultConstraints": false
+  "folder": "Reef Paths",
+  "useDefaultConstraints": false,
+  "reversed": false,
+  "eventMarkers": []
 }
