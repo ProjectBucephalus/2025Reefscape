@@ -635,7 +635,7 @@ public class RobotContainer
       .setStart(LEDStrip.portStatusStart)
       .setWidth(LEDStrip.portStatusWidth)
       .setType(LayerType.STATUS)
-      .setPriority(1)
+      .setPriority(5)
       .setColor(Color.kBlack, Color.kGreen)
       .setPeriod(0.2)
       .setBorder(false)
@@ -646,7 +646,7 @@ public class RobotContainer
       .setStart(LEDStrip.stbdStatusStart)
       .setWidth(LEDStrip.stbdStatusWidth)
       .setType(LayerType.STATUS)
-      .setPriority(1)
+      .setPriority(5)
       .setColor(Color.kBlack, Color.kGreen)
       .setPeriod(0.2)
       .setBorder(false);
@@ -656,7 +656,7 @@ public class RobotContainer
       .setMode(Mode.STATICSEGMENT)
       .setType(LayerType.SOLID)
       .setPeriod(0.2)
-      .setPriority(1)
+      .setPriority(5)
       .setColor(Color.kYellow, Color.kBlack)
       .setSegments(10)
       .setBorder(false)
@@ -667,14 +667,16 @@ public class RobotContainer
       .setMode(Mode.STATICSEGMENT)
       .setType(LayerType.SOLID)
       .setPeriod(0.2)
-      .setPriority(1)
+      .setPriority(5)
       .setColor(Color.kYellow, Color.kBlack)
       .setSegments(10)
       .setBorder(false);
 
     allLEDsLayer.setMode(Mode.WHOLESTRIP)
+      .setStart(0)
+      .setWidth(LEDStrip.lightsLen)
       .setType(LayerType.SOLID)
-      .setPriority(9)
+      .setPriority(7)
       .setColor(Color.kBlack, Color.kRed)
       .setBorder(false);
 
