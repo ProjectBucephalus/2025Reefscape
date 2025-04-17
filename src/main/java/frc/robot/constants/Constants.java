@@ -229,7 +229,7 @@ public final class Constants
       public static final ArmPos processorPosition      = new ArmPos(0.43,  90);
       public static final ArmPos coral4Position         = new ArmPos(DiffectorGeometry.maxZ, 315);
       public static final ArmPos coral3Position         = new ArmPos(1.08,  325);
-      public static final ArmPos coral3AltPosition      = new ArmPos(1.165, 325);
+      public static final ArmPos coral3AltPosition      = new ArmPos(1.16,  325);
       public static final ArmPos coral2Position         = new ArmPos(0.675, 325);
       public static final ArmPos coral2AltPosition      = new ArmPos(0.76,  325);
       public static final ArmPos coral1ClawPosition     = new ArmPos(DiffectorGeometry.algaeClawElevation,  76);
