@@ -442,7 +442,7 @@ public class Diffector extends SubsystemBase
   public Command algaeIntakePosCommand(Supplier<Translation2d> robotPos, boolean level2)
   {
     int nearestReefFace = FieldUtils.getNearestReefFace(robotPos.get());
-    boolean portReefFace = (nearestReefFace == 2 || nearestReefFace == 3);
+    boolean portReefFace = Presets.isPortReefFace.test(nearestReefFace);
 
     ArmPos target = 
     level2 
@@ -468,7 +468,7 @@ public class Diffector extends SubsystemBase
 
   public Command coralScorePosInstantCommand(Supplier<Translation2d> robotPos, int level, int nearestReefFace)
   {
-    boolean portReefFace = (nearestReefFace == 2 || nearestReefFace == 3);
+    boolean portReefFace = Presets.isPortReefFace.test(nearestReefFace);
 
     ArmPos target = 
     switch (level)

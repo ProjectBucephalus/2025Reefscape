@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.path.PathConstraints;
@@ -254,6 +255,8 @@ public final class Constants
         add(coral4Position);
         add(coral3Position);
       }};
+
+      public static final Predicate<Integer> isPortReefFace = (face) -> (face == 2 || face == 3);
     }
 
     /** Raw value when fully released, indicating string has snapped or the sensor is unavailable */

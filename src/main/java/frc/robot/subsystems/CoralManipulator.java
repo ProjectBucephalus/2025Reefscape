@@ -131,7 +131,7 @@ public class CoralManipulator extends SubsystemBase
         :
         Manipulators.coralDeliverySpeed;
 
-        if ((nearestReefFace == 2 || nearestReefFace == 3) ^ (armAngle > 90 && armAngle <= 270)) 
+        if (Presets.isPortReefFace.test(nearestReefFace) ^ (armAngle > 90 && armAngle <= 270)) 
           {speed = -speed;}
 
         m_Coral.set(speed);

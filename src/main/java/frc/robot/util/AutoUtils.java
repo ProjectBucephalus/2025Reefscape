@@ -397,7 +397,7 @@ public class AutoUtils
   public static Command ejectAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, Supplier<Translation2d> posSup)
   {
     int nearestReefFace = FieldUtils.getNearestReefFace(posSup.get());
-    boolean portReefFace = (nearestReefFace == 2 || nearestReefFace == 3);
+    boolean portReefFace = Presets.isPortReefFace.test(nearestReefFace);
 
     ArmPos target = 
     nearestReefFace % 2 == 0 
