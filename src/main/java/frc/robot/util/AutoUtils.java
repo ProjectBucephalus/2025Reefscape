@@ -169,7 +169,7 @@ public class AutoUtils
 
           commandList.add(s_Coral.setStatusCommand(CoralManipulator.Status.INTAKE));
           commandList.add(Commands.waitUntil(() -> RobotContainer.coral));
-          commandList.add(s_Diffector.moveToCommand(Presets.coralStowPosition));
+          commandList.add(s_Diffector.moveToCommand(Presets.algaeStowPosition));
           break;
 
         case 'a':
