@@ -439,8 +439,8 @@ public class RobotContainer
         (
           Commands.either
           (
-            s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPosition.stbd()), 
             s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPosition.port()), 
+            s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPosition.stbd()), 
             () -> swerveState.Pose.getX() >= 8.774
           )
           .withName("Processor"),
