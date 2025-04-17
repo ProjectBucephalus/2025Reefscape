@@ -439,9 +439,9 @@ public class RobotContainer
         (
           Commands.either
           (
-            s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPosition.port()), 
             s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPosition.stbd()), 
-            () -> swerveState.Pose.getX() >= 8.774
+            s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPosition.port()), 
+            () -> (swerveState.Pose.getX() >= 8.774 ^ FieldUtils.isRedAlliance())
           )
           .withName("Processor"),
           s_Diffector.coralScorePosCommand(1).withName("Coral1"), 
