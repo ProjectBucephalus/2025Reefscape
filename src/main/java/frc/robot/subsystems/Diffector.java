@@ -424,6 +424,16 @@ public class Diffector extends SubsystemBase
     return getRelativeTarget().relativeEquals(def) ? alt : def;
   }
 
+  public Command dualPosCommand(ArmPos def, ArmPos alt)
+  {
+    return Commands.either
+    (
+      moveToCommand(alt), 
+      moveToCommand(def), 
+      () -> getRelativeTarget().relativeEquals(def)
+    );
+  }
+
   public Command stationIntakePosCommand(Supplier<Translation2d> robotPos, BooleanSupplier algae)
   {
     ArmPos armPos;

@@ -441,8 +441,8 @@ public class RobotContainer
         (
           Commands.either
           (
-            s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPosition.stbd()), 
-            s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPosition.port()), 
+            s_Diffector.dualPosCommand(DiffectorConstants.Presets.processorPosition.stbd(), DiffectorConstants.Presets.processorPosition.port()), 
+            s_Diffector.dualPosCommand(DiffectorConstants.Presets.processorPosition.port(), DiffectorConstants.Presets.processorPosition.stbd()), 
             () -> (swerveState.Pose.getX() >= 8.774 ^ FieldUtils.isRedAlliance())
           )
           .withName("Processor"),
@@ -468,8 +468,8 @@ public class RobotContainer
       (
         Commands.either
         (
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePosition.port()), 
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePosition.stbd()), 
+          s_Diffector.dualPosCommand(DiffectorConstants.Presets.algaeIntakePosition.port(), DiffectorConstants.Presets.algaeIntakePosition.stbd()), 
+          s_Diffector.dualPosCommand(DiffectorConstants.Presets.algaeIntakePosition.stbd(), DiffectorConstants.Presets.algaeIntakePosition.port()), 
           () ->
           {
             double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
