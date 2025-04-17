@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.75,
+        "x": 7.0600000000000005,
         "y": 4.88
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.283826715027065,
+        "x": 7.593826715027063,
         "y": 4.88
       },
       "isLocked": false,
@@ -16,11 +16,11 @@
     },
     {
       "anchor": {
-        "x": 8.1,
+        "x": 7.58,
         "y": 4.88
       },
       "prevControl": {
-        "x": 7.85,
+        "x": 7.33,
         "y": 4.88
       },
       "nextControl": null,
@@ -28,12 +28,7 @@
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.95,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -47,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "Cage Paths",
