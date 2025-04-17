@@ -40,6 +40,7 @@ public class Limelight extends SubsystemBase
   public static boolean rotationKnown = false;
   private ArrayList<Double> rotationData = new ArrayList<Double>();
   private boolean lastCycleRotationKnown = false;
+  private final int mt1CyclesNeeded = 10;
 
   public enum TagPOI 
   {
@@ -63,7 +64,7 @@ public class Limelight extends SubsystemBase
   {
     mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
 
-    if (mt1 != null)
+    if (mt1 != null && mt1.avgTagDist < 4)
       {return mt1.pose.getRotation();}
     return Rotation2d.kZero;
   }
@@ -117,15 +118,15 @@ public class Limelight extends SubsystemBase
       {
         rotationData.add(0, getLimelightRotation().getDegrees());
   
-        if (rotationData.size() > 5)
-          {rotationData.remove(5);}
+        if (rotationData.size() > mt1CyclesNeeded)
+          {rotationData.remove(mt1CyclesNeeded);}
   
-        if (rotationData.size() == 5)
+        if (rotationData.size() == mt1CyclesNeeded)
         {
           double lowest = rotationData.get(0).doubleValue();
           double highest = rotationData.get(0).doubleValue();
           
-          for(int i = 1; i < 5; i++)
+          for(int i = 1; i < mt1CyclesNeeded; i++)
           {
             lowest = Math.min(lowest, rotationData.get(i).doubleValue());
             highest = Math.max(highest, rotationData.get(i).doubleValue());
