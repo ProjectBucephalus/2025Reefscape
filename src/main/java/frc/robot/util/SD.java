@@ -22,7 +22,7 @@ public class SD
   public static final BooleanKey IO_LL_EXPOSURE_UP = new BooleanKey("Increase Exposure", false);
   public static final BooleanKey IO_LL_EXPOSURE_DOWN = new BooleanKey("Decrease Exposure", false);
   public static final DoubleKey  IO_LED_BRIGHTNESS = new DoubleKey("LED Brightness", 1);
-  public static final DoubleKey  IO_CLIMB_WARNING = new DoubleKey("Climb Warning Time", 30);
+  public static final DoubleKey  IO_CLIMB_WARNING = new DoubleKey("Climb Warning Time", 25);
 
   public static final BooleanKey ROTATION_KNOWN = new BooleanKey("Rotation Known", false);
   public static final BooleanKey CALIBRATE_DIFF = new BooleanKey("Overide: Calibrate Arm", false);
