@@ -1162,7 +1162,7 @@ public class RobotContainer
         Commands.runOnce
         (() -> {
           SD.STATE_LED_ALL.put("climb timer true");
-          allLEDsLayer.setType(LayerType.ALTERNATING).setColor(Color.kRed,new Color(1, 0, 0));
+          allLEDsLayer.setType(LayerType.ALTERNATING).setColor(Color.kRed,new Color(50, 0, 0));
         })
       )
       .onFalse

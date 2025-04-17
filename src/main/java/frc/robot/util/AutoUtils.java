@@ -189,7 +189,7 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindToPose(nextPath.getStartingHolonomicPose().get(), defaultConstraints),
-              Commands.waitSeconds(0.25).andThen(autoMapValue.command.get())
+              Commands.waitSeconds(0.5).andThen(autoMapValue.command.get())
             )
           );
           commandList.add(AutoBuilder.followPath(nextPath));
