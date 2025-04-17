@@ -49,6 +49,7 @@ public final class Constants
     public static final double armBrakeRate = 1.5;
     public static final double manualClimberScale = 1;
     public static final double driveSnappingRange = 1.5;
+    public static final double cageFaceDistance = 1.5;
   }
 
   public static final class Vision
