@@ -152,6 +152,15 @@ public class FieldUtils
     public static final double wallBuffer = 0.5;
     /** Radius for the field walls in metres */
     public static final double wallRadius = 0.15;
+
+    /** Radius from robot centre in metres where geofence is triggered for slow movements */
+    public static final double robotRadiusInscribed = 0.47;
+    /** Radius from robot centre in metres where geofence is triggered for fast movements */
+    public static final double robotRadiusCircumscribed = 0.7;
+    /** Radius from robot centre in metres where geofence is triggered for closer approaches */
+    public static final double robotRadiusMinimum = 0.25;
+    /** Speed threshold at which the robot changes between radii, in meters per second*/
+    public static final double robotSpeedThreshold = 1.5;
     
     /** Inscribed diameter of the reef hexagon (i.e. distance between opposite faces) in metres */
     public static final double inscribedReefDiameter = 1.663;
@@ -159,6 +168,7 @@ public class FieldUtils
     public static final double circumscribedReefDiameter = 1.720;
     /** Circumscribed diameter of the reef zone hexagon (i.e. distance between opposite points) in metres */
     public static final double circumscribedReefZoneDiameter = 3;
+    public static final double penaltyReefZoneDiameter = circumscribedReefZoneDiameter + (robotRadiusInscribed * 2);
     
     /** Buffer zone for the reef in metres */
     public static final double reefBuffer = 0.5;
@@ -181,9 +191,9 @@ public class FieldUtils
     );
 
     public static final GeoFenceObject reefBlue      = new GeoFenceObject(4.489, 4.026, reefBuffer, circumscribedReefDiameter / 2, 0, 6);
-    public static final GeoFenceObject reefZoneBlue  = new GeoFenceObject(4.489, 4.026, reefBuffer, circumscribedReefZoneDiameter / 2, 0, 6);
+    public static final GeoFenceObject reefZoneBlue  = new GeoFenceObject(4.489, 4.026, reefBuffer, penaltyReefZoneDiameter / 2, 0, 6);
     public static final GeoFenceObject reefRed       = new GeoFenceObject(13.059, 4.026, reefBuffer, circumscribedReefDiameter / 2, 180, 6);
-    public static final GeoFenceObject reefZoneRed   = new GeoFenceObject(13.059, 4.026, reefBuffer, circumscribedReefZoneDiameter / 2, 180, 6);
+    public static final GeoFenceObject reefZoneRed   = new GeoFenceObject(13.059, 4.026, reefBuffer, penaltyReefZoneDiameter / 2, 180, 6);
     public static final GeoFenceObject bargeColumn   = new GeoFenceObject(8.774, 4.026, 0.25, 0.15);
     public static final GeoFenceObject bargeZoneBlue = new GeoFenceObject(8.190, 4.331, 9.358, fieldWidth, bargeBuffer, 0.1, ObjectTypes.box);
     public static final GeoFenceObject bargeZoneRed  = new GeoFenceObject(8.190, 3.721, 9.358, 0, bargeBuffer, 0.1, ObjectTypes.box);
@@ -217,15 +227,6 @@ public class FieldUtils
       cornerSRed, 
       cornerNRed
     };
-    
-    /** Radius from robot centre in metres where geofence is triggered for slow movements */
-    public static final double robotRadiusInscribed = 0.47;
-    /** Radius from robot centre in metres where geofence is triggered for fast movements */
-    public static final double robotRadiusCircumscribed = 0.7;
-    /** Radius from robot centre in metres where geofence is triggered for closer approaches */
-    public static final double robotRadiusMinimum = 0.25;
-    /** Speed threshold at which the robot changes between radii, in meters per second*/
-    public static final double robotSpeedThreshold = 1.5;
     
     public static final Pair<Translation2d, Translation2d> blueAllianceBargeDynamic = new Pair<Translation2d,Translation2d>(new Translation2d(8.19, 3.721), new Translation2d(9.358, 0));
     public static final Pair<Translation2d, Translation2d> redAllianceBargeDynamic = new Pair<Translation2d,Translation2d>(new Translation2d(8.19, 4.331), new Translation2d(9.358, fieldWidth));
