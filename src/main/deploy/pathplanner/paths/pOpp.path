@@ -28,27 +28,27 @@
       "linkedName": null
     }
   ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 850.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
   "goalEndState": {
     "velocity": 0.0,
     "rotation": 180.0
   },
-  "rotationTargets": [],
-  "folder": "Processor Paths",
   "reversed": false,
-  "useDefaultConstraints": true,
-  "pointTowardsZones": [],
-  "constraintZones": [],
-  "eventMarkers": [],
+  "folder": "Processor Paths",
   "idealStartingState": {
-    "rotation": 180.0,
-    "velocity": 0.25
+    "velocity": 0.25,
+    "rotation": 180.0
   },
-  "globalConstraints": {
-    "maxAcceleration": 5.0,
-    "maxAngularAcceleration": 850.0,
-    "maxAngularVelocity": 720.0,
-    "maxVelocity": 3.0,
-    "nominalVoltage": 12.0,
-    "unlimited": false
-  }
+  "useDefaultConstraints": true
 }

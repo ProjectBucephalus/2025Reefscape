@@ -123,7 +123,7 @@ public final class Constants
     /** m/s */
     public static final double pathplannerSlowedSpeed = 1.5;
     /** m/s^2 */
-    public static final double pathplannerMaxAcceleration = 4.0;
+    public static final double pathplannerMaxAcceleration = 3.5;
     /** m/s^2 */
     public static final double pathplannerStationAcceleration = 4.5;
     /** degrees/s */

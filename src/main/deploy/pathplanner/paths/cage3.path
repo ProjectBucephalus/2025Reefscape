@@ -1,4 +1,5 @@
 {
+  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
@@ -27,28 +28,27 @@
       "linkedName": null
     }
   ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 720.0,
+    "maxAngularAcceleration": 850.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
   "goalEndState": {
     "velocity": 0.0,
     "rotation": -90.0
   },
-  "version": "2025.0",
-  "rotationTargets": [],
-  "idealStartingState": {
-    "rotation": -90.0,
-    "velocity": 0.25
-  },
-  "globalConstraints": {
-    "maxAcceleration": 5.0,
-    "maxAngularAcceleration": 850.0,
-    "maxAngularVelocity": 720.0,
-    "maxVelocity": 3.0,
-    "nominalVoltage": 12.0,
-    "unlimited": false
-  },
-  "constraintZones": [],
+  "reversed": false,
   "folder": "Cage Paths",
-  "useDefaultConstraints": true,
-  "eventMarkers": [],
-  "pointTowardsZones": [],
-  "reversed": false
+  "idealStartingState": {
+    "velocity": 0.25,
+    "rotation": -90.0
+  },
+  "useDefaultConstraints": true
 }
