@@ -252,6 +252,10 @@ public final class Constants
       public static final ArrayList<ArmPos> highDiffectorPositions = new ArrayList<ArmPos>()
       {{
         add(netPosition);
+      }};
+
+      public static final ArrayList<ArmPos> teleOnlyHighDiffectorPositions = new ArrayList<ArmPos>()
+      {{
         add(coral4Position);
         add(coral3Position);
       }};
