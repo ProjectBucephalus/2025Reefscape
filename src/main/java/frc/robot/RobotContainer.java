@@ -254,7 +254,7 @@ public class RobotContainer
   private void configureAutoDriveBindings()
   {
     /* Heading lock state management */
-    Triggers.unlockHeadingTrigger.onTrue(Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED));
+    Triggers.unlockHeadingTrigger.or(driver.start()).onTrue(Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED));
     driver.y().onTrue(Commands.runOnce(() -> headingState = HeadingStates.CAGE_LOCK));
     driver.x().onTrue(Commands.runOnce(() -> headingState = HeadingStates.REEF_LOCK));
     driver.b().onTrue(Commands.runOnce(() -> headingState = HeadingStates.PROCESSOR_LOCK));
