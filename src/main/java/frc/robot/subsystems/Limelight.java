@@ -109,7 +109,7 @@ public class Limelight extends SubsystemBase
   }
 
   @Logged
-  private Pose3d getMT1Pose()
+  public Pose3d getMT1Pose()
     {return LimelightHelpers.getBotPose3d_wpiBlue(limelightName);}
 
   @Override
