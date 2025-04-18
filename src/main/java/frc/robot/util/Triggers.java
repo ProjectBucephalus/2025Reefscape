@@ -322,7 +322,7 @@ public class Triggers
   public static final Trigger timerClimbLEDs = new Trigger
   (
     () -> {
-      return (DriverStation.isTeleop() && MathUtil.isNear(Timer.getMatchTime(), SD.IO_CLIMB_WARNING.get(), 1));
+      return (DriverStation.isTeleop() && MathUtil.isNear(Timer.getMatchTime(), SD.IO_CLIMB_WARNING.get(), 2));
     }
   );
 
