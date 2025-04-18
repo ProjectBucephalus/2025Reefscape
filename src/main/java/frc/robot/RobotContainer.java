@@ -342,7 +342,7 @@ public class RobotContainer
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
           Rotation2d.kCW_90deg, 
-          Rotation2d.kCW_90deg,
+          new Rotation2d(Units.degreesToRadians(96)),
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
