@@ -58,7 +58,7 @@ public class Robot extends TimedRobot
     RobotContainer.io_LimelightStbd.setIMUMode(1);
     SignalLogger.enableAutoLogging(false);
 
-    DataLogManager.start("home/lvuser/logs"); //TODO confirm dir
+    DataLogManager.start("/home/lvuser/logs"); //TODO confirm dir
     DriverStation.startDataLog(DataLogManager.getLog());
   }
 
