@@ -126,6 +126,7 @@ public class RobotContainer
     configureManualBindings();
     //configureTestBindings();
     configureSDButtonBindings();
+    configureMiscBindings();
 
     s_Swerve.registerTelemetry(logger::telemeterize);
     initLED();
@@ -633,6 +634,16 @@ public class RobotContainer
         (
           () -> s_Diffector.moveToCommand(new ArmPos(SD.IO_DIFF_ELEVATION.get(), SD.IO_DIFF_ANGLE.get()))
         )
+      );
+  }
+
+  private void configureMiscBindings()
+  {
+    new Trigger(SD.DIFF_ESTOP::get)
+      .and(() -> DriverStation.isAutonomous())
+      .onTrue
+      (
+        Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> SD.DIFF_ESTOP.put(false)))
       );
   }
 
