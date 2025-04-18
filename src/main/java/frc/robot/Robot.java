@@ -14,6 +14,7 @@ import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -56,6 +57,9 @@ public class Robot extends TimedRobot
     RobotContainer.io_LimelightPort.setIMUMode(1);
     RobotContainer.io_LimelightStbd.setIMUMode(1);
     SignalLogger.enableAutoLogging(false);
+
+    DataLogManager.start("U/logs/"); //TODO confirm dir
+    DriverStation.startDataLog(DataLogManager.getLog());
   }
 
   /**

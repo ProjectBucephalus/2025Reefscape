@@ -309,12 +309,12 @@ public final class Constants
     public static final double safeWinchPos    = 3.9;
     public static final double startDrivePos   = 4.7;
     public static final double offGroundPos    = 2.5;
-    public static final double prepareWinchPos = 5.6; // TODO
-    public static final double climbWinchPos   = 2.0; // TODO
+    public static final double prepareWinchPos = 5.6;
+    public static final double climbWinchPos   = 2.0;
     /** The furthest into the robot the climber can attempt to go whilst balancing */
-    public static final double climbActiveInnerLimit = 1.7; // TODO
+    public static final double climbActiveInnerLimit = 1.7;
     /** The furthest out of the robot the climber can attempt to go whilst balancing */
-    public static final double climbActiveOuterLimit = 2.3; // TODO
+    public static final double climbActiveOuterLimit = 2.3;
     /** Ideal robot pitch when hanging, in degrees */
     public static final double targetRobotClimbPitch = 3; 
   }

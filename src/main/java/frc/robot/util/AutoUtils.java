@@ -284,7 +284,7 @@ public class AutoUtils
       String pathName =
       switch (dpadValue) 
       {
-        case CENTRE -> "a" + nearestReefFace; // TODO: Does this need 'break;'?
+        case CENTRE -> "a" + nearestReefFace;
       
         case LEFT, RIGHT -> 
           {
