@@ -10,6 +10,8 @@ import com.ctre.phoenix6.SignalLogger;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 
+import edu.wpi.first.epilogue.Epilogue;
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -32,6 +34,7 @@ import frc.robot.util.SD;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
+@Logged
 public class Robot extends TimedRobot 
 {
   private Command autonomousCommand;
@@ -58,8 +61,9 @@ public class Robot extends TimedRobot
     RobotContainer.io_LimelightStbd.setIMUMode(1);
     SignalLogger.enableAutoLogging(false);
 
-    DataLogManager.start("/home/lvuser/logs"); //TODO confirm dir
+    DataLogManager.start("/home/lvuser/logs");
     DriverStation.startDataLog(DataLogManager.getLog());
+    Epilogue.bind(this);
   }
 
   /**
