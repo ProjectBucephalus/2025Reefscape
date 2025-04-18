@@ -204,26 +204,20 @@ public class FieldUtils
     
     public static final GeoFenceObject[] fieldBlueGeoFence = 
     {
-      field, 
       reefBlue, 
       reefZoneRed, 
       bargeColumn, 
       bargeZoneRed,
       cornerSBlue, 
-      cornerNBlue, 
-      cornerSRed, 
-      cornerNRed
+      cornerNBlue
     };
 
     public static final GeoFenceObject[] fieldRedGeoFence = 
     {
-      field, 
       reefRed, 
       reefZoneBlue, 
       bargeColumn, 
       bargeZoneBlue,
-      cornerSBlue, 
-      cornerNBlue, 
       cornerSRed, 
       cornerNRed
     };

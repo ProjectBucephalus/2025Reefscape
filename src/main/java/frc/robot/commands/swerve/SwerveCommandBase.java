@@ -117,6 +117,12 @@ public abstract class SwerveCommandBase extends Command
           Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
           motionXY = inputDamping;
         }
+
+        if (SD.IO_OUTER_GEOFENCE.get())
+        {
+          Translation2d inputDamping = FieldUtils.GeoFencing.field.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
+          motionXY = inputDamping;
+        }
       } 
       
       // Uninvert processing output when on red alliance

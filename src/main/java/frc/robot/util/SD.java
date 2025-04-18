@@ -37,6 +37,7 @@ public class SD
   public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Value", MechanismConstants.AlgaeConfigs.algaeHoldingCurrent);
   public static final BooleanKey IO_PROCESS_AUTO = new BooleanKey("Process Auto", false);
   public static final BooleanKey IO_GEOFENCE = new BooleanKey("Use Fence", true);
+  public static final BooleanKey IO_OUTER_GEOFENCE = new BooleanKey("Wall Fence", true);
   public static final DoubleKey  IO_GEOFENCE_IMPACT = new DoubleKey("Fence Impact", 1);
   public static final StringKey  IO_AUTO = new StringKey("Auto Input", Constants.Auto.defaultAuto);
   public static final DoubleKey  IO_RUMBLE_D = new DoubleKey("Driver Rumble", Constants.RumblerConstants.driverDefault);
@@ -122,7 +123,8 @@ public class SD
         IO_CLIMB_WARNING,
         STATE_LED_BAR,
         STATE_LED_HAL,
-        STATE_LED_ALL
+        STATE_LED_ALL,
+        IO_OUTER_GEOFENCE
       )
     )
     {
