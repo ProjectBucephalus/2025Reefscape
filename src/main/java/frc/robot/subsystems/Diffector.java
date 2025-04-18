@@ -86,6 +86,12 @@ public class Diffector extends SubsystemBase
   private MechanismLigament2d displayArmCoral;
   private MechanismLigament2d displayArmAlgae;
 
+  private Mechanism2d diffectorTargetDisplay;
+  private MechanismRoot2d targetDisplayRoot;
+  private MechanismLigament2d targetDisplayElevator;
+  private MechanismLigament2d targetDisplayArmCoral;
+  private MechanismLigament2d targetDisplayArmAlgae;
+
   /** Creates a new Diffector. */
   public Diffector() 
   {
@@ -132,6 +138,13 @@ public class Diffector extends SubsystemBase
     displayElevator = displayRoot.append(new MechanismLigament2d("Elevator", elevation, 90));
     displayArmCoral = displayElevator.append(new MechanismLigament2d("ArmCoral", 0.5, angle));
     displayArmAlgae = displayArmCoral.append(new MechanismLigament2d("ArmAlgae", 1, 180));
+
+    diffectorTargetDisplay = new Mechanism2d(0.4, 2.5);
+    targetDisplayRoot = diffectorDisplay.getRoot("DiffectorBaseTarget", 0.2, 0);
+    targetDisplayElevator = displayRoot.append(new MechanismLigament2d("ElevatorTarget", targetElevation, 90));
+    targetDisplayArmCoral = displayElevator.append(new MechanismLigament2d("ArmCoralTarget", 0.5, targetAngle));
+    targetDisplayArmAlgae = displayArmCoral.append(new MechanismLigament2d("ArmAlgaeTarget", 1, 180));
+
     SmartDashboard.putData("Diffector", diffectorDisplay);
   }
 
