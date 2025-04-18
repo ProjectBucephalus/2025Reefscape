@@ -584,8 +584,16 @@ public class RobotContainer
     /* Copilot rumble bindings */
     io_copilotLeft.addRumbleTrigger("Intake Full", Triggers.copilotLeftRumbleTrigger);
     io_copilotRight.addRumbleTrigger("Diffector E-stopped", new Trigger(() -> SD.DIFF_ESTOP.get()));
-    new Trigger(() -> Timer.getMatchTime() <= 5 && DriverStation.isTeleop())
-      .onTrue(io_copilotRight.timedRequestCommand("Climb Alert", 1));
+    new Trigger(() -> Timer.getMatchTime() <= 6 && DriverStation.isTeleop())
+      .onTrue
+      (
+        Commands.sequence
+        (
+          io_copilotRight.requestCommand(true, "Climb Alert"),
+          Commands.waitUntil(copilot.start()),
+          io_copilotRight.requestCommand(false, "Climb Alert")
+        )
+      );
   }
 
   private void configureTestBindings()
