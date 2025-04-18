@@ -43,7 +43,7 @@ public class MechanismConstants
   
   public static class DiffectorConfigs
   {    
-    public static final double motorStallCurrent = 160;
+    public static final double motorStallCurrent = 180;
 
     private static final double diffectorGearTeethIn  = 8;
     private static final double diffectorGearTeethOut = 60;
