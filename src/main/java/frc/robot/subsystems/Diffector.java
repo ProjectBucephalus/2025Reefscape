@@ -18,6 +18,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -77,6 +80,12 @@ public class Diffector extends SubsystemBase
 
   private int calibrationCounter = 0;
 
+  private Mechanism2d diffectorDisplay;
+  private MechanismRoot2d displayRoot;
+  private MechanismLigament2d displayElevator;
+  private MechanismLigament2d displayArmCoral;
+  private MechanismLigament2d displayArmAlgae;
+
   /** Creates a new Diffector. */
   public Diffector() 
   {
@@ -117,6 +126,13 @@ public class Diffector extends SubsystemBase
 
     plannedPathPoints.clear();
     plannedPathPoints.add(targetPosition);
+
+    diffectorDisplay = new Mechanism2d(0.4, 2.5);
+    displayRoot = diffectorDisplay.getRoot("DiffectorBase", 0.2, 0);
+    displayElevator = displayRoot.append(new MechanismLigament2d("Elevator", elevation, 90));
+    displayArmCoral = displayElevator.append(new MechanismLigament2d("ArmCoral", 0.5, angle));
+    displayArmAlgae = displayArmCoral.append(new MechanismLigament2d("ArmAlgae", 1, 180));
+    SmartDashboard.putData("Diffector", diffectorDisplay);
   }
 
   /**
@@ -575,6 +591,9 @@ public class Diffector extends SubsystemBase
         m_DA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])));//.withSlot(getSlot()));
       }
     }
+    displayElevator.setLength(elevation);
+    displayArmCoral.setAngle(angle);
+
     SmartDashboard.putNumber("ua current", Math.abs(m_UA.getTorqueCurrent().getValueAsDouble()));
     SmartDashboard.putNumber("ua current", Math.abs(m_DA.getTorqueCurrent().getValueAsDouble()));
     SmartDashboard.putNumber("ua Speed", Math.abs(m_UA.getRotorVelocity().getValueAsDouble()));
