@@ -341,8 +341,8 @@ public class RobotContainer
           s_Swerve,
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
-          Rotation2d.kCW_90deg, 
-          new Rotation2d(Units.degreesToRadians(96)),
+          Rotation2d.kCW_90deg,
+          Rotation2d.kCW_90deg,
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
