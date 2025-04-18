@@ -8,9 +8,11 @@ import java.util.ArrayList;
 
 import com.ctre.phoenix6.Utils;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -105,6 +107,10 @@ public class Limelight extends SubsystemBase
     
     return SD.IO_LL_EXPOSURE.get().intValue();
   }
+
+  @Logged
+  private Pose3d getMT1Pose()
+    {return LimelightHelpers.getBotPose3d_wpiBlue(limelightName);}
 
   @Override
   public void periodic() 
