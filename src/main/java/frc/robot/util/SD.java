@@ -4,31 +4,40 @@
 
 package frc.robot.util;
 
+import java.util.Set;
+
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
+import frc.robot.constants.MechanismConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 /** Simplified interface for most SmartDashboard interactions */
 public class SD 
 {
   public static final BooleanKey IO_LL = new BooleanKey("Use Limelight", true);
-  public static final DoubleKey  IO_LL_EXPOSURE = new DoubleKey("Exposure Setting", 3);
+  public static final DoubleKey  IO_LL_EXPOSURE = new DoubleKey("Exposure Setting", 0);
   public static final BooleanKey IO_LL_EXPOSURE_UP = new BooleanKey("Increase Exposure", false);
   public static final BooleanKey IO_LL_EXPOSURE_DOWN = new BooleanKey("Decrease Exposure", false);
   public static final DoubleKey  IO_LED_BRIGHTNESS = new DoubleKey("LED Brightness", 1);
+  public static final DoubleKey  IO_CLIMB_WARNING = new DoubleKey("Climb Warning Time", 27);
 
-  public static final BooleanKey CALIBRATE_BOT_ROTATION = new BooleanKey("Rotation Known", false);
+  public static final BooleanKey ROTATION_KNOWN = new BooleanKey("Rotation Known", false);
   public static final BooleanKey CALIBRATE_DIFF = new BooleanKey("Overide: Calibrate Arm", false);
   public static final BooleanKey CALIBRATE_DIFF_TARGET = new BooleanKey("Overide: Arm At Target", false);
 
   public static final StringKey  STATE_HEADING = new StringKey("Heading State", "");
+  
+  public static final StringKey  STATE_LED_BAR = new StringKey("LEDs Bar", "");
+  public static final StringKey  STATE_LED_HAL = new StringKey("LEDs Halo", "");
+  public static final StringKey  STATE_LED_ALL = new StringKey("LEDs All", "");
 
-  public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Speed", 10);
+  public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Value", MechanismConstants.AlgaeConfigs.algaeHoldingCurrent);
   public static final BooleanKey IO_PROCESS_AUTO = new BooleanKey("Process Auto", false);
   public static final BooleanKey IO_GEOFENCE = new BooleanKey("Use Fence", true);
+  public static final BooleanKey IO_OUTER_GEOFENCE = new BooleanKey("Wall Fence", true);
   public static final DoubleKey  IO_GEOFENCE_IMPACT = new DoubleKey("Fence Impact", 1);
   public static final StringKey  IO_AUTO = new StringKey("Auto Input", Constants.Auto.defaultAuto);
   public static final DoubleKey  IO_RUMBLE_D = new DoubleKey("Driver Rumble", Constants.RumblerConstants.driverDefault);
@@ -62,6 +71,10 @@ public class SD
   public static final DoubleKey DIFF_HEIGHT = new DoubleKey("Height over deck", 0);  
   public static final DoubleKey DIFF_ANGLE_ER = new DoubleKey("Offset", 0);
 
+  public static final DoubleKey  IO_DIFF_ELEVATION = new DoubleKey ("Manual Elevation Target", 1);
+  public static final DoubleKey  IO_DIFF_ANGLE     = new DoubleKey ("Manual Angle Target", 0);
+  public static final BooleanKey IO_DIFF_GOTO      = new BooleanKey("Arm To Manual Target", false);
+
   public static final StringKey RUMBLE_D_R = new StringKey("DriverRight Rumble Queue", "");
   public static final StringKey RUMBLE_D_L = new StringKey("DriverLeft Rumble Queue", "");
   public static final StringKey RUMBLE_C_R = new StringKey("CopilotRight Rumble Queue", "");
@@ -71,25 +84,52 @@ public class SD
   public static final BooleanKey OVERRIDE = new BooleanKey("OVERIDE MODE", false);
   public static final BooleanKey CLIMB_OVERRIDE = new BooleanKey("Override Climber", false);
 
-  public static void initOutputs()
+  public static final BooleanKey IO_POSE_PATHFIND = new BooleanKey("Pathfind to selected Pose", false);
+  public static final DoubleKey IO_POSE_X = new DoubleKey("Pose X", 0.0);
+  public static final DoubleKey IO_POSE_Y = new DoubleKey("Pose Y", 0.0);
+  public static final DoubleKey IO_POSE_R = new DoubleKey("Pose Rotation", 0.0);
+
+  static
   {
-    SD.IO_LL_EXPOSURE.init();
-    SD.IO_LL_EXPOSURE_UP.init();
-    SD.IO_LL_EXPOSURE_DOWN.init();
-    SD.CALIBRATE_BOT_ROTATION.init();
-    SD.OVERRIDE.init();
-    SD.IO_PROCESS_AUTO.init();
-    SD.IO_AUTO.init();
-    SD.IO_GEOFENCE.init();
-    SD.IO_ALGAE_HOLD.init();
-    SD.CLIMB_OVERRIDE.init();
-    SD.DIFF_ESTOP.init();
-    SD.IO_BARGE_PROTECTION.init();
-    SD.CALIBRATE_DIFF.init();
-    SD.CALIBRATE_DIFF_TARGET.init();
-    SD.IO_LL.init();
-    SD.IO_LED_BRIGHTNESS.init();
-    SD.IO_GEOFENCE_IMPACT.init();
+    for 
+    (
+      Initable key : 
+      Set.of
+      (
+        IO_LL_EXPOSURE_UP,
+        IO_LL_EXPOSURE_DOWN,
+        ROTATION_KNOWN,
+        OVERRIDE,
+        IO_PROCESS_AUTO,
+        IO_GEOFENCE,
+        CLIMB_OVERRIDE,
+        DIFF_ESTOP,
+        IO_BARGE_PROTECTION,
+        CALIBRATE_DIFF,
+        CALIBRATE_DIFF_TARGET,
+        IO_LL,
+        IO_POSE_PATHFIND,
+        IO_DIFF_GOTO,
+        IO_LL_EXPOSURE,
+        IO_AUTO,
+        IO_ALGAE_HOLD,
+        IO_LED_BRIGHTNESS,
+        IO_GEOFENCE_IMPACT,
+        IO_POSE_X,
+        IO_POSE_Y,
+        IO_POSE_R,
+        IO_DIFF_ANGLE,
+        IO_DIFF_ELEVATION,
+        IO_CLIMB_WARNING,
+        STATE_LED_BAR,
+        STATE_LED_HAL,
+        STATE_LED_ALL,
+        IO_OUTER_GEOFENCE
+      )
+    )
+    {
+      key.init();
+    }
   }
 
   public static void initSwerveDisplay(CommandSwerveDrivetrain s_Swerve)
@@ -122,16 +162,32 @@ public class SD
     );
   }
 
-  public record BooleanKey (String label, boolean defaultValue)
+  public interface Initable
   {
-    public Boolean get() {return SmartDashboard.getBoolean(label, defaultValue);}
+    public void init();
+  }
+
+  public record BooleanKey (String label, boolean defaultValue) implements Initable
+  {
+    public boolean get() {return SmartDashboard.getBoolean(label, defaultValue);}
+
+    public boolean button() 
+    {
+      if (SmartDashboard.getBoolean(label, defaultValue)) 
+      {
+        put(false); 
+        return true;
+      } 
+      else 
+        {return false;}
+    }
 
     public void init() {SmartDashboard.putBoolean(label, defaultValue);}
 
     public void put(boolean value) {SmartDashboard.putBoolean(label, value);}
   }
 
-  public record DoubleKey (String label, double defaultValue)
+  public record DoubleKey (String label, double defaultValue) implements Initable
   {
     public Double get() {return SmartDashboard.getNumber(label, defaultValue);}
 
@@ -140,7 +196,7 @@ public class SD
     public void put(double value) {SmartDashboard.putNumber(label, value);}
   }
 
-  public record StringKey (String label, String defaultValue)
+  public record StringKey (String label, String defaultValue) implements Initable
   {
     public String get() {return SmartDashboard.getString(label, defaultValue);}
 

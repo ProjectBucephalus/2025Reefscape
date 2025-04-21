@@ -95,7 +95,14 @@ public class ArmCalculator
       return pathOutput;
     }
 
-    if (Presets.highDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals) && DriverStation.isTeleop())
+    if 
+    (
+      Presets.highDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals) || 
+      (
+        Presets.teleOnlyHighDiffectorPositions.stream().anyMatch(relativeTarget::relativeEquals) && 
+        DriverStation.isTeleop()
+      )
+    )
     { // Forced safe path for high scoring positions
       pathOutput.add(new ArmPos(Math.max(safeElevation, startPosition.getZ()), startPosition.getR()));
       if (MathUtil.isNear(relativeTarget.getR(), 180, 90))

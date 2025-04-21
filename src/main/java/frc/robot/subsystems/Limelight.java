@@ -8,8 +8,11 @@ import java.util.ArrayList;
 
 import com.ctre.phoenix6.Utils;
 
+import edu.wpi.first.epilogue.Logged;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -39,6 +42,7 @@ public class Limelight extends SubsystemBase
   public static boolean rotationKnown = false;
   private ArrayList<Double> rotationData = new ArrayList<Double>();
   private boolean lastCycleRotationKnown = false;
+  private final int mt1CyclesNeeded = 10;
 
   public enum TagPOI 
   {
@@ -62,7 +66,7 @@ public class Limelight extends SubsystemBase
   {
     mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
 
-    if (mt1 != null)
+    if (mt1 != null && mt1.avgTagDist < 4)
       {return mt1.pose.getRotation();}
     return Rotation2d.kZero;
   }
@@ -92,24 +96,26 @@ public class Limelight extends SubsystemBase
 
   public int updateLimelightPipeline()
   {
-    if (SD.IO_LL_EXPOSURE_UP.get())
+    if (SD.IO_LL_EXPOSURE_UP.button())
     {
       SD.IO_LL_EXPOSURE.put(MathUtil.clamp(SD.IO_LL_EXPOSURE.get().intValue() + 1, 0, 7));
-      SD.IO_LL_EXPOSURE_UP.put(false);
     }
-    if (SD.IO_LL_EXPOSURE_DOWN.get())
+    if (SD.IO_LL_EXPOSURE_DOWN.button())
     {
       SD.IO_LL_EXPOSURE.put(MathUtil.clamp(SD.IO_LL_EXPOSURE.get().intValue() - 1, 0, 7));
-      SD.IO_LL_EXPOSURE_DOWN.put(false);
     }
     
     return SD.IO_LL_EXPOSURE.get().intValue();
   }
 
+  @Logged
+  public Pose3d getMT1Pose()
+    {return LimelightHelpers.getBotPose3d_wpiBlue(limelightName);}
+
   @Override
   public void periodic() 
   { 
-    rotationKnown = SD.CALIBRATE_BOT_ROTATION.get();
+    rotationKnown = SD.ROTATION_KNOWN.get();
 
     if (!rotationKnown) 
     {
@@ -118,15 +124,15 @@ public class Limelight extends SubsystemBase
       {
         rotationData.add(0, getLimelightRotation().getDegrees());
   
-        if (rotationData.size() > 5)
-          {rotationData.remove(5);}
+        if (rotationData.size() > mt1CyclesNeeded)
+          {rotationData.remove(mt1CyclesNeeded);}
   
-        if (rotationData.size() == 5)
+        if (rotationData.size() == mt1CyclesNeeded)
         {
           double lowest = rotationData.get(0).doubleValue();
           double highest = rotationData.get(0).doubleValue();
           
-          for(int i = 1; i < 5; i++)
+          for(int i = 1; i < mt1CyclesNeeded; i++)
           {
             lowest = Math.min(lowest, rotationData.get(i).doubleValue());
             highest = Math.max(highest, rotationData.get(i).doubleValue());
@@ -135,7 +141,7 @@ public class Limelight extends SubsystemBase
           if (highest - lowest < 1)
           {
             rotationKnown = true;
-            SD.CALIBRATE_BOT_ROTATION.put(true);
+            SD.ROTATION_KNOWN.put(true);
             SmartDashboard.putNumber("limelight " + limelightName + " average rotation reading", (highest + lowest) / 2);
             RobotContainer.s_Swerve.getPigeon2().setYaw((highest + lowest) / 2);
           }
@@ -149,6 +155,7 @@ public class Limelight extends SubsystemBase
       {
         rotationData.clear();
         lastCycleRotationKnown = true;
+        RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
       }
     }
 

@@ -18,6 +18,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.RobotState;
+import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
+import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -77,6 +80,18 @@ public class Diffector extends SubsystemBase
 
   private int calibrationCounter = 0;
 
+  private Mechanism2d diffectorDisplay;
+  private MechanismRoot2d displayRoot;
+  private MechanismLigament2d displayElevator;
+  private MechanismLigament2d displayArmCoral;
+  private MechanismLigament2d displayArmAlgae;
+
+  private Mechanism2d diffectorTargetDisplay;
+  private MechanismRoot2d targetDisplayRoot;
+  private MechanismLigament2d targetDisplayElevator;
+  private MechanismLigament2d targetDisplayArmCoral;
+  private MechanismLigament2d targetDisplayArmAlgae;
+
   /** Creates a new Diffector. */
   public Diffector() 
   {
@@ -117,6 +132,21 @@ public class Diffector extends SubsystemBase
 
     plannedPathPoints.clear();
     plannedPathPoints.add(targetPosition);
+
+    diffectorDisplay = new Mechanism2d(0.4, 2.5);
+    displayRoot = diffectorDisplay.getRoot("DiffectorBase", 0.2, 0);
+    displayElevator = displayRoot.append(new MechanismLigament2d("Elevator", elevation, 90));
+    displayArmCoral = displayElevator.append(new MechanismLigament2d("ArmCoral", 0.5, angle));
+    displayArmAlgae = displayArmCoral.append(new MechanismLigament2d("ArmAlgae", 1, 180));
+
+    diffectorTargetDisplay = new Mechanism2d(0.4, 2.5);
+    targetDisplayRoot = diffectorTargetDisplay.getRoot("DiffectorBaseTarget", 0.2, 0);
+    targetDisplayElevator = targetDisplayRoot.append(new MechanismLigament2d("ElevatorTarget", targetElevation, 90));
+    targetDisplayArmCoral = targetDisplayElevator.append(new MechanismLigament2d("ArmCoralTarget", 0.5, targetAngle));
+    targetDisplayArmAlgae = targetDisplayArmCoral.append(new MechanismLigament2d("ArmAlgaeTarget", 1, 180));
+
+    SmartDashboard.putData("Diffector", diffectorDisplay);
+    SmartDashboard.putData("Diffector Target", diffectorTargetDisplay);
   }
 
   /**
@@ -312,7 +342,10 @@ public class Diffector extends SubsystemBase
   {
     return
       Math.abs(elevation - checkTarget.getZ()) < DiffectorGeometry.elevationTolerance &&
-      Math.abs(getRelativeRotation() - checkTarget.wrapped()) < DiffectorGeometry.angleTolerance;
+      (
+        Math.abs(getRelativeRotation() - checkTarget.wrapped()) < DiffectorGeometry.angleTolerance || 
+        Math.abs(getRelativeRotation() - checkTarget.flip()) < DiffectorGeometry.angleTolerance
+      );
   }
 
   /** Returns true if the diffector is safely in climb position */
@@ -416,19 +449,32 @@ public class Diffector extends SubsystemBase
     return moveToCommand(targetPosition).andThen(Commands.waitUntil(this::atPosition));
   }
 
-  public Command stationIntakePosCommand(Supplier<Translation2d> robotPos, BooleanSupplier algae, BooleanSupplier altPos)
+  public ArmPos dualPosSelector(ArmPos def, ArmPos alt) 
+  {
+    return getRelativeTarget().relativeEquals(def) ? alt : def;
+  }
+
+  public Command dualPosCommand(ArmPos def, ArmPos alt)
+  {
+    return Commands.either
+    (
+      moveToCommand(alt), 
+      moveToCommand(def), 
+      () -> getRelativeTarget().relativeEquals(def)
+    );
+  }
+
+  public Command stationIntakePosCommand(Supplier<Translation2d> robotPos, BooleanSupplier algae)
   {
     ArmPos armPos;
 
     if (algae.getAsBoolean())
-      armPos = Presets.coralClawPosition.port();
-    else if (altPos.getAsBoolean())
-      armPos = Presets.coralIntakeAltPosition.port();
+      armPos = Presets.coralClawPosition.stbd();
     else
-      armPos = Presets.coralIntakePosition.port();  
+      armPos = dualPosSelector(Presets.coralIntakePosition.stbd(), Presets.coralIntakeAltPosition.stbd());  
 
     if (robotPos.get().getX() > FieldUtils.fieldLength/2 ^ robotPos.get().getY() > FieldUtils.fieldWidth/2)
-      armPos = armPos.stbd();  
+      armPos = armPos.port();  
 
     return moveToCommand(armPos);
   }
@@ -436,7 +482,7 @@ public class Diffector extends SubsystemBase
   public Command algaeIntakePosCommand(Supplier<Translation2d> robotPos, boolean level2)
   {
     int nearestReefFace = FieldUtils.getNearestReefFace(robotPos.get());
-    boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
+    boolean portReefFace = Presets.isPortReefFace.test(nearestReefFace);
 
     ArmPos target = 
     level2 
@@ -462,16 +508,16 @@ public class Diffector extends SubsystemBase
 
   public Command coralScorePosInstantCommand(Supplier<Translation2d> robotPos, int level, int nearestReefFace)
   {
-    boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
+    boolean portReefFace = Presets.isPortReefFace.test(nearestReefFace);
 
     ArmPos target = 
     switch (level)
     {
       case 4 -> portReefFace ? Presets.coral4Position.port()     : Presets.coral4Position.stbd();
 
-      case 3 -> portReefFace ? Presets.coral3Position.port()     : Presets.coral3Position.stbd();
+      case 3 -> {ArmPos armPos = dualPosSelector(Presets.coral3Position, Presets.coral3AltPosition); yield portReefFace ? armPos.port() : armPos.stbd();}
 
-      case 2 -> portReefFace ? Presets.coral2Position.port()     : Presets.coral2Position.stbd();
+      case 2 -> {ArmPos armPos = dualPosSelector(Presets.coral2Position, Presets.coral2AltPosition); yield portReefFace ? armPos.port() : armPos.stbd();}
 
       case 1 -> portReefFace ? Presets.coral1ClawPosition.port() : Presets.coral1ClawPosition.stbd();
 
@@ -501,19 +547,17 @@ public class Diffector extends SubsystemBase
   @Override
   public void periodic() 
   { 
-    if (SD.CALIBRATE_DIFF.get())
+    if (SD.CALIBRATE_DIFF.button())
     {
       positionOveride(getMeasuredElevation(), getMeasuredAngle());
-      SD.CALIBRATE_DIFF.put(false);
     }
     
     if (SD.OVERRIDE.get())
     {
-      if (SD.CALIBRATE_DIFF_TARGET.get())
+      if (SD.CALIBRATE_DIFF_TARGET.button())
       {
         positionOveride(targetElevation, targetAngle);
         plannedPathPoints.clear();
-        SD.CALIBRATE_DIFF_TARGET.put(false);
       }
     }
 
@@ -561,6 +605,9 @@ public class Diffector extends SubsystemBase
         m_DA.setControl(motionMagicRequester.withPosition(Units.degreesToRotations(motorTargets[1])));//.withSlot(getSlot()));
       }
     }
+    displayElevator.setLength(elevation);
+    displayArmCoral.setAngle(angle);
+
     SmartDashboard.putNumber("ua current", Math.abs(m_UA.getTorqueCurrent().getValueAsDouble()));
     SmartDashboard.putNumber("ua current", Math.abs(m_DA.getTorqueCurrent().getValueAsDouble()));
     SmartDashboard.putNumber("ua Speed", Math.abs(m_UA.getRotorVelocity().getValueAsDouble()));

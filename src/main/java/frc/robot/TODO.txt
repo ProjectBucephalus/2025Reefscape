@@ -1,0 +1,15 @@
+[ ( ) TODO | (X) Done | (-) Removed | (^) High priority | (*) Requires mainly testing ]
+
+( ) Confirm climber positions and limits
+( ) Tune climb-balancing
+(^) Coral station drive positions
+(^) Coral station arm positions
+(*) Coral 2/3 arm alt positions
+(^) Algae hold current
+( ) Algae holding current threshold
+(*) Algae reef positions
+(*) Processor positions
+(^) Barge scoring distance
+( ) Cage auto-drive
+(*) LEDs 
+(-) Undo changes to navgrid, add temp-object over full half field at all times

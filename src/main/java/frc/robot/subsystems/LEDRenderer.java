@@ -38,11 +38,14 @@ public class LEDRenderer extends SubsystemBase
   lightStrip.start();
   }
 
-  public void addLayer (LightLayer newLayer) 
   /**
     * add a layer object into the queue 
     */
-    {renderQueue.add(newLayer);}
+  public LEDRenderer addLayer (LightLayer newLayer) 
+  {
+    renderQueue.add(newLayer);
+    return this;
+  }
 
   public LightLayer getLayer (int index)
   {

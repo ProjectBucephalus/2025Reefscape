@@ -1,54 +1,54 @@
 {
-  "version": "2025.0",
   "waypoints": [
     {
       "anchor": {
-        "x": 7.274,
+        "x": 7.324,
         "y": 6.169
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.524,
-        "y": 6.169
+        "x": 7.772913192366434,
+        "y": 6.17415325136397
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.574,
+        "x": 7.6739999999999995,
         "y": 6.169
       },
       "prevControl": {
-        "x": 7.324,
-        "y": 6.169
+        "x": 7.384000002023628,
+        "y": 6.168968190969869
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
-  "constraintZones": [],
-  "pointTowardsZones": [],
-  "eventMarkers": [],
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": -90.0
+  },
+  "version": "2025.0",
+  "useDefaultConstraints": true,
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 5.0,
-    "maxAngularVelocity": 720.0,
+    "maxAcceleration": 4.0,
     "maxAngularAcceleration": 850.0,
+    "maxAngularVelocity": 720.0,
+    "maxVelocity": 3.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
-  "goalEndState": {
-    "velocity": 0,
-    "rotation": -90.0
-  },
+  "eventMarkers": [],
+  "pointTowardsZones": [],
   "reversed": false,
+  "rotationTargets": [],
   "folder": "Barge Paths",
+  "constraintZones": [],
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": -90.0
-  },
-  "useDefaultConstraints": true
+    "rotation": -90.0,
+    "velocity": 0
+  }
 }

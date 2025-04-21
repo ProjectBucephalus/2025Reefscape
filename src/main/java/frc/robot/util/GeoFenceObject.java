@@ -189,10 +189,10 @@ public class GeoFenceObject
     {
       return
       (
-        (robotXY.getX() >= Xb - checkRadius) ||  // Close to inside of +X barrier
-        (robotXY.getX() <= Xa + checkRadius) ||  // Close to inside of -X barrier
-        (robotXY.getY() >= Yb - checkRadius) ||  // Close to inside of +Y barrier
-        (robotXY.getY() <= Ya + checkRadius)     // Close to inside of -Y barrier
+        (robotXY.getX() >= Xb - checkRadius && robotXY.getX() <= Xb + (2 * checkRadius)) ||  // Close to inside of +X barrier
+        (robotXY.getX() <= Xa + checkRadius && robotXY.getX() >= Xa - (2 * checkRadius)) ||  // Close to inside of -X barrier
+        (robotXY.getY() >= Yb - checkRadius && robotXY.getY() <= Yb + (2 * checkRadius)) ||  // Close to inside of +Y barrier
+        (robotXY.getY() <= Ya + checkRadius && robotXY.getY() >= Ya - (2 * checkRadius))     // Close to inside of -Y barrier
       );
     }
     else if (objectType == ObjectTypes.box)

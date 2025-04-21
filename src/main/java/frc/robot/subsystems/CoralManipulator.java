@@ -76,7 +76,7 @@ public class CoralManipulator extends SubsystemBase
     switch(status)
     {
       case WIGGLE:
-        if (wiggleCounter < 6) //TODO count as constant
+        if (wiggleCounter < Constants.Manipulators.coralWiggleCount)
         {
           if (RobotContainer.io_Canifier.coralPortSensor() && !RobotContainer.io_Canifier.coralStbdSensor())
           {
@@ -131,7 +131,7 @@ public class CoralManipulator extends SubsystemBase
         :
         Manipulators.coralDeliverySpeed;
 
-        if ((nearestReefFace == 5 || nearestReefFace == 6) ^ (armAngle > 90 && armAngle <= 270)) 
+        if (Presets.isPortReefFace.test(nearestReefFace) ^ (armAngle > 90 && armAngle <= 270)) 
           {speed = -speed;}
 
         m_Coral.set(speed);

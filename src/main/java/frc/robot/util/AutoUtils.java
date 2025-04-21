@@ -26,18 +26,38 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.RobotContainer;
 import frc.robot.RobotContainer.DpadOptions;
 import frc.robot.constants.Constants;
-import frc.robot.constants.FieldConstants;
 import frc.robot.constants.Constants.Auto.AutoMapping;
 import frc.robot.constants.Constants.DiffectorConstants.Presets;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.Diffector;
 
+/* +----------------------+
+ * | PATH MOVER REFERENCE |
+ * +----------------------+
+ * 
+ * From repo root (2025Reefscape\), run "./pathm" through vscode terminal. 
+ * 
+ * ARGUMENTS
+ * String(s) (string):     Strings to match paths against. Seperate each string with a comma. 
+ *                         Matches any paths that start with an input string.
+ * Amount (double):        How many meters, robot-relative, to move the path by.
+ *                         Positive values move the path forward robot-relative, or left if sideways is true.
+ * Sideways (bool) (OPT):  If true, moves the path left robot-relative. 
+ *                         Moves path forward robot-relative if false, unspecified, or invalid.
+ * 
+ * EXAMPLE:
+ * ./pathm cl2,cr2 0.406 false
+ * Moves paths cl2 and cr2 0.406 meters, forward relative to the robot.
+ */
+
 public class AutoUtils 
 {
   private static final PathConstraints defaultConstraints = Constants.Auto.defaultConstraints;
   private static final PathConstraints slowedConstraints = Constants.Auto.slowedConstraints;
   private static final PathConstraints stationConstraints = Constants.Auto.stationConstraints;
+
+  public static final Supplier<String> bargePathNameSup = () -> ("b" + FieldUtils.getNearestBargePoint(RobotContainer.swerveState.Pose.getTranslation())).toLowerCase();
 
   private static Translation2d prevEndPoint;
 
@@ -76,7 +96,7 @@ public class AutoUtils
 
           if (FieldUtils.isRedAlliance()) 
           {
-            posTarget = posTarget.rotateAround(new Translation2d(FieldUtils.fieldLength / 2, FieldUtils.fieldWidth / 2), Rotation2d.k180deg);
+            posTarget = posTarget.rotateAround(FieldUtils.fieldCentre, Rotation2d.k180deg);
           }
 
           Translation2d finalPosTarget = posTarget;
@@ -105,11 +125,11 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, defaultConstraints),
-              s_Diffector.coralScorePosCommandUndeferredAllianceLocked(() -> prevEndPoint, Integer.parseInt(splitCommand.substring(2)))
+              Commands.waitSeconds(0.1).andThen(s_Diffector.coralScorePosCommandUndeferredAllianceLocked(() -> prevEndPoint, Integer.parseInt(splitCommand.substring(2))))
             )
           );
 
-          commandList.add(Commands.waitSeconds(0.2)); //TODO: reduce delay?
+          commandList.add(Commands.waitSeconds(0.2)); //TODO: Test Removal
 
           commandList.add(s_Coral.setStatusCommand(CoralManipulator.Status.DELIVERY_SMART));
           
@@ -132,7 +152,7 @@ public class AutoUtils
 
         case 'c':
           nextPath = FieldUtils.loadPath(Constants.Auto.autoMap.get(splitCommand).pathName);
-          ArmPos armPos = splitCommand.charAt(1) == 'r' ? Presets.coralIntakePosition.port() : Presets.coralIntakePosition.stbd();
+          ArmPos armPos = splitCommand.charAt(1) == 'r' ? Presets.coralIntakePosition.stbd() : Presets.coralIntakePosition.port();
 
           Pathfinding.setStartPosition(prevEndPoint);
 
@@ -141,7 +161,7 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindThenFollowPath(nextPath, stationConstraints),
-              Commands.waitSeconds(0.15).andThen(s_Diffector.moveAndWaitCommand(armPos)) //TODO: reduce delay?
+              Commands.waitSeconds(0.15).andThen(s_Diffector.moveAndWaitCommand(armPos))
             )
           );
 
@@ -149,7 +169,7 @@ public class AutoUtils
 
           commandList.add(s_Coral.setStatusCommand(CoralManipulator.Status.INTAKE));
           commandList.add(Commands.waitUntil(() -> RobotContainer.coral));
-          commandList.add(s_Diffector.moveToCommand(Presets.coralStowPosition));
+          commandList.add(s_Diffector.moveToCommand(Presets.algaeStowPosition));
           break;
 
         case 'a':
@@ -169,12 +189,12 @@ public class AutoUtils
             Commands.parallel
             (
               AutoBuilder.pathfindToPose(nextPath.getStartingHolonomicPose().get(), defaultConstraints),
-              Commands.waitSeconds(0.25).andThen(autoMapValue.command.get()) //TODO: reduce delay?
+              Commands.waitSeconds(0.25).andThen(autoMapValue.command.get()) //TODO: test reducing delay
             )
           );
           commandList.add(AutoBuilder.followPath(nextPath));
 
-          commandList.add(Commands.waitSeconds(0.25));
+          commandList.add(Commands.waitSeconds(0.25)); //TODO: tune delay
 
           commandList.add(AutoBuilder.pathfindToPose(nextPath.getStartingHolonomicPose().get(), defaultConstraints));
 
@@ -212,35 +232,46 @@ public class AutoUtils
     PathPlannerPath path = FieldUtils.loadPath(pathNameSup.get());
     BooleanSupplier atPathStart = () -> RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.atPosTolerance;
     
-    return 
-    Commands.either
+    displayPose
     (
-      AutoBuilder.followPath(path), 
+      path.getPathPoses().get(path.getPathPoses().size()-1)
+        .rotateAround
+        (
+          FieldUtils.fieldCentre, 
+          FieldUtils.isRedAlliance() ? 
+            Rotation2d.k180deg : 
+            Rotation2d.kZero
+        ),
+      (FieldUtils.isRedAlliance() ? path.getGoalEndState().flip() : path.getGoalEndState()).rotation()
+    );
+
+    return 
+    Commands.runOnce(() -> {SD.STATE_DRIVE.put("Following");})
+    .andThen
+    (
       Commands.either
       (
-        AutoBuilder.pathfindThenFollowPath(path, slowedConstraints), 
-        AutoBuilder.pathfindThenFollowPath(path, defaultConstraints), 
-        brakeSup
-      ),
-      atPathStart
+        AutoBuilder.followPath(path), 
+        Commands.either
+        (
+          AutoBuilder.pathfindThenFollowPath(path, slowedConstraints), 
+          AutoBuilder.pathfindThenFollowPath(path, defaultConstraints), 
+          brakeSup
+        ),
+        atPathStart
+      )
+      .until(RobotContainer.driver.povCenter())
+      .andThen
+      (
+        Commands.either
+        (
+          Commands.runOnce(() -> {SD.STATE_DRIVE.put("Heading Locked");}),
+          Commands.runOnce(() -> {SD.STATE_DRIVE.put("At Target");}),
+          RobotContainer.driver.povCenter()
+        )
+      )
     )
-    .until(RobotContainer.driver.povCenter())
     .withName("PathfindAndFollow");
-  }
-
-  public static Supplier<String> getBargePathName()
-  {
-    return 
-    () ->
-    {
-      Translation2d nearestBargePoint = FieldUtils.getNearestBargePoint(RobotContainer.swerveState.Pose.getTranslation());
-
-      ArrayList<Translation2d> localList = FieldUtils.isRedAlliance() ? FieldConstants.redBargePoints : FieldConstants.blueBargePoints;
-  
-      int nearestBargePointNumber = localList.indexOf(nearestBargePoint) + 1;
-  
-      return ("b" + nearestBargePointNumber).toLowerCase();
-    };
   }
 
   public static Supplier<String> getReefPathName(DpadOptions dpadValue)
@@ -366,7 +397,7 @@ public class AutoUtils
   public static Command ejectAlgaeSequenceCommand(Diffector s_Diffector, AlgaeManipulator s_Algae, Supplier<Translation2d> posSup)
   {
     int nearestReefFace = FieldUtils.getNearestReefFace(posSup.get());
-    boolean portReefFace = (nearestReefFace == 5 || nearestReefFace == 6);
+    boolean portReefFace = Presets.isPortReefFace.test(nearestReefFace);
 
     ArmPos target = 
     nearestReefFace % 2 == 0 
@@ -381,5 +412,17 @@ public class AutoUtils
       s_Diffector.moveAndWaitCommand(target), 
       s_Algae.setStatusCommand(AlgaeManipulator.Status.EJECT)
     );
+  }
+
+  public static void displayPose(Pose2d pose, Rotation2d rotation)
+  {
+    SD.IO_POSE_X.put(pose.getX());
+    SD.IO_POSE_Y.put(pose.getY());
+    SD.IO_POSE_R.put(rotation.getDegrees());
+  }
+
+  public static void displayPose(Pose2d pose) 
+  {
+    displayPose(pose, pose.getRotation());
   }
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.path.PathConstraints;
@@ -32,7 +33,7 @@ public final class Constants
     public static final double manualDiffectorDeadband = 0.25;
     public static final double stickDeadband = 0.15;
     /** Normal maximum robot speed, relative to maximum uncapped speed */
-    public static final double maxThrottle = 0.7;
+    public static final double maxThrottle = 0.8;
     /** Minimum robot speed when braking, relative to maximum uncapped speed */
     public static final double minThrottle = 0.1;
     /** Normal maximum rotational robot speed, relative to maximum uncapped rotational speed */
@@ -48,6 +49,8 @@ public final class Constants
     /** Scalar for braking effect of diffector arm being higher than 1m */
     public static final double armBrakeRate = 1.5;
     public static final double manualClimberScale = 1;
+    public static final double driveSnappingRange = 1.5;
+    public static final double cageFaceDistance = 1.5;
   }
 
   public static final class Vision
@@ -93,7 +96,7 @@ public final class Constants
     public static final double initialHeading = 0;
 
     /* Drive PID Values */
-    public static final double driveKP = 5.4; //TODO: This must be tuned to specific robot
+    public static final double driveKP = 5.4;
     public static final double driveKI = 0.0;
     public static final double driveKD = 0.0;
 
@@ -121,7 +124,7 @@ public final class Constants
     /** m/s */
     public static final double pathplannerSlowedSpeed = 1.5;
     /** m/s^2 */
-    public static final double pathplannerMaxAcceleration = 4.0;
+    public static final double pathplannerMaxAcceleration = 3.5;
     /** m/s^2 */
     public static final double pathplannerStationAcceleration = 4.5;
     /** degrees/s */
@@ -217,24 +220,26 @@ public final class Constants
      */
     public static class Presets
     {
-      public static final ArmPos startPosition          = new ArmPos(0.616,  0);
-      public static final ArmPos climbSafePosition      = new ArmPos(DiffectorGeometry.safeElevation,  90); // TODO
+      public static final ArmPos startPosition          = new ArmPos(0.616, 0);
+      public static final ArmPos climbSafePosition      = new ArmPos(DiffectorGeometry.safeElevation,  90);
       public static final ArmPos climbPosition          = new ArmPos(0.425, 90);
       public static final ArmPos netPosition            = new ArmPos(DiffectorGeometry.maxZ, 150, false);
-      public static final ArmPos algae3Position         = new ArmPos(1.08, 113);
-      public static final ArmPos algae2Position         = new ArmPos(0.65, 113);
+      public static final ArmPos algae3Position         = new ArmPos(1.33,  90);
+      public static final ArmPos algae2Position         = new ArmPos(0.90,  90);
       public static final ArmPos processorPosition      = new ArmPos(0.43,  90);
-      public static final ArmPos coral4Position         = new ArmPos(DiffectorGeometry.maxZ, 315); //TODO: confirm
-      public static final ArmPos coral3Position         = new ArmPos(1.08, 325);
+      public static final ArmPos coral4Position         = new ArmPos(DiffectorGeometry.maxZ, 315);
+      public static final ArmPos coral3Position         = new ArmPos(1.08,  325);
+      public static final ArmPos coral3AltPosition      = new ArmPos(1.16,  325);
       public static final ArmPos coral2Position         = new ArmPos(0.675, 325);
+      public static final ArmPos coral2AltPosition      = new ArmPos(0.76,  325);
       public static final ArmPos coral1ClawPosition     = new ArmPos(DiffectorGeometry.algaeClawElevation,  76);
       public static final ArmPos coral1Position         = new ArmPos(DiffectorGeometry.coralFunnelElevation, 210);
-      public static final ArmPos coralIntakePosition    = new ArmPos(1.16, 215);
-      public static final ArmPos coralIntakeAltPosition = new ArmPos(1.09, 215);
-      public static final ArmPos coralClawPosition      = new ArmPos(0.75, 129);
-      public static final ArmPos coralStowPosition      = new ArmPos(0.75,   0);
+      public static final ArmPos coralIntakePosition    = new ArmPos(1.163, 215);
+      public static final ArmPos coralIntakeAltPosition = new ArmPos(1.09,  215);
+      public static final ArmPos coralClawPosition      = new ArmPos(0.75,  129);
+      public static final ArmPos coralStowPosition      = new ArmPos(0.75,  0);
       public static final ArmPos algaeIntakePosition    = new ArmPos(0.49,  65);
-      public static final ArmPos algaeStowPosition      = new ArmPos(0.80, 180);
+      public static final ArmPos algaeStowPosition      = new ArmPos(0.80,  180);
 
       public static final ArrayList<ArmPos> lowDiffectorPositions = new ArrayList<ArmPos>()
       {{
@@ -247,9 +252,15 @@ public final class Constants
       public static final ArrayList<ArmPos> highDiffectorPositions = new ArrayList<ArmPos>()
       {{
         add(netPosition);
+      }};
+
+      public static final ArrayList<ArmPos> teleOnlyHighDiffectorPositions = new ArrayList<ArmPos>()
+      {{
         add(coral4Position);
         add(coral3Position);
       }};
+
+      public static final Predicate<Integer> isPortReefFace = (face) -> (face == 2 || face == 3);
     }
 
     /** Raw value when fully released, indicating string has snapped or the sensor is unavailable */
@@ -272,6 +283,8 @@ public final class Constants
 
   public static final class Manipulators 
   {
+    public static final int coralWiggleCount = 6;
+
     /* Coral manipulator speeds */
     public static final double coralLvl4DeliverySpeed = 0.25;
     public static final double coralDeliverySpeed     = 0.30;
@@ -282,7 +295,7 @@ public final class Constants
     public static final double algaeHoldingVoltage = -12;
     public static final double algaeNetSpeed       =  1;
     public static final double algaeProcessorSpeed =  0.9;
-    public static final double algaeHeldCurrent    = 40;
+    public static final double algaeHeldCurrentThreshold = 45;
     //public static final double algaeReleaseCurrent =  4;
 
     /** Algae net shooting range for rotation snapping, m */
@@ -296,12 +309,12 @@ public final class Constants
     public static final double safeWinchPos    = 3.9;
     public static final double startDrivePos   = 4.7;
     public static final double offGroundPos    = 2.5;
-    public static final double prepareWinchPos = 5.6; // TODO
-    public static final double climbWinchPos   = 2.0; // TODO
+    public static final double prepareWinchPos = 5.6;
+    public static final double climbWinchPos   = 2.0;
     /** The furthest into the robot the climber can attempt to go whilst balancing */
-    public static final double climbActiveInnerLimit = 1.7; // TODO
+    public static final double climbActiveInnerLimit = 1.7;
     /** The furthest out of the robot the climber can attempt to go whilst balancing */
-    public static final double climbActiveOuterLimit = 2.3; // TODO
+    public static final double climbActiveOuterLimit = 2.3;
     /** Ideal robot pitch when hanging, in degrees */
     public static final double targetRobotClimbPitch = 3; 
   }

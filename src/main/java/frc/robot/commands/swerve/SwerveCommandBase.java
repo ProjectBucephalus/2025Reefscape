@@ -93,13 +93,9 @@ public abstract class SwerveCommandBase extends Command
     
     if (SD.IO_LL.get())
     {
-      /* Adjust the virtual radius of the robot to protect the robot when moving fast */
       robotSpeed = Math.hypot(RobotContainer.swerveState.Speeds.vxMetersPerSecond, RobotContainer.swerveState.Speeds.vyMetersPerSecond);
       
-      if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
-        {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
-      else
-        {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
+      updateRobotRadius();
       
       motionXYCache = motionXY.getNorm();
 
@@ -119,6 +115,12 @@ public abstract class SwerveCommandBase extends Command
         for (int i = fieldGeoFence.length - 1; i >= 0; i--)
         {
           Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
+          motionXY = inputDamping;
+        }
+
+        if (SD.IO_OUTER_GEOFENCE.get())
+        {
+          Translation2d inputDamping = FieldUtils.GeoFencing.field.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
           motionXY = inputDamping;
         }
       } 
@@ -156,5 +158,14 @@ public abstract class SwerveCommandBase extends Command
         )
       )
     );
+  }
+
+  /** Adjust the virtual radius of the robot to protect the robot under different conditions */
+  protected void updateRobotRadius()
+  {
+    if (robotSpeed >= FieldUtils.GeoFencing.robotSpeedThreshold)
+      {robotRadius = FieldUtils.GeoFencing.robotRadiusCircumscribed;}
+    else
+      {robotRadius = FieldUtils.GeoFencing.robotRadiusInscribed;}
   }
 }

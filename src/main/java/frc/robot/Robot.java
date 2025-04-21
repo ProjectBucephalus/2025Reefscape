@@ -4,9 +4,19 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.commands.PathfindingCommand;
+import java.util.ArrayList;
 
+import com.ctre.phoenix6.SignalLogger;
+import com.pathplanner.lib.commands.PathfindingCommand;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+
+import edu.wpi.first.epilogue.Epilogue;
+import edu.wpi.first.epilogue.Logged;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -24,6 +34,7 @@ import frc.robot.util.SD;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
+@Logged
 public class Robot extends TimedRobot 
 {
   private Command autonomousCommand;
@@ -33,7 +44,7 @@ public class Robot extends TimedRobot
   private Pose2d robotPose;
 
   private Command warmupCommand;
-
+  
   private boolean allianceKnown = false;
 
   public Robot()
@@ -48,7 +59,11 @@ public class Robot extends TimedRobot
     RobotContainer.io_LimelightStbd.setThrottle(0);
     RobotContainer.io_LimelightPort.setIMUMode(1);
     RobotContainer.io_LimelightStbd.setIMUMode(1);
-    SD.initOutputs();
+    SignalLogger.enableAutoLogging(false);
+
+    DataLogManager.start("/home/lvuser/logs");
+    DriverStation.startDataLog(DataLogManager.getLog());
+    Epilogue.bind(this);
   }
 
   /**
@@ -72,8 +87,6 @@ public class Robot extends TimedRobot
     }
 
     RobotContainer.swerveState = RobotContainer.s_Swerve.getState();
-
-    //RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
     
     CommandScheduler.getInstance().run();
     
@@ -89,8 +102,6 @@ public class Robot extends TimedRobot
 
     SD.OVERRIDE.init();
     SD.IO_PROCESS_AUTO.init();
-    SD.CALIBRATE_BOT_ROTATION.init();
-    Limelight.rotationKnown = false;
 
     RobotContainer.io_copilotLeft.clearRequests();
     RobotContainer.io_copilotRight.clearRequests();
@@ -103,19 +114,17 @@ public class Robot extends TimedRobot
   {
     SD.STATE_PP_WARMUP.put(!warmupCommand.isScheduled());
 
-    if (SD.IO_PROCESS_AUTO.get())
+    if (SD.IO_PROCESS_AUTO.button())
     {
       autonomousCommand = robotContainer.getAutoCommand();
-      SD.IO_PROCESS_AUTO.put(false);
     }
-
+    
     if (!allianceKnown) 
     {
       if (DriverStation.getAlliance().isPresent()) 
       {
         allianceKnown = true;
-        if (DriverStation.getAlliance().get() == Alliance.Blue && !Limelight.rotationKnown) 
-          {RobotContainer.s_Swerve.getPigeon2().setYaw(180);}
+        allianceInit();
       }  
     }
   }
@@ -125,6 +134,8 @@ public class Robot extends TimedRobot
   {     
     RobotContainer.io_LimelightPort.setIMUMode(1);
     RobotContainer.io_LimelightStbd.setIMUMode(1);
+
+    RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
     
     if (autonomousCommand == null) 
       {autonomousCommand = robotContainer.getAutoCommand();}
@@ -144,6 +155,8 @@ public class Robot extends TimedRobot
 
     if (autonomousCommand != null) 
       {autonomousCommand.cancel();}
+
+    RobotContainer.s_Swerve.resetPose(new Pose2d(RobotContainer.swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(RobotContainer.s_Swerve.getPigeon2().getYaw().getValueAsDouble()))));
 
     RobotContainer.s_Coral.setStatus(CoralManipulator.Status.DEFAULT);
     RobotContainer.s_Algae.setStatus(AlgaeManipulator.Status.EMPTY);
@@ -167,4 +180,15 @@ public class Robot extends TimedRobot
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+  public static void allianceInit() 
+  {
+    ArrayList<Pair<Translation2d, Translation2d>> bargeObstacle = new ArrayList<Pair<Translation2d, Translation2d>>();
+    bargeObstacle.add(FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.redAllianceBargeDynamic : FieldUtils.GeoFencing.blueAllianceBargeDynamic);
+
+    Pathfinding.setDynamicObstacles(bargeObstacle, RobotContainer.swerveState.Pose.getTranslation());
+
+    if (DriverStation.getAlliance().get() == Alliance.Blue && !Limelight.rotationKnown) 
+      {RobotContainer.s_Swerve.getPigeon2().setYaw(180);}
+  }
 }

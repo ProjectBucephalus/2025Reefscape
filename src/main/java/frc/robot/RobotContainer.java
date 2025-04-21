@@ -1,14 +1,15 @@
 package frc.robot;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
-import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.*;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -123,7 +124,9 @@ public class RobotContainer
     configureCopilotBindings();
     configureRumbleBindings();
     configureManualBindings();
-    configureTestBindings();
+    //configureTestBindings();
+    configureSDButtonBindings();
+    configureMiscBindings();
 
     s_Swerve.registerTelemetry(logger::telemeterize);
     initLED();
@@ -143,8 +146,10 @@ public class RobotContainer
 
             pigeon.setYaw(FieldUtils.isRedAlliance() ? 0 : 180);
             s_Swerve.resetPose(new Pose2d(swerveState.Pose.getTranslation(), new Rotation2d(Math.toRadians(pigeon.getYaw().getValueAsDouble()))));
+            SD.ROTATION_KNOWN.put(false);
           }
         )
+        .ignoringDisable(true)
         .withName("HeadingReset")
       );
       
@@ -250,7 +255,7 @@ public class RobotContainer
   private void configureAutoDriveBindings()
   {
     /* Heading lock state management */
-    Triggers.unlockHeadingTrigger.onTrue(Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED));
+    Triggers.unlockHeadingTrigger.or(driver.start()).onTrue(Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED));
     driver.y().onTrue(Commands.runOnce(() -> headingState = HeadingStates.CAGE_LOCK));
     driver.x().onTrue(Commands.runOnce(() -> headingState = HeadingStates.REEF_LOCK));
     driver.b().onTrue(Commands.runOnce(() -> headingState = HeadingStates.PROCESSOR_LOCK));
@@ -288,7 +293,7 @@ public class RobotContainer
     Triggers.scoreDriveTrigger.and(driver.povUp())   .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.CENTRE), driver.rightTrigger())));
     Triggers.scoreDriveTrigger.and(driver.povLeft()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.LEFT), driver.rightTrigger())));
     Triggers.scoreDriveTrigger.and(driver.povRight()).and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.RIGHT), driver.rightTrigger())));
-    Triggers.scoreDriveTrigger.and(driver.povDown()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getBargePathName(), driver.rightTrigger())));
+    Triggers.scoreDriveTrigger.and(driver.povDown()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.bargePathNameSup, driver.rightTrigger())));
 
     /* 
       * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed
@@ -321,7 +326,7 @@ public class RobotContainer
           s_Swerve, 
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
-          Rotation2d.kZero,
+          Rotation2d.k180deg,
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
@@ -336,29 +341,12 @@ public class RobotContainer
           s_Swerve,
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
-          Rotation2d.kCW_90deg, 
+          Rotation2d.kCW_90deg,
           Rotation2d.kCW_90deg,
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
         .withName("ProcessorLock")
-      );
-
-    Triggers.processorDriveTrigger
-      .whileTrue
-      (
-        Commands.startEnd
-        (
-          () -> 
-          {
-            ArrayList<Pair<Translation2d, Translation2d>> bargeObstacle = new ArrayList<Pair<Translation2d, Translation2d>>();
-            bargeObstacle.add(FieldUtils.isRedAlliance() ? FieldUtils.GeoFencing.redAllianceBargeDynamic : FieldUtils.GeoFencing.blueAllianceBargeDynamic);
-
-            Pathfinding.setDynamicObstacles(bargeObstacle, swerveState.Pose.getTranslation());
-          }, 
-          () -> Pathfinding.setDynamicObstacles(new ArrayList<Pair<Translation2d, Translation2d>>(), swerveState.Pose.getTranslation())
-        )
-        .withName("BargeObstacle")
       );
 
     Triggers.scoreDriveTrigger.and(driver.povCenter())
@@ -385,7 +373,7 @@ public class RobotContainer
       (
         Commands.sequence
         (
-          s_Diffector.moveAndWaitCommand(Presets.climbPosition),
+          s_Diffector.moveToCommand(Presets.climbPosition),
           s_Climber.setStatusCommand(Climber.Status.CLIMB),
           Commands.waitUntil(s_Climber::driverRumbleAngle),
           io_driverLeft.timedRequestCommand("Climb Drive", 0.25),
@@ -454,9 +442,9 @@ public class RobotContainer
         (
           Commands.either
           (
-            s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPosition.stbd()), 
-            s_Diffector.moveToCommand(DiffectorConstants.Presets.processorPosition.port()), 
-            () -> swerveState.Pose.getX() >= 8.774
+            s_Diffector.dualPosCommand(DiffectorConstants.Presets.processorPosition.stbd(), DiffectorConstants.Presets.processorPosition.port()), 
+            s_Diffector.dualPosCommand(DiffectorConstants.Presets.processorPosition.port(), DiffectorConstants.Presets.processorPosition.stbd()), 
+            () -> (swerveState.Pose.getX() >= 8.774 ^ FieldUtils.isRedAlliance())
           )
           .withName("Processor"),
           s_Diffector.coralScorePosCommand(1).withName("Coral1"), 
@@ -481,8 +469,8 @@ public class RobotContainer
       (
         Commands.either
         (
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePosition.port()), 
-          s_Diffector.moveToCommand(DiffectorConstants.Presets.algaeIntakePosition.stbd()), 
+          s_Diffector.dualPosCommand(DiffectorConstants.Presets.algaeIntakePosition.port(), DiffectorConstants.Presets.algaeIntakePosition.stbd()), 
+          s_Diffector.dualPosCommand(DiffectorConstants.Presets.algaeIntakePosition.stbd(), DiffectorConstants.Presets.algaeIntakePosition.port()), 
           () ->
           {
             double robotRotation = Conversions.mod(RobotContainer.swerveState.Pose.getRotation().getDegrees(), 360);
@@ -504,8 +492,7 @@ public class RobotContainer
           () -> s_Diffector.stationIntakePosCommand
           (
             () -> swerveState.Pose.getTranslation(), 
-            algaeModifier, 
-            () -> s_Diffector.getRelativeTarget().relativeEquals(Presets.coralIntakePosition)
+            algaeModifier
           )
         )
         .withName("CoralStation")
@@ -537,7 +524,7 @@ public class RobotContainer
       .onFalse(s_Algae.setStatusCommand(AlgaeManipulator.Status.HOLDING).andThen(Commands.runOnce(() -> algae = true)));
 
     Triggers.algaeIntakePosTrigger
-      .onTrue(s_Algae.setStatusCommand(Status.INTAKE))
+      .onTrue(s_Algae.setStatusCommand(Status.MANUAL_INTAKE))
       .onFalse(Commands.either(s_Algae.setStatusCommand(Status.HOLDING), s_Algae.setStatusCommand(Status.EMPTY), () -> algae));
   }
 
@@ -598,6 +585,16 @@ public class RobotContainer
     /* Copilot rumble bindings */
     io_copilotLeft.addRumbleTrigger("Intake Full", Triggers.copilotLeftRumbleTrigger);
     io_copilotRight.addRumbleTrigger("Diffector E-stopped", new Trigger(() -> SD.DIFF_ESTOP.get()));
+    new Trigger(() -> Timer.getMatchTime() <= 6 && DriverStation.isTeleop())
+      .onTrue
+      (
+        Commands.sequence
+        (
+          io_copilotRight.requestCommand(true, "Climb Alert"),
+          Commands.waitUntil(copilot.start()),
+          io_copilotRight.requestCommand(false, "Climb Alert")
+        )
+      );
   }
 
   private void configureTestBindings()
@@ -610,300 +607,596 @@ public class RobotContainer
     testing.povLeft().onTrue(s_Diffector.moveToCommand(new ArmPos(1, 270)));
   }
 
+  private void configureSDButtonBindings()
+  {
+    new Trigger(SD.IO_POSE_PATHFIND::button)
+      .onTrue
+      (
+        s_Swerve.defer
+        (
+          () -> AutoBuilder.pathfindToPose
+          (
+            new Pose2d
+            (
+              SD.IO_POSE_X.get(), 
+              SD.IO_POSE_Y.get(), 
+              new Rotation2d(Units.degreesToRadians(SD.IO_POSE_R.get()))
+            ), 
+            Constants.Auto.defaultConstraints
+          )
+        )
+      );
+
+    new Trigger(SD.IO_DIFF_GOTO::button)
+      .onTrue
+      (
+        s_Diffector.defer
+        (
+          () -> s_Diffector.moveToCommand(new ArmPos(SD.IO_DIFF_ELEVATION.get(), SD.IO_DIFF_ANGLE.get()))
+        )
+      );
+  }
+
+  private void configureMiscBindings()
+  {
+    new Trigger(SD.DIFF_ESTOP::get)
+      .and(() -> DriverStation.isAutonomous())
+      .onTrue
+      (
+        Commands.waitSeconds(0.5).andThen(Commands.runOnce(() -> SD.DIFF_ESTOP.put(false)))
+      );
+  }
+
   private void initLED()
   { 
-    portStatusLayer.setSegments(6);
-    portStatusLayer.setMode(Mode.STATICSEGMENT);
-    portStatusLayer.setStart(LEDStrip.portStatusStart);
-    portStatusLayer.setWidth(LEDStrip.portStatusWidth);
-    portStatusLayer.setType(LayerType.STATUS);
-    portStatusLayer.setPriority(1);
-    portStatusLayer.setColor(Color.kBlack, Color.kTeal);
-    portStatusLayer.setPeriod(0.2);
-    portStatusLayer.setBorder(false);
+    portStatusLayer.setSegments(6)
+      .setMode(Mode.STATICSEGMENT)
+      .setStart(LEDStrip.portStatusStart)
+      .setWidth(LEDStrip.portStatusWidth)
+      .setType(LayerType.STATUS)
+      .setPriority(5)
+      .setColor(Color.kBlack, Color.kGreen)
+      .setPeriod(0.2)
+      .setBorder(false)
+      .setReversed(true);
 
-    stbdStatusLayer.setSegments(6);
-    stbdStatusLayer.setMode(Mode.STATICSEGMENT);
-    stbdStatusLayer.setStart(LEDStrip.stbdStatusStart);
-    stbdStatusLayer.setWidth(LEDStrip.stbdStatusWidth);
-    stbdStatusLayer.setType(LayerType.STATUS);
-    stbdStatusLayer.setPriority(1);
-    stbdStatusLayer.setColor(Color.kBlack, Color.kTeal);
-    stbdStatusLayer.setReversed(true);
-    stbdStatusLayer.setPeriod(0.2);
-    stbdStatusLayer.setBorder(false);
+    stbdStatusLayer.setSegments(6)
+      .setMode(Mode.STATICSEGMENT)
+      .setStart(LEDStrip.stbdStatusStart)
+      .setWidth(LEDStrip.stbdStatusWidth)
+      .setType(LayerType.STATUS)
+      .setPriority(5)
+      .setColor(Color.kBlack, Color.kGreen)
+      .setPeriod(0.2)
+      .setBorder(false);
 
-    haloPortLayer.setStart(LEDStrip.portHaloStart);
-    haloPortLayer.setWidth(LEDStrip.portHaloWidth);
-    haloPortLayer.setMode(Mode.STATICSEGMENT);
-    haloPortLayer.setType(LayerType.SOLID);
-    haloPortLayer.setPeriod(0.2);
-    haloPortLayer.setPriority(1);
-    haloPortLayer.setColor(Color.kYellow, Color.kBlack);
-    haloPortLayer.setSegments(10);
-    haloPortLayer.setBorder(false);
+    haloPortLayer.setStart(LEDStrip.portHaloStart)
+      .setWidth(LEDStrip.portHaloWidth)
+      .setMode(Mode.STATICSEGMENT)
+      .setType(LayerType.SOLID)
+      .setPeriod(0.2)
+      .setPriority(5)
+      .setColor(Color.kYellow, Color.kBlack)
+      .setSegments(10)
+      .setBorder(false)
+      .setReversed(true);
 
-    haloStbdLayer.setStart(LEDStrip.stbdHaloStart);
-    haloStbdLayer.setWidth(LEDStrip.portHaloWidth);
-    haloStbdLayer.setMode(Mode.STATICSEGMENT);
-    haloStbdLayer.setType(LayerType.SOLID);
-    haloStbdLayer.setPeriod(0.2);
-    haloStbdLayer.setPriority(1);
-    haloStbdLayer.setColor(Color.kYellow, Color.kBlack);
-    haloStbdLayer.setSegments(10);
-    haloStbdLayer.setReversed(true);
-    haloStbdLayer.setBorder(false);
+    haloStbdLayer.setStart(LEDStrip.stbdHaloStart)
+      .setWidth(LEDStrip.stbdHaloWidth)
+      .setMode(Mode.STATICSEGMENT)
+      .setType(LayerType.SOLID)
+      .setPeriod(0.2)
+      .setPriority(5)
+      .setColor(Color.kYellow, Color.kBlack)
+      .setSegments(10)
+      .setBorder(false);
 
-    allLEDsLayer.setMode(Mode.WHOLESTRIP);
-    allLEDsLayer.setType(LayerType.SOLID);
-    allLEDsLayer.setPriority(-9);
-    allLEDsLayer.setColor(Color.kRed, Color.kBlack);
-    allLEDsLayer.setBorder(false);
+    allLEDsLayer.setMode(Mode.WHOLESTRIP)
+      .setStart(0)
+      .setWidth(LEDStrip.lightsLen)
+      .setType(LayerType.SOLID)
+      .setPeriod(0.1)
+      .setPriority(7)
+      .setColor(Color.kBlack, Color.kRed)
+      .setBorder(false);
 
+    io_Lights.addLayer(portStatusLayer)
+      .addLayer(stbdStatusLayer)
+      .addLayer(haloPortLayer)
+      .addLayer(haloStbdLayer)
+      .addLayer(allLEDsLayer);
 
-    io_Lights.addLayer(portStatusLayer);
-    io_Lights.addLayer(stbdStatusLayer);
-    io_Lights.addLayer(haloPortLayer);
-    io_Lights.addLayer(haloStbdLayer);
-    io_Lights.addLayer(allLEDsLayer);
+    Triggers.bargeLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("net true");
+          portStatusLayer.setStatus(5, true);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+          stbdStatusLayer.setStatus(5, true);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("net false");
+          portStatusLayer.setStatus(5, false);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+          stbdStatusLayer.setStatus(5, false);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+        })
+      );
 
-    Triggers.bargeLEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(5, true);
-    portStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    stbdStatusLayer.setStatus(5, true);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    })).onFalse(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(5, false);
-    portStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    stbdStatusLayer.setStatus(5, false);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    }));
-    Triggers.Lvl4LEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(5, true);
-    portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    stbdStatusLayer.setStatus(5, true);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    })).onFalse(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(5, false);
-    portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    stbdStatusLayer.setStatus(5, false);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    }));
-    Triggers.lvl3AlgaeLEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(4, true);
-    portStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    stbdStatusLayer.setStatus(4, true);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    })).onFalse(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(4, false);
-    portStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    stbdStatusLayer.setStatus(4, false);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    }));
-    Triggers.lvl3CoralLEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(4, true);
-    portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    stbdStatusLayer.setStatus(4, true);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    })).onFalse(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(4, false);
-    portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    stbdStatusLayer.setStatus(4, false);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    }));
-    Triggers.coralStationClawLEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(3, true);
-    portStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    stbdStatusLayer.setStatus(3, true);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    })).onFalse(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(3, false);
-    portStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    stbdStatusLayer.setStatus(3, false);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    }));
-    Triggers.coralStationIntakeLEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(3, true);
-    portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    stbdStatusLayer.setStatus(3, true);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    })).onFalse(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(3, false);
-    portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    stbdStatusLayer.setStatus(3, false);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    }));
-    Triggers.lvl2AlgaeLEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(2, true);
-    portStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    stbdStatusLayer.setStatus(2, true);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    })).onFalse(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(2, false);
-    portStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    stbdStatusLayer.setStatus(2, false);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    }));
-    Triggers.lvl2CoralLEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(2, true);
-    portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    stbdStatusLayer.setStatus(2, true);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    })).onFalse(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(2, false);
-    portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    stbdStatusLayer.setStatus(2, false);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    }));
-    Triggers.lvl1ClawLEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(1, true);
-    portStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    stbdStatusLayer.setStatus(1, true);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    })).onFalse(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(1, false);
-    portStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    stbdStatusLayer.setStatus(1, false);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    }));
-    Triggers.lvl1CoralLEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(1, true);
-    portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    stbdStatusLayer.setStatus(1, true);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    })).onFalse(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(1, false);
-    portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    stbdStatusLayer.setStatus(1, false);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-    }));
-    Triggers.groundIntakeOrProcessorLEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(0, true);
-    portStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    stbdStatusLayer.setStatus(0, true);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    })).onFalse(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(0, false);
-    portStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    stbdStatusLayer.setStatus(0, false);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    }));
-    Triggers.ClimbLEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(0, true);
-    portStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    stbdStatusLayer.setStatus(0, true);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    })).onFalse(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(0, false);
-    portStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    stbdStatusLayer.setStatus(0, false);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kTeal);
-    }));
-    Triggers.stowedLEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(1, true);
-    stbdStatusLayer.setStatus(1, true);
-    portStatusLayer.setStatus(3, true);
-    stbdStatusLayer.setStatus(3, true);
-    })).onFalse(Commands.runOnce(
-    () -> {
-    portStatusLayer.setStatus(1, false);
-    stbdStatusLayer.setStatus(1, false);
-    portStatusLayer.setStatus(3, false);
-    stbdStatusLayer.setStatus(3, false);
-    }));
-    Triggers.manualControlLEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setColor(Color.kBlack,Color.kPurple);
-    stbdStatusLayer.setColor(Color.kBlack,Color.kPurple);
-    }));
+    Triggers.Lvl4LEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("c4 true");
+          portStatusLayer.setStatus(5, true);
+          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
+          stbdStatusLayer.setStatus(5, true);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("c4 false");
+          portStatusLayer.setStatus(5, false);
+          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
+          stbdStatusLayer.setStatus(5, false);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
+        })
+      );
 
+    Triggers.lvl3AlgaeLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("a3 true");
+          portStatusLayer.setStatus(4, true);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+          stbdStatusLayer.setStatus(4, true);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("a3 false");
+          portStatusLayer.setStatus(4, false);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+          stbdStatusLayer.setStatus(4, false);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+        })
+      );
 
-    Triggers.eStopLEDs.onTrue(Commands.runOnce(
-    () -> {
-    portStatusLayer.setType(LayerType.ALTERNATING);
-    stbdStatusLayer.setType(LayerType.ALTERNATING);
-    })).onFalse(Commands.runOnce(
-    () -> {
-    portStatusLayer.setType(LayerType.STATUS);
-    stbdStatusLayer.setType(LayerType.STATUS);
-    }));
-    Triggers.manualDriveLEDs.onTrue(Commands.runOnce(
-    () -> {
-    haloPortLayer.setType(LayerType.SOLID);
-    haloPortLayer.setColor(Color.kRed,Color.kBlack);
-    haloStbdLayer.setType(LayerType.SOLID);
-    haloStbdLayer.setColor(Color.kRed,Color.kBlack);
-    }));
-    Triggers.headingLockLEDs.onTrue(Commands.runOnce(
-    () -> {
-    haloPortLayer.setType(LayerType.SOLID);
-    haloPortLayer.setColor(Color.kOrange,Color.kBlack);
-    haloStbdLayer.setType(LayerType.SOLID);
-    haloStbdLayer.setColor(Color.kOrange,Color.kBlack);
-    }));
-    // Triggers.pathfindingLEDs.onTrue(Commands.runOnce(
-    // () -> {
-    // haloPortLayer.setType(LayerType.SCROLLER);
-    // haloPortLayer.setColor(Color.kYellow,Color.kBlack);
-    // haloStbdLayer.setType(LayerType.SCROLLER);
-    // haloStbdLayer.setColor(Color.kYellow,Color.kBlack);
-    // }));
-    // Triggers.followPathLEDs.onTrue(Commands.runOnce(
-    // () -> {
-    // haloPortLayer.setType(LayerType.ALTERNATING);
-    // haloPortLayer.setColor(Color.kYellow,Color.kBlack);
-    // haloStbdLayer.setType(LayerType.ALTERNATING);
-    // haloStbdLayer.setColor(Color.kYellow,Color.kBlack);
-    // }));
-    // Triggers.robotAtTargetLEDs.onTrue(Commands.runOnce(
-    // () -> {
-    // haloPortLayer.setType(LayerType.SOLID);
-    // haloPortLayer.setColor(Color.kYellow,Color.kBlack);
-    // haloStbdLayer.setType(LayerType.SOLID);
-    // haloStbdLayer.setColor(Color.kYellow,Color.kBlack);
-    // }));
-    Triggers.robotArmAndClimberAtTargetLEDs.onTrue(Commands.runOnce(
-    () -> {
-    haloPortLayer.setType(LayerType.SOLID);
-    haloPortLayer.setColor(Color.kGreen,Color.kBlack);
-    haloStbdLayer.setType(LayerType.SOLID);
-    haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
-    }));
-    Triggers.atCoralStationLEDs.onTrue(Commands.runOnce(
-    () -> {
-    haloPortLayer.setType(LayerType.ALTERNATING);
-    haloPortLayer.setColor(Color.kGreen,Color.kBlack);
-    haloStbdLayer.setType(LayerType.ALTERNATING);
-    haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
-    }));
+    Triggers.lvl3CoralLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("c3 true");
+          portStatusLayer.setStatus(4, true);
+          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
+          stbdStatusLayer.setStatus(4, true);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("c3 false");
+          portStatusLayer.setStatus(4, false);
+          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
+          stbdStatusLayer.setStatus(4, false);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
+        })
+      );
+
+    Triggers.coralStationClawLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("a intake true");
+          portStatusLayer.setStatus(3, true);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+          stbdStatusLayer.setStatus(3, true);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("a intake false");
+          portStatusLayer.setStatus(3, false);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+          stbdStatusLayer.setStatus(3, false);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+        })
+      );
+
+    Triggers.coralStationIntakeLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("c intake true");
+          portStatusLayer.setStatus(3, true);
+          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
+          stbdStatusLayer.setStatus(3, true);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("c intake false");
+          portStatusLayer.setStatus(3, false);
+          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
+          stbdStatusLayer.setStatus(3, false);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
+        })
+      );
+
+    Triggers.lvl2AlgaeLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("a2 true");
+          portStatusLayer.setStatus(2, true);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+          stbdStatusLayer.setStatus(2, true);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("a2 false");
+          portStatusLayer.setStatus(2, false);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+          stbdStatusLayer.setStatus(2, false);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+        })
+      );
+
+    Triggers.lvl2CoralLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("c2 true");
+          portStatusLayer.setStatus(2, true);
+          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
+          stbdStatusLayer.setStatus(2, true);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("c2 false");
+          portStatusLayer.setStatus(2, false);
+          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
+          stbdStatusLayer.setStatus(2, false);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
+        })
+      );
+
+    Triggers.lvl1ClawLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("a1 true");
+          portStatusLayer.setStatus(1, true);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+          stbdStatusLayer.setStatus(1, true);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("a1 false");
+          portStatusLayer.setStatus(1, false);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+          stbdStatusLayer.setStatus(1, false);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+        })
+      );
+
+    Triggers.lvl1CoralLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("c1 true");
+          portStatusLayer.setStatus(1, true);
+          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
+          stbdStatusLayer.setStatus(1, true);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("c1 false");
+          portStatusLayer.setStatus(1, false);
+          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
+          stbdStatusLayer.setStatus(1, false);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
+        })
+      );
+
+    Triggers.groundIntakeOrProcessorLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("ground true");
+          portStatusLayer.setStatus(0, true);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+          stbdStatusLayer.setStatus(0, true);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("ground false");
+          portStatusLayer.setStatus(0, false);
+          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+          stbdStatusLayer.setStatus(0, false);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+        })
+      );
+
+    Triggers.ClimbLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("climb true");
+          portStatusLayer.setStatus(0, true);
+          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          stbdStatusLayer.setStatus(0, true);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("climb false");
+          portStatusLayer.setStatus(0, false);
+          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
+          stbdStatusLayer.setStatus(0, false);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
+        })
+      );
+
+    Triggers.stowedLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("stow true");
+          portStatusLayer.setStatus(1, true);
+          stbdStatusLayer.setStatus(1, true);
+          portStatusLayer.setStatus(3, true);
+          stbdStatusLayer.setStatus(3, true);
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("stow false");
+          portStatusLayer.setStatus(1, false);
+          stbdStatusLayer.setStatus(1, false);
+          portStatusLayer.setStatus(3, false);
+          stbdStatusLayer.setStatus(3, false);
+        })
+      );
+
+    Triggers.manualControlLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("manual true");
+          portStatusLayer.setColor(Color.kBlack,Color.kPurple);
+          stbdStatusLayer.setColor(Color.kBlack,Color.kPurple);
+        })
+      );
+      
+      Triggers.eStopLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("eStop true");
+          portStatusLayer.setType(LayerType.ALTERNATING);
+          //portStatusLayer.setColor(Color.kBlack,Color.kRed);
+          stbdStatusLayer.setType(LayerType.ALTERNATING);
+          //stbdStatusLayer.setColor(Color.kBlack,Color.kRed);
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_BAR.put("eStop false");
+          portStatusLayer.setType(LayerType.STATUS);
+          stbdStatusLayer.setType(LayerType.STATUS);
+        })
+      );
+
+    Triggers.manualDriveLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_HAL.put("manual");
+          haloPortLayer.setType(LayerType.SOLID);
+          haloPortLayer.setColor(Color.kPurple,Color.kBlack);
+          haloStbdLayer.setType(LayerType.SOLID);
+          haloStbdLayer.setColor(Color.kPurple,Color.kBlack);
+        })
+      );
+
+    Triggers.headingLockLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_HAL.put("heading lock");
+          haloPortLayer.setType(LayerType.SOLID);
+          haloPortLayer.setColor(Color.kOrange,Color.kBlack);
+          haloStbdLayer.setType(LayerType.SOLID);
+          haloStbdLayer.setColor(Color.kOrange,Color.kBlack);
+        })
+      );
+
+    Triggers.pathFollowing.onTrue
+    (
+      Commands.runOnce
+      (() -> {
+        SD.STATE_LED_HAL.put("following path");
+        haloPortLayer.setType(LayerType.ALTERNATING);
+        haloPortLayer.setColor(Color.kYellow,Color.kBlack);
+        haloStbdLayer.setType(LayerType.ALTERNATING);
+        haloStbdLayer.setColor(Color.kYellow,Color.kBlack);
+      })
+    );
+    
+    Triggers.pathTarget
+    .and(Triggers.armAtTarget.negate())
+    .onTrue
+    (
+      Commands.runOnce
+      (() -> {
+        SD.STATE_LED_HAL.put("at path target");
+        haloPortLayer.setType(LayerType.SOLID);
+        haloPortLayer.setColor(Color.kYellow,Color.kBlack);
+        haloStbdLayer.setType(LayerType.SOLID);
+        haloStbdLayer.setColor(Color.kYellow,Color.kBlack);
+      })
+    );
+
+    Triggers.pathTarget
+    .and(Triggers.armAtTarget)
+    .onTrue
+    (
+      Commands.runOnce
+      (() -> {
+        SD.STATE_LED_HAL.put("path and arm target");
+        haloPortLayer.setType(LayerType.SOLID);
+        haloPortLayer.setColor(Color.kGreen,Color.kBlack);
+        haloStbdLayer.setType(LayerType.SOLID);
+        haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
+      })
+    );
+
+    Triggers.robotArmAndClimberAtTargetLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_HAL.put("climb ready");
+          haloPortLayer.setType(LayerType.SOLID);
+          haloPortLayer.setColor(Color.kGreen,Color.kBlack);
+          haloStbdLayer.setType(LayerType.SOLID);
+          haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
+        })
+      );
+
+    Triggers.intakeFullLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_HAL.put("intake full");
+          haloPortLayer.setType(LayerType.ALTERNATING);
+          haloPortLayer.setColor(Color.kGreen,Color.kBlack);
+          haloStbdLayer.setType(LayerType.ALTERNATING);
+          haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
+        })
+      );
+
+    Triggers.homeReefZoneTrigger
+      .and(Triggers.pathTarget)
+      .and(Triggers.armAtReefCoral)
+      .and(() -> !coral)
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_HAL.put("delivery success");
+          haloPortLayer.setType(LayerType.ALTERNATING);
+          haloPortLayer.setColor(Color.kGreen,Color.kBlack);
+          haloStbdLayer.setType(LayerType.ALTERNATING);
+          haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
+        })
+      );
+
+    Triggers.homeReefZoneTrigger
+      .and(Triggers.pathTarget)
+      .and(Triggers.armAtReefAlgae)
+      .and(() -> algae)
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_HAL.put("algae intake full");
+          haloPortLayer.setType(LayerType.ALTERNATING);
+          haloPortLayer.setColor(Color.kGreen,Color.kBlack);
+          haloStbdLayer.setType(LayerType.ALTERNATING);
+          haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
+        })
+      );
+
+    Triggers.timerClimbLEDs
+      .onTrue
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_ALL.put("climb timer true");
+          allLEDsLayer.setType(LayerType.ALTERNATING).setColor(Color.kRed,new Color(50, 0, 0));
+        })
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> {
+          SD.STATE_LED_ALL.put("climb timer false");
+          allLEDsLayer.setType(LayerType.SOLID).setColor(Color.kBlack,Color.kRed);
+        })
+      );
+
 
 //    allLEDsLayer.setPriority(-(allLEDsLayer.getPriority()));
   } 
+  
   public Command getAutoCommand()
   {
     // Gets the input string of command phrases, processes into a list of commands, and puts them into a sequential command group
