@@ -254,6 +254,9 @@ public class RobotContainer
 
   private void configureAutoDriveBindings()
   {
+    driver.back()
+      .whileTrue(s_Swerve.poseLockDriveCommand(() -> new Pose2d(7, 4, new Rotation2d(Units.degreesToRadians(48)))));
+
     /* Heading lock state management */
     Triggers.unlockHeadingTrigger.or(driver.start()).onTrue(Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED));
     driver.y().onTrue(Commands.runOnce(() -> headingState = HeadingStates.CAGE_LOCK));

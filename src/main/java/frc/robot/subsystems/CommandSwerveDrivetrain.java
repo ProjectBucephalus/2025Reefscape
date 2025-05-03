@@ -16,7 +16,11 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
@@ -34,6 +38,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.RobotContainer;
 import frc.robot.constants.Constants;
 import frc.robot.constants.TunerConstants.TunerSwerveDrivetrain;
+import frc.robot.util.FieldUtils;
+import frc.robot.util.GeoFenceObject;
 import frc.robot.util.SD;
 
 /**
@@ -42,6 +48,10 @@ import frc.robot.util.SD;
  */
 public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Subsystem, Sendable 
 {
+  final PIDController xController = new PIDController(Constants.Swerve.driveKP, Constants.Swerve.driveKI, Constants.Swerve.driveKD);
+  final PIDController yController = new PIDController(Constants.Swerve.driveKP, Constants.Swerve.driveKI, Constants.Swerve.driveKD);
+  final PIDController thetaController = new PIDController(Constants.Swerve.rotationKP, Constants.Swerve.rotationKI, Constants.Swerve.rotationKD);
+
   private static final double kSimLoopPeriod = 0.005; // 5 ms
   private Notifier m_simNotifier = null;
   private double m_lastSimTime;
@@ -305,6 +315,61 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     */
   public Command sysIdDynamic(SysIdRoutine.Direction direction) 
     {return m_sysIdRoutineToApply.dynamic(direction);}
+
+  public Command poseLockDriveCommand(Supplier<Pose2d> targetSupplier) {
+    final double maxSpeed = Constants.Swerve.maxSpeed;
+
+    final var driveRequest = new SwerveRequest
+      .ApplyRobotSpeeds();
+
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    return 
+    run
+    (() -> {
+      final Pose2d pose = RobotContainer.swerveState.Pose;
+      final Pose2d target = targetSupplier.get();
+
+      final double speedTheta = 
+        Math.min(thetaController.calculate(pose.getRotation().getRadians(), target.getRotation().getRadians()), Constants.Swerve.maxAngularVelocity);
+      double speedX = Math.min(xController.calculate(pose.getX(), target.getX()), Constants.Swerve.maxSpeed);
+      double speedY = Math.min(yController.calculate(pose.getY(), target.getY()), Constants.Swerve.maxSpeed);
+
+      if (SD.IO_GEOFENCE.get())
+      {   
+        final GeoFenceObject[] fieldGeoFence = FieldUtils.getAllianceFencing();
+        Translation2d motionXY = new Translation2d(speedX / maxSpeed, speedY / maxSpeed);
+
+        for (int i = fieldGeoFence.length - 1; i >= 0; i--)
+        {
+          motionXY = fieldGeoFence[i].dampMotion(pose.getTranslation(), motionXY, FieldUtils.GeoFencing.robotRadiusCircumscribed);
+        }
+
+        if (SD.IO_OUTER_GEOFENCE.get())
+          motionXY = FieldUtils.GeoFencing.field.dampMotion(pose.getTranslation(), motionXY, FieldUtils.GeoFencing.robotRadiusCircumscribed);
+
+        speedX = motionXY.getX() * maxSpeed;
+        speedY = motionXY.getY() * maxSpeed;
+      } 
+
+      setControl
+      (
+        driveRequest.withSpeeds
+        (
+          ChassisSpeeds.fromFieldRelativeSpeeds
+            (
+              new ChassisSpeeds
+              (
+                speedX,
+                speedY,
+                speedTheta
+              ),
+              pose.getRotation()
+            )
+        )
+      );
+    });
+  }
 
   @Override
   public void periodic() 
