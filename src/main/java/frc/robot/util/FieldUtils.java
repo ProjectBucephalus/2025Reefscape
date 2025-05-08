@@ -82,17 +82,21 @@ public class FieldUtils
 
   public static int getNearestReefFace(Translation2d robotPos)
   {
+    return 1;
+    /*  ### For displays we only use a single segment ###
+
     int nearestReefFace;
     ArrayList<Translation2d> localList =
     isRedAlliance() ? 
     FieldConstants.redReefMidpoints :
     FieldConstants.blueReefMidpoints;
-
+    
     nearestReefFace = localList.indexOf(robotPos.nearest(localList)); 
-
+    
     nearestReefFace = (int)Conversions.wrap(nearestReefFace, 1, 6);
     
     return nearestReefFace;
+    */
   }
 
   public static int getNearestBargePoint(Translation2d robotPos)
@@ -204,22 +208,14 @@ public class FieldUtils
     
     public static final GeoFenceObject[] fieldBlueGeoFence = 
     {
-      reefBlue, 
-      reefZoneRed, 
-      bargeColumn, 
-      bargeZoneRed,
-      cornerSBlue, 
-      cornerNBlue
+      reefBlue,
+      reefRed
     };
 
     public static final GeoFenceObject[] fieldRedGeoFence = 
     {
-      reefRed, 
-      reefZoneBlue, 
-      bargeColumn, 
-      bargeZoneBlue,
-      cornerSRed, 
-      cornerNRed
+      reefBlue,
+      reefRed
     };
     
     public static final Pair<Translation2d, Translation2d> blueAllianceBargeDynamic = new Pair<Translation2d,Translation2d>(new Translation2d(8.19, 3.721), new Translation2d(9.358, 0));

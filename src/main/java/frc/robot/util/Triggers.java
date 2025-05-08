@@ -21,6 +21,7 @@ public class Triggers
   public static final Trigger stationDriveTrigger    = new Trigger(() -> RobotContainer.headingState == HeadingStates.STATION_LOCK);
   public static final Trigger processorDriveTrigger  = new Trigger(() -> RobotContainer.headingState == HeadingStates.PROCESSOR_LOCK);
   public static final Trigger allowAutoDriveTrigger  = new Trigger(() -> SD.IO_LL.get());
+  
   public static final Trigger autoScoreCancelTrigger = new Trigger
   (
     unlockHeadingTrigger.or
@@ -30,6 +31,7 @@ public class Triggers
       RobotContainer.copilot.getRawAxis(RobotContainer.manualDiffectorRotationAxis) > Constants.Control.manualDiffectorDeadband
     )
   );
+  
   public static final Trigger opposingBargeZoneTrigger = new Trigger
   (
     () -> 
@@ -39,6 +41,7 @@ public class Triggers
     ) 
     < FieldConstants.bargeWarningRange
   );
+  
   public static final Trigger opposingReefZoneTrigger = new Trigger
   (
     () -> 
@@ -50,6 +53,7 @@ public class Triggers
     < 
     (FieldUtils.GeoFencing.circumscribedReefZoneDiameter / 2) + 1
   );
+
   public static final Trigger homeReefZoneTrigger = new Trigger
   (
     () -> 
@@ -61,10 +65,12 @@ public class Triggers
     < 
     (FieldUtils.GeoFencing.circumscribedReefZoneDiameter / 2) + 0.3
   );
+
   public static final Trigger usePenaltyRumbleTrigger = new Trigger
   (
     () -> SD.IO_LL.get() && SD.IO_GEOFENCE.get()
   );
+
   public static final Trigger algaeIntakePosTrigger = new Trigger
   (
     homeReefZoneTrigger.and
@@ -77,7 +83,9 @@ public class Triggers
       }
     )
   );
+
   public static final Trigger algaeIntakeTrigger = algaeIntakePosTrigger.and(() -> !RobotContainer.algae);
+
   public static final Trigger coralIntakeTrigger = new Trigger
   (
     () ->
@@ -91,6 +99,7 @@ public class Triggers
       (clawIntakePositions.anyMatch(relativeTarget::relativeEquals) && RobotContainer.algae);
     }
   );
+
   public static final Trigger atCoralStationTrigger = new Trigger
   (
     () -> 
@@ -99,7 +108,9 @@ public class Triggers
       return FieldUtils.getNearestCoralStation(robotPos).getDistance(robotPos) < FieldConstants.coralStationRange;
     }
   );
+
   public static final Trigger copilotLeftRumbleTrigger = coralIntakeTrigger.or(algaeIntakePosTrigger.and(() -> RobotContainer.algae));
+
   public static final Trigger driverRightRumbleTrigger = 
     coralIntakeTrigger
     .and(atCoralStationTrigger)
@@ -113,137 +124,24 @@ public class Triggers
     )
     .or(homeReefZoneTrigger.and(() -> RobotContainer.algae));
 
+  public static final Trigger coralLEDs = new Trigger
+  (
+    () ->
+    {
+      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
+      return (Presets.coralPositions.stream().anyMatch(relativeTarget::relativeEquals));
+    }
+  );
 
-  public static final Trigger bargeLEDs = new Trigger
+  public static final Trigger algaeLEDs = new Trigger
   (
     () ->
     {
       ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var algaeBargePosition = List.of(Presets.netPosition).stream();
-      return
-      (algaeBargePosition.anyMatch(relativeTarget::relativeEquals));
+      return (Presets.algaePositions.stream().anyMatch(relativeTarget::relativeEquals));
     }
   );
-  public static final Trigger Lvl4LEDs = new Trigger
-  (
-    () ->
-    {
-      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coral4Positions = List.of(Presets.coral4Position).stream();
-      return
-      (coral4Positions.anyMatch(relativeTarget::relativeEquals));
-    }
-  );
-  public static final Trigger lvl3AlgaeLEDs = new Trigger
-  (
-    () ->
-    {
-      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var algae3Positions = List.of(Presets.algae3Position).stream();
-      return
-      algae3Positions.anyMatch(relativeTarget::relativeEquals);
-    }
-  );
-  public static final Trigger lvl3CoralLEDs = new Trigger
-  (
-    () ->
-    {
-      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coral3Positions = List.of(Presets.coral3Position, Presets.coral3AltPosition).stream();
-      return
-      coral3Positions.anyMatch(relativeTarget::relativeEquals);
-    }
-  );
-  public static final Trigger coralStationClawLEDs = new Trigger
-  (
-    () ->
-    {
-      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var clawIntakePositions = List.of(Presets.coralClawPosition).stream();
-      return
-      clawIntakePositions.anyMatch(relativeTarget::relativeEquals);
-    }
-  );
-  public static final Trigger coralStationIntakeLEDs = new Trigger
-  (
-    () ->
-    {
-      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coralIntakePositions = List.of(Presets.coralIntakePosition, Presets.coralIntakeAltPosition).stream();
-      return
-      coralIntakePositions.anyMatch(relativeTarget::relativeEquals);
-    }
-  );
-  public static final Trigger lvl2AlgaeLEDs = new Trigger
-  (
-    () ->
-    {
-      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var algae2Positions = List.of(Presets.algae2Position).stream();
-      return
-      algae2Positions.anyMatch(relativeTarget::relativeEquals);
-    }
-  );
-  public static final Trigger lvl2CoralLEDs = new Trigger
-  (
-    () ->
-    {
-      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coral2Positions = List.of(Presets.coral2Position, Presets.coral2AltPosition).stream();
-      return
-      coral2Positions.anyMatch(relativeTarget::relativeEquals);
-    }
-  );
-  public static final Trigger lvl1ClawLEDs = new Trigger
-  (
-    () ->
-    {
-      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var claw1Positions = List.of(Presets.coral1ClawPosition).stream();
-      return
-      claw1Positions.anyMatch(relativeTarget::relativeEquals);
-    }
-  );
-  public static final Trigger lvl1CoralLEDs = new Trigger
-  (
-    () ->
-    {
-      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var coral1Positions = List.of(Presets.coral1Position).stream();
-      return
-      coral1Positions.anyMatch(relativeTarget::relativeEquals);
-    }
-  );
-  public static final Trigger groundIntakeOrProcessorLEDs = new Trigger
-  (
-    () ->
-    {
-      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var algaeLowPositions = List.of(Presets.algaeIntakePosition, Presets.processorPosition).stream();
-      return
-      algaeLowPositions.anyMatch(relativeTarget::relativeEquals);
-    }
-  );
-  public static final Trigger ClimbLEDs = new Trigger
-  (
-    () ->
-    {
-      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var climbPosition = List.of(Presets.climbPosition).stream();
-      return
-      climbPosition.anyMatch(relativeTarget::relativeEquals);
-    }
-  );
-  public static final Trigger stowedLEDs = new Trigger
-  (
-    () ->
-    {
-      ArmPos relativeTarget = RobotContainer.s_Diffector.getRelativeTarget();
-      var stowPositions = List.of(Presets.coralStowPosition, Presets.algaeStowPosition).stream();
-      return
-      stowPositions.anyMatch(relativeTarget::relativeEquals);
-    }
-  );
+
   public static final Trigger manualControlLEDs = new Trigger
   (
     () ->
@@ -253,7 +151,6 @@ public class Triggers
       RobotContainer.copilot.axisMagnitudeGreaterThan(6,0.3).getAsBoolean();
     }
   );
-  
 
   public static final Trigger eStopLEDs = new Trigger
   (
@@ -282,6 +179,7 @@ public class Triggers
   //     return
   //   }
   // );
+  //
   // public static final Trigger followPathLEDs = new Trigger
   // (
   //   () ->
@@ -290,15 +188,17 @@ public class Triggers
   //     return
   //   }
   // );
+  //
   // public static final Trigger robotAtTargetLEDs = new Trigger
   // (
   //   () ->
   //   {
   //     Translation2d robotPos = RobotContainer.swerveState.Pose.getTranslation();
   //     return
-      
+  //    
   //   }
   // );
+
   public static final Trigger robotArmAndClimberAtTargetLEDs = new Trigger
   (
     () ->

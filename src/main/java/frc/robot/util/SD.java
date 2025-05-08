@@ -27,6 +27,7 @@ public class SD
   public static final BooleanKey ROTATION_KNOWN = new BooleanKey("Rotation Known", false);
   public static final BooleanKey CALIBRATE_DIFF = new BooleanKey("Overide: Calibrate Arm", false);
   public static final BooleanKey CALIBRATE_DIFF_TARGET = new BooleanKey("Overide: Arm At Target", false);
+  public static final DoubleKey  GEOFENCE_IMPACT = new DoubleKey("Fence Impact", 1);
 
   public static final StringKey  STATE_HEADING = new StringKey("Heading State", "");
   
@@ -38,11 +39,10 @@ public class SD
   public static final BooleanKey IO_PROCESS_AUTO = new BooleanKey("Process Auto", false);
   public static final BooleanKey IO_GEOFENCE = new BooleanKey("Use Fence", true);
   public static final BooleanKey IO_OUTER_GEOFENCE = new BooleanKey("Wall Fence", true);
-  public static final DoubleKey  IO_GEOFENCE_IMPACT = new DoubleKey("Fence Impact", 1);
   public static final StringKey  IO_AUTO = new StringKey("Auto Input", Constants.Auto.defaultAuto);
   public static final DoubleKey  IO_RUMBLE_D = new DoubleKey("Driver Rumble", Constants.RumblerConstants.driverDefault);
   public static final DoubleKey  IO_RUMBLE_C = new DoubleKey("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
-  public static final BooleanKey IO_BARGE_PROTECTION = new BooleanKey("Use Barge Protection", true);
+  public static final BooleanKey IO_BARGE_PROTECTION = new BooleanKey("Use Barge Protection", false);
 
   public static final BooleanKey STATE_PP_WARMUP = new BooleanKey("Warmup Finished", false);
   public static final StringKey  STATE_ALGAE = new StringKey("Algae Manipulator State", "Empty");
@@ -70,16 +70,16 @@ public class SD
   public static final DoubleKey DIFF_DA_ER = new DoubleKey("DA Error", 0);  
   public static final DoubleKey DIFF_HEIGHT = new DoubleKey("Height over deck", 0);  
   public static final DoubleKey DIFF_ANGLE_ER = new DoubleKey("Offset", 0);
-
+  
   public static final DoubleKey  IO_DIFF_ELEVATION = new DoubleKey ("Manual Elevation Target", 1);
   public static final DoubleKey  IO_DIFF_ANGLE     = new DoubleKey ("Manual Angle Target", 0);
   public static final BooleanKey IO_DIFF_GOTO      = new BooleanKey("Arm To Manual Target", false);
-
+  
   public static final StringKey RUMBLE_D_R = new StringKey("DriverRight Rumble Queue", "");
   public static final StringKey RUMBLE_D_L = new StringKey("DriverLeft Rumble Queue", "");
   public static final StringKey RUMBLE_C_R = new StringKey("CopilotRight Rumble Queue", "");
   public static final StringKey RUMBLE_C_L = new StringKey("CopilotLeft Rumble Queue", "");
-
+  
   public static final BooleanKey DIFF_ESTOP = new BooleanKey("Diffector E-Stop", false);
   public static final BooleanKey OVERRIDE = new BooleanKey("OVERIDE MODE", false);
   public static final BooleanKey CLIMB_OVERRIDE = new BooleanKey("Override Climber", false);
@@ -89,6 +89,20 @@ public class SD
   public static final DoubleKey IO_POSE_Y = new DoubleKey("Pose Y", 0.0);
   public static final DoubleKey IO_POSE_R = new DoubleKey("Pose Rotation", 0.0);
 
+  public static final DoubleKey  IO_FENCE_XA  = new DoubleKey("Fence Xa", -5);
+  public static final DoubleKey  IO_FENCE_YA  = new DoubleKey("Fence Ya", -5);
+  public static final DoubleKey  IO_FENCE_XB  = new DoubleKey("Fence Xb", 5);
+  public static final DoubleKey  IO_FENCE_YB  = new DoubleKey("Fence Yb", 5);
+  public static final BooleanKey IO_FENCE_SET = new BooleanKey("Set Fence", false);
+  public static final BooleanKey IO_FENCE_XAP = new BooleanKey("Xa +", false);
+  public static final BooleanKey IO_FENCE_YAP = new BooleanKey("Ya +", false);
+  public static final BooleanKey IO_FENCE_XAM = new BooleanKey("Xa -", false);
+  public static final BooleanKey IO_FENCE_YAM = new BooleanKey("Ya -", false);
+  public static final BooleanKey IO_FENCE_XBP = new BooleanKey("Xb +", false);
+  public static final BooleanKey IO_FENCE_YBP = new BooleanKey("Yb +", false);
+  public static final BooleanKey IO_FENCE_XBM = new BooleanKey("Xb -", false);
+  public static final BooleanKey IO_FENCE_YBM = new BooleanKey("Yb -", false);
+  
   static
   {
     for 
@@ -114,7 +128,7 @@ public class SD
         IO_AUTO,
         IO_ALGAE_HOLD,
         IO_LED_BRIGHTNESS,
-        IO_GEOFENCE_IMPACT,
+        GEOFENCE_IMPACT,
         IO_POSE_X,
         IO_POSE_Y,
         IO_POSE_R,
@@ -124,7 +138,20 @@ public class SD
         STATE_LED_BAR,
         STATE_LED_HAL,
         STATE_LED_ALL,
-        IO_OUTER_GEOFENCE
+        IO_OUTER_GEOFENCE,
+        IO_FENCE_XA,
+        IO_FENCE_YA,
+        IO_FENCE_XB,
+        IO_FENCE_YB,
+        IO_FENCE_SET,
+        IO_FENCE_XAP,
+        IO_FENCE_YAP,
+        IO_FENCE_XAM,
+        IO_FENCE_YAM,
+        IO_FENCE_XBP,
+        IO_FENCE_YBP,
+        IO_FENCE_XBM,
+        IO_FENCE_YBM
       )
     )
     {

@@ -33,11 +33,11 @@ public final class Constants
     public static final double manualDiffectorDeadband = 0.25;
     public static final double stickDeadband = 0.15;
     /** Normal maximum robot speed, relative to maximum uncapped speed */
-    public static final double maxThrottle = 0.8;
+    public static final double maxThrottle = 0.5;
     /** Minimum robot speed when braking, relative to maximum uncapped speed */
-    public static final double minThrottle = 0.1;
+    public static final double minThrottle = 0.05;
     /** Normal maximum rotational robot speed, relative to maximum uncapped rotational speed */
-    public static final double maxRotThrottle = 1;
+    public static final double maxRotThrottle = 0.8;
     /** Minimum rotational robot speed when braking, relative to maximum uncapped rotational speed */
     public static final double minRotThrottle = 0.5;
     /** Angle tolerance to consider something as "facing" the drivers, degrees */
@@ -120,7 +120,7 @@ public final class Constants
   public static final class Auto
   {   
     /** m/s */
-    public static final double pathplannerMaxSpeed = 4.35;
+    public static final double pathplannerMaxSpeed = 2.35;
     /** m/s */
     public static final double pathplannerSlowedSpeed = 1.5;
     /** m/s^2 */
@@ -202,7 +202,7 @@ public final class Constants
     /** How close we have to be to the path start point to just follow the path without using pathfinding */
     public static final double atPosTolerance = 0.07;
 
-    public static final String defaultAuto = "rc4,cr1,rb4,cl1,ra4,cl1,rl4";
+    public static final String defaultAuto = "t1";
   }
 
   public static final class DiffectorConstants
@@ -260,6 +260,31 @@ public final class Constants
         add(coral3Position);
       }};
 
+      public static final ArrayList<ArmPos> coralPositions = new ArrayList<ArmPos>()
+      {{
+        add(Presets.coral4Position);
+        add(Presets.coral3Position);
+        add(Presets.coral3AltPosition);
+        add(Presets.coral2Position);
+        add(Presets.coral2AltPosition);
+        add(Presets.coral1Position);
+        add(Presets.coral1ClawPosition);
+        add(Presets.coralIntakePosition);
+        add(Presets.coralIntakeAltPosition);
+        add(Presets.coralClawPosition);
+        add(Presets.coralStowPosition);
+      }};
+
+      public static final ArrayList<ArmPos> algaePositions = new ArrayList<ArmPos>()
+      {{
+        add(Presets.netPosition);
+        add(Presets.algae3Position);
+        add(Presets.algae2Position);
+        add(Presets.processorPosition);
+        add(Presets.algaeIntakePosition);
+        add(Presets.algaeStowPosition);
+      }};
+
       public static final Predicate<Integer> isPortReefFace = (face) -> (face == 2 || face == 3);
     }
 
@@ -304,12 +329,19 @@ public final class Constants
 
   public static final class ClimberConstants
   {
+    /** Vertical starting position, Winch rotations from fully retracted */
     public static final double startWinchPos   = 4.0;
+    /** Fully retracted position, Winch rotations */
     public static final double stowWinchPos    = 0.0;
+    /** Checkpoint for diffector to move safely, Winch rotations from fully retracted */
     public static final double safeWinchPos    = 3.9;
+    /** Trigger point to adjust robot position when climbing, Winch rotations from fully retracted */
     public static final double startDrivePos   = 4.7;
+    /** Maximum value to achieve climb, Winch rotations from fully retracted */
     public static final double offGroundPos    = 2.5;
+    /** Fully extended forward, Winch rotations from fully retracted */
     public static final double prepareWinchPos = 5.6;
+    /** Target climb position, Winch rotations from fully retracted */
     public static final double climbWinchPos   = 2.0;
     /** The furthest into the robot the climber can attempt to go whilst balancing */
     public static final double climbActiveInnerLimit = 1.7;
@@ -326,19 +358,19 @@ public final class Constants
      */
     /** PWM port the strip is connected to. */
     public static final int LEDPWMPort = IDConstants.LEDPWM; 
+    /** Start and end positions for Volaans displays */
+    public static final int stbdStatusStart = 0;
+    public static final int stbdStatusWidth = 29;
+    public static final int stbdHaloStart   = stbdStatusStart + stbdStatusWidth;
+    public static final int stbdHaloWidth   = 25;
+    public static final int portHaloStart   = stbdHaloStart + stbdHaloWidth;
+    public static final int portHaloWidth   = 27;
+    public static final int portStatusStart = portHaloStart + portHaloWidth;
+    public static final int portStatusWidth = 30;
     /** # of LED's in the strip, if more than one strip daisy-chained, total # of LED's */
-    public static final int lightsLen = 118; 
+    public static final int lightsLen = stbdStatusWidth + stbdHaloWidth + portHaloWidth + portStatusWidth; 
     /** default width for a partial display layer. a good number is about 1/4 lightsLen */
     public static final int viewWidth = 30;
-    /** Start and end positions for Volaans displays */
-    public static final int stbdStatusStart = 0; //86;
-    public static final int stbdStatusWidth = 30; //30;
-    public static final int portStatusStart = 83; //0;
-    public static final int portStatusWidth = 30; //30;
-    public static final int stbdHaloStart = 30; //58;
-    public static final int stbdHaloWidth = 26; //28;
-    public static final int portHaloStart = 56; //30;
-    public static final int portHaloWidth = 27; //28;
     /** LED # at 0 degrees */
     public static final int startOffset = 1; 
     /** used to calculate the LED pointing in a particular direction */
@@ -355,10 +387,10 @@ public final class Constants
     public static final int pointerGradientThreshold = 5; 
     /** start and end LED #'s for the 'starboard' segment */
     public static final int stbdLEDsStart = 0; 
-    public static final int stbdLEDsEnd = 57;
+    public static final int stbdLEDsEnd = stbdStatusWidth + stbdHaloWidth - 1;
     /** start and end LED #'s for the 'port' segment */
-    public static final int portLEDsStart = 58; 
-    public static final int portLEDsEnd = 115;
+    public static final int portLEDsStart = stbdLEDsEnd + 1; 
+    public static final int portLEDsEnd = lightsLen - 1;
     /** maximum colour layers in disco mode */
     public static final int discoMax = 10;  
     /** minimum colour layers in disco mode */

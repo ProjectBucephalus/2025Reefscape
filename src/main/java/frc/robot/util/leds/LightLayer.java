@@ -3,6 +3,7 @@ package frc.robot.util.leds;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -33,7 +34,8 @@ public class LightLayer
   private int startLED;  // used to calculate the starting LED when rendering
   private int startSegment; // starting position within defined segment for the layer.
   private LEDPattern display; // LEDPatternobject used to generate certain display modes
-  public double progress; // the state of the PROGRESS display type (the portion of the bar that is 'front' color, as double from 0 - 1)
+  private double progress; // the state of the PROGRESS display type (the portion of the bar that is 'front' color, as double from 0 - 1)
+  private DoubleSupplier progressSupplier; // the state of the PROGRESS display type (the portion of the bar that is 'front' color, as double from 0 - 1)
   private boolean reversed; // if true, the layer will be drawn reversed (useful for vertical displays, where the strip runs up and down an object)
   public enum Mode {DRIVERFACE, WHOLESTRIP, TARGETFACE, STATICSEGMENT, NEARSEGMENT, FARSEGMENT}
   private Mode displayMode; // variable using the Mode enum to set how/where this layer will be displayed
@@ -66,6 +68,7 @@ public class LightLayer
     this.s_Swerve = s_Swerve;
     name = nameReq;
     tempBuff = new AddressableLEDBuffer(width);
+    progressSupplier = () -> 0.3;
     progress=0.3;  
     displayMode = Mode.DRIVERFACE;
     displayType = LayerType.PROGRESS;
@@ -126,9 +129,9 @@ public class LightLayer
    * Set the progress value for PROGRESS displayType
    * <p> valid values 0.0 - 1.0, values outside this range will be clamped.
    */
-  public LightLayer setProgress (double newProgress)
+  public LightLayer setProgressSupplier (DoubleSupplier newProgressSuprogressSupplier)
   {
-    progress = newProgress;
+    progressSupplier = newProgressSuprogressSupplier;
     return this;
   }
 
@@ -454,7 +457,7 @@ public class LightLayer
     {
 
       // check progress variable is not out of bounds.
-      progress = MathUtil.clamp(progress,0.01, 1.0);
+      progress = MathUtil.clamp(progressSupplier.getAsDouble(),0.01, 1.0);
 
       // use the LEDPattern object to build a display that is progress% the front/on color.
       display = LEDPattern.steps(Map.of(0,colorOn,progress,colorOff));

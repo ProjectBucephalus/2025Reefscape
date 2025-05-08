@@ -29,10 +29,10 @@ public class TargetCageDrive extends HeadingLockedDrive
   @Override
   protected void updateTargetHeading() 
   {
-    rotationOffset = 
-    MathUtil.isNear(robotXY.getX(), (FieldUtils.fieldLength / 2), Constants.Control.cageFaceDistance) ? 
-      Rotation2d.kZero :
-      Rotation2d.kCW_90deg;
+    rotationOffset = Rotation2d.kZero;
+    //MathUtil.isNear(robotXY.getX(), (FieldUtils.fieldLength / 2), Constants.Control.cageFaceDistance) ? 
+    //  Rotation2d.kZero :
+    //  Rotation2d.kCW_90deg;
   }
 
   @Override

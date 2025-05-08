@@ -6,6 +6,7 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.swerve.*;
@@ -60,7 +62,7 @@ public class RobotContainer
   /* Controllers */
   public static final CommandXboxController driver    = new CommandXboxController(0);
   public static final CommandXboxController copilot   = new CommandXboxController(1);
-  public static final CommandXboxController buttonBox = new CommandXboxController(2);
+  public static final CommandGenericHID     buttonBox = new CommandGenericHID    (2);
   public static final CommandXboxController testing   = new CommandXboxController(3);
   public static final CommandXboxController sysID     = new CommandXboxController(4);
 
@@ -127,6 +129,7 @@ public class RobotContainer
     //configureTestBindings();
     configureSDButtonBindings();
     configureMiscBindings();
+    configureFenceBindings();
 
     s_Swerve.registerTelemetry(logger::telemeterize);
     initLED();
@@ -197,7 +200,7 @@ public class RobotContainer
 
     /* Smart Intake and Auto Score controls */
     driver.rightBumper()
-      .whileTrue
+      .onTrue
       (
         Commands.either // Algae intake pos
         (
@@ -209,16 +212,22 @@ public class RobotContainer
             return robotRotation < 180 ^ FieldUtils.isRedAlliance();
           }
         )
-        .andThen(s_Algae.run(() -> {if (s_Diffector.atPosition()) s_Algae.setStatus(AlgaeManipulator.Status.INTAKE);}))
-        .finallyDo
-        (
-          () -> 
-          {    
-            s_Algae.setStatus(AlgaeManipulator.Status.HOLDING);
-            if (RobotContainer.algae)
-              {s_Diffector.setTargetPosition(DiffectorConstants.Presets.algaeStowPosition);}
-          }
-        )
+        .withName("SmartIntake")
+      )
+      .whileTrue
+      (
+        s_Algae.run(() -> {if (s_Diffector.atPosition()) s_Algae.setStatus(AlgaeManipulator.Status.INTAKE);})
+        .withName("SmartIntake")
+      )
+      .onFalse
+      (
+        Commands.runOnce
+        (() -> 
+        {    
+          s_Algae.setStatus(AlgaeManipulator.Status.HOLDING);
+          if (RobotContainer.algae)
+            {s_Diffector.setTargetPosition(DiffectorConstants.Presets.algaeStowPosition);}
+        })
         .withName("SmartIntake")
       );
 
@@ -261,29 +270,31 @@ public class RobotContainer
     driver.b().onTrue(Commands.runOnce(() -> headingState = HeadingStates.PROCESSOR_LOCK));
     driver.a().onTrue(Commands.runOnce(() -> headingState = HeadingStates.STATION_LOCK));
 
+    // ### Disabled most autodriving for display ###
+
     /* 
       * Cage pathfinding controls 
       * Drives to the nearest reef face when the cage heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    Triggers.cageDriveTrigger.and(driver.povUp())   .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage2", driver.rightTrigger())));
-    Triggers.cageDriveTrigger.and(driver.povLeft()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage3", driver.rightTrigger())));
-    Triggers.cageDriveTrigger.and(driver.povRight()).and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage1", driver.rightTrigger())));
-    Triggers.cageDriveTrigger.and(driver.povDown()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getClimbPathName(), driver.rightTrigger())));
+    //Triggers.cageDriveTrigger.and(driver.povUp())   .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage2", driver.rightTrigger())));
+    //Triggers.cageDriveTrigger.and(driver.povLeft()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage3", driver.rightTrigger())));
+    //Triggers.cageDriveTrigger.and(driver.povRight()).and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "cage1", driver.rightTrigger())));
+    //Triggers.cageDriveTrigger.and(driver.povDown()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getClimbPathName(), driver.rightTrigger())));
 
     /* 
       * Station pathfinding controls 
       * Drives to the nearest coral station when the station heading lock is active and a corresponding dpad direction is pressed 
       */ 
-    Triggers.stationDriveTrigger.and(driver.povUp())   .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(2), driver.rightTrigger())));
-    Triggers.stationDriveTrigger.and(driver.povLeft()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(1), driver.rightTrigger())));
-    Triggers.stationDriveTrigger.and(driver.povRight()).and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(3), driver.rightTrigger())));
+    //Triggers.stationDriveTrigger.and(driver.povUp())   .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(2), driver.rightTrigger())));
+    //Triggers.stationDriveTrigger.and(driver.povLeft()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(1), driver.rightTrigger())));
+    //Triggers.stationDriveTrigger.and(driver.povRight()).and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getStationPathName(3), driver.rightTrigger())));
 
     /* 
       * Processor pathfinding control 
       * Runs when the processor heading lock is active and right is pressed on the dpad 
       */ 
-    Triggers.processorDriveTrigger.and(driver.povRight()).and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "p", driver.rightTrigger())));
-    Triggers.processorDriveTrigger.and(driver.povLeft()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "pOpp", driver.rightTrigger())));
+    //Triggers.processorDriveTrigger.and(driver.povRight()).and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "p", driver.rightTrigger())));
+    //Triggers.processorDriveTrigger.and(driver.povLeft()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(() -> "pOpp", driver.rightTrigger())));
 
     /* 
       * Reef and Net pathfinding controls 
@@ -293,7 +304,7 @@ public class RobotContainer
     Triggers.scoreDriveTrigger.and(driver.povUp())   .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.CENTRE), driver.rightTrigger())));
     Triggers.scoreDriveTrigger.and(driver.povLeft()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.LEFT), driver.rightTrigger())));
     Triggers.scoreDriveTrigger.and(driver.povRight()).and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.getReefPathName(DpadOptions.RIGHT), driver.rightTrigger())));
-    Triggers.scoreDriveTrigger.and(driver.povDown()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.bargePathNameSup, driver.rightTrigger())));
+    //Triggers.scoreDriveTrigger.and(driver.povDown()) .and(Triggers.allowAutoDriveTrigger).onTrue(s_Swerve.defer(() -> AutoUtils.pathfindAndFollowCommand(AutoUtils.bargePathNameSup, driver.rightTrigger())));
 
     /* 
       * Binds heading targetting commands to run while the appropriate trigger is active and the dpad isn't pressed
@@ -321,12 +332,14 @@ public class RobotContainer
     Triggers.stationDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetStationDrive
+        //new TargetStationDrive
+        new HeadingLockedDrive
         (
           s_Swerve, 
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
-          Rotation2d.k180deg,
+          Rotation2d.kCCW_90deg,
+          Rotation2d.kCW_90deg,
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
@@ -444,7 +457,7 @@ public class RobotContainer
           (
             s_Diffector.dualPosCommand(DiffectorConstants.Presets.processorPosition.stbd(), DiffectorConstants.Presets.processorPosition.port()), 
             s_Diffector.dualPosCommand(DiffectorConstants.Presets.processorPosition.port(), DiffectorConstants.Presets.processorPosition.stbd()), 
-            () -> (swerveState.Pose.getX() >= 8.774 ^ FieldUtils.isRedAlliance())
+            () -> (swerveState.Pose.getX() >= FieldUtils.fieldLength/2 ^ FieldUtils.isRedAlliance())
           )
           .withName("Processor"),
           s_Diffector.coralScorePosCommand(1).withName("Coral1"), 
@@ -598,17 +611,12 @@ public class RobotContainer
   }
 
   private void configureTestBindings()
-  {
-    testing.y().onTrue(s_Diffector.moveToCommand(new ArmPos(1.5, 90)));
-    testing.a().onTrue(s_Diffector.moveToCommand(new ArmPos(0.5, 90)));
-    testing.povUp().onTrue(s_Diffector.moveToCommand(new ArmPos(1, 0)));
-    testing.povRight().onTrue(s_Diffector.moveToCommand(new ArmPos(1, 90)));
-    testing.povDown().onTrue(s_Diffector.moveToCommand(new ArmPos(1, 180)));
-    testing.povLeft().onTrue(s_Diffector.moveToCommand(new ArmPos(1, 270)));
-  }
+  {}
 
   private void configureSDButtonBindings()
   {
+    /* ### Disable most uses of auto-driving for displays ###
+
     new Trigger(SD.IO_POSE_PATHFIND::button)
       .onTrue
       (
@@ -626,6 +634,8 @@ public class RobotContainer
           )
         )
       );
+    
+    */
 
     new Trigger(SD.IO_DIFF_GOTO::button)
       .onTrue
@@ -649,26 +659,31 @@ public class RobotContainer
 
   private void initLED()
   { 
-    portStatusLayer.setSegments(6)
+    portStatusLayer
       .setMode(Mode.STATICSEGMENT)
       .setStart(LEDStrip.portStatusStart)
       .setWidth(LEDStrip.portStatusWidth)
-      .setType(LayerType.STATUS)
+      .setType(LayerType.PROGRESS)
       .setPriority(5)
-      .setColor(Color.kBlack, Color.kGreen)
+      .setColor(Color.kGreen, Color.kBlack)
       .setPeriod(0.2)
       .setBorder(false)
-      .setReversed(true);
-
-    stbdStatusLayer.setSegments(6)
+      .setReversed(true)
+      .setProgressSupplier(() -> 
+        MathUtil.interpolate(DiffectorGeometry.minZ, DiffectorGeometry.maxZ, s_Diffector.getElevation()));
+    
+    stbdStatusLayer
       .setMode(Mode.STATICSEGMENT)
       .setStart(LEDStrip.stbdStatusStart)
       .setWidth(LEDStrip.stbdStatusWidth)
-      .setType(LayerType.STATUS)
+      .setType(LayerType.PROGRESS)
       .setPriority(5)
-      .setColor(Color.kBlack, Color.kGreen)
+      .setColor(Color.kGreen, Color.kBlack)
       .setPeriod(0.2)
-      .setBorder(false);
+      .setBorder(false)
+      .setProgressSupplier(() -> 
+        MathUtil.interpolate(DiffectorGeometry.minZ, DiffectorGeometry.maxZ, s_Diffector.getElevation()));
+      
 
     haloPortLayer.setStart(LEDStrip.portHaloStart)
       .setWidth(LEDStrip.portHaloWidth)
@@ -700,332 +715,43 @@ public class RobotContainer
       .setColor(Color.kBlack, Color.kRed)
       .setBorder(false);
 
-    io_Lights.addLayer(portStatusLayer)
+    io_Lights
+      .addLayer(portStatusLayer)
       .addLayer(stbdStatusLayer)
       .addLayer(haloPortLayer)
       .addLayer(haloStbdLayer)
       .addLayer(allLEDsLayer);
 
-    Triggers.bargeLEDs
-      .onTrue
-      (
-        Commands.runOnce
+    Triggers.algaeLEDs.onTrue
+    (
+      Commands
+      .runOnce
         (() -> {
-          SD.STATE_LED_BAR.put("net true");
-          portStatusLayer.setStatus(5, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-          stbdStatusLayer.setStatus(5, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
+          SD.STATE_LED_BAR.put("algae arm mode");
+          portStatusLayer.setColor(Color.kDeepSkyBlue, Color.kBlack);
+          stbdStatusLayer.setColor(Color.kDeepSkyBlue, Color.kBlack);
         })
-      )
-      .onFalse
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("net false");
-          portStatusLayer.setStatus(5, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-          stbdStatusLayer.setStatus(5, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-        })
-      );
+    );
 
-    Triggers.Lvl4LEDs
-      .onTrue
-      (
-        Commands.runOnce
+    Triggers.coralLEDs.onTrue
+    (
+      Commands
+      .runOnce
         (() -> {
-          SD.STATE_LED_BAR.put("c4 true");
-          portStatusLayer.setStatus(5, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-          stbdStatusLayer.setStatus(5, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
+          SD.STATE_LED_BAR.put("coral arm mode");
+          portStatusLayer.setColor(Color.kWhite, Color.kBlack);
+          stbdStatusLayer.setColor(Color.kWhite, Color.kBlack);
         })
-      )
-      .onFalse
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("c4 false");
-          portStatusLayer.setStatus(5, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-          stbdStatusLayer.setStatus(5, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-        })
-      );
-
-    Triggers.lvl3AlgaeLEDs
-      .onTrue
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("a3 true");
-          portStatusLayer.setStatus(4, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-          stbdStatusLayer.setStatus(4, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-        })
-      )
-      .onFalse
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("a3 false");
-          portStatusLayer.setStatus(4, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-          stbdStatusLayer.setStatus(4, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-        })
-      );
-
-    Triggers.lvl3CoralLEDs
-      .onTrue
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("c3 true");
-          portStatusLayer.setStatus(4, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-          stbdStatusLayer.setStatus(4, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-        })
-      )
-      .onFalse
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("c3 false");
-          portStatusLayer.setStatus(4, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-          stbdStatusLayer.setStatus(4, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-        })
-      );
-
-    Triggers.coralStationClawLEDs
-      .onTrue
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("a intake true");
-          portStatusLayer.setStatus(3, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-          stbdStatusLayer.setStatus(3, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-        })
-      )
-      .onFalse
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("a intake false");
-          portStatusLayer.setStatus(3, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-          stbdStatusLayer.setStatus(3, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-        })
-      );
-
-    Triggers.coralStationIntakeLEDs
-      .onTrue
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("c intake true");
-          portStatusLayer.setStatus(3, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-          stbdStatusLayer.setStatus(3, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-        })
-      )
-      .onFalse
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("c intake false");
-          portStatusLayer.setStatus(3, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-          stbdStatusLayer.setStatus(3, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-        })
-      );
-
-    Triggers.lvl2AlgaeLEDs
-      .onTrue
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("a2 true");
-          portStatusLayer.setStatus(2, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-          stbdStatusLayer.setStatus(2, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-        })
-      )
-      .onFalse
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("a2 false");
-          portStatusLayer.setStatus(2, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-          stbdStatusLayer.setStatus(2, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-        })
-      );
-
-    Triggers.lvl2CoralLEDs
-      .onTrue
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("c2 true");
-          portStatusLayer.setStatus(2, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-          stbdStatusLayer.setStatus(2, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-        })
-      )
-      .onFalse
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("c2 false");
-          portStatusLayer.setStatus(2, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-          stbdStatusLayer.setStatus(2, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-        })
-      );
-
-    Triggers.lvl1ClawLEDs
-      .onTrue
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("a1 true");
-          portStatusLayer.setStatus(1, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-          stbdStatusLayer.setStatus(1, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-        })
-      )
-      .onFalse
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("a1 false");
-          portStatusLayer.setStatus(1, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-          stbdStatusLayer.setStatus(1, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-        })
-      );
-
-    Triggers.lvl1CoralLEDs
-      .onTrue
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("c1 true");
-          portStatusLayer.setStatus(1, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-          stbdStatusLayer.setStatus(1, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-        })
-      )
-      .onFalse
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("c1 false");
-          portStatusLayer.setStatus(1, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kWhite);
-          stbdStatusLayer.setStatus(1, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kWhite);
-        })
-      );
-
-    Triggers.groundIntakeOrProcessorLEDs
-      .onTrue
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("ground true");
-          portStatusLayer.setStatus(0, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-          stbdStatusLayer.setStatus(0, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-        })
-      )
-      .onFalse
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("ground false");
-          portStatusLayer.setStatus(0, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-          stbdStatusLayer.setStatus(0, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kDeepSkyBlue);
-        })
-      );
-
-    Triggers.ClimbLEDs
-      .onTrue
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("climb true");
-          portStatusLayer.setStatus(0, true);
-          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
-          stbdStatusLayer.setStatus(0, true);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
-        })
-      )
-      .onFalse
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("climb false");
-          portStatusLayer.setStatus(0, false);
-          portStatusLayer.setColor(Color.kBlack,Color.kGreen);
-          stbdStatusLayer.setStatus(0, false);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kGreen);
-        })
-      );
-
-    Triggers.stowedLEDs
-      .onTrue
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("stow true");
-          portStatusLayer.setStatus(1, true);
-          stbdStatusLayer.setStatus(1, true);
-          portStatusLayer.setStatus(3, true);
-          stbdStatusLayer.setStatus(3, true);
-        })
-      )
-      .onFalse
-      (
-        Commands.runOnce
-        (() -> {
-          SD.STATE_LED_BAR.put("stow false");
-          portStatusLayer.setStatus(1, false);
-          stbdStatusLayer.setStatus(1, false);
-          portStatusLayer.setStatus(3, false);
-          stbdStatusLayer.setStatus(3, false);
-        })
-      );
+    );
 
     Triggers.manualControlLEDs
       .onTrue
       (
         Commands.runOnce
         (() -> {
-          SD.STATE_LED_BAR.put("manual true");
-          portStatusLayer.setColor(Color.kBlack,Color.kPurple);
-          stbdStatusLayer.setColor(Color.kBlack,Color.kPurple);
+          SD.STATE_LED_BAR.put("manual arm mode");
+          portStatusLayer.setColor(Color.kPurple, Color.kBlack);
+          stbdStatusLayer.setColor(Color.kPurple, Color.kBlack);
         })
       );
       
@@ -1034,7 +760,7 @@ public class RobotContainer
       (
         Commands.runOnce
         (() -> {
-          SD.STATE_LED_BAR.put("eStop true");
+          SD.STATE_LED_BAR.put("eStop arm mode");
           portStatusLayer.setType(LayerType.ALTERNATING);
           //portStatusLayer.setColor(Color.kBlack,Color.kRed);
           stbdStatusLayer.setType(LayerType.ALTERNATING);
@@ -1045,9 +771,9 @@ public class RobotContainer
       (
         Commands.runOnce
         (() -> {
-          SD.STATE_LED_BAR.put("eStop false");
-          portStatusLayer.setType(LayerType.STATUS);
-          stbdStatusLayer.setType(LayerType.STATUS);
+          SD.STATE_LED_BAR.put("eStop cleared");
+          portStatusLayer.setType(LayerType.PROGRESS);
+          stbdStatusLayer.setType(LayerType.PROGRESS);
         })
       );
 
@@ -1057,10 +783,12 @@ public class RobotContainer
         Commands.runOnce
         (() -> {
           SD.STATE_LED_HAL.put("manual");
-          haloPortLayer.setType(LayerType.SOLID);
-          haloPortLayer.setColor(Color.kPurple,Color.kBlack);
-          haloStbdLayer.setType(LayerType.SOLID);
-          haloStbdLayer.setColor(Color.kPurple,Color.kBlack);
+          haloPortLayer
+            .setType(LayerType.SOLID)
+            .setColor(Color.kPurple,Color.kBlack);
+          haloStbdLayer
+            .setType(LayerType.SOLID)
+            .setColor(Color.kPurple,Color.kBlack);
         })
       );
 
@@ -1070,10 +798,12 @@ public class RobotContainer
         Commands.runOnce
         (() -> {
           SD.STATE_LED_HAL.put("heading lock");
-          haloPortLayer.setType(LayerType.SOLID);
-          haloPortLayer.setColor(Color.kOrange,Color.kBlack);
-          haloStbdLayer.setType(LayerType.SOLID);
-          haloStbdLayer.setColor(Color.kOrange,Color.kBlack);
+          haloPortLayer
+            .setType(LayerType.SOLID)
+            .setColor(Color.kOrange,Color.kBlack);
+          haloStbdLayer
+            .setType(LayerType.SOLID)
+            .setColor(Color.kOrange,Color.kBlack);
         })
       );
 
@@ -1082,10 +812,12 @@ public class RobotContainer
       Commands.runOnce
       (() -> {
         SD.STATE_LED_HAL.put("following path");
-        haloPortLayer.setType(LayerType.ALTERNATING);
-        haloPortLayer.setColor(Color.kYellow,Color.kBlack);
-        haloStbdLayer.setType(LayerType.ALTERNATING);
-        haloStbdLayer.setColor(Color.kYellow,Color.kBlack);
+        haloPortLayer
+          .setType(LayerType.ALTERNATING)
+          .setColor(Color.kYellow,Color.kBlack);
+        haloStbdLayer
+          .setType(LayerType.ALTERNATING)
+          .setColor(Color.kYellow,Color.kBlack);
       })
     );
     
@@ -1096,10 +828,12 @@ public class RobotContainer
       Commands.runOnce
       (() -> {
         SD.STATE_LED_HAL.put("at path target");
-        haloPortLayer.setType(LayerType.SOLID);
-        haloPortLayer.setColor(Color.kYellow,Color.kBlack);
-        haloStbdLayer.setType(LayerType.SOLID);
-        haloStbdLayer.setColor(Color.kYellow,Color.kBlack);
+        haloPortLayer
+          .setType(LayerType.SOLID)
+          .setColor(Color.kYellow,Color.kBlack);
+        haloStbdLayer
+          .setType(LayerType.SOLID)
+          .setColor(Color.kYellow,Color.kBlack);
       })
     );
 
@@ -1110,10 +844,12 @@ public class RobotContainer
       Commands.runOnce
       (() -> {
         SD.STATE_LED_HAL.put("path and arm target");
-        haloPortLayer.setType(LayerType.SOLID);
-        haloPortLayer.setColor(Color.kGreen,Color.kBlack);
-        haloStbdLayer.setType(LayerType.SOLID);
-        haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
+        haloPortLayer
+          .setType(LayerType.SOLID)
+          .setColor(Color.kGreen,Color.kBlack);
+        haloStbdLayer
+          .setType(LayerType.SOLID)
+          .setColor(Color.kGreen,Color.kBlack);
       })
     );
 
@@ -1123,10 +859,12 @@ public class RobotContainer
         Commands.runOnce
         (() -> {
           SD.STATE_LED_HAL.put("climb ready");
-          haloPortLayer.setType(LayerType.SOLID);
-          haloPortLayer.setColor(Color.kGreen,Color.kBlack);
-          haloStbdLayer.setType(LayerType.SOLID);
-          haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
+          haloPortLayer
+            .setType(LayerType.SOLID)
+            .setColor(Color.kGreen,Color.kBlack);
+          haloStbdLayer
+            .setType(LayerType.SOLID)
+            .setColor(Color.kGreen,Color.kBlack);
         })
       );
 
@@ -1136,10 +874,12 @@ public class RobotContainer
         Commands.runOnce
         (() -> {
           SD.STATE_LED_HAL.put("intake full");
-          haloPortLayer.setType(LayerType.ALTERNATING);
-          haloPortLayer.setColor(Color.kGreen,Color.kBlack);
-          haloStbdLayer.setType(LayerType.ALTERNATING);
-          haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
+          haloPortLayer
+            .setType(LayerType.ALTERNATING)
+            .setColor(Color.kGreen,Color.kBlack);
+          haloStbdLayer
+            .setType(LayerType.ALTERNATING)
+            .setColor(Color.kGreen,Color.kBlack);
         })
       );
 
@@ -1152,10 +892,12 @@ public class RobotContainer
         Commands.runOnce
         (() -> {
           SD.STATE_LED_HAL.put("delivery success");
-          haloPortLayer.setType(LayerType.ALTERNATING);
-          haloPortLayer.setColor(Color.kGreen,Color.kBlack);
-          haloStbdLayer.setType(LayerType.ALTERNATING);
-          haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
+          haloPortLayer
+            .setType(LayerType.ALTERNATING)
+            .setColor(Color.kGreen,Color.kBlack);
+          haloStbdLayer
+            .setType(LayerType.ALTERNATING)
+            .setColor(Color.kGreen,Color.kBlack);
         })
       );
 
@@ -1168,10 +910,12 @@ public class RobotContainer
         Commands.runOnce
         (() -> {
           SD.STATE_LED_HAL.put("algae intake full");
-          haloPortLayer.setType(LayerType.ALTERNATING);
-          haloPortLayer.setColor(Color.kGreen,Color.kBlack);
-          haloStbdLayer.setType(LayerType.ALTERNATING);
-          haloStbdLayer.setColor(Color.kGreen,Color.kBlack);
+          haloPortLayer
+            .setType(LayerType.ALTERNATING)
+            .setColor(Color.kGreen,Color.kBlack);
+          haloStbdLayer
+            .setType(LayerType.ALTERNATING)
+            .setColor(Color.kGreen,Color.kBlack);
         })
       );
 
@@ -1202,4 +946,31 @@ public class RobotContainer
     // Gets the input string of command phrases, processes into a list of commands, and puts them into a sequential command group
     return AutoUtils.getCommandList(SD.IO_AUTO.get(), s_Diffector, s_Coral, s_Algae);
   } 
+
+  private void configureFenceBindings()
+  {
+    new Trigger(() -> SD.IO_FENCE_SET.button()).onTrue(Commands.runOnce(() -> 
+    {
+      FieldUtils.GeoFencing.field.updateBox
+      (
+        SD.IO_FENCE_XA.get(),
+        SD.IO_FENCE_YA.get(),
+        SD.IO_FENCE_XB.get(),
+        SD.IO_FENCE_YB.get()
+      );
+      s_Swerve.field.getObject("Corner1").setPose(SD.IO_FENCE_XA.get(), SD.IO_FENCE_YA.get(), Rotation2d.kZero);
+      s_Swerve.field.getObject("Corner2").setPose(SD.IO_FENCE_XA.get(), SD.IO_FENCE_YB.get(), Rotation2d.kZero);
+      s_Swerve.field.getObject("Corner3").setPose(SD.IO_FENCE_XB.get(), SD.IO_FENCE_YA.get(), Rotation2d.kZero);
+      s_Swerve.field.getObject("Corner4").setPose(SD.IO_FENCE_XB.get(), SD.IO_FENCE_YB.get(), Rotation2d.kZero);
+    }));
+
+    new Trigger(() -> SD.IO_FENCE_XAP.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.expandBox(0.2, 0);}));
+    new Trigger(() -> SD.IO_FENCE_XAM.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.contractBox(-0.2, 0);}));
+    new Trigger(() -> SD.IO_FENCE_YAP.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.expandBox(0, 0.2);}));
+    new Trigger(() -> SD.IO_FENCE_YAM.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.contractBox(0, -0.2);}));
+    new Trigger(() -> SD.IO_FENCE_XBP.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.contractBox(0.2, 0);}));
+    new Trigger(() -> SD.IO_FENCE_XBM.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.expandBox(-0.2, 0);}));
+    new Trigger(() -> SD.IO_FENCE_YBP.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.contractBox(0, 0.2);}));
+    new Trigger(() -> SD.IO_FENCE_YBM.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.expandBox(0, -0.2);}));
+  }
 }

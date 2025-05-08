@@ -129,7 +129,7 @@ public abstract class SwerveCommandBase extends Command
       if (redAlliance)
         {motionXY = motionXY.unaryMinus();}
       
-      SD.IO_GEOFENCE_IMPACT.put(Math.max(Double.MIN_VALUE, motionXY.getNorm()) / Math.max(Double.MIN_VALUE, motionXYCache));
+      SD.GEOFENCE_IMPACT.put(Math.max(Double.MIN_VALUE, motionXY.getNorm()) / Math.max(Double.MIN_VALUE, motionXYCache));
     }
 
     return motionXY;

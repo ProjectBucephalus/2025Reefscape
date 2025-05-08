@@ -454,4 +454,101 @@ public class GeoFenceObject
         return motionXY;
     }            
   }
+
+  /**
+   * Moves the entire object by the given distance
+   * @param dX Distance on the X-axis to move
+   * @param dY Distance on the Y-axis to move
+   */
+  public void shiftPosition(double dX, double dY)
+  {
+    Xa += dX;
+    Xb += dX;
+    Ya += dY;
+    Yb += dY;
+    centre = centre.plus(new Translation2d(dX, dY));
+    
+    if (objectType == ObjectTypes.polygon)
+    {
+      for (int i = 0; i < edgeLines.size(); i++)
+      {
+        edgeLines.get(i).shiftPosition(dX, dY);
+      
+        edgeReference.set(i, edgeReference.get(i).plus(new Translation2d(dX, dY)));
+      }
+    }
+  }
+
+  public void updatePosition(double X, double Y)
+  {
+    shiftPosition(X - centre.getX(), Y - centre.getY());
+  }
+
+  /**
+   * Sets the boundaries of a wall or box object
+   * @param Xa New X coordinate of corner a
+   * @param Ya New Y coordinate of corner a
+   * @param Xb New X coordinate of corner b
+   * @param Yb New Y coordinate of corner b
+   */
+  public void updateBox(double Xa, double Ya, double Xb, double Yb)
+  {
+    if (objectType == ObjectTypes.box || objectType == ObjectTypes.walls)
+    {
+      this.Xa = Xa;
+      this.Ya = Ya;
+      this.Xb = Xb;
+      this.Yb = Yb;
+
+      centre = new Translation2d((Xa + Xb)/2, (Ya + Yb)/2);
+    }
+  }
+
+  /**
+   * Expands the size of a wall or box object by moving the boundaries in the given directions
+   * </p> e.g. expand(1,-1) will move the 'South-East' corner further 'South-East'
+   * @param dX Distance on the X-axis to increase
+   * @param dY Distance on the Y-axis to increase
+   */
+  public void expandBox(double dX, double dY)
+  {
+    if (objectType == ObjectTypes.box || objectType == ObjectTypes.walls)
+    {
+      if (dX > 0 ^ Xa > Xb)
+        {Xb += dX;}
+      else
+        {Xa += dX;}
+
+      if (dY > 0 ^ Ya > Yb)
+        {Yb += dY;}
+      else
+        {Ya += dY;}
+
+      centre = centre.plus(new Translation2d(dX/2, dY/2));
+    }
+  }
+
+  /**
+   * Reduces the size of a wall or box object by moving the boundaries in the given directions
+   * </p> e.g. contract(1,-1) will move the 'North-West' corner 'South-East'
+   * @param dX Distance on the X-axis to reduce
+   * @param dY Distance on the Y-axis to reduce
+   */
+  public void contractBox(double dX, double dY)
+  {
+    if (objectType == ObjectTypes.box || objectType == ObjectTypes.walls)
+    {
+      if (dX > 0 ^ Xa < Xb)
+        {Xb += dX;}
+      else
+        {Xa += dX;}
+
+      if (dY > 0 ^ Ya < Yb)
+        {Yb += dY;}
+      else
+        {Ya += dY;}
+
+      centre = centre.plus(new Translation2d(dX/2, dY/2));
+    }
+  }
 }
