@@ -79,6 +79,12 @@ public class ArmPos
 
     return this;
   }
+
+  /** Returns the flipped version of the position */
+  public ArmPos mirror()
+  {
+    return portside ? stbd() : port();
+  }
   
   /** Returns the angle component, inverted across 0, wrapped [0..360] */
   public double flip()

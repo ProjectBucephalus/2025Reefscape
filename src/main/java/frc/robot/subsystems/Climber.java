@@ -50,7 +50,14 @@ public class Climber extends SubsystemBase
   
   private void setStatus(Status newStatus)
   {
-    status = (newStatus == Status.CLIMB && status == Status.STOW) ? Status.ACTIVE : newStatus;
+    // Go from stow to active before climb
+    if (newStatus == Status.CLIMB && status == Status.STOW)
+      {status = Status.ACTIVE;}
+    // Go from climb to stow before active
+    else if (newStatus == Status.ACTIVE && status == Status.CLIMB) 
+      {status = Status.STOW;}
+    else 
+      {status = newStatus;}
   }
 
   public Command setStatusCommand(Status status)

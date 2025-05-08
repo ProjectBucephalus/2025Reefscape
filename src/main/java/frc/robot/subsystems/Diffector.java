@@ -404,7 +404,7 @@ public class Diffector extends SubsystemBase
         {targetAngle = arm.goClockwise(newTarget, angle);} // Going Clockwise to take held Algae over robot
         
       else
-        {targetAngle = arm.goShortest(newTarget, angle);}
+        {targetAngle = arm.goShortest(newTarget, angle);} // Avoid unwinding if possible
     }
     else
       {targetAngle = arm.goToAngle(newTarget, angle);}
@@ -432,6 +432,7 @@ public class Diffector extends SubsystemBase
 
   public void setTargetPosition(ArmPos targetPosition)
   {
+    targetPosition = (targetPosition.equals(this.targetPosition)) ? targetPosition.mirror() : targetPosition;
     setElevationTarget(targetPosition.getZ());
     goToAngle(targetPosition.getR());
   }
@@ -451,7 +452,7 @@ public class Diffector extends SubsystemBase
 
   public ArmPos dualPosSelector(ArmPos def, ArmPos alt) 
   {
-    return getRelativeTarget().relativeEquals(def) ? alt : def;
+    return targetPosition.relativeEquals(def) ? alt : def;
   }
 
   public Command dualPosCommand(ArmPos def, ArmPos alt)
@@ -460,7 +461,7 @@ public class Diffector extends SubsystemBase
     (
       moveToCommand(alt), 
       moveToCommand(def), 
-      () -> getRelativeTarget().relativeEquals(def)
+      () -> targetPosition.relativeEquals(def)
     );
   }
 
