@@ -338,7 +338,7 @@ public class RobotContainer
           s_Swerve, 
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
-          Rotation2d.kCCW_90deg,
+          Rotation2d.kZero,
           Rotation2d.kCW_90deg,
           () -> driver.getRawAxis(brakeAxis),
           () -> true
@@ -365,11 +365,13 @@ public class RobotContainer
     Triggers.scoreDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetScoreDrive
+        //new TargetScoreDrive
+        new HeadingLockedDrive
         (
           s_Swerve, 
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
+          Rotation2d.kZero,
           Rotation2d.kCCW_90deg,
           () -> driver.getRawAxis(brakeAxis),
           () -> true
@@ -958,19 +960,80 @@ public class RobotContainer
         SD.IO_FENCE_XB.get(),
         SD.IO_FENCE_YB.get()
       );
-      s_Swerve.field.getObject("Corner1").setPose(SD.IO_FENCE_XA.get(), SD.IO_FENCE_YA.get(), Rotation2d.kZero);
-      s_Swerve.field.getObject("Corner2").setPose(SD.IO_FENCE_XA.get(), SD.IO_FENCE_YB.get(), Rotation2d.kZero);
-      s_Swerve.field.getObject("Corner3").setPose(SD.IO_FENCE_XB.get(), SD.IO_FENCE_YA.get(), Rotation2d.kZero);
-      s_Swerve.field.getObject("Corner4").setPose(SD.IO_FENCE_XB.get(), SD.IO_FENCE_YB.get(), Rotation2d.kZero);
+      renderFieldWall();
     }));
 
-    new Trigger(() -> SD.IO_FENCE_XAP.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.expandBox(0.2, 0);}));
-    new Trigger(() -> SD.IO_FENCE_XAM.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.contractBox(-0.2, 0);}));
-    new Trigger(() -> SD.IO_FENCE_YAP.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.expandBox(0, 0.2);}));
-    new Trigger(() -> SD.IO_FENCE_YAM.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.contractBox(0, -0.2);}));
-    new Trigger(() -> SD.IO_FENCE_XBP.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.contractBox(0.2, 0);}));
-    new Trigger(() -> SD.IO_FENCE_XBM.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.expandBox(-0.2, 0);}));
-    new Trigger(() -> SD.IO_FENCE_YBP.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.contractBox(0, 0.2);}));
-    new Trigger(() -> SD.IO_FENCE_YBM.button()).onTrue(Commands.runOnce(() -> {FieldUtils.GeoFencing.field.expandBox(0, -0.2);}));
+    new Trigger(() -> SD.IO_FENCE_XAP.button())
+        .onTrue(Commands.runOnce(() -> 
+        {
+          FieldUtils.GeoFencing.field.expandBox(0.2, 0);
+          SD.IO_FENCE_XA.put(SD.IO_FENCE_XA.get() + 0.2);
+          renderFieldWall();
+        }));
+
+    new Trigger(() -> SD.IO_FENCE_XAM.button())
+        .onTrue(Commands.runOnce(() -> 
+        {
+          FieldUtils.GeoFencing.field.contractBox(-0.2, 0);
+          SD.IO_FENCE_XA.put(SD.IO_FENCE_XA.get() - 0.2);
+          renderFieldWall();
+        }));
+
+    new Trigger(() -> SD.IO_FENCE_YAP.button())
+        .onTrue(Commands.runOnce(() -> 
+        {
+          FieldUtils.GeoFencing.field.expandBox(0, 0.2);
+          SD.IO_FENCE_YA.put(SD.IO_FENCE_YA.get() + 0.2);
+          renderFieldWall();
+        }));
+
+    new Trigger(() -> SD.IO_FENCE_YAM.button())
+        .onTrue(Commands.runOnce(() -> 
+        {
+          FieldUtils.GeoFencing.field.contractBox(0, -0.2);
+          SD.IO_FENCE_YA.put(SD.IO_FENCE_YA.get() - 0.2);
+          renderFieldWall();
+        }));
+
+    new Trigger(() -> SD.IO_FENCE_XBP.button())
+        .onTrue(Commands.runOnce(() -> 
+        {
+          FieldUtils.GeoFencing.field.contractBox(0.2, 0);
+          SD.IO_FENCE_XB.put(SD.IO_FENCE_XB.get() + 0.2);
+          renderFieldWall();
+        }));
+
+    new Trigger(() -> SD.IO_FENCE_XBM.button())
+        .onTrue(Commands.runOnce(() -> 
+        {
+          FieldUtils.GeoFencing.field.expandBox(-0.2, 0);
+          SD.IO_FENCE_XB.put(SD.IO_FENCE_XB.get() - 0.2);
+          renderFieldWall();
+        }));
+
+    new Trigger(() -> SD.IO_FENCE_YBP.button())
+        .onTrue(Commands.runOnce(() -> 
+        {
+          FieldUtils.GeoFencing.field.contractBox(0, 0.2);
+          SD.IO_FENCE_YB.put(SD.IO_FENCE_YB.get() + 0.2);
+          renderFieldWall();
+        }));
+
+    new Trigger(() -> SD.IO_FENCE_YBM.button())
+        .onTrue(Commands.runOnce(() -> 
+        {
+          FieldUtils.GeoFencing.field.expandBox(0, -0.2);
+          SD.IO_FENCE_YB.put(SD.IO_FENCE_YB.get() - 0.2);
+          renderFieldWall();
+        }));
+
+  }
+
+  private void renderFieldWall()
+  {
+    s_Swerve.field.getObject("Corner1").setPose(SD.IO_FENCE_XA.get() + 4.5, SD.IO_FENCE_YA.get() + 4, Rotation2d.kZero);
+    s_Swerve.field.getObject("Corner2").setPose(SD.IO_FENCE_XA.get() + 4.5, SD.IO_FENCE_YB.get() + 4, Rotation2d.kZero);
+    s_Swerve.field.getObject("Corner3").setPose(SD.IO_FENCE_XB.get() + 4.5, SD.IO_FENCE_YA.get() + 4, Rotation2d.kZero);
+    s_Swerve.field.getObject("Corner4").setPose(SD.IO_FENCE_XB.get() + 4.5, SD.IO_FENCE_YB.get() + 4, Rotation2d.kZero);
   }
 }
