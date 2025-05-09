@@ -82,7 +82,7 @@ public class FieldUtils
 
   public static int getNearestReefFace(Translation2d robotPos)
   {
-    return 1;
+    return 4;
     /*  ### For displays we only use a single segment ###
 
     int nearestReefFace;

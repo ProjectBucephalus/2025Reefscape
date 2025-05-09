@@ -1,1 +1,1 @@
-{"fieldlength":17.5482504,"fieldwidth":8.0519016,"fiducials":[{"family":"apriltag3_36h11_classic","id":17,"size":165.1,"transform":[-1,0,0,-5.116,0,-1,0,0,0,0,1,0.308,0,0,0,1],"unique":true}],"type":"frc"}
+{"fieldlength":17.548,"fieldwidth":8.052,"fiducials":[{"family":"apriltag3_36h11_classic","id":17,"size":165.1,"transform":[1,0,0,-3.453,0,1,0,0,0,0,1,0.3081,0,0,0,1],"unique":true}],"type":"frc"}
