@@ -955,10 +955,10 @@ public class RobotContainer
     {
       FieldUtils.GeoFencing.field.updateBox
       (
-        SD.IO_FENCE_XA.get(),
-        SD.IO_FENCE_YA.get(),
-        SD.IO_FENCE_XB.get(),
-        SD.IO_FENCE_YB.get()
+        SD.IO_FENCE_XA.get() + 4.5,
+        SD.IO_FENCE_YA.get() + 4,
+        SD.IO_FENCE_XB.get() + 4.5,
+        SD.IO_FENCE_YB.get() + 4
       );
       renderFieldWall();
     }));
@@ -966,7 +966,7 @@ public class RobotContainer
     new Trigger(() -> SD.IO_FENCE_XAP.button())
         .onTrue(Commands.runOnce(() -> 
         {
-          FieldUtils.GeoFencing.field.expandBox(0.2, 0);
+          FieldUtils.GeoFencing.field.contractBox(0.2, 0);
           SD.IO_FENCE_XA.put(SD.IO_FENCE_XA.get() + 0.2);
           renderFieldWall();
         }));
@@ -974,7 +974,7 @@ public class RobotContainer
     new Trigger(() -> SD.IO_FENCE_XAM.button())
         .onTrue(Commands.runOnce(() -> 
         {
-          FieldUtils.GeoFencing.field.contractBox(-0.2, 0);
+          FieldUtils.GeoFencing.field.expandBox(-0.2, 0);
           SD.IO_FENCE_XA.put(SD.IO_FENCE_XA.get() - 0.2);
           renderFieldWall();
         }));
@@ -982,7 +982,7 @@ public class RobotContainer
     new Trigger(() -> SD.IO_FENCE_YAP.button())
         .onTrue(Commands.runOnce(() -> 
         {
-          FieldUtils.GeoFencing.field.expandBox(0, 0.2);
+          FieldUtils.GeoFencing.field.contractBox(0, 0.2);
           SD.IO_FENCE_YA.put(SD.IO_FENCE_YA.get() + 0.2);
           renderFieldWall();
         }));
@@ -990,7 +990,7 @@ public class RobotContainer
     new Trigger(() -> SD.IO_FENCE_YAM.button())
         .onTrue(Commands.runOnce(() -> 
         {
-          FieldUtils.GeoFencing.field.contractBox(0, -0.2);
+          FieldUtils.GeoFencing.field.expandBox(0, -0.2);
           SD.IO_FENCE_YA.put(SD.IO_FENCE_YA.get() - 0.2);
           renderFieldWall();
         }));
@@ -998,7 +998,7 @@ public class RobotContainer
     new Trigger(() -> SD.IO_FENCE_XBP.button())
         .onTrue(Commands.runOnce(() -> 
         {
-          FieldUtils.GeoFencing.field.contractBox(0.2, 0);
+          FieldUtils.GeoFencing.field.expandBox(0.2, 0);
           SD.IO_FENCE_XB.put(SD.IO_FENCE_XB.get() + 0.2);
           renderFieldWall();
         }));
@@ -1006,7 +1006,7 @@ public class RobotContainer
     new Trigger(() -> SD.IO_FENCE_XBM.button())
         .onTrue(Commands.runOnce(() -> 
         {
-          FieldUtils.GeoFencing.field.expandBox(-0.2, 0);
+          FieldUtils.GeoFencing.field.contractBox(-0.2, 0);
           SD.IO_FENCE_XB.put(SD.IO_FENCE_XB.get() - 0.2);
           renderFieldWall();
         }));
@@ -1014,7 +1014,7 @@ public class RobotContainer
     new Trigger(() -> SD.IO_FENCE_YBP.button())
         .onTrue(Commands.runOnce(() -> 
         {
-          FieldUtils.GeoFencing.field.contractBox(0, 0.2);
+          FieldUtils.GeoFencing.field.expandBox(0, 0.2);
           SD.IO_FENCE_YB.put(SD.IO_FENCE_YB.get() + 0.2);
           renderFieldWall();
         }));
@@ -1022,7 +1022,7 @@ public class RobotContainer
     new Trigger(() -> SD.IO_FENCE_YBM.button())
         .onTrue(Commands.runOnce(() -> 
         {
-          FieldUtils.GeoFencing.field.expandBox(0, -0.2);
+          FieldUtils.GeoFencing.field.contractBox(0, -0.2);
           SD.IO_FENCE_YB.put(SD.IO_FENCE_YB.get() - 0.2);
           renderFieldWall();
         }));
