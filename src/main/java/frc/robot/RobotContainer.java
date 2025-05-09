@@ -124,7 +124,7 @@ public class RobotContainer
     configureDriverBindings();
     configureAutoDriveBindings();
     configureCopilotBindings();
-    configureRumbleBindings();
+    //configureRumbleBindings();
     configureManualBindings();
     //configureTestBindings();
     configureSDButtonBindings();
