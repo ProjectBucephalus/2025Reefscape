@@ -322,7 +322,7 @@ public class RobotContainer
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
           Rotation2d.kZero, 
-          Rotation2d.kZero,
+          Rotation2d.k180deg,
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )
@@ -339,7 +339,7 @@ public class RobotContainer
           () -> -driver.getRawAxis(translationAxis), 
           () -> -driver.getRawAxis(strafeAxis), 
           Rotation2d.kZero,
-          Rotation2d.k180deg,
+          Rotation2d.kZero,
           () -> driver.getRawAxis(brakeAxis),
           () -> true
         )

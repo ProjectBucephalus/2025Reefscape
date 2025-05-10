@@ -285,6 +285,15 @@ public final class Constants
         add(Presets.algaeStowPosition);
       }};
 
+      public static final ArrayList<ArmPos> staticPositions = new ArrayList<ArmPos>()
+      {{
+        add(climbPosition);
+        add(coralStowPosition);
+        add(algaeStowPosition);
+        add(startPosition);
+        add(netPosition);
+      }};
+
       public static final Predicate<Integer> isPortReefFace = (face) -> (face == 2 || face == 3);
     }
 
