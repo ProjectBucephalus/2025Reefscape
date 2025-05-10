@@ -432,7 +432,14 @@ public class Diffector extends SubsystemBase
 
   public void setTargetPosition(ArmPos targetPosition)
   {
-    targetPosition = (targetPosition.equals(this.targetPosition)) ? targetPosition.mirror() : targetPosition;
+    targetPosition = 
+    (
+      targetPosition.equals(this.targetPosition) && 
+      !(Presets.staticPositions.stream().anyMatch(targetPosition::relativeEquals))
+    ) ? 
+    targetPosition.mirror() : 
+    targetPosition;
+    
     setElevationTarget(targetPosition.getZ());
     goToAngle(targetPosition.getR());
   }
