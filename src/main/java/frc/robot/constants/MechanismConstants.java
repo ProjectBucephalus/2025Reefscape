@@ -43,7 +43,7 @@ public class MechanismConstants
   
   public static class DiffectorConfigs
   {    
-    public static final double motorStallCurrent = 180;
+    public static final double motorStallCurrent = 175;
 
     private static final double diffectorGearTeethIn  = 8;
     private static final double diffectorGearTeethOut = 60;
@@ -105,6 +105,12 @@ public class MechanismConstants
       /* Diffector MotionMagic Default Config */
       motorConfig.MotionMagic.MotionMagicCruiseVelocity = diffectorCruise;
       motorConfig.MotionMagic.MotionMagicAcceleration = diffectorRotationAcceleration;
+
+      motorConfig.CurrentLimits.SupplyCurrentLimit = 180;
+      motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+      motorConfig.CurrentLimits.SupplyCurrentLowerLimit = 60;
+      motorConfig.CurrentLimits.SupplyCurrentLowerTime = 2.5;
+      motorConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
 
       return motorConfig;
     }

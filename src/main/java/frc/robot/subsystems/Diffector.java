@@ -34,6 +34,7 @@ import frc.robot.constants.IDConstants;
 import frc.robot.constants.MechanismConstants.DiffectorConfigs;
 import frc.robot.util.ArmCalculator;
 import frc.robot.util.ArmPos;
+import frc.robot.util.Conversions;
 import frc.robot.util.FieldUtils;
 import frc.robot.util.SD;
 
@@ -619,8 +620,8 @@ public class Diffector extends SubsystemBase
 
     SmartDashboard.putNumber("ua current", Math.abs(m_UA.getTorqueCurrent().getValueAsDouble()));
     SmartDashboard.putNumber("ua current", Math.abs(m_DA.getTorqueCurrent().getValueAsDouble()));
-    SmartDashboard.putNumber("ua Speed", Math.abs(m_UA.getRotorVelocity().getValueAsDouble()));
-    SmartDashboard.putNumber("da Speed", Math.abs(m_DA.getRotorVelocity().getValueAsDouble()));
+    SmartDashboard.putNumber("ua Temperature", m_UA.getDeviceTemp().getValueAsDouble());
+    SmartDashboard.putNumber("da Temperature", m_DA.getDeviceTemp().getValueAsDouble());
     SD.DIFF_ELEVATION_TARGET.put(targetElevation);
     SD.DIFF_ANGLE_TARGET.put(targetAngle);
     SD.DIFF_ELEVATION.put(elevation);
