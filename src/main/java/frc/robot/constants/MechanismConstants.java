@@ -65,15 +65,15 @@ public class MechanismConstants
     public static final double rotationRatio = (sprocketRatio);
 
     /** Desired cruise speed of Motor, RPS */
-    public static final double diffectorCruiseMotor = 90;
+    public static final double diffectorCruiseMotor = 80;
     /** Desired cruise speed of Motor when holding Algae, RPS */
     public static final double diffectorAlgaeCruiseMotor = 60;
     /** Desired acceleration of Motor for Elevation, RPS^2 */
-    public static final double diffectorElevationAccelerationMotor = 150;
+    public static final double diffectorElevationAccelerationMotor = 120;
     /** Desired acceleration of Motor for Rotation, RPS^2 */
-    public static final double diffectorRotationAccelerationMotor = 80;
+    public static final double diffectorRotationAccelerationMotor = 70;
     /** Desired acceleration of Motor for Rotation when holding Algae, RPS^2 */
-    public static final double diffectorAlgaeRotationAccelerationMotor = 35;
+    public static final double diffectorAlgaeRotationAccelerationMotor = 30;
     
     /** Desired cruise speed of Mechanism, RPS */
     public static final double diffectorCruise = diffectorCruiseMotor / gearboxRatio;

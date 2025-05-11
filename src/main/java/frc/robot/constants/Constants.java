@@ -33,11 +33,11 @@ public final class Constants
     public static final double manualDiffectorDeadband = 0.25;
     public static final double stickDeadband = 0.15;
     /** Normal maximum robot speed, relative to maximum uncapped speed */
-    public static final double maxThrottle = 0.5;
+    public static final double maxThrottle = 0.3;
     /** Minimum robot speed when braking, relative to maximum uncapped speed */
     public static final double minThrottle = 0.05;
     /** Normal maximum rotational robot speed, relative to maximum uncapped rotational speed */
-    public static final double maxRotThrottle = 0.8;
+    public static final double maxRotThrottle = 0.7;
     /** Minimum rotational robot speed when braking, relative to maximum uncapped rotational speed */
     public static final double minRotThrottle = 0.5;
     /** Angle tolerance to consider something as "facing" the drivers, degrees */
@@ -47,7 +47,7 @@ public final class Constants
     /** Scalar for manual diffector rotation control */
     public static final double manualDiffectorRotationScalar = 2;
     /** Scalar for braking effect of diffector arm being higher than 1m */
-    public static final double armBrakeRate = 1.5;
+    public static final double armBrakeRate = 0.75;
     public static final double manualClimberScale = 1;
     public static final double driveSnappingRange = 1.5;
     public static final double cageFaceDistance = 1.5;
@@ -114,7 +114,7 @@ public final class Constants
     /** Meters per Second */
     public static final double maxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
     /** Radians per Second */
-    public static final double maxAngularVelocity = 4;
+    public static final double maxAngularVelocity = 2;
   }
 
   public static final class Auto
@@ -124,13 +124,13 @@ public final class Constants
     /** m/s */
     public static final double pathplannerSlowedSpeed = 1.5;
     /** m/s^2 */
-    public static final double pathplannerMaxAcceleration = 3.5;
+    public static final double pathplannerMaxAcceleration = 2.5;
     /** m/s^2 */
     public static final double pathplannerStationAcceleration = 4.5;
     /** degrees/s */
-    public static final double pathplannerMaxAngularSpeed = 720;
+    public static final double pathplannerMaxAngularSpeed = 180;
     /** degrees/s^2 */
-    public static final double pathplannerMaxAngularAcceleration = 1050;
+    public static final double pathplannerMaxAngularAcceleration = 360;
 
     public static final PathConstraints defaultConstraints = new PathConstraints
       (pathplannerMaxSpeed, pathplannerMaxAcceleration, pathplannerMaxAngularSpeed, pathplannerMaxAngularAcceleration);
@@ -208,7 +208,7 @@ public final class Constants
   public static final class DiffectorConstants
   {
     public static final boolean startingCoralState = true;
-    public static final boolean startingAlgaeState = true;
+    public static final boolean startingAlgaeState = false;
 
     /** Number of clock cycles delay before arm is calibrated after reaching a target */
     public static final int calibrationDelay = 30;
