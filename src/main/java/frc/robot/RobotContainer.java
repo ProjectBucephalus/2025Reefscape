@@ -133,6 +133,7 @@ public class RobotContainer
 
     s_Swerve.registerTelemetry(logger::telemeterize);
     initLED();
+    setFieldWall();
   }
 
   private void configureDriverBindings()
@@ -954,14 +955,7 @@ public class RobotContainer
   {
     new Trigger(() -> SD.IO_FENCE_SET.button()).onTrue(Commands.runOnce(() -> 
     {
-      FieldUtils.GeoFencing.field.updateBox
-      (
-        SD.IO_FENCE_XA.get() + 4.5,
-        SD.IO_FENCE_YA.get() + 4,
-        SD.IO_FENCE_XB.get() + 4.5,
-        SD.IO_FENCE_YB.get() + 4
-      );
-      renderFieldWall();
+      setFieldWall();
     }));
 
     new Trigger(() -> SD.IO_FENCE_XAP.button())
@@ -1036,5 +1030,17 @@ public class RobotContainer
     s_Swerve.field.getObject("Corner2").setPose(SD.IO_FENCE_XA.get() + 4.5, SD.IO_FENCE_YB.get() + 4, Rotation2d.kZero);
     s_Swerve.field.getObject("Corner3").setPose(SD.IO_FENCE_XB.get() + 4.5, SD.IO_FENCE_YA.get() + 4, Rotation2d.kZero);
     s_Swerve.field.getObject("Corner4").setPose(SD.IO_FENCE_XB.get() + 4.5, SD.IO_FENCE_YB.get() + 4, Rotation2d.kZero);
+  }
+
+  private void setFieldWall()
+  {
+    FieldUtils.GeoFencing.field.updateBox
+      (
+        SD.IO_FENCE_XA.get() + 4.5,
+        SD.IO_FENCE_YA.get() + 4,
+        SD.IO_FENCE_XB.get() + 4.5,
+        SD.IO_FENCE_YB.get() + 4
+      );
+      renderFieldWall();
   }
 }
