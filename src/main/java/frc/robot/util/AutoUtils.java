@@ -311,11 +311,7 @@ public class AutoUtils
       double robotY = RobotContainer.swerveState.Pose.getY();
 
       char stationSide = 
-      FieldUtils.isRedAlliance() 
-      ? 
-      robotY >= 4.026 ? 'r' : 'l'
-      : 
-      robotY >= 4.026 ? 'l' : 'r';
+      (FieldUtils.isRedAlliance() ^ robotY >= 4.026) ? 'l' : 'r';
 
       return ("c" + stationSide + stationPosition).toLowerCase();
     };
