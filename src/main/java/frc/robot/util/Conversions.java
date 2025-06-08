@@ -1,6 +1,8 @@
 package frc.robot.util;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Translation2d;
+
 
 public class Conversions 
 {
@@ -55,4 +57,12 @@ public class Conversions
   /** MathUtil clamp [-1..1] */
   public static double clamp(double value)
     {return MathUtil.clamp(value, -1, 1);}
+
+  /** Returns the input T2D with a maximum length of 1 */
+  public static Translation2d clamp(Translation2d value)
+  {
+    if (value.getNorm() > 1)
+    {return value.div(value.getNorm());}
+    return value;
+  }
 }
