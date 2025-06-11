@@ -1,5 +1,6 @@
 package frc.robot.util.controlTransmutation;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -11,9 +12,32 @@ public abstract class InputFunction implements InputTransmuter
 {  
   public class Joystick
   {
-    private InputCurve inputCurve = new InputCurve();
-    private Deadband deadband = new Deadband();
-    private Brake brake = null;
+    private InputCurve inputCurve;
+    private Deadband deadband;
+    private Brake brake;
+
+    private DoubleSupplier inputX;
+    private DoubleSupplier inputY;
+
+    public Joystick(DoubleSupplier inputX, DoubleSupplier inputY)
+    {
+      this.inputX = inputX;
+      this.inputY = inputY;
+
+      inputCurve = new InputCurve();
+      deadband = new Deadband();
+      brake = null;
+    }
+
+    public Translation2d stickOutput()
+    {
+      return process(new Translation2d(inputX.getAsDouble(), inputY.getAsDouble()));
+    }
+
+    public Supplier<Translation2d> stickOutputSup()
+    {
+      return () -> stickOutput();
+    }
 
     public Translation2d process(Translation2d controlInput)
     {
@@ -85,7 +109,7 @@ public abstract class InputFunction implements InputTransmuter
 
     public double get()
     {
-      return MathUtil.interpolate(min, max, brakeAxis.getAsDouble());
+      return MathUtil.interpolate(max, min, brakeAxis.getAsDouble());
     }
   }
 
@@ -107,7 +131,7 @@ public abstract class InputFunction implements InputTransmuter
 
   public class CrossDeadband extends Deadband
   {
-    protected double separation;
+    protected double overlap;
     
     public CrossDeadband()
     {
@@ -117,13 +141,13 @@ public abstract class InputFunction implements InputTransmuter
     /**
      * Snaps the input to be purely cardinal
      * @param deadband Size of centre deadband
-     * @param separation Determines the size and behaviour of corners: <1 deadzone, >1 smooth control 
+     * @param overlap Determines the size and behaviour of corners: <1 deadzone, >1 smooth control 
      * @return 
      */
-    public CrossDeadband(double deadband, double separation)
+    public CrossDeadband(double deadband, double overlap)
     {
       super.deadband = deadband;
-      this.separation = separation;
+      this.overlap = overlap;
     }
 
     public Translation2d process(Translation2d controlInput)
@@ -133,8 +157,8 @@ public abstract class InputFunction implements InputTransmuter
         
       return new Translation2d
       (
-        Math.abs(controlInput.getX()) < separation * Math.abs(controlInput.getY()) ? 0 : controlInput.getX(),
-        Math.abs(controlInput.getY()) < separation * Math.abs(controlInput.getX()) ? 0 : controlInput.getY()  
+        Math.abs(controlInput.getX()) < overlap * Math.abs(controlInput.getY()) ? 0 : controlInput.getX(),
+        Math.abs(controlInput.getY()) < overlap * Math.abs(controlInput.getX()) ? 0 : controlInput.getY()  
       );
     }
   }
