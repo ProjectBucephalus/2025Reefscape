@@ -87,8 +87,8 @@ public abstract class InputFunction implements InputTransmuter
       (
         new Translation2d
         (
-          Math.pow(controlInput.getX(), power), 
-          Math.pow(controlInput.getY(), power)
+          Math.copySign(Math.pow(controlInput.getX(), power), controlInput.getX()), 
+          Math.copySign(Math.pow(controlInput.getY(), power), controlInput.getY())
         )
       );
     }
