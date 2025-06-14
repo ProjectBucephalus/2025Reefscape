@@ -30,7 +30,7 @@ public abstract class FieldObject implements InputTransmuter
     robotRadius = robotRadiusSup.getAsDouble();
   }
 
-  public static void setRoboteRadiusSup(DoubleSupplier robotRadiusSupplier)
+  public static void setRobotRadiusSup(DoubleSupplier robotRadiusSupplier)
   {
     robotRadiusSup = robotRadiusSupplier;
   }
