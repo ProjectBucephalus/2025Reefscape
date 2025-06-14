@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 
@@ -64,5 +65,19 @@ public class Conversions
     if (value.getNorm() > 1)
     {return value.div(value.getNorm());}
     return value;
+  }
+
+  /** Returns true if the wrapped input angles are within the given tollerance */
+  public static boolean isRotationNear(Rotation2d rotationA, Rotation2d rotationB, double degreesTollerance)
+  {
+    double angleA = mod(rotationA.getDegrees(), 360);
+    double angleB = mod(rotationB.getDegrees(), 360);
+
+    return
+    (
+      MathUtil.isNear(angleA, angleB, degreesTollerance) ||
+      MathUtil.isNear(angleA, angleB + 360, degreesTollerance) ||
+      MathUtil.isNear(angleA, angleB - 360, degreesTollerance)
+    );
   }
 }
