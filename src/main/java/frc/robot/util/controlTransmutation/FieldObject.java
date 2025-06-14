@@ -16,6 +16,9 @@ public abstract class FieldObject implements InputTransmuter
   protected double radius;
   protected double buffer;
 
+  protected static final double minRadius = 0;
+  protected static final double minBuffer = 0.1;
+
   public static void setRobotPosSup(Supplier<Translation2d> robotPosSupplier)
   {
     robotPosSup = robotPosSupplier;
