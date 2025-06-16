@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.geometry.Translation2d;
 
 /** Add your docs here. */
-public abstract class FieldObject implements InputTransmuter
+public abstract class FieldObject extends InputTransmuter
 {
   protected static Supplier<Translation2d> robotPosSup;
   protected static Translation2d robotPos;
