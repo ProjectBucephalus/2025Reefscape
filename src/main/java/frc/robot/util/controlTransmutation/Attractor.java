@@ -2,7 +2,6 @@ package frc.robot.util.controlTransmutation;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 
 /** Guides the robot towards a point along a given heading */
 public class Attractor extends FieldObject
@@ -62,4 +61,11 @@ public class Attractor extends FieldObject
       )
     );
   }
+
+  @Override
+  public double getDistance()
+  {
+    return centre.getDistance(robotPos) - (robotRadius);
+  }
+
 }
