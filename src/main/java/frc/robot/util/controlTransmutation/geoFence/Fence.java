@@ -22,15 +22,17 @@ public class Fence extends GeoFence
 
   public Fence(double Xa, double Ya, double Xb, double Yb, double radius, double buffer)
   {
-    this.Xa = Xa;
-    this.Ya = Ya;
-    this.Xb = Xb;
-    this.Yb = Yb;
+    this.Xa = Math.min(Xa, Xb);
+    this.Ya = Math.min(Ya, Yb);
+    this.Xb = Math.max(Xa, Xb);
+    this.Yb = Math.max(Ya, Yb);
 
     this.radius = radius;
     this.buffer = buffer;
 
     centre = new Translation2d((Xa + Xb)/2, (Ya + Yb)/2);
+
+    checkRadius = radius + buffer;
   }
 
   public Fence(double Xa, double Ya, double Xb, double Yb)
@@ -56,10 +58,10 @@ public class Fence extends GeoFence
   {
     return 
     (
-      (robotPos.getX() >= Xb - (radius + buffer + robotRadius)) ||  // Close to inside of +X barrier
-      (robotPos.getX() <= Xa + (radius + buffer + robotRadius)) ||  // Close to inside of -X barrier
-      (robotPos.getY() >= Yb - (radius + buffer + robotRadius)) ||  // Close to inside of +Y barrier
-      (robotPos.getY() <= Ya + (radius + buffer + robotRadius))     // Close to inside of -Y barrier
+      (robotPos.getX() >= Xb - (checkRadius + robotRadius)) ||  // Close to inside of +X barrier
+      (robotPos.getX() <= Xa + (checkRadius + robotRadius)) ||  // Close to inside of -X barrier
+      (robotPos.getY() >= Yb - (checkRadius + robotRadius)) ||  // Close to inside of +Y barrier
+      (robotPos.getY() <= Ya + (checkRadius + robotRadius))     // Close to inside of -Y barrier
     );
   }
 

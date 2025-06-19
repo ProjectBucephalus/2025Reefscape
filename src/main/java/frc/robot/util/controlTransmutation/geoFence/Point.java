@@ -18,6 +18,8 @@ public class Point extends GeoFence
     centre = new Translation2d(x, y);
     this.radius = Math.max(radius, minRadius);
     this.buffer = Math.max(buffer, minBuffer);
+
+    checkRadius = radius + buffer;
   }
 
   public Point(double x, double y)

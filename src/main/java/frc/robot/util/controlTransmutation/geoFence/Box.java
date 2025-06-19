@@ -21,15 +21,17 @@ public class Box extends GeoFence
 
   public Box(double Xa, double Ya, double Xb, double Yb, double radius, double buffer)
   {
-    this.Xa = Xa;
-    this.Ya = Ya;
-    this.Xb = Xb;
-    this.Yb = Yb;
+    this.Xa = Math.min(Xa, Xb);
+    this.Ya = Math.min(Ya, Yb);
+    this.Xb = Math.max(Xa, Xb);
+    this.Yb = Math.max(Ya, Yb);
 
     this.radius = radius;
     this.buffer = buffer;
 
     centre = new Translation2d((Xa + Xb)/2, (Ya + Yb)/2);
+
+    checkRadius = (Math.hypot(Xb - Xa, Yb - Ya)/2) + radius + buffer;
   }
 
   public Box(double Xa, double Ya, double Xb, double Yb)
@@ -40,47 +42,40 @@ public class Box extends GeoFence
   @Override
   public double getDistance()
   {
-    double distance;
-    if (robotPos.getX() < Xa)
-      {
-        if (robotPos.getY() < Ya) // SW Corner
-          {distance = robotPos.getDistance(new Translation2d(Xa, Ya));}
-        else if (robotPos.getY() > Yb) // NW Corner
-          {distance = robotPos.getDistance(new Translation2d(Xa, Yb));}
-        else // W Cardinal
-          {distance = (Xa - radius) - robotPos.getX();}
-      }
-      else if (robotPos.getX() > Xb)
-      {
-        if (robotPos.getY() < Ya) // SE Corner
-          {distance = robotPos.getDistance(new Translation2d(Xb, Ya));}
-        else if (robotPos.getY() > Yb) // NE Corner
-          {distance = robotPos.getDistance(new Translation2d(Xb, Yb));}
-        else // E Cardinal
-          {distance = robotPos.getX() - (Xb + radius);}
-      }
-      else 
-      {
-        if (robotPos.getY() < Ya) // S Cardinal
-          {distance = (Ya - radius) - robotPos.getY();} 
-        else if (robotPos.getY() > Yb) // N Cardinal
-          {distance = robotPos.getY() - (Yb + radius);}
-        else // Center (you've met a terrible fate *insert kazoo music here*)
-          {distance = 0;}
-      }
-    return Math.abs(distance);
-  }
+    double distance = 0;
 
-  @Override
-  protected boolean checkPosition()
-  {
-    return 
-    !(
-      (robotPos.getX() <= Xa - (radius + buffer + robotRadius)) || // Far from -X barrier
-      (robotPos.getX() >= Xb + (radius + buffer + robotRadius)) || // Far from +X barrier
-      (robotPos.getY() <= Ya - (radius + buffer + robotRadius)) || // Far from -Y barrier
-      (robotPos.getY() >= Yb + (radius + buffer + robotRadius))    // Far from +Y barrier
-    );
+    if (robotPos.getX() < Xa)
+    {
+      if (robotPos.getY() < Ya)
+        {distance = Math.hypot(Xa - robotPos.getX(), Ya - robotPos.getY());}
+      else if (robotPos.getY() > Yb)
+        {distance = Math.hypot(Xa - robotPos.getX(), robotPos.getY() - Yb);}
+    }
+    else if (robotPos.getX() > Xb)
+    {
+      if (robotPos.getY() < Ya)
+        {distance = Math.hypot(robotPos.getX() - Xb, Ya - robotPos.getY());}
+      else if (robotPos.getY() > Yb)
+        {distance = Math.hypot(robotPos.getX() - Xb, robotPos.getY() - Yb);}
+    }
+    else
+    {
+      distance = Math.max
+      (
+        Math.max
+        (
+          Xa - robotPos.getX(), 
+          Ya - robotPos.getY()
+        ),
+        Math.max
+        (
+          robotPos.getX() - Xb, 
+          robotPos.getY() - Yb
+        )
+      );
+    }
+
+    return distance - (radius + robotRadius);
   }
 
   @Override

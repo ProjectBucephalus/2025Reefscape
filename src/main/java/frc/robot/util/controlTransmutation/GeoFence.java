@@ -7,7 +7,7 @@ import frc.robot.util.Conversions;
 /** Add your docs here. */
 public abstract class GeoFence extends FieldObject
 {
-  // Inherits from FieldObject: T2D centre, double radius, double buffer
+  // Inherits from FieldObject: T2D centre, double radius, double buffer, double checkRadius
   protected ArrayList<Attractor> attractors;
 
   public Translation2d process(Translation2d controlInput)
@@ -18,20 +18,15 @@ public abstract class GeoFence extends FieldObject
     return dampMotion(controlInput);
   }
 
-  protected boolean checkPosition()
-  {
-    return centre.getDistance(robotPos) <= radius + buffer + robotRadius;
-  }
-
   protected boolean checkAttractors()
   {
-    if (attractors.size() == 0)
-      {return false;}
-
-    for (int i = 0; i < attractors.size(); i++)
+    if (attractors.size() > 0)
     {
-      if (attractors.get(i).checkPosition())
-        {return true;}
+      for (int i = 0; i < attractors.size(); i++)
+      {
+        if (attractors.get(i).checkPosition())
+          {return true;}
+      }
     }
 
     return false;
@@ -64,15 +59,5 @@ public abstract class GeoFence extends FieldObject
     double motionX   = ((motionN * distanceX) - (motionT * distanceY)) / distanceN;
     double motionY   = ((motionN * distanceY) + (motionT * distanceX)) / distanceN;
     return new Translation2d(motionX, motionY);
-  }
-
-  public double getDistance()
-  {
-    return centre.getDistance(robotPos) - (radius + robotRadius);
-  }
-
-  public Translation2d getCentre()
-  {
-    return centre;
   }
 }

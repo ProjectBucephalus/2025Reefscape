@@ -78,28 +78,48 @@ public class Polygon extends GeoFence
       */ 
     this.radius = rotationBetweenPoints.getCos() * radius;
     this.buffer = buffer + (radius - this.radius);
+
+    checkRadius = radius + buffer;
   }
 
   @Override
   protected Translation2d dampMotion(Translation2d motionXY)
   {
-    // If the robot is touching (or past) the inscribed circle, process based on that circle
-    if (centre.getDistance(robotPos) <= radius)
-      {return pointDamping(centre.getX(), centre.getY(), motionXY);}
-    else 
-    {
-      /* 
-        * Damps the motion based on the line closest to the robot:
-        * Polygon objects consist of a list of lines and a list of reference points
-        * Finding the index of the closest reference point gives the index of the closest line
-        */
-      return edgeLines.get(edgeReference.indexOf(robotPos.nearest(edgeReference))).dampMotion(motionXY);
-    }
+    Line processLine = nearestLine();
+    // If the robot is inside the polygon, process based on the inscribed circle
+      if (processLine.getDirectionalDistance() < 0)
+        {return pointDamping(centre.getX(), centre.getY(), motionXY);}
+  
+    /* 
+      * Damps the motion based on the line closest to the robot:
+      * Polygon objects consist of a list of lines and a list of reference points
+      * Finding the index of the closest reference point gives the index of the closest line
+      */
+    return processLine.dampMotion(motionXY);
   }
 
   @Override
   public double getDistance()
   {
-    return edgeLines.get(edgeReference.indexOf(robotPos.nearest(edgeReference))).getDistance();
+    return nearestLine().getDirectionalDistance();
+  }
+
+  private Line nearestLine()
+  {
+    int index = 0;
+    double minDistance = edgeLines.get(0).getCentre().getDistance(robotPos);
+    double checkDistance;
+
+    for (int i = 1; i < edgeLines.size(); i++)
+    {
+      checkDistance = edgeLines.get(i).getCentre().getDistance(robotPos);
+      if (checkDistance < minDistance)
+      {
+        index = i;
+        minDistance = checkDistance;
+      }
+    }
+
+    return edgeLines.get(index);
   }
 }

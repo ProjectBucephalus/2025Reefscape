@@ -15,43 +15,45 @@ import frc.robot.util.controlTransmutation.GeoFence;
  */
 public class Line extends GeoFence
 {
-  private double Xa;
-  private double Ya;
-  private double Xb;
-  private double Yb;
-  private double dXab = 0;
-  private double dYab = 0;
-  private double dot2ab = 0;
-  private double checkRadius;
+  private Translation2d pointA;
+  private Translation2d pointB;
+  private double dXab;
+  private double dYab;
+  private double length;
+  private double dotX;
+  private double dotY;
+  private double dotXY;
+  private double normX;
+  private double normY;
+  private double normXY;
 
   public Line(double Xa, double Ya, double Xb, double Yb, double radius, double buffer)
   {
-    this.Xa = Xa;
-    this.Ya = Ya;
-    this.Xb = Xb;
-    this.Yb = Yb;
-
     this.radius = radius;
     this.buffer = buffer;
-
+    
+    pointA = new Translation2d(Xa, Ya);
+    pointB = new Translation2d(Xb, Yb);
     centre = new Translation2d((Xa+Xb)/2, (Ya+Yb)/2);
 
     dXab = Xb - Xa;
     dYab = Yb - Ya;
-    dot2ab = Math.pow(dXab,2) + Math.pow(dYab,2);
+    length = Math.hypot(dXab, dYab);
+    
+    normX = dXab / length;
+    normY = dYab / length;
+    normXY = ((Xa * Yb) - (Xb * Ya)) / length;
+    
+    dotX = normX / length;
+    dotY = normY / length;
+    dotXY = Xa*dXab + Ya*dYab;
 
-    checkRadius = (Math.sqrt(dot2ab)/2) + radius;
+    checkRadius = (Math.sqrt(length)/2) + radius + buffer;
   }
 
   public Line(double Xa, double Ya, double Xb, double Yb)
   {
     this(Xa, Ya, Xb, Yb, minRadius, minBuffer);
-  }
-
-  @Override
-  protected boolean checkPosition()
-  {
-    return centre.getDistance(robotPos) <= checkRadius + buffer + robotRadius;
   }
 
   @Override
@@ -67,13 +69,11 @@ public class Line extends GeoFence
     *            \                            (bX - aX)^2 + (bY - aY)^2               /
     */
 
-    double distanceToEdgeX = robotPos.getX() - Xa;
-    double distanceToEdgeY = robotPos.getY() - Ya;
-    double dot = ((distanceToEdgeX * dXab) + (distanceToEdgeY * dYab)) / dot2ab; // Normalised dot product of the two lines
+    double dot = (robotPos.getX() * dotX) + (robotPos.getY() * dotY) - dotXY; // Normalised dot product of the two lines
     return pointDamping
     (
-      Conversions.clamp(Xa + dXab * dot, Xa, Xb), 
-      Conversions.clamp(Ya + dYab * dot, Ya, Yb), 
+      Conversions.clamp(pointA.getX() + dXab * dot, pointA.getX(), pointB.getX()), 
+      Conversions.clamp(pointA.getY() + dYab * dot, pointA.getY(), pointB.getY()), 
       motionXY
     );
   }
@@ -81,14 +81,24 @@ public class Line extends GeoFence
   @Override
   public double getDistance()
   {
-    double distanceToEdgeX = robotPos.getX() - Xa;
-    double distanceToEdgeY = robotPos.getY() - Ya;
-    double dot = ((distanceToEdgeX * dXab) + (distanceToEdgeY * dYab)) / dot2ab; // Normalised dot product of the two lines
+    double dot = (robotPos.getX() * dotX) + (robotPos.getY() * dotY) - dotXY; // Normalised dot product of the two lines
     return new Translation2d
     (
-      Conversions.clamp(Xa + dXab * dot, Xa, Xb), 
-      Conversions.clamp(Ya + dYab * dot, Ya, Yb)
+      Conversions.clamp(pointA.getX() + dXab * dot, pointA.getX(), pointB.getX()), 
+      Conversions.clamp(pointA.getY() + dYab * dot, pointA.getY(), pointB.getY())
     )
     .getDistance(robotPos) - (radius + robotRadius);
+  }
+
+  /** If the robot position is within the projection area of the line, the output will be negative on one side of the line */
+  public double getDirectionalDistance()
+  {
+    double dot = (robotPos.getX() * dotX) + (robotPos.getY() * dotY) - dotXY;
+    if (dot <= 0)
+      {return pointA.getDistance(robotPos);}
+    else if (dot >= 1)
+      {return pointB.getDistance(robotPos);}
+    else
+      {return ((robotPos.getX() * normY) + (robotPos.getY() * normX) + normXY);}
   }
 }
