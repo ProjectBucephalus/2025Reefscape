@@ -70,14 +70,12 @@ public class Conversions
   /** Returns true if the wrapped input angles are within the given tollerance */
   public static boolean isRotationNear(Rotation2d rotationA, Rotation2d rotationB, double degreesTollerance)
   {
-    double angleA = mod(rotationA.getDegrees(), 360);
-    double angleB = mod(rotationB.getDegrees(), 360);
+    double difference = Math.abs(mod(rotationA.getDegrees(), 360) - mod(rotationB.getDegrees(), 360));
 
     return
     (
-      MathUtil.isNear(angleA, angleB, degreesTollerance) ||
-      MathUtil.isNear(angleA, angleB + 360, degreesTollerance) ||
-      MathUtil.isNear(angleA, angleB - 360, degreesTollerance)
+      difference < 0 + degreesTollerance ||
+      difference > 360 - degreesTollerance
     );
   }
 }
