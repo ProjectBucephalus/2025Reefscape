@@ -1182,6 +1182,10 @@ public class RobotContainer
         (() -> {
           SD.STATE_LED_ALL.put("climb timer true");
           allLEDsLayer.setType(LayerType.ALTERNATING).setColor(Color.kRed,new Color(50, 0, 0));
+          haloPortLayer.setColor(Color.kBlack, Color.kBlack);
+          haloStbdLayer.setColor(Color.kBlack, Color.kBlack);
+          portStatusLayer.setColor(Color.kBlack, Color.kBlack);
+          stbdStatusLayer.setColor(Color.kBlack, Color.kBlack);
         })
       )
       .onFalse
