@@ -154,7 +154,7 @@ public class FieldUtils
     public static final double wallRadius = 0.15;
 
     /** Radius from robot centre in metres where geofence is triggered for slow movements */
-    public static final double robotRadiusInscribed = 0.47;
+    public static final double robotRadiusInscribed = 0.44;
     /** Radius from robot centre in metres where geofence is triggered for fast movements */
     public static final double robotRadiusCircumscribed = 0.7;
     /** Radius from robot centre in metres where geofence is triggered for closer approaches */
@@ -163,9 +163,9 @@ public class FieldUtils
     public static final double robotSpeedThreshold = 1.5;
     
     /** Inscribed diameter of the reef hexagon (i.e. distance between opposite faces) in metres */
-    public static final double inscribedReefDiameter = 1.663;
+    public static final double inscribedReefDiameter = 1.500;
     /** Circumscribed diameter of the reef hexagon (i.e. distance between opposite points) in metres */
-    public static final double circumscribedReefDiameter = 1.720;
+    public static final double circumscribedReefDiameter = 1.650;
     /** Circumscribed diameter of the reef zone hexagon (i.e. distance between opposite points) in metres */
     public static final double circumscribedReefZoneDiameter = 3;
     public static final double penaltyReefZoneDiameter = circumscribedReefZoneDiameter + (robotRadiusInscribed * 2);
