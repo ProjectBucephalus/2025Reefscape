@@ -425,4 +425,9 @@ public class AutoUtils
   {
     displayPose(pose, pose.getRotation());
   }
+
+  public static Command pathfindToPoint(Translation2d targetPoint, Rotation2d targetRotation)
+  {
+    return AutoBuilder.pathfindToPose(new Pose2d(targetPoint, targetRotation), defaultConstraints);
+  }
 }

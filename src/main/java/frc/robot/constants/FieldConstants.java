@@ -40,4 +40,16 @@ public class FieldConstants
   public static final double coralStationRange = 0.6;
 
   public static final double bargeWarningRange = 0.6;
+
+  public static final ArrayList<Translation2d> redAlgaeBackoff = new ArrayList<Translation2d>()
+  {{
+    for (int i = 0; i <= 5; i++)
+      {add(redReefMidpoints.get(i).plus(redReefMidpoints.get(i).minus(FieldUtils.GeoFencing.reefRed.getCentre()).times(2)));}
+  }};
+  
+  public static final ArrayList<Translation2d> blueAlgaeBackoff = new ArrayList<Translation2d>()
+  {{
+    for (int i = 0; i <= 5; i++)
+      {add(blueReefMidpoints.get(i).plus(blueReefMidpoints.get(i).minus(FieldUtils.GeoFencing.reefBlue.getCentre()).times(2)));}
+  }};
 }

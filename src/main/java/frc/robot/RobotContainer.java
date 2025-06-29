@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.swerve.*;
@@ -254,6 +255,17 @@ public class RobotContainer
 
   private void configureAutoDriveBindings()
   {
+    WrapperCommand targetScoreDrive = new TargetScoreDrive
+    (
+      s_Swerve, 
+      () -> -driver.getRawAxis(translationAxis), 
+      () -> -driver.getRawAxis(strafeAxis), 
+      Rotation2d.kCCW_90deg,
+      () -> driver.getRawAxis(brakeAxis),
+      () -> true
+    )
+    .withName("ScoreLock");
+
     /* Heading lock state management */
     Triggers.unlockHeadingTrigger.or(driver.start()).onTrue(Commands.runOnce(() -> headingState = HeadingStates.UNLOCKED));
     driver.y().onTrue(Commands.runOnce(() -> headingState = HeadingStates.CAGE_LOCK));
@@ -352,16 +364,18 @@ public class RobotContainer
     Triggers.scoreDriveTrigger.and(driver.povCenter())
       .whileTrue
       (
-        new TargetScoreDrive
-        (
-          s_Swerve, 
-          () -> -driver.getRawAxis(translationAxis), 
-          () -> -driver.getRawAxis(strafeAxis), 
-          Rotation2d.kCCW_90deg,
-          () -> driver.getRawAxis(brakeAxis),
-          () -> true
-        )
-        .withName("ScoreLock")
+        targetScoreDrive
+      );
+
+    driver.back()
+      .and(Triggers.scoreDriveTrigger)
+      .whileTrue
+      (
+        s_Swerve.defer(() -> AutoUtils.pathfindToPoint(FieldUtils.getAlgaeBackoffPoint(swerveState.Pose.getTranslation()), swerveState.Pose.getRotation()))
+      )
+      .onFalse
+      (
+        targetScoreDrive
       );
   }
 
@@ -585,7 +599,7 @@ public class RobotContainer
     /* Copilot rumble bindings */
     io_copilotLeft.addRumbleTrigger("Intake Full", Triggers.copilotLeftRumbleTrigger);
     io_copilotRight.addRumbleTrigger("Diffector E-stopped", new Trigger(() -> SD.DIFF_ESTOP.get()));
-    new Trigger(() -> Timer.getMatchTime() <= 6 && DriverStation.isTeleop())
+    new Trigger(() -> Timer.getMatchTime() <= Constants.Control.climbActivationTime && DriverStation.isTeleop())
       .onTrue
       (
         Commands.sequence

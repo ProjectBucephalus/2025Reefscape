@@ -51,6 +51,8 @@ public final class Constants
     public static final double manualClimberScale = 1;
     public static final double driveSnappingRange = 1.5;
     public static final double cageFaceDistance = 1.5;
+    /** Time warning for climb to activate to ensure a full climb, seconds */
+    public static final double climbActivationTime = 7;
   }
 
   public static final class Vision
