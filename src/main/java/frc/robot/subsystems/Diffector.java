@@ -244,7 +244,7 @@ public class Diffector extends SubsystemBase
       (
         !(
           MathUtil.isNear(RobotContainer.swerveState.Pose.getX(), FieldUtils.fieldLength / 2, DiffectorGeometry.bargeSafetyWidth) &&
-          targetPosition.getZ() > DiffectorGeometry.bargeSafetyHeight && 
+          (targetPosition.getZ() > DiffectorGeometry.bargeSafetyHeight || targetPosition.relativeEquals(Presets.algaeStowPosition)) && 
           SD.IO_LL.get() && 
           SD.IO_BARGE_PROTECTION.get()
          ) &&
