@@ -371,6 +371,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     });
   }
 
+  public Command poseDriveCommand(Supplier<Pose2d> targetSupplier) {
+    return poseLockDriveCommand(targetSupplier).until(() -> FieldUtils.atPose(targetSupplier.get()));
+  }
+
   @Override
   public void periodic() 
   {

@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.RobotContainer;
+import frc.robot.constants.Constants;
 import frc.robot.constants.DiffectorGeometry;
 import frc.robot.constants.FieldConstants;
 import frc.robot.util.GeoFenceObject.ObjectTypes;
@@ -133,6 +135,12 @@ public class FieldUtils
       DriverStation.reportError(String.format("Unable to load path: %s", pathName), true);
     }
     return null;
+  }
+
+  public static boolean atPose(Pose2d pose)
+  {
+    return RobotContainer.swerveState.Pose.getTranslation().getDistance(pose.getTranslation()) <= Constants.Auto.atPosTolerance &&
+    Math.abs(RobotContainer.swerveState.Pose.getRotation().getDegrees() - pose.getRotation().getDegrees()) <= Constants.Auto.atAngleTolerance;   
   }
 
   public final class GeoFencing

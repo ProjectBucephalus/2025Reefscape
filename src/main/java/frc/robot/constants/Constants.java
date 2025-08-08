@@ -201,8 +201,10 @@ public final class Constants
       put("e"  , new AutoMapping(null, () -> Commands.defer(() -> AutoUtils.ejectAlgaeSequenceCommand(RobotContainer.s_Diffector, RobotContainer.s_Algae, () -> RobotContainer.swerveState.Pose.getTranslation()), Set.of(RobotContainer.s_Algae, RobotContainer.s_Diffector))));
     }};
 
-    /** How close we have to be to the path start point to just follow the path without using pathfinding */
-    public static final double atPosTolerance = 0.07;
+    /** Translation lineup tolerance, in meters */
+    public static final double atPosTolerance = 0.04;
+    /** Rotation lineup tolerance, in degrees */
+    public static final double atAngleTolerance = 1.5;
 
     public static final String defaultAuto = "rc4,cr1,rb4,cl1,ra4,cl1,rl4";
   }
