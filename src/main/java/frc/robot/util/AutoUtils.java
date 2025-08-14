@@ -4,6 +4,7 @@
 package frc.robot.util;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.IntSupplier;
@@ -229,49 +230,53 @@ public class AutoUtils
 
   public static Command pathfindAndFollowCommand(Supplier<String> pathNameSup, BooleanSupplier brakeSup)
   {
-    PathPlannerPath path = FieldUtils.loadPath(pathNameSup.get());
-    BooleanSupplier atPathStart = () -> RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.atPosTolerance;
-    
-    displayPose
-    (
-      path.getPathPoses().get(path.getPathPoses().size()-1)
-        .rotateAround
-        (
-          FieldUtils.fieldCentre, 
-          FieldUtils.isRedAlliance() ? 
-            Rotation2d.k180deg : 
-            Rotation2d.kZero
-        ),
-      (FieldUtils.isRedAlliance() ? path.getGoalEndState().flip() : path.getGoalEndState()).rotation()
-    );
-
-    return 
-    Commands.runOnce(() -> {SD.STATE_DRIVE.put("Following");})
-    .andThen
-    (
-      Commands.either
+    String pathName = pathNameSup.get();
+    if (!pathName.isEmpty())
+    {
+      PathPlannerPath path = FieldUtils.loadPath(pathName);
+      BooleanSupplier atPathStart = () -> RobotContainer.swerveState.Pose.getTranslation().getDistance(path.getPoint(0).position) <= Constants.Auto.atPosTolerance;
+      
+      displayPose
       (
-        AutoBuilder.followPath(path), 
-        Commands.either
-        (
-          AutoBuilder.pathfindThenFollowPath(path, slowedConstraints), 
-          AutoBuilder.pathfindThenFollowPath(path, defaultConstraints), 
-          brakeSup
-        ),
-        atPathStart
-      )
-      .until(RobotContainer.driver.povCenter())
+        path.getPathPoses().get(path.getPathPoses().size()-1)
+          .rotateAround
+          (
+            FieldUtils.fieldCentre, 
+            FieldUtils.isRedAlliance() ? 
+              Rotation2d.k180deg : 
+              Rotation2d.kZero
+          ),
+        (FieldUtils.isRedAlliance() ? path.getGoalEndState().flip() : path.getGoalEndState()).rotation()
+      );
+  
+      return 
+      Commands.runOnce(() -> {SD.STATE_DRIVE.put("Following");})
       .andThen
       (
         Commands.either
         (
-          Commands.runOnce(() -> {SD.STATE_DRIVE.put("Heading Locked");}),
-          Commands.runOnce(() -> {SD.STATE_DRIVE.put("At Target");}),
-          RobotContainer.driver.povCenter()
+          AutoBuilder.followPath(path), 
+          Commands.either
+          (
+            AutoBuilder.pathfindThenFollowPath(path, slowedConstraints), 
+            AutoBuilder.pathfindThenFollowPath(path, defaultConstraints), 
+            brakeSup
+          ),
+          atPathStart
+        )
+        .until(RobotContainer.driver.povCenter())
+        .andThen
+        (
+          Commands.either
+          (
+            Commands.runOnce(() -> {SD.STATE_DRIVE.put("Heading Locked");}),
+            Commands.runOnce(() -> {SD.STATE_DRIVE.put("At Target");}),
+            RobotContainer.driver.povCenter()
+          )
         )
       )
-    )
-    .withName("PathfindAndFollow");
+      .withName("PathfindAndFollow");
+    } else {return Commands.none();}
   }
 
   public static Supplier<String> getReefPathName(DpadOptions dpadValue)
@@ -280,6 +285,9 @@ public class AutoUtils
     () ->
     {
       int nearestReefFace = FieldUtils.getNearestReefFace(RobotContainer.swerveState.Pose.getTranslation());
+
+      if (SD.STATE_DEMO.get() && nearestReefFace != 4)
+        {return "";}
 
       String pathName =
       switch (dpadValue) 

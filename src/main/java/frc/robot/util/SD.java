@@ -15,7 +15,7 @@ import frc.robot.constants.MechanismConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 /** Simplified interface for most SmartDashboard interactions */
-public class SD 
+public abstract class SD 
 {
   public static final BooleanKey IO_LL = new BooleanKey("Use Limelight", true);
   public static final DoubleKey  IO_LL_EXPOSURE = new DoubleKey("Exposure Setting", 0);
@@ -89,6 +89,8 @@ public class SD
   public static final DoubleKey IO_POSE_Y = new DoubleKey("Pose Y", 0.0);
   public static final DoubleKey IO_POSE_R = new DoubleKey("Pose Rotation", 0.0);
 
+  public static final BooleanKey STATE_DEMO = new BooleanKey("Demo Mode", false);
+
   static
   {
     for 
@@ -124,7 +126,8 @@ public class SD
         STATE_LED_BAR,
         STATE_LED_HAL,
         STATE_LED_ALL,
-        IO_OUTER_GEOFENCE
+        IO_OUTER_GEOFENCE,
+        STATE_DEMO
       )
     )
     {
