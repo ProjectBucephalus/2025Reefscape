@@ -90,6 +90,19 @@ public abstract class SD
   public static final DoubleKey IO_POSE_R = new DoubleKey("Pose Rotation", 0.0);
 
   public static final BooleanKey STATE_DEMO = new BooleanKey("Demo Mode", false);
+  public static final DoubleKey  IO_FENCE_XA  = new DoubleKey("Fence Xa", 0.85);
+  public static final DoubleKey  IO_FENCE_YA  = new DoubleKey("Fence Ya", -2.6);
+  public static final DoubleKey  IO_FENCE_XB  = new DoubleKey("Fence Xb", 3.9);
+  public static final DoubleKey  IO_FENCE_YB  = new DoubleKey("Fence Yb", 1.25);
+  public static final BooleanKey IO_FENCE_SET = new BooleanKey("Set Fence", false);
+  public static final BooleanKey IO_FENCE_XAP = new BooleanKey("Xa +", false);
+  public static final BooleanKey IO_FENCE_YAP = new BooleanKey("Ya +", false);
+  public static final BooleanKey IO_FENCE_XAM = new BooleanKey("Xa -", false);
+  public static final BooleanKey IO_FENCE_YAM = new BooleanKey("Ya -", false);
+  public static final BooleanKey IO_FENCE_XBP = new BooleanKey("Xb +", false);
+  public static final BooleanKey IO_FENCE_YBP = new BooleanKey("Yb +", false);
+  public static final BooleanKey IO_FENCE_XBM = new BooleanKey("Xb -", false);
+  public static final BooleanKey IO_FENCE_YBM = new BooleanKey("Yb -", false);
 
   static
   {
