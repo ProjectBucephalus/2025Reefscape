@@ -15,7 +15,7 @@ import frc.robot.constants.FieldConstants;
 
 public class Triggers 
 {
-  public static final Trigger unlockHeadingTrigger   = new Trigger(() -> Math.abs(RobotContainer.driver.getRawAxis(RobotContainer.rotationAxis)) > Constants.Control.stickDeadband);
+  public static final Trigger unlockHeadingTrigger   = new Trigger(() -> RobotContainer.headingState == HeadingStates.UNLOCKED || Math.abs(RobotContainer.driver.getRawAxis(RobotContainer.rotationAxis)) > Constants.Control.stickDeadband);
   public static final Trigger cageDriveTrigger       = new Trigger(() -> RobotContainer.headingState == HeadingStates.CAGE_LOCK);
   public static final Trigger scoreDriveTrigger      = new Trigger(() -> RobotContainer.headingState == HeadingStates.REEF_LOCK);
   public static final Trigger stationDriveTrigger    = new Trigger(() -> RobotContainer.headingState == HeadingStates.STATION_LOCK);
