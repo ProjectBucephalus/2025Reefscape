@@ -21,7 +21,7 @@ public abstract class SD
   public static final DoubleKey  IO_LL_EXPOSURE = new DoubleKey("Exposure Setting", 0);
   public static final BooleanKey IO_LL_EXPOSURE_UP = new BooleanKey("Increase Exposure", false);
   public static final BooleanKey IO_LL_EXPOSURE_DOWN = new BooleanKey("Decrease Exposure", false);
-  public static final DoubleKey  IO_LED_BRIGHTNESS = new DoubleKey("LED Brightness", 1);
+  public static final DoubleKey  IO_LED_BRIGHTNESS = new DoubleKey("LED Brightness", 0.1);
   public static final DoubleKey  IO_CLIMB_WARNING = new DoubleKey("Climb Warning Time", 27);
 
   public static final BooleanKey ROTATION_KNOWN = new BooleanKey("Rotation Known", false);
@@ -90,10 +90,10 @@ public abstract class SD
   public static final DoubleKey IO_POSE_R = new DoubleKey("Pose Rotation", 0.0);
 
   public static final BooleanKey STATE_DEMO = new BooleanKey("Demo Mode", false);
-  public static final DoubleKey  IO_FENCE_XA  = new DoubleKey("Fence Xa", 0.85);
-  public static final DoubleKey  IO_FENCE_YA  = new DoubleKey("Fence Ya", -2.6);
-  public static final DoubleKey  IO_FENCE_XB  = new DoubleKey("Fence Xb", 3.9);
-  public static final DoubleKey  IO_FENCE_YB  = new DoubleKey("Fence Yb", 1.25);
+  public static final DoubleKey  IO_FENCE_XA  = new DoubleKey("Fence Xa", -2.8);
+  public static final DoubleKey  IO_FENCE_YA  = new DoubleKey("Fence Ya", -2.0);
+  public static final DoubleKey  IO_FENCE_XB  = new DoubleKey("Fence Xb", 1.0);
+  public static final DoubleKey  IO_FENCE_YB  = new DoubleKey("Fence Yb", 2.1);
   public static final BooleanKey IO_FENCE_SET = new BooleanKey("Set Fence", false);
   public static final BooleanKey IO_FENCE_XAP = new BooleanKey("Xa +", false);
   public static final BooleanKey IO_FENCE_YAP = new BooleanKey("Ya +", false);
@@ -140,7 +140,20 @@ public abstract class SD
         STATE_LED_HAL,
         STATE_LED_ALL,
         IO_OUTER_GEOFENCE,
-        STATE_DEMO
+        STATE_DEMO,
+        IO_FENCE_XA,
+        IO_FENCE_YA,
+        IO_FENCE_XB,
+        IO_FENCE_YB,
+        IO_FENCE_SET,
+        IO_FENCE_XAP,
+        IO_FENCE_YAP,
+        IO_FENCE_XAM,
+        IO_FENCE_YAM,
+        IO_FENCE_XBP,
+        IO_FENCE_YBP,
+        IO_FENCE_XBM,
+        IO_FENCE_YBM
       )
     )
     {

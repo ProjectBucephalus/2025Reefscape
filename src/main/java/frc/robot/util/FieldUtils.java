@@ -172,6 +172,9 @@ public class FieldUtils
     
     /** Buffer zone for the reef in metres */
     public static final double reefBuffer = 0.5;
+    public static final double reefY = fieldCentre.getY();
+    public static final double reefRedX = 13.059;
+    public static final double reefBlueX = 4.489;
 
     /** Buffer zone for the barge zone in metres */
     public static final double bargeBuffer = 0.5;
@@ -190,10 +193,10 @@ public class FieldUtils
       ObjectTypes.walls
     );
 
-    public static final GeoFenceObject reefBlue      = new GeoFenceObject(4.489, 4.026, reefBuffer, circumscribedReefDiameter / 2, 0, 6);
-    public static final GeoFenceObject reefZoneBlue  = new GeoFenceObject(4.489, 4.026, reefBuffer, penaltyReefZoneDiameter / 2, 0, 6);
-    public static final GeoFenceObject reefRed       = new GeoFenceObject(13.059, 4.026, reefBuffer, circumscribedReefDiameter / 2, 180, 6);
-    public static final GeoFenceObject reefZoneRed   = new GeoFenceObject(13.059, 4.026, reefBuffer, penaltyReefZoneDiameter / 2, 180, 6);
+    public static final GeoFenceObject reefBlue      = new GeoFenceObject(reefBlueX, 4.026, reefBuffer, circumscribedReefDiameter / 2, 0, 6);
+    public static final GeoFenceObject reefZoneBlue  = new GeoFenceObject(reefBlueX, 4.026, reefBuffer, penaltyReefZoneDiameter / 2, 0, 6);
+    public static final GeoFenceObject reefRed       = new GeoFenceObject(reefRedX, 4.026, reefBuffer, circumscribedReefDiameter / 2, 180, 6);
+    public static final GeoFenceObject reefZoneRed   = new GeoFenceObject(reefRedX, 4.026, reefBuffer, penaltyReefZoneDiameter / 2, 180, 6);
     public static final GeoFenceObject bargeColumn   = new GeoFenceObject(8.774, 4.026, 0.25, 0.15);
     public static final GeoFenceObject bargeZoneBlue = new GeoFenceObject(8.190, 4.331, 9.358, fieldWidth, bargeBuffer, 0.1, ObjectTypes.box);
     public static final GeoFenceObject bargeZoneRed  = new GeoFenceObject(8.190, 3.721, 9.358, 0, bargeBuffer, 0.1, ObjectTypes.box);
