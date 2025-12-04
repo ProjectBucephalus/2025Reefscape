@@ -37,12 +37,12 @@ public abstract class SD
   public static final DoubleKey  IO_ALGAE_HOLD = new DoubleKey("Algae Holding Value", MechanismConstants.AlgaeConfigs.algaeHoldingCurrent);
   public static final BooleanKey IO_PROCESS_AUTO = new BooleanKey("Process Auto", false);
   public static final BooleanKey IO_GEOFENCE = new BooleanKey("Use Fence", true);
-  public static final BooleanKey IO_OUTER_GEOFENCE = new BooleanKey("Wall Fence", true);
+  public static final BooleanKey IO_OUTER_GEOFENCE = new BooleanKey("Wall Fence", false); // Outer fence ONLY
   public static final DoubleKey  IO_GEOFENCE_IMPACT = new DoubleKey("Fence Impact", 1);
   public static final StringKey  IO_AUTO = new StringKey("Auto Input", Constants.Auto.defaultAuto);
   public static final DoubleKey  IO_RUMBLE_D = new DoubleKey("Driver Rumble", Constants.RumblerConstants.driverDefault);
   public static final DoubleKey  IO_RUMBLE_C = new DoubleKey("Copilot Rumble", Constants.RumblerConstants.copilotDefault);
-  public static final BooleanKey IO_BARGE_PROTECTION = new BooleanKey("Use Barge Protection", true);
+  public static final BooleanKey IO_BARGE_PROTECTION = new BooleanKey("Use Barge Protection", false);
 
   public static final BooleanKey STATE_PP_WARMUP = new BooleanKey("Warmup Finished", false);
   public static final StringKey  STATE_ALGAE = new StringKey("Algae Manipulator State", "Empty");
@@ -89,12 +89,12 @@ public abstract class SD
   public static final DoubleKey IO_POSE_Y = new DoubleKey("Pose Y", 0.0);
   public static final DoubleKey IO_POSE_R = new DoubleKey("Pose Rotation", 0.0);
 
-  public static final BooleanKey STATE_DEMO = new BooleanKey("Demo Mode", false);
-  public static final DoubleKey  IO_FENCE_XA  = new DoubleKey("Fence Xa", -2.8);
-  public static final DoubleKey  IO_FENCE_YA  = new DoubleKey("Fence Ya", -2.0);
-  public static final DoubleKey  IO_FENCE_XB  = new DoubleKey("Fence Xb", 1.0);
-  public static final DoubleKey  IO_FENCE_YB  = new DoubleKey("Fence Yb", 2.1);
-  public static final BooleanKey IO_FENCE_SET = new BooleanKey("Set Fence", false);
+  public static final BooleanKey STATE_DEMO = new BooleanKey("Demo Mode", true);
+  public static final DoubleKey  IO_FENCE_XA  = new DoubleKey("Fence Xa", -4.5);
+  public static final DoubleKey  IO_FENCE_YA  = new DoubleKey("Fence Ya", -1.5);
+  public static final DoubleKey  IO_FENCE_XB  = new DoubleKey("Fence Xb", -0.5);
+  public static final DoubleKey  IO_FENCE_YB  = new DoubleKey("Fence Yb", 2.5);
+  public static final BooleanKey IO_FENCE_SET = new BooleanKey("Set Fence", true);
   public static final BooleanKey IO_FENCE_XAP = new BooleanKey("Xa +", false);
   public static final BooleanKey IO_FENCE_YAP = new BooleanKey("Ya +", false);
   public static final BooleanKey IO_FENCE_XAM = new BooleanKey("Xa -", false);

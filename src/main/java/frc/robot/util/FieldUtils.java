@@ -149,9 +149,9 @@ public class FieldUtils
     public static final double fieldWest = 0;
 
     /** Buffer zone for the field walls in metres */
-    public static final double wallBuffer = 0.5;
+    public static final double wallBuffer = 1.0;
     /** Radius for the field walls in metres */
-    public static final double wallRadius = 0.15;
+    public static final double wallRadius = 0.0;
 
     /** Radius from robot centre in metres where geofence is triggered for slow movements */
     public static final double robotRadiusInscribed = 0.44;
@@ -223,6 +223,11 @@ public class FieldUtils
       bargeZoneBlue,
       cornerSRed, 
       cornerNRed
+    };
+
+    public static final GeoFenceObject[] fieldDemoGeoFence = 
+    {
+      reefRed
     };
     
     public static final Pair<Translation2d, Translation2d> blueAllianceBargeDynamic = new Pair<Translation2d,Translation2d>(new Translation2d(8.19, 3.721), new Translation2d(9.358, 0));

@@ -60,7 +60,9 @@ public abstract class SwerveCommandBase extends Command
   {
     redAlliance = FieldUtils.isRedAlliance();
 
-    if (redAlliance)
+    if (SD.STATE_DEMO.get())
+      {fieldGeoFence = FieldUtils.GeoFencing.fieldDemoGeoFence;}
+    else if (redAlliance)
       {fieldGeoFence = FieldUtils.GeoFencing.fieldRedGeoFence;}
     else
       {fieldGeoFence = FieldUtils.GeoFencing.fieldBlueGeoFence;}
@@ -110,15 +112,15 @@ public abstract class SwerveCommandBase extends Command
       
       if (fencedSup.getAsBoolean() && SD.IO_GEOFENCE.get())
       {   
+        
         // Read down the list of geofence objects
         // Outer wall is index 0, so has highest authority by being processed last
-        for (int i = fieldGeoFence.length - 1; i >= 0; i--)
+        if (!SD.IO_OUTER_GEOFENCE.get()) for (int i = fieldGeoFence.length - 1; i >= 0; i--)
         {
           Translation2d inputDamping = fieldGeoFence[i].dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
           motionXY = inputDamping;
         }
-
-        if (SD.IO_OUTER_GEOFENCE.get())
+        
         {
           Translation2d inputDamping = FieldUtils.GeoFencing.field.dampMotion(RobotContainer.swerveState.Pose.getTranslation(), motionXY, robotRadius);
           motionXY = inputDamping;

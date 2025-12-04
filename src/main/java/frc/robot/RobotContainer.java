@@ -133,6 +133,7 @@ public class RobotContainer
 
     s_Swerve.registerTelemetry(logger::telemeterize);
     initLED();
+    SD.IO_FENCE_SET.put(true);
   }
 
   private void configureDriverBindings()
@@ -1229,7 +1230,7 @@ public class RobotContainer
     new Trigger(() -> SD.IO_FENCE_SET.button()).and(() -> SD.STATE_DEMO.get()).onTrue(Commands.runOnce(() -> 
     {
       setFieldWall();
-    }));
+    }).ignoringDisable(true));
 
     new Trigger(() -> SD.IO_FENCE_XAP.button()).and(() -> SD.STATE_DEMO.get())
         .onTrue(Commands.runOnce(() -> 
@@ -1307,6 +1308,7 @@ public class RobotContainer
 
   private void setFieldWall()
   {
+
     FieldUtils.GeoFencing.field.updateBox
       (
         SD.IO_FENCE_XA.get() + GeoFencing.reefRedX,

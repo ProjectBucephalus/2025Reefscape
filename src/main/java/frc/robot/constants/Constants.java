@@ -33,13 +33,13 @@ public final class Constants
     public static final double manualDiffectorDeadband = 0.25;
     public static final double stickDeadband = 0.15;
     /** Normal maximum robot speed, relative to maximum uncapped speed */
-    public static final double maxThrottle = 0.8;
+    public static final double maxThrottle = 0.3;
     /** Minimum robot speed when braking, relative to maximum uncapped speed */
-    public static final double minThrottle = 0.1;
+    public static final double minThrottle = 0.0;
     /** Normal maximum rotational robot speed, relative to maximum uncapped rotational speed */
-    public static final double maxRotThrottle = 1;
+    public static final double maxRotThrottle = 0.85;
     /** Minimum rotational robot speed when braking, relative to maximum uncapped rotational speed */
-    public static final double minRotThrottle = 0.5;
+    public static final double minRotThrottle = 0.0;
     /** Angle tolerance to consider something as "facing" the drivers, degrees */
     public static final double driverVisionTolerance = 5;
     /** Scalar for manual diffector elevation control */
@@ -47,7 +47,7 @@ public final class Constants
     /** Scalar for manual diffector rotation control */
     public static final double manualDiffectorRotationScalar = 2;
     /** Scalar for braking effect of diffector arm being higher than 1m */
-    public static final double armBrakeRate = 1.5;
+    public static final double armBrakeRate = 0.5;
     public static final double manualClimberScale = 1;
     public static final double driveSnappingRange = 1.5;
     public static final double cageFaceDistance = 1.5;
